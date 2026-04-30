@@ -539,7 +539,9 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Grid de serviços com imagem e descrição.</CardDescription>
               </div>
               <div className="flex space-x-2">
-                <Button size="sm" onClick={() => handleSave("services", services, false)}>Publicar Tudo</Button>
+                 <Button size="sm" onClick={() => handleSave("services", services, false)} disabled={loading}>
+                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Tudo"}
+                 </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
