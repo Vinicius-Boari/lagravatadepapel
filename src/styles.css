@@ -299,9 +299,9 @@ body.lg-body {
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* SERVICES */
-.services-section { background: var(--color-cream); padding: 80px 0 120px; }
+.services-section { background: #0a0a0a; padding: 80px 0 120px; }
 .section-header { text-align: center; margin-bottom: 60px; }
-.section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--color-dark-lg); opacity: 0.7; }
+.section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: #fff; opacity: 1; }
 .section-header h2 span { display: block; font-style: italic; }
 .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 8px; }
 .service-card { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; cursor: pointer; }
@@ -323,10 +323,10 @@ body.lg-body {
 .btn-outline:hover { background: var(--color-red-lg); color: white; border-color: var(--color-red-lg); }
 
 /* PLACES */
-.places-section { background: var(--color-cream); padding: 120px 40px; }
+.places-section { background: #0a0a0a; padding: 120px 40px; }
 .places-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; padding: 0 20px; gap: 24px; flex-wrap: wrap; }
-.places-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; }
-.places-header a { font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-muted-lg); text-decoration: none; border-bottom: 1px solid var(--color-muted-lg); padding-bottom: 4px; transition: color 0.3s; }
+.places-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: #fff; }
+.places-header a { font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.6); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 4px; transition: color 0.3s; }
 .places-header a:hover { color: var(--color-red-lg); }
 .places-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .place-card { position: relative; aspect-ratio: 4/5; border-radius: 8px; overflow: hidden; cursor: pointer; }
