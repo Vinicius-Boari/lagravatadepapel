@@ -69,11 +69,12 @@ export function IntegrationsManager() {
           <p className="text-zinc-400">Conecte redes sociais, analytics e botões de contato.</p>
         </div>
         <button 
-          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-medium"
+          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-medium disabled:opacity-50"
           onClick={handleSave}
+          disabled={loading}
         >
-          <CheckCircle2 className="mr-2 w-4 h-4" />
-          Salvar Tudo
+          {loading ? <Loader2 className="mr-2 w-4 h-4 animate-spin" /> : <CheckCircle2 className="mr-2 w-4 h-4" />}
+          {loading ? "Salvando..." : "Salvar Tudo"}
         </button>
       </div>
 
