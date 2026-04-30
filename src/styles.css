@@ -265,7 +265,7 @@ body.lg-body {
 .hero-cta a:hover .cta-dot { background: var(--color-dark-lg); }
 
 /* TICKER */
-.ticker { background: var(--color-dark-lg); padding: 14px 0; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.06); }
+/* ticker base merged above */
 .ticker-track { display: flex; animation: tickerScroll 30s linear infinite; gap: 60px; width: max-content; }
 .ticker-track span { font-family: var(--font-sans-lg); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); white-space: nowrap; }
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
