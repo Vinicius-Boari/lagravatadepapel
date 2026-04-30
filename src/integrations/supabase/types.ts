@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          user_email: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_email: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_email?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          password_hash: string
+          role: Database["public"]["Enums"]["admin_role"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          password_hash: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          password_hash?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       instagram_posts: {
         Row: {
           caption: string
@@ -140,6 +211,90 @@ export type Database = {
         }
         Relationships: []
       }
+      site_media: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          file_type: string
+          filename: string
+          id: string
+          metadata: Json | null
+          url: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          file_type: string
+          filename: string
+          id?: string
+          metadata?: Json | null
+          url: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          file_type?: string
+          filename?: string
+          id?: string
+          metadata?: Json | null
+          url?: string
+        }
+        Relationships: []
+      }
+      site_pages: {
+        Row: {
+          content: Json
+          created_at: string | null
+          id: string
+          is_home: boolean | null
+          is_published: boolean | null
+          seo_metadata: Json | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          id?: string
+          is_home?: boolean | null
+          is_published?: boolean | null
+          seo_metadata?: Json | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          id?: string
+          is_home?: boolean | null
+          is_published?: boolean | null
+          seo_metadata?: Json | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -174,6 +329,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: { Args: never; Returns: boolean }
       is_owner: { Args: { _user_id: string }; Returns: boolean }
       transfer_ownership: {
         Args: { _new_owner_id: string }
@@ -181,6 +337,7 @@ export type Database = {
       }
     }
     Enums: {
+      admin_role: "owner" | "admin"
       app_role: "owner" | "admin"
     }
     CompositeTypes: {
@@ -309,6 +466,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_role: ["owner", "admin"],
       app_role: ["owner", "admin"],
     },
   },
