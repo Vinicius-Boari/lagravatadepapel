@@ -130,7 +130,7 @@ export function AdminDashboard() {
                 <div className="text-sm font-semibold text-red-500">{user?.full_name}</div>
                 <div className={cn(
                   "text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded",
-                  role === "owner" ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-500"
+                  role === "owner" ? "bg-red-500/10 text-red-500" : "bg-red-500/10 text-red-500"
                 )}>
                   {role === "owner" ? "Dono" : "Administrador"}
                 </div>

@@ -65,15 +65,15 @@ export function SiteContentEditor() {
                     <Label className="text-red-500">Linhas do Título (uma por linha)</Label>
                     <Textarea 
                       rows={4} 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.title_lines?.join("\n")}
                       onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Subtítulo</Label>
+                    <Label className="text-red-500">Subtítulo</Label>
                     <Textarea 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.subtitle}
                       onChange={(e) => setHero({...hero, subtitle: e.target.value})}
                     />
@@ -81,25 +81,25 @@ export function SiteContentEditor() {
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Localização (Canto Esquerdo)</Label>
+                    <Label className="text-red-500">Localização (Canto Esquerdo)</Label>
                     <Input 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.location}
                       onChange={(e) => setHero({...hero, location: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Texto do Botão (CTA)</Label>
+                    <Label className="text-red-500">Texto do Botão (CTA)</Label>
                     <Input 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.cta_label}
                       onChange={(e) => setHero({...hero, cta_label: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Link do Botão</Label>
+                    <Label className="text-red-500">Link do Botão</Label>
                     <Input 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.cta_url}
                       onChange={(e) => setHero({...hero, cta_url: e.target.value})}
                     />
@@ -107,11 +107,11 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h4 className="text-sm font-medium flex items-center"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
+                <h4 className="text-sm font-medium flex items-center text-red-500"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
                 <div className="space-y-2">
-                  <Label>URL do Vídeo (MP4/WebM)</Label>
+                  <Label className="text-red-500">URL do Vídeo (MP4/WebM)</Label>
                   <Input 
-                    className="bg-zinc-800 border-zinc-700" 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
                     placeholder="https://... (URL direta do arquivo)"
                     value={hero.video_url}
                     onChange={(e) => setHero({...hero, video_url: e.target.value})}
@@ -153,6 +153,252 @@ export function SiteContentEditor() {
                     />
                     <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
                   </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* VIDEOS SECTION */}
+        <TabsContent value="videos" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Seção de Vídeos</CardTitle>
+                <CardDescription className="text-red-500/60">Gerencie a galeria de vídeos e seus destaques.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("videos", videos, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={videos.heading}
+                    onChange={(e) => setVideos({...videos, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={videos.heading_em}
+                    onChange={(e) => setVideos({...videos, heading_em: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <div className="flex justify-between items-center">
+                   <h4 className="text-sm font-medium text-red-500">Lista de Vídeos</h4>
+                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
+                    const newItems = [...(videos.items || []), { title: "Novo Vídeo", src: "", tag: "", poster: "", tall: false }];
+                    setVideos({...videos, items: newItems});
+                  }}>
+                    <Plus className="w-4 h-4 mr-1" /> Adicionar
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {(videos.items || []).map((v: any, idx: number) => (
+                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Vídeo #{idx+1}</span>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-7 w-7"
+                          onClick={() => {
+                            const newItems = videos.items.filter((_: any, i: number) => i !== idx);
+                            setVideos({...videos, items: newItems});
+                          }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Título</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.title} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], title: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Tag / Categoria</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.tag} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], tag: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">URL do Vídeo (MP4)</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.src} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], src: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">URL da Capa (Poster)</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.poster} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], poster: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="flex items-center space-x-2 pt-2">
+                          <input 
+                            type="checkbox" 
+                            id={`tall-${idx}`}
+                            className="accent-red-500"
+                            checked={v.tall}
+                            onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], tall: e.target.checked };
+                               setVideos({...videos, items: newItems});
+                             }}
+                          />
+                          <Label htmlFor={`tall-${idx}`} className="text-xs text-red-500">Formato Vertical (Tall)</Label>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* PLAN SECTION */}
+        <TabsContent value="plan" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Seção "O Plano"</CardTitle>
+                <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("plan", plan, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.heading}
+                    onChange={(e) => setPlan({...plan, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.heading_em}
+                    onChange={(e) => setPlan({...plan, heading_em: e.target.value})}
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-red-500">Texto Descritivo</Label>
+                  <Textarea 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    rows={4}
+                    value={plan.text}
+                    onChange={(e) => setPlan({...plan, text: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Texto do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.cta_label}
+                    onChange={(e) => setPlan({...plan, cta_label: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Link do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.cta_url}
+                    onChange={(e) => setPlan({...plan, cta_url: e.target.value})}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ABOUT SECTION */}
+        <TabsContent value="about" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Seção Sobre</CardTitle>
+                <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("about", about, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.heading}
+                    onChange={(e) => setAbout({...about, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.heading_em}
+                    onChange={(e) => setAbout({...about, heading_em: e.target.value})}
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-red-500">Parágrafos (um por linha)</Label>
+                  <Textarea 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    rows={6}
+                    value={about.paragraphs?.join("\n")}
+                    onChange={(e) => setAbout({...about, paragraphs: e.target.value.split("\n")})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">URL da Imagem Lateral</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.image}
+                    onChange={(e) => setAbout({...about, image: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Link do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.cta_url}
+                    onChange={(e) => setAbout({...about, cta_url: e.target.value})}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -208,21 +454,55 @@ export function SiteContentEditor() {
                       <div className="flex justify-between items-start">
                         <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Serviço #{idx+1}</span>
                         <div className="flex space-x-1">
-                          <Button size="icon" variant="ghost" className="h-7 w-7"><Trash2 className="w-3.5 h-3.5 text-red-500" /></Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-7 w-7"
+                            onClick={() => {
+                              const newItems = services.items.filter((_: any, i: number) => i !== idx);
+                              setServices({...services, items: newItems});
+                            }}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                          </Button>
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                            <Label className="text-xs text-red-500">Título</Label>
-                           <Input className="bg-zinc-800 border-red-900 text-red-500" value={item.title} />
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={item.title} 
+                             onChange={(e) => {
+                               const newItems = [...services.items];
+                               newItems[idx] = { ...newItems[idx], title: e.target.value };
+                               setServices({...services, items: newItems});
+                             }}
+                           />
                         </div>
                         <div className="space-y-2">
                            <Label className="text-xs text-red-500">URL da Imagem</Label>
-                           <Input className="bg-zinc-800 border-red-900 text-red-500" value={item.img} />
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={item.img} 
+                             onChange={(e) => {
+                               const newItems = [...services.items];
+                               newItems[idx] = { ...newItems[idx], img: e.target.value };
+                               setServices({...services, items: newItems});
+                             }}
+                           />
                         </div>
                         <div className="md:col-span-2 space-y-2">
                            <Label className="text-xs text-red-500">Descrição Curta</Label>
-                           <Textarea className="bg-zinc-800 border-red-900 text-red-500" value={item.desc} />
+                           <Textarea 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={item.desc} 
+                             onChange={(e) => {
+                               const newItems = [...services.items];
+                               newItems[idx] = { ...newItems[idx], desc: e.target.value };
+                               setServices({...services, items: newItems});
+                             }}
+                           />
                         </div>
                       </div>
                     </div>
@@ -247,29 +527,53 @@ export function SiteContentEditor() {
               <div className="space-y-4">
                 <div className="space-y-2">
                    <Label className="text-red-500">Telefone (Exibição)</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.phone} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.phone} 
+                     onChange={(e) => setFooter({...footer, phone: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">WhatsApp Link</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.whatsapp_url} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.whatsapp_url} 
+                     onChange={(e) => setFooter({...footer, whatsapp_url: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">Copyright</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.copyright} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.copyright} 
+                     onChange={(e) => setFooter({...footer, copyright: e.target.value})}
+                   />
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="space-y-2">
                    <Label className="text-red-500">Endereço Linha 1</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line1} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.address_line1} 
+                     onChange={(e) => setFooter({...footer, address_line1: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">Endereço Linha 2</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line2} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.address_line2} 
+                     onChange={(e) => setFooter({...footer, address_line2: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">Hashtag Destaque</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.hashtag} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.hashtag} 
+                     onChange={(e) => setFooter({...footer, hashtag: e.target.value})}
+                   />
                 </div>
               </div>
             </CardContent>

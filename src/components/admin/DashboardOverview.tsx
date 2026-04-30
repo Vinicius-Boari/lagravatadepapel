@@ -60,9 +60,9 @@ export function DashboardOverview() {
   }, []);
 
   const cards = [
-    { title: "Total de Administradores", value: stats.totalAdmins, icon: Users, color: "text-blue-500" },
-    { title: "Logs de Atividades", value: stats.totalLogs, icon: History, color: "text-purple-500" },
-    { title: "Status do Site", value: stats.siteStatus, icon: Globe, color: "text-green-500" },
+    { title: "Total de Administradores", value: stats.totalAdmins, icon: Users, color: "text-red-500" },
+    { title: "Logs de Atividades", value: stats.totalLogs, icon: History, color: "text-red-500" },
+    { title: "Status do Site", value: stats.siteStatus, icon: Globe, color: "text-red-500" },
     { title: "Última Alteração", value: stats.lastUpdate, icon: Clock, color: "text-zinc-400", isDate: true },
   ];
 
