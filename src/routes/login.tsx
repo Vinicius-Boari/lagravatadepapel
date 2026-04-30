@@ -44,11 +44,9 @@ function LoginPage() {
     }
 
     if (data.session) {
-      // Clear cache and ensure session is set before redirect
+      // Clear cache and redirect using React router for smoother transition
       localStorage.removeItem("lg_user_role");
-      setTimeout(() => {
-        window.location.href = "/admin";
-      }, 500);
+      navigate({ to: "/admin" });
     }
   };
 

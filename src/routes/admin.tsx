@@ -20,20 +20,33 @@ export const Route = createFileRoute("/admin")({
 type Tab = "sections" | "instagram" | "pages" | "users";
 
 function AdminLayout() {
-  const { user, loading, isAdmin, isOwner, role, error: authError } = useAuth();
+  const { user, loading, isAdmin, isOwner, role, refreshRole } = useAuth();
   const [tab, setTab] = useState<Tab>("sections");
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) window.location.href = "/login";
-  }, [loading, user]);
+    const initAdmin = async () => {
+      if (!loading) {
+        if (!user) {
+          window.location.href = "/login";
+        } else if (!isAdmin) {
+          // One final check to be absolutely sure permissions aren't desynced
+          setRefreshing(true);
+          await refreshRole();
+          setRefreshing(false);
+        }
+      }
+    };
+    initAdmin();
+  }, [loading, user, isAdmin, refreshRole]);
 
   const showToast = (msg: string, kind: "ok" | "err" = "ok") => {
     setToast({ msg, kind });
     setTimeout(() => setToast(null), 3000);
   };
 
-  if (loading && !role) return <FullScreenMsg>Iniciando painel seguro…</FullScreenMsg>;
+  if ((loading || refreshing) && !role) return <FullScreenMsg>Iniciando painel seguro…</FullScreenMsg>;
   if (!user) return <FullScreenMsg>Redirecionando…</FullScreenMsg>;
   
   if (!isAdmin) {
