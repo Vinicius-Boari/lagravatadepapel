@@ -25,7 +25,7 @@ function AdminLayout() {
     );
   }
 
-  if (!user) return null;
+  if (!user && window.location.pathname !== "/admin/login") return null;
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
