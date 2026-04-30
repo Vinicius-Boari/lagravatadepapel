@@ -30,8 +30,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const maxPoints = 30; // Reduced for a more minimal trail
 
     const onMove = (e: MouseEvent) => {
-      mx = e.clientX;
-      my = e.clientY;
+      mx = e.pageX;
+      my = e.pageY - window.scrollY;
     };
 
     const resize = () => {
