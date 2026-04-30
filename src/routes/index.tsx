@@ -179,7 +179,7 @@ function Index() {
       <div className="ticker">
         <div className="ticker-track">
           {[...tickerItems, ...tickerItems].map((t, i) => (
-            <span key={i}>{t}{(i + 1) % 1 === 0 ? "" : ""}<span style={{ marginLeft: 60 }}>•</span></span>
+            <span key={i}>{t} •</span>
           ))}
         </div>
       </div>
