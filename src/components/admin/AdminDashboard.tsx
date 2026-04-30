@@ -66,7 +66,7 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-red-600 overflow-hidden font-sans">
+    <div className="flex h-screen bg-zinc-950 text-red-500 overflow-hidden font-sans">
       {/* Sidebar */}
       <aside className={cn(
         "flex flex-col border-r border-zinc-800 bg-zinc-900 transition-all duration-300 ease-in-out z-50",
@@ -107,7 +107,7 @@ export function AdminDashboard() {
             className="w-full flex items-center px-4 py-3 text-zinc-500 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/5"
           >
             <LogOut className="w-5 h-5" />
-            {sidebarOpen && <span className="ml-4 font-medium text-sm">Sair do Painel</span>}
+            {sidebarOpen && <span className="ml-4 font-medium text-sm text-red-500">Sair do Painel</span>}
           </button>
         </div>
       </aside>
@@ -116,7 +116,7 @@ export function AdminDashboard() {
       <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative">
         <header className="h-16 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-8">
           <div className="flex items-center space-x-2 text-sm text-red-400">
-            <span className="hover:text-zinc-300 cursor-pointer transition-colors" onClick={() => setActiveTab("dashboard")}>Início</span>
+            <span className="hover:text-red-300 cursor-pointer transition-colors" onClick={() => setActiveTab("dashboard")}>Início</span>
             <ChevronRight className="w-4 h-4" />
             <span className="text-red-500 font-medium">
               {menuItems.find(m => m.id === activeTab)?.label}
