@@ -37,21 +37,26 @@ function LoginPage() {
 
     if (err) {
       setLoading(false);
-      const msg = err.message === "Invalid login credentials" 
-        ? "E-mail ou senha incorretos." 
-        : err.message;
+      let msg = "Erro ao entrar. Tente novamente.";
+      if (err.message === "Invalid login credentials") {
+        msg = "E-mail ou senha incorretos.";
+      } else if (err.message.includes("Database error") || err.message.includes("client error")) {
+        msg = "Erro de conexão com o banco. Aguarde um instante e tente de novo.";
+      } else {
+        msg = err.message;
+      }
       setError(msg);
       return;
     }
 
     if (!data.session) {
       setLoading(false);
-      setError("Não foi possível iniciar a sessão.");
+      setError("Sessão não iniciada.");
       return;
     }
 
-    // Navegação imediata para maior rapidez
-    navigate({ to: "/admin" });
+    // Redirecionamento imediato
+    window.location.href = "/admin";
   };
 
   return (
