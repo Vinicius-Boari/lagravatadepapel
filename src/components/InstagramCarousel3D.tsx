@@ -29,7 +29,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
   const list: InstagramPost[] = posts.length > 0 ? posts : Array.from({ length: 8 }).map((_, i) => ({
     id: `placeholder-${i}`,
     image_url: "",
-    caption: "",
+    caption: "Siga-nos no instagram",
     permalink: profileUrl,
     position: i,
     is_published: true,
