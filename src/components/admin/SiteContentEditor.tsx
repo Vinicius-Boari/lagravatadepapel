@@ -271,7 +271,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção de Vídeos</CardTitle>
                 <CardDescription className="text-red-500/60">Gerencie a galeria de vídeos e seus destaques.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("videos", videos, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("videos", videos, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
