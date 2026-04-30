@@ -30,31 +30,43 @@ export function IntegrationsManager() {
 
   const handleSave = async () => {
     setLoading(true);
-    const integrationsData = {
-      google_analytics_id: formData.google_analytics_id,
-      google_tag_manager_id: formData.google_tag_manager_id,
-      facebook_pixel_id: formData.facebook_pixel_id,
-      whatsapp_number: formData.whatsapp_number,
-      whatsapp_message: formData.whatsapp_message,
-    };
+    try {
+      console.log("Tentando salvar Integrações", formData);
+      const integrationsData = {
+        google_analytics_id: formData.google_analytics_id,
+        google_tag_manager_id: formData.google_tag_manager_id,
+        facebook_pixel_id: formData.facebook_pixel_id,
+        whatsapp_number: formData.whatsapp_number,
+        whatsapp_message: formData.whatsapp_message,
+      };
 
-    const instagramData = {
-      ...instagram,
-      handle: formData.instagram_handle,
-      app_id: formData.instagram_app_id,
-      app_secret: formData.instagram_app_secret,
-      access_token: formData.instagram_access_token,
-      mode: formData.instagram_mode,
-    };
+      const instagramData = {
+        ...instagram,
+        handle: formData.instagram_handle,
+        app_id: formData.instagram_app_id,
+        app_secret: formData.instagram_app_secret,
+        access_token: formData.instagram_access_token,
+        mode: formData.instagram_mode,
+      };
 
-    const results = await Promise.all([
-      updateSection("integrations", integrationsData, false),
-      updateSection("instagram_config", instagramData, false)
-    ]);
+      const results = await Promise.all([
+        updateSection("integrations", integrationsData, false),
+        updateSection("instagram_config", instagramData, false)
+      ]);
 
-    if (results.every(r => r === true)) {
-      setTimeout(() => setLoading(false), 500);
-    } else {
+      if (results.every(r => r === true)) {
+        toast.success("Integrações e APIs publicadas com sucesso!", {
+          position: "top-center"
+        });
+        setTimeout(() => setLoading(false), 500);
+      } else {
+        throw new Error("Alguma seção falhou ao salvar");
+      }
+    } catch (err) {
+      console.error("Erro ao salvar Integrações:", err);
+      toast.error("Erro crítico: Não foi possível publicar as integrações.", {
+        position: "top-center"
+      });
       setLoading(false);
     }
   };
