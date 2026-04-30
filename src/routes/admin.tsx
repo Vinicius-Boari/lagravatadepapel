@@ -20,7 +20,7 @@ export const Route = createFileRoute("/admin")({
 type Tab = "sections" | "instagram" | "pages" | "users";
 
 function AdminLayout() {
-  const { user, loading, isAdmin, isOwner, error: authError } = useAuth();
+  const { user, loading, isAdmin, isOwner, role, error: authError } = useAuth();
   const [tab, setTab] = useState<Tab>("sections");
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
 
