@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { buildWhatsAppUrl, parseEmbedUrl } from "@/lib/site-helpers";
