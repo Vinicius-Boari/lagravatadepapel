@@ -33,17 +33,20 @@ function AdminLayout() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  if (loading) return <FullScreenMsg>Iniciando painel seguro…</FullScreenMsg>;
+  if (loading && !role) return <FullScreenMsg>Iniciando painel seguro…</FullScreenMsg>;
   if (!user) return <FullScreenMsg>Redirecionando…</FullScreenMsg>;
   
   if (!isAdmin) {
     return (
       <FullScreenMsg color="#ef4444">
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', padding: 20 }}>
           <div style={{ fontSize: 40, marginBottom: 20 }}>🔒</div>
           <h2 style={{ marginBottom: 10 }}>Acesso Negado</h2>
           <p style={{ color: '#666', marginBottom: 20 }}>Seu usuário ({user.email}) não possui permissão administrativa.</p>
-          <PrimaryBtn onClick={() => window.location.href = "/"}>Voltar para o site</PrimaryBtn>
+          <PrimaryBtn onClick={() => {
+            localStorage.removeItem("lg_user_role");
+            window.location.href = "/login";
+          }}>Tentar com outra conta</PrimaryBtn>
         </div>
       </FullScreenMsg>
     );

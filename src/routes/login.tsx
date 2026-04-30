@@ -44,9 +44,11 @@ function LoginPage() {
     }
 
     if (data.session) {
-      // Clear storage cache if any
+      // Clear cache and ensure session is set before redirect
       localStorage.removeItem("lg_user_role");
-      window.location.href = "/admin";
+      setTimeout(() => {
+        window.location.href = "/admin";
+      }, 500);
     }
   };
 

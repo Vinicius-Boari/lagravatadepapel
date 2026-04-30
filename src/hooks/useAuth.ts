@@ -10,7 +10,7 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<AppRole>(() => {
-    try { 
+    try {
       const cached = localStorage.getItem(STORAGE_KEY);
       return (cached === "owner" || cached === "admin") ? cached as AppRole : null;
     } catch { return null; }
@@ -32,9 +32,8 @@ export function useAuth() {
         
         if (roleError) {
           console.error("Auth role error:", roleError);
-          // If we have a cached role, don't show error to user as a blocker
           if (!role) {
-             setError(roleError.message);
+             setError("Erro ao carregar permissões. Tente recarregar a página.");
           }
           setLoading(false);
           return;
@@ -54,7 +53,6 @@ export function useAuth() {
         }
         
         setRole(newRole);
-        setError(null);
       } catch (err) {
         console.error("Auth exception:", err);
       } finally {
@@ -62,7 +60,7 @@ export function useAuth() {
       }
     };
 
-    // Initial check
+    // First check session, then fetch role
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       if (!mounted) return;
       setSession(s);
@@ -97,7 +95,7 @@ export function useAuth() {
     };
   }, []);
 
-  const isAdmin = role === "admin" || role === "owner" || role === ("Dono" as any) || role === ("Administrador" as any);
+  const isAdmin = role === "admin" || role === "owner";
 
   return { 
     session, 
