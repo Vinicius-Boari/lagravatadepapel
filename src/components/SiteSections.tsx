@@ -317,9 +317,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
       <section className="about-section" id="sobre">
-        <div className="about-image scene-3d">
-          <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+        <div className="about-image scene-3d" style={{ background: 'var(--color-cream)' }}>
+          <div className="scroll-3d tilt-3d" style={{ background: 'var(--color-cream)' }}>
+            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" style={{ mixBlendMode: 'multiply' }} />}
           </div>
         </div>
         <div className="about-text">
