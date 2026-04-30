@@ -1,4 +1,4 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -77,47 +77,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const location = useLocation();
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
   }));
-  const hidePanelBtn = location.pathname.startsWith("/login") || location.pathname.startsWith("/admin");
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      {!hidePanelBtn && (
-        <Link
-          to="/login"
-          aria-label="Painel administrativo"
-          style={{
-            position: "fixed",
-            bottom: 24,
-            left: 24,
-            zIndex: 9999,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "8px 12px",
-            borderRadius: 999,
-            background: "rgba(20,20,20,0.6)",
-            color: "rgba(255,255,255,0.75)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            fontSize: 12,
-            fontFamily: "Inter, system-ui, sans-serif",
-            textDecoration: "none",
-            fontWeight: 500,
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-          </svg>
-          Painel
-        </Link>
-      )}
     </QueryClientProvider>
   );
 }

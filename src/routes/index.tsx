@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { buildWhatsAppUrl, parseEmbedUrl } from "@/lib/site-helpers";
@@ -354,7 +354,11 @@ function Index() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>{c.footer.copyright}</span>
+          <span>
+            {c.footer.copyright}
+            {" · "}
+            <Link to="/login" className="footer-painel-link">Painel</Link>
+          </span>
           <span>{c.footer.hashtag}</span>
         </div>
       </footer>
