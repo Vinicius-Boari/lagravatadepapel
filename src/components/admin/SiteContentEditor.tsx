@@ -442,6 +442,11 @@ export function SiteContentEditor() {
                   />
                 </div>
               </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção O Plano
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -499,6 +504,11 @@ export function SiteContentEditor() {
                     onChange={(e) => setAbout({...about, cta_url: e.target.value})}
                   />
                 </div>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("about", about, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Sobre
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -607,6 +617,11 @@ export function SiteContentEditor() {
                     </div>
                   ))}
                 </div>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("services", services, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Serviços
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -719,6 +734,11 @@ export function SiteContentEditor() {
                     </div>
                   ))}
                 </div>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("places", places, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Invasões
+                </Button>
               </div>
             </CardContent>
           </Card>
