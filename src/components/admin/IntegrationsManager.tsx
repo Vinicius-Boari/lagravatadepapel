@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2 } from "lucide-react";
+import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 const showToast = (message: string, type: 'success' | 'error') => {
@@ -233,8 +233,20 @@ export function IntegrationsManager() {
           </CardContent>
         </Card>
       </div>
-
-      
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button 
+          onClick={handleSave} 
+          className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          )}
+          {loading ? "Salvando..." : "Salvar Configurações"}
+        </Button>
+      </div>
     </div>
   );
 }
