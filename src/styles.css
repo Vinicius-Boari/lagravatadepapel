@@ -331,6 +331,23 @@ body.lg-body {
 .footer-col a:hover { color: var(--color-red-lg); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .footer-bottom span { font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
+.footer-panel-link {
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  padding: 2px 8px;
+  margin-left: 4px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.footer-panel-link:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06);
+}
 
 /* REVEALS */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1); }
