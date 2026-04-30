@@ -244,6 +244,11 @@ export function SiteContentEditor() {
                   </div>
                 </div>
               </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("hero", hero, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Home
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -374,6 +379,11 @@ export function SiteContentEditor() {
                   ))}
                 </div>
               </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("videos", videos, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Vídeos
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -432,6 +442,11 @@ export function SiteContentEditor() {
                   />
                 </div>
               </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção O Plano
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -489,6 +504,11 @@ export function SiteContentEditor() {
                     onChange={(e) => setAbout({...about, cta_url: e.target.value})}
                   />
                 </div>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("about", about, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Sobre
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -597,6 +617,11 @@ export function SiteContentEditor() {
                     </div>
                   ))}
                 </div>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("services", services, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Serviços
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -710,6 +735,11 @@ export function SiteContentEditor() {
                   ))}
                 </div>
               </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("places", places, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Seção Invasões
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -776,6 +806,11 @@ export function SiteContentEditor() {
                    />
                 </div>
               </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("footer", footer, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Rodapé
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -821,6 +856,11 @@ export function SiteContentEditor() {
                    placeholder="Ex: gravata, casamento, festa, animação"
                  />
                  <p className="text-[10px] text-zinc-500">Separe por vírgulas.</p>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("seo", seo, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Configurações SEO
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -876,6 +916,11 @@ export function SiteContentEditor() {
                 <p className="text-xs text-red-500 italic">
                   * Nota: Habilitar o idioma permite a troca no site. Você precisará traduzir o conteúdo manualmente nas abas correspondentes após a implementação da lógica de tradução.
                 </p>
+              </div>
+              <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <Button onClick={() => handleSave("languages", languages, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                  Publicar Configurações de Idioma
+                </Button>
               </div>
             </CardContent>
           </Card>
