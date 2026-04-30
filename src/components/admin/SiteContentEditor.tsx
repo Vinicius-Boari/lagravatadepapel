@@ -199,7 +199,14 @@ export function SiteContentEditor() {
               </div>
               <div className="flex space-x-2">
                 <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)} disabled={loading}>Salvar Rascunho</Button>
-                <Button size="sm" onClick={() => handleSave("hero", hero, false)} disabled={loading}>
+                <Button 
+                  size="sm" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSave("hero", hero, false);
+                  }} 
+                  disabled={loading}
+                >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
                 </Button>
               </div>
