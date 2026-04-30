@@ -28,7 +28,7 @@ async function verifyCustomAdmin(token: string) {
 }
 
 export const listBackups = createServerFn({ method: "POST" })
-  .validator((input: any) => z.object({ adminToken: z.string() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ adminToken: z.string() }).parse(input))
   .handler(async ({ data }) => {
     await verifyCustomAdmin(data.adminToken);
     const { data: backups, error } = await supabaseAdmin
@@ -41,7 +41,7 @@ export const listBackups = createServerFn({ method: "POST" })
   });
 
 export const getBackupSettings = createServerFn({ method: "POST" })
-  .validator((input: any) => z.object({ adminToken: z.string() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ adminToken: z.string() }).parse(input))
   .handler(async ({ data }) => {
     await verifyCustomAdmin(data.adminToken);
     const { data: settings, error } = await supabaseAdmin
@@ -65,7 +65,7 @@ const settingsSchema = z.object({
 });
 
 export const updateBackupSettings = createServerFn({ method: "POST" })
-  .validator((input: any) => settingsSchema.parse(input))
+  .inputValidator((input: unknown) => settingsSchema.parse(input))
   .handler(async ({ data }) => {
     const user = await verifyCustomAdmin(data.adminToken);
     const { data: existing } = await supabaseAdmin
@@ -96,7 +96,7 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   });
 
 export const runBackupNow = createServerFn({ method: "POST" })
-  .validator((input: any) => z.object({ adminToken: z.string() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ adminToken: z.string() }).parse(input))
   .handler(async ({ data }) => {
     const user = await verifyCustomAdmin(data.adminToken);
     const result = await runBackup({ trigger: "manual", createdBy: user.id });
@@ -105,7 +105,7 @@ export const runBackupNow = createServerFn({ method: "POST" })
   });
 
 export const restoreBackupFn = createServerFn({ method: "POST" })
-  .validator((input: any) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
     const user = await verifyCustomAdmin(data.adminToken);
     await restoreBackup(data.id);
@@ -120,7 +120,7 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
   });
 
 export const deleteBackupFn = createServerFn({ method: "POST" })
-  .validator((input: any) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
     await verifyCustomAdmin(data.adminToken);
     await deleteBackup(data.id);
@@ -128,7 +128,7 @@ export const deleteBackupFn = createServerFn({ method: "POST" })
   });
 
 export const getBackupDownloadUrl = createServerFn({ method: "POST" })
-  .validator((input: any) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
     await verifyCustomAdmin(data.adminToken);
     const { data: row } = await supabaseAdmin
