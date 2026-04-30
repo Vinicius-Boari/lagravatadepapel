@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      instagram_posts: {
+        Row: {
+          caption: string
+          created_at: string
+          external_id: string | null
+          id: string
+          image_url: string
+          is_published: boolean
+          permalink: string | null
+          position: number
+          posted_at: string
+          source: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          image_url: string
+          is_published?: boolean
+          permalink?: string | null
+          position?: number
+          posted_at?: string
+          source?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          image_url?: string
+          is_published?: boolean
+          permalink?: string | null
+          position?: number
+          posted_at?: string
+          source?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           created_at: string
