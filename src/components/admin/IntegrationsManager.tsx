@@ -10,10 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2 } from "lucide-react";
 
 export function IntegrationsManager() {
-  const { content, updateSection, loading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const [loading, setLoading] = useState(false);
   const integrations = content.integrations || {};
   const instagram = content.instagram_config || {};
-
+  
   const [formData, setFormData] = useState({
     google_analytics_id: integrations.google_analytics_id || "",
     google_tag_manager_id: integrations.google_tag_manager_id || "",
@@ -28,6 +29,7 @@ export function IntegrationsManager() {
   });
 
   const handleSave = async () => {
+    setLoading(true);
     const integrationsData = {
       google_analytics_id: formData.google_analytics_id,
       google_tag_manager_id: formData.google_tag_manager_id,
