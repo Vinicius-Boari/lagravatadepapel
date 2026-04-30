@@ -106,6 +106,7 @@ export function SiteContentEditor() {
       setPlan(content.plan || {});
       setServices(content.services || { items: [] });
       setVideos(content.videos || { items: [] });
+      setPlaces(content.places || { items: [] });
       setFooter(content.footer || {});
     }
   }, [loading, content]);
