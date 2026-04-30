@@ -18,47 +18,43 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchRole = useCallback(async (uid: string) => {
+    try {
+      const { data, error: roleError } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", uid);
+      
+      if (roleError) {
+        console.error("Auth role error:", roleError);
+        return null;
+      }
+
+      let newRole: AppRole = null;
+      if (data && data.length > 0) {
+        const roles = data.map(r => r.role);
+        if (roles.includes("owner")) newRole = "owner";
+        else if (roles.includes("admin")) newRole = "admin";
+      }
+      
+      if (newRole) {
+        localStorage.setItem(STORAGE_KEY, newRole);
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      
+      setRole(newRole);
+      return newRole;
+    } catch (err) {
+      console.error("Auth exception:", err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     let mounted = true;
-
-    const fetchRole = async (uid: string) => {
-      try {
-        const { data, error: roleError } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", uid);
-        
-        if (!mounted) return;
-        
-        if (roleError) {
-          console.error("Auth role error:", roleError);
-          if (!role) {
-             setError("Erro ao carregar permissões. Tente recarregar a página.");
-          }
-          setLoading(false);
-          return;
-        }
-
-        let newRole: AppRole = null;
-        if (data && data.length > 0) {
-          const roles = data.map(r => r.role);
-          if (roles.includes("owner")) newRole = "owner";
-          else if (roles.includes("admin")) newRole = "admin";
-        }
-        
-        if (newRole) {
-          localStorage.setItem(STORAGE_KEY, newRole);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-        
-        setRole(newRole);
-      } catch (err) {
-        console.error("Auth exception:", err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
 
     // First check session, then fetch role
     supabase.auth.getSession().then(({ data: { session: s } }) => {
@@ -93,7 +89,7 @@ export function useAuth() {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchRole]);
 
   const isAdmin = role === "admin" || role === "owner";
 
@@ -104,6 +100,7 @@ export function useAuth() {
     loading, 
     error, 
     isOwner: role === "owner", 
-    isAdmin 
+    isAdmin,
+    refreshRole: () => user ? fetchRole(user.id) : Promise.resolve(null)
   };
 }
