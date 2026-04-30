@@ -35,7 +35,13 @@ function AdminLayout() {
 
   if (loading) return <FullScreenMsg>Iniciando painel seguro…</FullScreenMsg>;
   if (!user) return <FullScreenMsg>Redirecionando…</FullScreenMsg>;
-  if (!isAdmin) return <FullScreenMsg color="#ef4444">Acesso Negado. Contate o administrador.</FullScreenMsg>;
+  
+  // Debug log (can be removed later)
+  if (!isAdmin) {
+    console.log("Access debug:", { role, isAdmin, user_id: user.id });
+  }
+
+  if (!isAdmin) return <FullScreenMsg color="#ef4444">Acesso Negado. Contate o administrador. (Role: {role || 'nenhuma'})</FullScreenMsg>;
 
   return (
     <div style={{ minHeight: "100vh", background: "#050505", display: "flex", color: "#fff", fontFamily: "Inter, sans-serif" }}>
