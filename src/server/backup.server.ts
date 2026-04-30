@@ -104,9 +104,10 @@ export async function restoreBackup(backupId: string): Promise<void> {
     .from("backups")
     .select("id, status, file_path")
     .eq("id", backupId)
-    .single();
+    .maybeSingle();
 
-  if (error || !backup) throw new Error("Backup não encontrado");
+  if (error) throw new Error(`Erro ao buscar backup: ${error.message}`);
+  if (!backup) throw new Error("Backup não encontrado");
   if (backup.status !== "success" || !backup.file_path) {
     throw new Error("Backup inválido ou incompleto");
   }
@@ -162,8 +163,10 @@ export async function deleteBackup(backupId: string): Promise<void> {
     .from("backups")
     .select("file_path")
     .eq("id", backupId)
-    .single();
-  if (error) throw new Error("Backup não encontrado");
+    .maybeSingle();
+  
+  if (error) throw new Error(`Erro ao buscar backup para exclusão: ${error.message}`);
+  if (!backup) return; // Silently return if already deleted
 
   if (backup?.file_path) {
     await supabaseAdmin.storage.from(BUCKET).remove([backup.file_path]);

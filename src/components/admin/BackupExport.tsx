@@ -152,15 +152,23 @@ export function BackupExport() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Tem certeza que deseja excluir este backup permanentemente? Esta ação não pode ser desfeita.")) {
+      return;
+    }
+
     const adminToken = getAdminToken();
-    toast.promise(deleteFn({ data: { adminToken, id } }), {
-      loading: "Excluindo backup...",
-      success: () => {
-        fetchData();
-        return "Backup excluído.";
-      },
-      error: "Erro ao excluir backup."
-    });
+    try {
+      await toast.promise(deleteFn({ data: { adminToken, id } }), {
+        loading: "Excluindo backup...",
+        success: () => {
+          fetchData();
+          return "Backup excluído.";
+        },
+        error: (err) => `Erro ao excluir backup: ${err.message}`
+      });
+    } catch (error) {
+      // toast.promise handles it
+    }
   };
 
   const handleRestore = async (id: string) => {

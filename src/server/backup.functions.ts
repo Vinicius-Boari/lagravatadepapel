@@ -131,11 +131,13 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
     await verifyCustomAdmin(data.adminToken);
-    const { data: row } = await supabaseAdmin
+    const { data: row, error } = await supabaseAdmin
       .from("backups")
       .select("file_path")
       .eq("id", data.id)
-      .single();
+      .maybeSingle();
+    
+    if (error) throw new Error(`Erro ao buscar arquivo: ${error.message}`);
     if (!row?.file_path) throw new Error("Arquivo indisponível");
     const url = await getSignedDownloadUrl(row.file_path);
     if (!url) throw new Error("Falha ao gerar URL de download");
