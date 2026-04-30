@@ -121,9 +121,11 @@ export function SiteContentEditor() {
     setLoading(true);
     const success = await updateSection(section, data, isDraft);
     if (success) {
-      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas com sucesso!");
+      // Small delay to ensure DB propagation before state refresh is done by useSiteContent
+      setTimeout(() => setLoading(false), 500);
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
