@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { SECTION_EDITORS } from "@/components/admin/SectionEditors";
-import { FormField, TextInput, TextArea, Section, ItemCard, AddBtn, PrimaryBtn, GhostBtn } from "@/components/admin/FormUI";
+import { FormField, TextInput, TextArea, Section, ItemCard, AddBtn, PrimaryBtn, GhostBtn, DangerBtn } from "@/components/admin/FormUI";
 import { MediaUploader } from "@/components/admin/MediaUploader";
 import { InstagramTab } from "@/components/admin/InstagramTab";
 
@@ -17,10 +17,27 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "content" | "pages" | "instagram" | "users";
+type Tab = "content" | "instagram_posts" | "pages" | "users";
 type ContentRow = { key: string; value: any; draft_value: any | null };
 type PageRow = { id: string; slug: string; title: string; draft: any; published: any; is_published: boolean };
 type UserRow = { id: string; email: string; role: "owner" | "admin" };
+
+const NAV_GROUPS: Array<{ label: string; items: Array<{ id: Tab; icon: string; label: string; ownerOnly?: boolean }> }> = [
+  {
+    label: "Conteúdo do site",
+    items: [
+      { id: "content", icon: "✎", label: "Seções da home" },
+      { id: "instagram_posts", icon: "◉", label: "Posts do Instagram" },
+      { id: "pages", icon: "▤", label: "Páginas extras" },
+    ],
+  },
+  {
+    label: "Acesso",
+    items: [
+      { id: "users", icon: "◆", label: "Usuários", ownerOnly: true },
+    ],
+  },
+];
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -43,61 +60,97 @@ function AdminPage() {
     window.location.href = "/";
   };
 
-  if (loading) return <Center>Carregando...</Center>;
-  if (!user) return <Center>Redirecionando...</Center>;
+  if (loading) return <Center>Carregando…</Center>;
+  if (!user) return <Center>Redirecionando…</Center>;
   if (!isAdmin) return <Center>Acesso negado.</Center>;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f3f4f6", display: "flex", fontFamily: "Inter, system-ui, sans-serif", color: "#111" }}>
+    <div style={{
+      minHeight: "100vh",
+      background: "#000",
+      display: "flex",
+      fontFamily: "Inter, system-ui, sans-serif",
+      color: "#fafafa",
+    }}>
       {/* SIDEBAR */}
       <aside style={{
-        width: sidebarOpen ? 240 : 60,
-        background: "#0f0f0f",
-        color: "white",
-        transition: "width .25s",
+        width: sidebarOpen ? 250 : 64,
+        background: "linear-gradient(180deg, #0a0a0a 0%, #050505 100%)",
+        borderRight: "1px solid #1a1a1a",
+        transition: "width .25s ease",
         display: "flex",
         flexDirection: "column",
         position: "sticky",
         top: 0,
         height: "100vh",
+        flexShrink: 0,
       }}>
-        <div style={{ padding: "20px 16px", borderBottom: "1px solid #1f1f1f", display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{
+          padding: "22px 18px", borderBottom: "1px solid #161616",
+          display: "flex", alignItems: "center", gap: 10,
+        }}>
           {sidebarOpen && (
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>La Gravata</div>
-              <div style={{ fontSize: 11, opacity: 0.5, letterSpacing: "0.1em", textTransform: "uppercase" }}>Painel</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, fontWeight: 600, color: "#fafafa", letterSpacing: "-0.01em" }}>La Gravata</div>
+              <div style={{ fontSize: 10, color: "#dc2626", letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, marginTop: 2 }}>Painel</div>
             </div>
           )}
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} style={sidebarToggle} title="Recolher menu">
-            {sidebarOpen ? "←" : "→"}
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} style={sidebarToggle} title="Recolher">
+            {sidebarOpen ? "‹" : "›"}
           </button>
         </div>
 
-        <nav style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
-          <SidebarItem icon="✏️" label="Conteúdo do site" active={tab === "content"} collapsed={!sidebarOpen} onClick={() => setTab("content")} />
-          <SidebarItem icon="📸" label="Instagram" active={tab === "instagram"} collapsed={!sidebarOpen} onClick={() => setTab("instagram")} />
-          <SidebarItem icon="📄" label="Páginas extras" active={tab === "pages"} collapsed={!sidebarOpen} onClick={() => setTab("pages")} />
-          {isOwner && <SidebarItem icon="👥" label="Usuários" active={tab === "users"} collapsed={!sidebarOpen} onClick={() => setTab("users")} />}
+        <nav style={{ flex: 1, padding: "16px 10px", overflowY: "auto" }}>
+          {NAV_GROUPS.map((group) => {
+            const items = group.items.filter((i) => !i.ownerOnly || isOwner);
+            if (items.length === 0) return null;
+            return (
+              <div key={group.label} style={{ marginBottom: 18 }}>
+                {sidebarOpen && (
+                  <div style={{ fontSize: 10, color: "#555", padding: "0 10px 8px", textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700 }}>
+                    {group.label}
+                  </div>
+                )}
+                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {items.map((item) => (
+                    <SidebarItem
+                      key={item.id}
+                      icon={item.icon}
+                      label={item.label}
+                      active={tab === item.id}
+                      collapsed={!sidebarOpen}
+                      onClick={() => setTab(item.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </nav>
 
-        <div style={{ padding: 12, borderTop: "1px solid #1f1f1f" }}>
+        <div style={{ padding: 12, borderTop: "1px solid #161616" }}>
           {sidebarOpen && (
-            <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 8, padding: "0 6px" }}>
-              {user.email}<br />
-              <span style={{ color: isOwner ? "#fca5a5" : "#93c5fd", fontWeight: 600 }}>{isOwner ? "Dono" : "Administrador"}</span>
+            <div style={{
+              fontSize: 11, color: "#888", marginBottom: 10, padding: "8px 10px",
+              background: "#0d0d0d", borderRadius: 8, border: "1px solid #161616",
+            }}>
+              <div style={{ color: "#ccc", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+              <div style={{ color: isOwner ? "#dc2626" : "#888", fontWeight: 600, marginTop: 2, fontSize: 10, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                {isOwner ? "Dono" : "Administrador"}
+              </div>
             </div>
           )}
-          <Link to="/" style={{ ...sidebarBtn, display: "block", textDecoration: "none", marginBottom: 4 }}>
-            {sidebarOpen ? "👁️  Ver site" : "👁️"}
+          <Link to="/" target="_blank" style={{ ...sidebarBtn, display: "block", textDecoration: "none", marginBottom: 4 }}>
+            {sidebarOpen ? "↗  Ver site" : "↗"}
           </Link>
-          <button onClick={onLogout} style={sidebarBtn}>{sidebarOpen ? "🚪  Sair" : "🚪"}</button>
+          <button onClick={onLogout} style={sidebarBtn}>{sidebarOpen ? "←  Sair" : "←"}</button>
         </div>
       </aside>
 
       {/* MAIN */}
-      <main key={tab} style={{ flex: 1, minWidth: 0, animation: "adminFadeUp .35s ease both" }}>
+      <main key={tab} style={{ flex: 1, minWidth: 0, animation: "adminFadeUp .3s ease both", overflowX: "hidden" }}>
         {tab === "content" && <ContentTab onToast={showToast} />}
-        {tab === "instagram" && <InstagramTab onToast={showToast} />}
+        {tab === "instagram_posts" && <InstagramTab onToast={showToast} />}
         {tab === "pages" && <PagesTab onToast={showToast} />}
         {tab === "users" && isOwner && <UsersTab currentUserId={user.id} onToast={showToast} />}
       </main>
@@ -105,9 +158,11 @@ function AdminPage() {
       {toast && (
         <div style={{
           position: "fixed", bottom: 24, right: 24,
-          background: toast.kind === "ok" ? "#16a34a" : "#dc2626",
-          color: "white", padding: "12px 20px", borderRadius: 10, fontSize: 14,
-          boxShadow: "0 10px 30px rgba(0,0,0,.25)", zIndex: 1000, fontWeight: 500,
+          background: toast.kind === "ok" ? "linear-gradient(180deg, #ef4444 0%, #dc2626 100%)" : "#3a0a0a",
+          color: "white", padding: "13px 22px", borderRadius: 10, fontSize: 13,
+          boxShadow: "0 12px 32px rgba(220,38,38,.4)", zIndex: 1000, fontWeight: 600,
+          border: toast.kind === "err" ? "1px solid #5a1a1a" : "none",
+          letterSpacing: "0.01em",
         }}>{toast.msg}</div>
       )}
     </div>
@@ -115,7 +170,7 @@ function AdminPage() {
 }
 
 /* ============================================================
-   CONTENT TAB
+   CONTENT TAB — sem preview, navegação clara entre seções
 ============================================================ */
 function ContentTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => void }) {
   const [rows, setRows] = useState<Record<string, ContentRow>>({});
@@ -124,8 +179,6 @@ function ContentTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => voi
   const [editValue, setEditValue] = useState<any>({});
   const [originalValue, setOriginalValue] = useState<any>({});
   const [busy, setBusy] = useState(false);
-  const [previewKey, setPreviewKey] = useState(0);
-  const [showPreview, setShowPreview] = useState(true);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -159,10 +212,9 @@ function ContentTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => voi
       const { error } = await supabase.from("site_content").insert({ key: activeKey, value: {}, draft_value: editValue });
       if (error) { onToast(error.message, "err"); setBusy(false); return; }
     }
-    onToast("Rascunho salvo — veja no preview");
+    onToast("Rascunho salvo");
     setBusy(false);
     await load();
-    setPreviewKey((k) => k + 1);
   };
 
   const publish = async () => {
@@ -176,10 +228,9 @@ function ContentTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => voi
       const { error } = await supabase.from("site_content").insert({ key: activeKey, value: editValue });
       if (error) { onToast(error.message, "err"); setBusy(false); return; }
     }
-    onToast("Publicado! Já está no ar 🎉");
+    onToast("Publicado no ar");
     setBusy(false);
     await load();
-    setPreviewKey((k) => k + 1);
   };
 
   const discardDraft = async () => {
@@ -187,23 +238,28 @@ function ContentTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => voi
     await supabase.from("site_content").update({ draft_value: null }).eq("key", activeKey);
     onToast("Rascunho descartado");
     await load();
-    setPreviewKey((k) => k + 1);
   };
 
   if (loading) return <PageWrap><Loading /></PageWrap>;
 
   const hasDraft = !!rows[activeKey]?.draft_value;
   const Editor = SECTION_EDITORS[activeKey]?.component;
+  const activeDef = SECTION_EDITORS[activeKey];
 
   return (
     <PageWrap>
       <PageHeader
         title="Conteúdo do site"
-        description="Edite os textos e imagens de cada seção da home. Clique em PUBLICAR quando estiver pronto."
+        description="Cada item abaixo corresponde a uma seção real da home. Selecione, edite e publique."
       />
 
-      {/* Section pills */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
+      {/* Section selector — vertical-ish on top */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
+        gap: 8,
+        marginBottom: 24,
+      }}>
         {Object.entries(SECTION_EDITORS).map(([key, def]) => {
           const isActive = activeKey === key;
           const isDraft = !!rows[key]?.draft_value;
@@ -212,96 +268,81 @@ function ContentTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => voi
               key={key}
               onClick={() => setActiveKey(key)}
               style={{
-                padding: "10px 16px", borderRadius: 999, border: isActive ? "2px solid #111" : "2px solid transparent",
-                background: isActive ? "#111" : "white",
-                color: isActive ? "white" : "#374151",
-                cursor: "pointer", fontSize: 13, fontWeight: 500,
-                display: "inline-flex", alignItems: "center", gap: 8, position: "relative",
+                padding: "14px 14px",
+                borderRadius: 11,
+                border: isActive ? "1px solid #dc2626" : "1px solid #1f1f1f",
+                background: isActive
+                  ? "linear-gradient(180deg, #1a0808 0%, #0d0303 100%)"
+                  : "#0a0a0a",
+                color: isActive ? "#fff" : "#bbb",
+                cursor: "pointer",
+                textAlign: "left",
+                transition: "all .15s",
+                position: "relative",
+                boxShadow: isActive ? "0 0 0 3px rgba(220,38,38,.12)" : "none",
               }}
             >
-              <span>{def.icon}</span>
-              <span>{def.label}</span>
+              <div style={{ fontSize: 18, marginBottom: 6, color: isActive ? "#dc2626" : "#666" }}>{def.icon}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: "-0.005em" }}>{def.label}</div>
               {isDraft && (
-                <span style={{ width: 8, height: 8, background: "#f59e0b", borderRadius: "50%", display: "inline-block" }} title="Tem rascunho não publicado" />
+                <span style={{
+                  position: "absolute", top: 10, right: 10,
+                  width: 8, height: 8, background: "#dc2626", borderRadius: "50%",
+                  boxShadow: "0 0 8px rgba(220,38,38,.7)",
+                }} title="Rascunho não publicado" />
               )}
             </button>
           );
         })}
       </div>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: showPreview ? "minmax(0, 1.1fr) minmax(0, 1fr)" : "minmax(0, 1fr)",
-        gap: 16,
-      }}>
-        {/* EDITOR PANEL */}
-        <div>
-          {Editor ? (
-            <Editor value={editValue} onChange={setEditValue} />
-          ) : (
-            <Section title="Sem editor"><p>Editor não disponível para esta seção.</p></Section>
-          )}
-
-          {/* Action bar */}
-          <div style={{
-            position: "sticky", bottom: 16, marginTop: 12,
-            background: "white", border: "1px solid #e5e7eb", borderRadius: 12,
-            padding: 14, boxShadow: "0 8px 24px rgba(0,0,0,.06)",
-            display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap",
-          }}>
-            <div style={{ fontSize: 13, color: "#6b7280" }}>
-              {hasDraft && <span style={{ color: "#92400e", fontWeight: 600 }}>● Rascunho não publicado</span>}
-              {!hasDraft && !dirty && <span>Sem alterações pendentes</span>}
-              {dirty && !hasDraft && <span style={{ color: "#92400e", fontWeight: 600 }}>● Alterações não salvas</span>}
-              {dirty && hasDraft && <span style={{ color: "#92400e", fontWeight: 600 }}>● Alterações não salvas</span>}
-            </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {hasDraft && <GhostBtn onClick={discardDraft} disabled={busy}>Descartar rascunho</GhostBtn>}
-              <GhostBtn onClick={saveDraft} disabled={busy || !dirty}>💾 Salvar rascunho</GhostBtn>
-              <PrimaryBtn onClick={publish} disabled={busy}>🚀 Publicar agora</PrimaryBtn>
-            </div>
-          </div>
-        </div>
-
-        {/* PREVIEW PANEL */}
-        {showPreview && (
-          <div style={{ position: "sticky", top: 16, alignSelf: "flex-start", height: "calc(100vh - 32px)" }}>
+      {/* Editor */}
+      <div>
+        {Editor && (
+          <div>
             <div style={{
-              background: "white", border: "1px solid #e5e7eb", borderRadius: 12, overflow: "hidden",
-              height: "100%", display: "flex", flexDirection: "column",
+              padding: "14px 18px",
+              background: "linear-gradient(180deg, #0d0d0d 0%, #080808 100%)",
+              border: "1px solid #1f1f1f",
+              borderRadius: 11,
+              marginBottom: 16,
+              display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap",
             }}>
-              <div style={{
-                padding: "10px 14px", borderBottom: "1px solid #e5e7eb",
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                background: "#fafafa",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#f59e0b" }} />
-                  <span style={{ fontSize: 13, fontWeight: 600 }}>Preview (rascunhos)</span>
-                </div>
-                <div style={{ display: "flex", gap: 6 }}>
-                  <button onClick={() => setPreviewKey((k) => k + 1)} style={iconBtn} title="Atualizar">↻</button>
-                  <button onClick={() => setShowPreview(false)} style={iconBtn} title="Esconder">✕</button>
+              <div style={{ fontSize: 22, color: "#dc2626" }}>{activeDef.icon}</div>
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#fafafa" }}>Editando: {activeDef.label}</div>
+                <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
+                  {hasDraft ? <span style={{ color: "#fca5a5" }}>● Existe rascunho não publicado</span> : "Sem rascunho pendente"}
                 </div>
               </div>
-              <iframe
-                key={previewKey}
-                src="/admin/preview"
-                title="Preview"
-                style={{ flex: 1, width: "100%", border: 0, background: "#000" }}
-              />
             </div>
+
+            <Editor value={editValue} onChange={setEditValue} />
           </div>
         )}
-      </div>
 
-      {!showPreview && (
-        <button onClick={() => setShowPreview(true)} style={{
-          position: "fixed", right: 24, bottom: 90, background: "#111", color: "white",
-          padding: "10px 16px", borderRadius: 999, border: "none", cursor: "pointer",
-          fontSize: 13, fontWeight: 600, boxShadow: "0 8px 20px rgba(0,0,0,.2)", zIndex: 100,
-        }}>👁 Mostrar preview</button>
-      )}
+        {/* Action bar — sticky bottom */}
+        <div style={{
+          position: "sticky", bottom: 16, marginTop: 16,
+          background: "linear-gradient(180deg, #141414 0%, #0a0a0a 100%)",
+          border: "1px solid #2a2a2a",
+          borderRadius: 12,
+          padding: 16,
+          boxShadow: "0 -4px 24px rgba(0,0,0,.6)",
+          display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap",
+        }}>
+          <div style={{ fontSize: 13, color: "#888" }}>
+            {dirty ? <span style={{ color: "#fca5a5", fontWeight: 600 }}>● Alterações não salvas</span> :
+              hasDraft ? <span style={{ color: "#fbbf24", fontWeight: 600 }}>● Rascunho aguardando publicação</span> :
+              <span>Tudo salvo e publicado</span>}
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {hasDraft && <DangerBtn onClick={discardDraft} disabled={busy}>Descartar rascunho</DangerBtn>}
+            <GhostBtn onClick={saveDraft} disabled={busy || !dirty}>Salvar rascunho</GhostBtn>
+            <PrimaryBtn onClick={publish} disabled={busy}>Publicar agora</PrimaryBtn>
+          </div>
+        </div>
+      </div>
     </PageWrap>
   );
 }
@@ -342,7 +383,7 @@ function PagesTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => void 
     <PageWrap>
       <PageHeader
         title="Páginas extras"
-        description="Crie páginas adicionais com URL própria, como /p/promocoes ou /p/contato-corporativo."
+        description="Páginas adicionais com URL própria, como /p/promocoes ou /p/contato-corporativo."
       />
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
@@ -350,40 +391,22 @@ function PagesTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => void 
       </div>
 
       {pages.length === 0 ? (
-        <div style={{
-          background: "white", border: "2px dashed #e5e7eb", borderRadius: 12,
-          padding: 60, textAlign: "center", color: "#9ca3af",
-        }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>📄</div>
-          <p style={{ fontSize: 15, marginBottom: 4 }}>Nenhuma página criada ainda.</p>
-          <p style={{ fontSize: 13 }}>Clique em "Nova página" para começar.</p>
-        </div>
+        <EmptyState icon="▤" title="Nenhuma página criada" hint="Clique em 'Nova página' para começar." />
       ) : (
-        <div style={{ display: "grid", gap: 12 }}>
+        <div style={{ display: "grid", gap: 10 }}>
           {pages.map((p) => (
-            <div key={p.id} style={{
-              background: "white", border: "1px solid #e5e7eb", borderRadius: 10,
-              padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap",
-            }}>
+            <div key={p.id} style={cardRow}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 600 }}>{p.title || <em style={{ color: "#999" }}>sem título</em>}</div>
-                <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
-                  <a href={`/p/${p.slug}`} target="_blank" rel="noreferrer" style={{ color: "#0066cc" }}>/p/{p.slug}</a>
-                  {" · "}
-                  <span style={{
-                    padding: "2px 8px", borderRadius: 999, fontSize: 11, fontWeight: 600,
-                    background: p.is_published ? "#dcfce7" : "#fef3c7",
-                    color: p.is_published ? "#15803d" : "#92400e",
-                  }}>{p.is_published ? "Publicada" : "Rascunho"}</span>
+                <div style={{ fontSize: 16, fontWeight: 600, color: "#fafafa" }}>{p.title || <em style={{ color: "#666" }}>sem título</em>}</div>
+                <div style={{ fontSize: 12, color: "#888", marginTop: 4, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                  <a href={`/p/${p.slug}`} target="_blank" rel="noreferrer" style={{ color: "#dc2626", textDecoration: "none" }}>/p/{p.slug} ↗</a>
+                  <Badge published={p.is_published} />
                 </div>
               </div>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                 <GhostBtn onClick={() => togglePublish(p)}>{p.is_published ? "Despublicar" : "Publicar"}</GhostBtn>
-                <GhostBtn onClick={() => setEditing(p)}>✏️ Editar</GhostBtn>
-                <button onClick={() => onDelete(p)} style={{
-                  padding: "9px 14px", borderRadius: 8, border: "1px solid #fecaca",
-                  background: "#fef2f2", color: "#b91c1c", fontSize: 14, cursor: "pointer", fontWeight: 500,
-                }}>Remover</button>
+                <GhostBtn onClick={() => setEditing(p)}>Editar</GhostBtn>
+                <DangerBtn onClick={() => onDelete(p)}>Remover</DangerBtn>
               </div>
             </div>
           ))}
@@ -428,63 +451,46 @@ function PageEditor({ page, onClose, onSaved, onError }: {
   };
 
   return (
-    <div onClick={onClose} style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,.6)",
-      display: "grid", placeItems: "center", zIndex: 100, padding: 16, overflowY: "auto",
-    }}>
-      <div onClick={(e) => e.stopPropagation()} style={{
-        background: "#f9fafb", borderRadius: 14, width: "100%", maxWidth: 760,
-        maxHeight: "92vh", display: "flex", flexDirection: "column",
-      }}>
-        <div style={{ padding: "20px 24px", borderBottom: "1px solid #e5e7eb", background: "white", borderRadius: "14px 14px 0 0" }}>
-          <h3 style={{ fontSize: 20, fontWeight: 600, margin: 0 }}>{page ? "Editar página" : "Nova página"}</h3>
-        </div>
+    <ModalShell onClose={onClose} title={page ? "Editar página" : "Nova página"} maxWidth={780}>
+      <Section title="Configurações da página">
+        <FormField label="Título da página"><TextInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Promoções" /></FormField>
+        <FormField label="URL da página" hint="Apenas letras minúsculas, números e hífens.">
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: "#888", fontSize: 13 }}>/p/</span>
+            <TextInput value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} placeholder="promocoes" />
+          </div>
+        </FormField>
+      </Section>
 
-        <div style={{ padding: 20, overflowY: "auto", flex: 1 }}>
-          <Section title="Configurações da página">
-            <FormField label="Título da página"><TextInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Promoções de Outono" /></FormField>
-            <FormField label="URL da página" hint="Apenas letras minúsculas, números e hífens.">
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: "#6b7280", fontSize: 14 }}>seusite.com/p/</span>
-                <TextInput value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} placeholder="promocoes" />
+      <Section title="Seções da página" description="Cada seção tem uma imagem opcional, um título e um texto.">
+        {sections.map((s, i) => (
+          <ItemCard
+            key={i} index={i} title={s.heading || `Seção ${i + 1}`}
+            onRemove={() => setSections(sections.filter((_, ix) => ix !== i))}
+            onMoveUp={() => { const next = [...sections]; [next[i - 1], next[i]] = [next[i], next[i - 1]]; setSections(next); }}
+            onMoveDown={() => { const next = [...sections]; [next[i + 1], next[i]] = [next[i], next[i + 1]]; setSections(next); }}
+            canMoveUp={i > 0} canMoveDown={i < sections.length - 1}
+          >
+            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 14 }}>
+              <MediaUploader folder="pages" value={s.image ?? ""} onChange={(url) => updateSection(i, { image: url })} aspect="square" />
+              <div>
+                <FormField label="Título da seção"><TextInput value={s.heading ?? ""} onChange={(e) => updateSection(i, { heading: e.target.value })} /></FormField>
+                <FormField label="Texto"><TextArea value={s.text ?? ""} onChange={(e) => updateSection(i, { text: e.target.value })} rows={4} /></FormField>
               </div>
-            </FormField>
-          </Section>
+            </div>
+          </ItemCard>
+        ))}
+        <AddBtn onClick={() => setSections([...sections, { heading: "", text: "", image: "" }])}>+ Adicionar seção</AddBtn>
+      </Section>
 
-          <Section title="Seções da página" description="Cada seção tem uma imagem opcional, um título e um texto.">
-            {sections.map((s, i) => (
-              <ItemCard
-                key={i} index={i} title={s.heading || `Seção ${i + 1}`}
-                onRemove={() => setSections(sections.filter((_, ix) => ix !== i))}
-                onMoveUp={() => { const next = [...sections]; [next[i - 1], next[i]] = [next[i], next[i - 1]]; setSections(next); }}
-                onMoveDown={() => { const next = [...sections]; [next[i + 1], next[i]] = [next[i], next[i + 1]]; setSections(next); }}
-                canMoveUp={i > 0} canMoveDown={i < sections.length - 1}
-              >
-                <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 14 }}>
-                  <MediaUploader folder="pages" value={s.image ?? ""} onChange={(url) => updateSection(i, { image: url })} aspect="square" />
-                  <div>
-                    <FormField label="Título da seção"><TextInput value={s.heading ?? ""} onChange={(e) => updateSection(i, { heading: e.target.value })} /></FormField>
-                    <FormField label="Texto"><TextArea value={s.text ?? ""} onChange={(e) => updateSection(i, { text: e.target.value })} rows={4} /></FormField>
-                  </div>
-                </div>
-              </ItemCard>
-            ))}
-            <AddBtn onClick={() => setSections([...sections, { heading: "", text: "", image: "" }])}>+ Adicionar seção</AddBtn>
-          </Section>
-        </div>
-
-        <div style={{
-          padding: 16, borderTop: "1px solid #e5e7eb", background: "white", borderRadius: "0 0 14px 14px",
-          display: "flex", justifyContent: "flex-end", gap: 8, flexWrap: "wrap",
-        }}>
-          <GhostBtn onClick={onClose}>Cancelar</GhostBtn>
-          <GhostBtn onClick={() => save(false)} disabled={busy}>Salvar rascunho</GhostBtn>
-          <PrimaryBtn onClick={() => save(true)} disabled={busy}>
-            🚀 {page?.is_published ? "Atualizar publicação" : "Publicar"}
-          </PrimaryBtn>
-        </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+        <GhostBtn onClick={onClose}>Cancelar</GhostBtn>
+        <GhostBtn onClick={() => save(false)} disabled={busy}>Salvar rascunho</GhostBtn>
+        <PrimaryBtn onClick={() => save(true)} disabled={busy}>
+          {page?.is_published ? "Atualizar publicação" : "Publicar"}
+        </PrimaryBtn>
       </div>
-    </div>
+    </ModalShell>
   );
 }
 
@@ -537,33 +543,30 @@ function UsersTab({ currentUserId, onToast }: { currentUserId: string; onToast: 
       {loading ? <Loading /> : (
         <div style={{ display: "grid", gap: 10 }}>
           {users.map((u) => (
-            <div key={u.id} style={{
-              background: "white", border: "1px solid #e5e7eb", borderRadius: 10,
-              padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div key={u.id} style={cardRow}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div style={{
-                  width: 40, height: 40, borderRadius: "50%",
-                  background: u.role === "owner" ? "#fee2e2" : "#dbeafe",
-                  color: u.role === "owner" ? "#b91c1c" : "#1d4ed8",
-                  display: "grid", placeItems: "center", fontWeight: 600, fontSize: 16,
+                  width: 42, height: 42, borderRadius: 10,
+                  background: u.role === "owner" ? "linear-gradient(135deg, #dc2626, #7f1d1d)" : "#1a1a1a",
+                  color: "white",
+                  display: "grid", placeItems: "center", fontWeight: 700, fontSize: 16,
+                  border: u.role === "owner" ? "1px solid #dc2626" : "1px solid #2a2a2a",
                 }}>{u.email.charAt(0).toUpperCase()}</div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 500 }}>{u.email}{u.id === currentUserId && <span style={{ color: "#9ca3af", marginLeft: 6 }}>(você)</span>}</div>
-                  <div style={{ fontSize: 12, color: u.role === "owner" ? "#b91c1c" : "#1d4ed8", fontWeight: 600 }}>
-                    {u.role === "owner" ? "👑 Dono" : "Administrador"}
+                  <div style={{ fontSize: 14, fontWeight: 500, color: "#fafafa" }}>
+                    {u.email}
+                    {u.id === currentUserId && <span style={{ color: "#666", marginLeft: 8, fontSize: 12 }}>(você)</span>}
+                  </div>
+                  <div style={{ fontSize: 11, color: u.role === "owner" ? "#dc2626" : "#888", fontWeight: 700, marginTop: 3, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                    {u.role === "owner" ? "★ Dono" : "Administrador"}
                   </div>
                 </div>
               </div>
               {u.id !== currentUserId && u.role !== "owner" && (
-                <div style={{ display: "flex", gap: 6 }}>
-                  <GhostBtn onClick={() => setEditingUser(u)}>✏️ Editar</GhostBtn>
-                  <button onClick={() => onTransfer(u.id, u.email)} style={{
-                    padding: "9px 14px", borderRadius: 8, border: "1px solid #fde68a", background: "#fef3c7", color: "#92400e", fontSize: 14, cursor: "pointer", fontWeight: 500,
-                  }}>👑 Tornar Dono</button>
-                  <button onClick={() => onDelete(u.id, u.email)} style={{
-                    padding: "9px 14px", borderRadius: 8, border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", fontSize: 14, cursor: "pointer", fontWeight: 500,
-                  }}>Remover</button>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <GhostBtn onClick={() => setEditingUser(u)}>Editar</GhostBtn>
+                  <GhostBtn onClick={() => onTransfer(u.id, u.email)} style={{ borderColor: "#5a3a1a", color: "#fbbf24", background: "#1a1208" }}>Tornar Dono</GhostBtn>
+                  <DangerBtn onClick={() => onDelete(u.id, u.email)}>Remover</DangerBtn>
                 </div>
               )}
             </div>
@@ -590,16 +593,16 @@ function CreateAdminModal({ onClose, onCreated, onError }: { onClose: () => void
     onCreated();
   };
   return (
-    <SimpleModal onClose={onClose} title="Novo Administrador">
+    <ModalShell onClose={onClose} title="Novo Administrador" maxWidth={460}>
       <form onSubmit={submit}>
         <FormField label="E-mail"><TextInput type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></FormField>
         <FormField label="Senha (mín. 6 caracteres)"><TextInput type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></FormField>
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 16 }}>
           <GhostBtn type="button" onClick={onClose}>Cancelar</GhostBtn>
-          <PrimaryBtn type="submit" disabled={busy}>{busy ? "Criando..." : "Criar"}</PrimaryBtn>
+          <PrimaryBtn type="submit" disabled={busy}>{busy ? "Criando…" : "Criar"}</PrimaryBtn>
         </div>
       </form>
-    </SimpleModal>
+    </ModalShell>
   );
 }
 
@@ -620,7 +623,7 @@ function EditAdminModal({ user, onClose, onSaved, onError }: { user: UserRow; on
     onSaved();
   };
   return (
-    <SimpleModal onClose={onClose} title={`Editar: ${user.email}`}>
+    <ModalShell onClose={onClose} title={`Editar: ${user.email}`} maxWidth={460}>
       <form onSubmit={submit}>
         <FormField label="E-mail"><TextInput type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></FormField>
         <FormField label="Nova senha" hint="Deixe em branco para manter a senha atual.">
@@ -628,10 +631,10 @@ function EditAdminModal({ user, onClose, onSaved, onError }: { user: UserRow; on
         </FormField>
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 16 }}>
           <GhostBtn type="button" onClick={onClose}>Cancelar</GhostBtn>
-          <PrimaryBtn type="submit" disabled={busy}>{busy ? "Salvando..." : "Salvar"}</PrimaryBtn>
+          <PrimaryBtn type="submit" disabled={busy}>{busy ? "Salvando…" : "Salvar"}</PrimaryBtn>
         </div>
       </form>
-    </SimpleModal>
+    </ModalShell>
   );
 }
 
@@ -639,61 +642,98 @@ function EditAdminModal({ user, onClose, onSaved, onError }: { user: UserRow; on
    Helpers
 ============================================================ */
 function PageWrap({ children }: { children: React.ReactNode }) {
-  return <div style={{ padding: "32px 32px 80px", maxWidth: 1400, margin: "0 auto" }}>{children}</div>;
+  return <div style={{ padding: "36px 36px 100px", maxWidth: 1280, margin: "0 auto" }}>{children}</div>;
 }
 function PageHeader({ title, description }: { title: string; description?: string }) {
   return (
-    <div style={{ marginBottom: 24 }}>
-      <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, margin: 0, color: "#111" }}>{title}</h1>
-      {description && <p style={{ fontSize: 14, color: "#6b7280", margin: "4px 0 0", maxWidth: 720 }}>{description}</p>}
+    <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: "1px solid #1a1a1a" }}>
+      <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, margin: 0, color: "#fafafa", letterSpacing: "-0.02em", fontWeight: 600 }}>{title}</h1>
+      {description && <p style={{ fontSize: 14, color: "#888", margin: "8px 0 0", maxWidth: 720, lineHeight: 1.5 }}>{description}</p>}
     </div>
   );
 }
-function SimpleModal({ children, onClose, title }: { children: React.ReactNode; onClose: () => void; title: string }) {
+function ModalShell({ children, onClose, title, maxWidth = 560 }: { children: React.ReactNode; onClose: () => void; title: string; maxWidth?: number }) {
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.55)", display: "grid", placeItems: "center", zIndex: 100, padding: 16 }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "white", borderRadius: 14, padding: 24, width: "100%", maxWidth: 460 }}>
-        <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 18, fontFamily: "'Playfair Display', serif" }}>{title}</h3>
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,.85)", backdropFilter: "blur(6px)",
+      display: "grid", placeItems: "center", zIndex: 100, padding: 16, overflowY: "auto",
+      animation: "adminFade .2s ease",
+    }}>
+      <div onClick={(e) => e.stopPropagation()} style={{
+        background: "#0a0a0a", borderRadius: 14, width: "100%", maxWidth, padding: 28,
+        border: "1px solid #2a2a2a",
+        boxShadow: "0 30px 80px rgba(220,38,38,.15)",
+        maxHeight: "92vh", overflowY: "auto",
+      }}>
+        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, margin: "0 0 18px", color: "#fafafa", fontWeight: 600 }}>{title}</h3>
         {children}
       </div>
     </div>
   );
 }
 function Center({ children }: { children: React.ReactNode }) {
-  return <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", color: "#6b7280" }}>{children}</div>;
+  return <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#000", color: "#888", fontFamily: "Inter, system-ui, sans-serif" }}>{children}</div>;
 }
 function Loading() {
-  return <div style={{ padding: 40, textAlign: "center", color: "#9ca3af" }}>Carregando...</div>;
+  return <div style={{ padding: 60, textAlign: "center", color: "#666", fontSize: 13, letterSpacing: "0.05em", textTransform: "uppercase" }}>Carregando…</div>;
 }
+function Badge({ published }: { published: boolean }) {
+  return (
+    <span style={{
+      padding: "3px 10px", borderRadius: 999, fontSize: 10, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase",
+      background: published ? "rgba(220,38,38,0.15)" : "#1a1a1a",
+      color: published ? "#fca5a5" : "#888",
+      border: published ? "1px solid #5a1a1a" : "1px solid #2a2a2a",
+    }}>{published ? "Publicada" : "Rascunho"}</span>
+  );
+}
+function EmptyState({ icon, title, hint }: { icon: string; title: string; hint: string }) {
+  return (
+    <div style={{
+      background: "#0a0a0a", border: "2px dashed #1f1f1f", borderRadius: 14,
+      padding: 70, textAlign: "center", color: "#666",
+    }}>
+      <div style={{ fontSize: 42, marginBottom: 14, color: "#dc2626", opacity: 0.5 }}>{icon}</div>
+      <p style={{ fontSize: 15, margin: 0, color: "#bbb", fontWeight: 500 }}>{title}</p>
+      <p style={{ fontSize: 13, marginTop: 6, color: "#666" }}>{hint}</p>
+    </div>
+  );
+}
+
 function SidebarItem({ icon, label, active, collapsed, onClick }: { icon: string; label: string; active: boolean; collapsed: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} style={{
       display: "flex", alignItems: "center", gap: 12, padding: "10px 12px",
-      borderRadius: 8, border: "none",
-      background: active ? "#dc2626" : "transparent",
-      color: active ? "white" : "rgba(255,255,255,0.75)",
-      cursor: "pointer", fontSize: 14, fontWeight: active ? 600 : 500,
-      width: "100%", textAlign: "left", transition: "background .15s",
+      borderRadius: 9, border: "none",
+      background: active ? "linear-gradient(180deg, #dc2626 0%, #991b1b 100%)" : "transparent",
+      color: active ? "white" : "#999",
+      cursor: "pointer", fontSize: 13, fontWeight: active ? 600 : 500,
+      width: "100%", textAlign: "left", transition: "all .15s",
+      boxShadow: active ? "0 4px 12px rgba(220,38,38,.3)" : "none",
     }}>
-      <span style={{ fontSize: 16 }}>{icon}</span>
+      <span style={{ fontSize: 14, width: 18, textAlign: "center", color: active ? "white" : "#666" }}>{icon}</span>
       {!collapsed && <span>{label}</span>}
     </button>
   );
 }
 
+const cardRow: React.CSSProperties = {
+  background: "linear-gradient(180deg, #0d0d0d 0%, #080808 100%)",
+  border: "1px solid #1f1f1f",
+  borderRadius: 12,
+  padding: "16px 20px",
+  display: "flex", alignItems: "center", justifyContent: "space-between",
+  gap: 14, flexWrap: "wrap",
+};
+
 const sidebarBtn: React.CSSProperties = {
-  width: "100%", padding: "8px 12px", borderRadius: 8, border: "none",
-  background: "transparent", color: "rgba(255,255,255,0.75)",
+  width: "100%", padding: "9px 12px", borderRadius: 8, border: "none",
+  background: "transparent", color: "#999",
   fontSize: 13, cursor: "pointer", textAlign: "left", fontWeight: 500,
+  transition: "background .15s, color .15s",
 };
 const sidebarToggle: React.CSSProperties = {
-  width: 28, height: 28, padding: 0, borderRadius: 6,
-  border: "1px solid rgba(255,255,255,0.15)", background: "transparent",
-  color: "rgba(255,255,255,0.7)", cursor: "pointer", fontSize: 12,
-};
-const iconBtn: React.CSSProperties = {
-  width: 28, height: 28, padding: 0, borderRadius: 6,
-  border: "1px solid #e5e7eb", background: "white",
-  color: "#374151", fontSize: 13, cursor: "pointer",
-  display: "inline-flex", alignItems: "center", justifyContent: "center",
+  width: 28, height: 28, padding: 0, borderRadius: 7,
+  border: "1px solid #1f1f1f", background: "#0d0d0d",
+  color: "#999", cursor: "pointer", fontSize: 14, fontWeight: 700,
 };
