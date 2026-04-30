@@ -201,21 +201,12 @@ export function SiteContentEditor() {
               </div>
               <div className="space-y-4 pt-4 border-t border-zinc-800">
                 <h4 className="text-sm font-medium flex items-center text-red-500"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
-                <div className="space-y-2">
-                  <Label className="text-red-500">URL do Vídeo (MP4/WebM)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    placeholder="https://..."
-                    value={hero.video_url}
-                    onChange={(e) => setHero({...hero, video_url: e.target.value})}
-                  />
-                  {hero.video_url && (
-                    <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30">
-                      <video src={hero.video_url} className="w-full h-full object-cover" muted loop autoPlay playsInline />
-                    </div>
-                  )}
-                  <p className="text-[10px] text-red-500/50">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
-                </div>
+                <ImageUpload 
+                  label="URL do Vídeo (MP4/WebM)" 
+                  value={hero.video_url} 
+                  onChange={(val) => setHero({...hero, video_url: val})} 
+                />
+                <p className="text-[10px] text-red-500/50">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
               </div>
 
               <div className="space-y-4 pt-4 border-t border-zinc-800">
