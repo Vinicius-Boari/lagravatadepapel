@@ -161,8 +161,10 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)}>Salvar Rascunho</Button>
-                <Button size="sm" onClick={() => handleSave("hero", hero, false)}>Publicar</Button>
+                <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)} disabled={loading}>Salvar Rascunho</Button>
+                <Button size="sm" onClick={() => handleSave("hero", hero, false)} disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
