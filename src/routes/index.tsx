@@ -23,6 +23,14 @@ const places = [
   { img: "/images/service_foto360.png", title: "Plataforma 360°", tag: "Vídeo Interativo" },
 ];
 
+// Video showcase blocks — replace `src` with real .mp4 URLs (or use `poster` for thumbnails)
+const videos: { title: string; tag: string; src?: string; poster?: string; tall?: boolean }[] = [
+  { title: "Invasão ao Vivo", tag: "Reels Instagram", poster: "/images/hero_invasion.png" },
+  { title: "Tequileiros em Ação", tag: "Pista de Dança", poster: "/images/service_tequileiro.png", tall: true },
+  { title: "Robô de LED", tag: "Show de Luzes", poster: "/images/service_robo.png", tall: true },
+  { title: "Bazuca CO2", tag: "Efeito Especial", poster: "/images/service_co2.png" },
+];
+
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
@@ -99,12 +107,53 @@ function Index() {
     );
     document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 
+    // 3D Tilt-on-mouse-move for cards
+    const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
+    const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
+    tiltEls.forEach((el) => {
+      const move = (e: MouseEvent) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.setProperty("--tx", `${x * 14}deg`);
+        el.style.setProperty("--ty", `${-y * 14}deg`);
+      };
+      const leave = () => {
+        el.style.setProperty("--tx", `0deg`);
+        el.style.setProperty("--ty", `0deg`);
+      };
+      el.addEventListener("mousemove", move);
+      el.addEventListener("mouseleave", leave);
+      tiltHandlers.push({ el, move, leave });
+    });
+
+    // Scroll-driven 3D for elements with .scroll-3d
+    const scrollEls = document.querySelectorAll<HTMLElement>(".scroll-3d");
+    const onScroll3d = () => {
+      scrollEls.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const progress = (r.top + r.height / 2 - vh / 2) / vh; // -1..1 around center
+        const clamped = Math.max(-1, Math.min(1, progress));
+        el.style.setProperty("--sx", `${clamped * 8}deg`);
+        el.style.setProperty("--sy", `${clamped * -10}deg`);
+        el.style.setProperty("--sz", `${-Math.abs(clamped) * 60}px`);
+      });
+    };
+    window.addEventListener("scroll", onScroll3d, { passive: true });
+    onScroll3d();
+
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onScroll3d);
       cancelAnimationFrame(raf);
       hoverEls.forEach((el) => {
         el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      });
+      tiltHandlers.forEach(({ el, move, leave }) => {
+        el.removeEventListener("mousemove", move);
         el.removeEventListener("mouseleave", leave);
       });
       obs.disconnect();
@@ -142,6 +191,7 @@ function Index() {
         <nav className="menu-nav">
           <a href="#hero" onClick={closeMenu}>Home</a>
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
+          <a href="#videos" onClick={closeMenu}>Vídeos</a>
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
           <a href="#contato" onClick={closeMenu}>Contato</a>
@@ -188,13 +238,41 @@ function Index() {
         <div className="section-header reveal">
           <h2>Nossos<br /><span>Serviços</span></h2>
         </div>
-        <div className="services-grid">
+        <div className="services-grid scene-3d">
           {services.map((s) => (
-            <div className="service-card reveal" key={s.title}>
+            <div className="service-card tilt-3d scroll-3d reveal" key={s.title}>
               <img src={s.img} alt={s.title} />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="video-section" id="videos">
+        <div className="video-section-header reveal">
+          <h2>Em <em><span>Movimento</span></em></h2>
+        </div>
+        <div className="video-grid scene-3d">
+          {videos.map((v) => (
+            <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={v.title}>
+              {v.src ? (
+                <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
+              ) : (
+                <>
+                  {v.poster && <img src={v.poster} alt={v.title} />}
+                  <div className="video-card-placeholder">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                    <span>Vídeo em breve</span>
+                    <em>Substitua pelo reel real</em>
+                  </div>
+                </>
+              )}
+              <div className="video-card-overlay">
+                <h3>{v.title}</h3>
+                <span>{v.tag}</span>
               </div>
             </div>
           ))}
@@ -223,9 +301,9 @@ function Index() {
             Ver no Instagram →
           </a>
         </div>
-        <div className="places-grid">
+        <div className="places-grid scene-3d">
           {places.map((p) => (
-            <div className="place-card reveal" key={p.title}>
+            <div className="place-card tilt-3d scroll-3d reveal" key={p.title}>
               <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
@@ -237,8 +315,10 @@ function Index() {
       </section>
 
       <section className="about-section" id="sobre">
-        <div className="about-image">
-          <img src="/images/hero_venue.png" alt="Sobre La Gravata de Papel" />
+        <div className="about-image scene-3d">
+          <div className="scroll-3d tilt-3d">
+            <img src="/images/hero_venue.png" alt="Sobre La Gravata de Papel" />
+          </div>
         </div>
         <div className="about-text">
           <h2 className="reveal">La Gravata<br />de <em>Papel</em></h2>
