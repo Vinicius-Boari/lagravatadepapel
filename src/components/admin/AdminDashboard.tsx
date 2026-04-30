@@ -115,7 +115,7 @@ export function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative">
         <header className="h-16 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-8">
-          <div className="flex items-center space-x-2 text-sm text-zinc-500">
+          <div className="flex items-center space-x-2 text-sm text-red-400">
             <span className="hover:text-zinc-300 cursor-pointer transition-colors" onClick={() => setActiveTab("dashboard")}>Início</span>
             <ChevronRight className="w-4 h-4" />
             <span className="text-red-500 font-medium">
