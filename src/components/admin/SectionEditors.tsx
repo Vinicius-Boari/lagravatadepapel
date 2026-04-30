@@ -52,17 +52,21 @@ export function HeroEditor({ value, onChange }: SectionEditorProps) {
       <FormField label="Imagens da capa (3 imagens flutuantes)">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
           {[0, 1, 2].map((i) => (
-            <MediaUploader
-              key={i}
-              folder="hero"
-              value={images[i] ?? ""}
-              onChange={(url) => {
-                const next = [...images];
-                next[i] = url;
-                set("images", next);
-              }}
-              aspect="portrait"
-            />
+            <div key={i} style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: 10, marginBottom: 4, color: "#888", textAlign: "center" }}>
+                {i === 0 ? "Esquerda (Frente)" : i === 1 ? "Centro (Cima)" : "Direita (Longe)"}
+              </div>
+              <MediaUploader
+                folder="hero"
+                value={images[i] ?? ""}
+                onChange={(url) => {
+                  const next = [...images];
+                  next[i] = url;
+                  set("images", next);
+                }}
+                aspect="portrait"
+              />
+            </div>
           ))}
         </div>
       </FormField>
