@@ -69,11 +69,8 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
         <p className="ig3d-sub">{config.subtitle ?? "Os bastidores das nossas invasões — atualizados em tempo real."}</p>
       </div>
 
-      <div
-        className="ig3d-scene"
-        onMouseEnter={() => { targetSpeedRef.current = 0; }}
-        onMouseLeave={() => { targetSpeedRef.current = computedSpeed; }}
-      >
+      <div className="ig3d-scene">
+
         <div className="ig3d-stage" ref={stageRef}>
           {list.map((post, i) => {
             const rot = (360 / count) * i;
