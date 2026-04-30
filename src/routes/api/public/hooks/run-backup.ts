@@ -12,9 +12,17 @@ export const Route = createFileRoute("/api/public/hooks/run-backup")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        // pg_cron passes a Bearer token. Accept either the service role key
+        // or the publishable key (sent via the apikey header by pg_net helpers).
         const auth = request.headers.get("authorization") ?? "";
-        const expected = `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""}`;
-        if (!process.env.SUPABASE_SERVICE_ROLE_KEY || auth !== expected) {
+        const apikey = request.headers.get("apikey") ?? "";
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+        const pubKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
+        const token = auth.replace(/^Bearer\s+/i, "");
+        const ok =
+          (serviceKey && (token === serviceKey || apikey === serviceKey)) ||
+          (pubKey && (token === pubKey || apikey === pubKey));
+        if (!ok) {
           return new Response("Unauthorized", { status: 401 });
         }
 
