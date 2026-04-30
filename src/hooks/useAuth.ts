@@ -97,7 +97,7 @@ export function useAuth() {
     };
   }, []);
 
-  const isAdmin = role === "admin" || role === "owner";
+  const isAdmin = role === "admin" || role === "owner" || role === ("Dono" as any) || role === ("Administrador" as any);
 
   return { 
     session, 
