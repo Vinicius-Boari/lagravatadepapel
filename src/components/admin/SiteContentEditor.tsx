@@ -408,7 +408,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção "O Plano"</CardTitle>
                 <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("plan", plan, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("plan", plan, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
