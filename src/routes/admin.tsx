@@ -36,12 +36,18 @@ function AdminLayout() {
   if (loading) return <FullScreenMsg>Iniciando painel seguro…</FullScreenMsg>;
   if (!user) return <FullScreenMsg>Redirecionando…</FullScreenMsg>;
   
-  // Debug log (can be removed later)
   if (!isAdmin) {
-    console.log("Access debug:", { role, isAdmin, user_id: user.id });
+    return (
+      <FullScreenMsg color="#ef4444">
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 40, marginBottom: 20 }}>🔒</div>
+          <h2 style={{ marginBottom: 10 }}>Acesso Negado</h2>
+          <p style={{ color: '#666', marginBottom: 20 }}>Seu usuário ({user.email}) não possui permissão administrativa.</p>
+          <PrimaryBtn onClick={() => window.location.href = "/"}>Voltar para o site</PrimaryBtn>
+        </div>
+      </FullScreenMsg>
+    );
   }
-
-  if (!isAdmin) return <FullScreenMsg color="#ef4444">Acesso Negado. Contate o administrador. (Role: {role || 'nenhuma'})</FullScreenMsg>;
 
   return (
     <div style={{ minHeight: "100vh", background: "#050505", display: "flex", color: "#fff", fontFamily: "Inter, sans-serif" }}>
