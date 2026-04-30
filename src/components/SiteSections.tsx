@@ -25,8 +25,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     if (!ctx) return;
 
     let mx = 0, my = 0;
-    const points: { x: number; y: number; age: number }[] = [];
-    const maxAge = 40;
+    let trailX = 0, trailY = 0;
+    const points: { x: number; y: number }[] = [];
+    const maxPoints = 30; // Reduced for a more minimal trail
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
@@ -42,19 +43,26 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      points.push({ x: mx, y: my, age: 0 });
-      if (points.length > 20) points.shift();
+      // Sophisticated interpolation: the trail "follows" with a delay
+      trailX += (mx - trailX) * 0.15;
+      trailY += (my - trailY) * 0.15;
+
+      points.push({ x: trailX, y: trailY });
+      if (points.length > maxPoints) points.shift();
 
       if (points.length > 1) {
         for (let i = 1; i < points.length; i++) {
           const p1 = points[i - 1];
           const p2 = points[i];
-          const opacity = i / points.length;
+          
+          // Very thin and minimal opacity for a sophisticated look
+          const opacity = (i / points.length) * 0.4;
           
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(192, 57, 67, ${opacity})`;
-          ctx.lineWidth = i * 0.4;
+          ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
+          ctx.lineWidth = 1; // Super fine line
           ctx.lineCap = "round";
+          ctx.lineJoin = "round";
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
           ctx.stroke();
