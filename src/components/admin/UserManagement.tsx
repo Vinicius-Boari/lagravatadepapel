@@ -50,9 +50,9 @@ export function UserManagement() {
 
     const { error } = await supabase.from("admin_users").insert({
       username: newAdmin.username,
-      password_hash: newAdmin.password, // Simple for now
+      password_hash: newAdmin.password,
       full_name: newAdmin.full_name,
-      role: newAdmin.role
+      role: newAdmin.role as "admin" | "owner"
     });
 
     if (error) {
