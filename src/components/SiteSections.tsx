@@ -263,16 +263,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => (
             <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={i}>
-              {v.src ? (
-                <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
-              ) : (
-                <>
-                  {v.poster && <img src={v.poster} alt={v.title} />}
-                  <div className="video-card-placeholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                    <span>Vídeo em breve</span>
-                  </div>
-                </>
+              {v.poster && <img src={v.poster} alt={v.title} />}
+              {!v.poster && (
+                <div className="video-card-placeholder">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                  <span>Vídeo em breve</span>
+                </div>
               )}
               <div className="video-card-overlay">
                 <h3>{v.title}</h3>
