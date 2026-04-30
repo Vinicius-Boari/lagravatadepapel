@@ -25,7 +25,7 @@ async function assertAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data, error } = await context.supabase
       .from("backups")
       .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
@@ -38,7 +38,7 @@ export const listBackups = createServerFn({ method: "GET" })
 export const getBackupSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data, error } = await context.supabase
       .from("backup_settings")
       .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
@@ -60,7 +60,7 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => settingsSchema.parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data: existing } = await supabaseAdmin
       .from("backup_settings")
       .select("id")
@@ -88,7 +88,7 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
 export const runBackupNow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const result = await runBackup({ trigger: "manual", createdBy: context.userId });
     await applyRetentionPolicy();
     return result;
@@ -98,7 +98,7 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     await restoreBackup(data.id);
     await supabaseAdmin.from("admin_logs").insert({
       action: "backup.restore",
@@ -114,7 +114,7 @@ export const deleteBackupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     await deleteBackup(data.id);
     return { success: true };
   });
@@ -123,7 +123,7 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data: row } = await supabaseAdmin
       .from("backups")
       .select("file_path")
