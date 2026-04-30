@@ -304,4 +304,5 @@ export const SECTION_EDITORS: Record<string, { label: string; icon: string; comp
   places: { label: "Invasões", icon: "✺", component: PlacesEditor },
   about: { label: "Sobre", icon: "ⓘ", component: AboutEditor },
   footer: { label: "Rodapé / Contato", icon: "☎", component: FooterEditor },
+  instagram_config: { label: "Configuração Instagram", icon: "◉", component: InstagramConfigEditor },
 };
