@@ -354,7 +354,11 @@ function Index() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>{c.footer.copyright}</span>
+          <span>
+            {c.footer.copyright}
+            {" · "}
+            <Link to="/login" className="footer-painel-link">Painel</Link>
+          </span>
           <span>{c.footer.hashtag}</span>
         </div>
       </footer>
