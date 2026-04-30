@@ -62,127 +62,134 @@ function AdminPage() {
     window.location.href = "/";
   };
 
-  // Se já temos isAdmin (via cache), renderizamos o painel imediatamente
-  if (!isAdmin) {
-    if (loading) return <Center>Carregando painel…</Center>;
-    if (!user) return <Center>Redirecionando para login…</Center>;
-    
-    if (authError) {
-      return (
-        <Center>
-          <div style={{ textAlign: 'center', padding: 20 }}>
-            <p style={{ color: '#ef4444', marginBottom: 16 }}>Erro de conexão: {authError}</p>
-            <PrimaryBtn onClick={() => window.location.reload()}>Tentar novamente</PrimaryBtn>
-          </div>
-        </Center>
-      );
-    }
-    
-    return <Center>Acesso negado.</Center>;
-  }
-
-  return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#000",
-      display: "flex",
-      fontFamily: "Inter, system-ui, sans-serif",
-      color: "#fafafa",
-    }}>
-      {/* SIDEBAR */}
-      <aside style={{
-        width: sidebarOpen ? 250 : 64,
-        background: "linear-gradient(180deg, #0a0a0a 0%, #050505 100%)",
-        borderRight: "1px solid #1a1a1a",
-        transition: "width .25s ease",
+  // Se já temos a role (via cache ou carregada), renderizamos o painel
+  if (isAdmin) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "#000",
         display: "flex",
-        flexDirection: "column",
-        position: "sticky",
-        top: 0,
-        height: "100vh",
-        flexShrink: 0,
+        fontFamily: "Inter, system-ui, sans-serif",
+        color: "#fafafa",
       }}>
-        <div style={{
-          padding: "22px 18px", borderBottom: "1px solid #161616",
-          display: "flex", alignItems: "center", gap: 10,
+        {/* SIDEBAR */}
+        <aside style={{
+          width: sidebarOpen ? 250 : 64,
+          background: "linear-gradient(180deg, #0a0a0a 0%, #050505 100%)",
+          borderRight: "1px solid #1a1a1a",
+          transition: "width .25s ease",
+          display: "flex",
+          flexDirection: "column",
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          flexShrink: 0,
         }}>
-          {sidebarOpen && (
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, fontWeight: 600, color: "#fafafa", letterSpacing: "-0.01em" }}>La Gravata</div>
-              <div style={{ fontSize: 10, color: "#dc2626", letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, marginTop: 2 }}>Painel</div>
-            </div>
-          )}
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} style={sidebarToggle} title="Recolher">
-            {sidebarOpen ? "‹" : "›"}
-          </button>
-        </div>
+          <div style={{
+            padding: "22px 18px", borderBottom: "1px solid #161616",
+            display: "flex", alignItems: "center", gap: 10,
+          }}>
+            {sidebarOpen && (
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, fontWeight: 600, color: "#fafafa", letterSpacing: "-0.01em" }}>La Gravata</div>
+                <div style={{ fontSize: 10, color: "#dc2626", letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, marginTop: 2 }}>Painel</div>
+              </div>
+            )}
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} style={sidebarToggle} title="Recolher">
+              {sidebarOpen ? "‹" : "›"}
+            </button>
+          </div>
 
-        <nav style={{ flex: 1, padding: "16px 10px", overflowY: "auto" }}>
-          {NAV_GROUPS.map((group) => {
-            const items = group.items.filter((i) => !i.ownerOnly || isOwner);
-            if (items.length === 0) return null;
-            return (
-              <div key={group.label} style={{ marginBottom: 18 }}>
-                {sidebarOpen && (
-                  <div style={{ fontSize: 10, color: "#555", padding: "0 10px 8px", textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700 }}>
-                    {group.label}
+          <nav style={{ flex: 1, padding: "16px 10px", overflowY: "auto" }}>
+            {NAV_GROUPS.map((group) => {
+              const items = group.items.filter((i) => !i.ownerOnly || isOwner);
+              if (items.length === 0) return null;
+              return (
+                <div key={group.label} style={{ marginBottom: 18 }}>
+                  {sidebarOpen && (
+                    <div style={{ fontSize: 10, color: "#555", padding: "0 10px 8px", textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700 }}>
+                      {group.label}
+                    </div>
+                  )}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {items.map((item) => (
+                      <SidebarItem
+                        key={item.id}
+                        icon={item.icon}
+                        label={item.label}
+                        active={tab === item.id}
+                        collapsed={!sidebarOpen}
+                        onClick={() => setTab(item.id)}
+                      />
+                    ))}
                   </div>
-                )}
-                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  {items.map((item) => (
-                    <SidebarItem
-                      key={item.id}
-                      icon={item.icon}
-                      label={item.label}
-                      active={tab === item.id}
-                      collapsed={!sidebarOpen}
-                      onClick={() => setTab(item.id)}
-                    />
-                  ))}
+                </div>
+              );
+            })}
+          </nav>
+
+          <div style={{ padding: 12, borderTop: "1px solid #161616" }}>
+            {sidebarOpen && user && (
+              <div style={{
+                fontSize: 11, color: "#888", marginBottom: 10, padding: "8px 10px",
+                background: "#0d0d0d", borderRadius: 8, border: "1px solid #161616",
+              }}>
+                <div style={{ color: "#ccc", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+                <div style={{ color: isOwner ? "#dc2626" : "#888", fontWeight: 600, marginTop: 2, fontSize: 10, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                  {isOwner ? "Dono" : "Administrador"}
                 </div>
               </div>
-            );
-          })}
-        </nav>
+            )}
+            <Link to="/" target="_blank" style={{ ...sidebarBtn, display: "block", textDecoration: "none", marginBottom: 4 }}>
+              {sidebarOpen ? "↗  Ver site" : "↗"}
+            </Link>
+            <button onClick={onLogout} style={sidebarBtn}>{sidebarOpen ? "←  Sair" : "←"}</button>
+          </div>
+        </aside>
 
-        <div style={{ padding: 12, borderTop: "1px solid #161616" }}>
-          {sidebarOpen && user && (
-            <div style={{
-              fontSize: 11, color: "#888", marginBottom: 10, padding: "8px 10px",
-              background: "#0d0d0d", borderRadius: 8, border: "1px solid #161616",
-            }}>
-              <div style={{ color: "#ccc", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
-              <div style={{ color: isOwner ? "#dc2626" : "#888", fontWeight: 600, marginTop: 2, fontSize: 10, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                {isOwner ? "Dono" : "Administrador"}
-              </div>
-            </div>
-          )}
-          <Link to="/" target="_blank" style={{ ...sidebarBtn, display: "block", textDecoration: "none", marginBottom: 4 }}>
-            {sidebarOpen ? "↗  Ver site" : "↗"}
-          </Link>
-          <button onClick={onLogout} style={sidebarBtn}>{sidebarOpen ? "←  Sair" : "←"}</button>
-        </div>
-      </aside>
+        {/* MAIN */}
+        <main key={tab} style={{ flex: 1, minWidth: 0, animation: "adminFadeUp .3s ease both", overflowX: "hidden" }}>
+          {tab === "content" && <ContentTab onToast={showToast} />}
+          {tab === "instagram_posts" && <InstagramTab onToast={showToast} />}
+          {tab === "pages" && <PagesTab onToast={showToast} />}
+          {tab === "users" && isOwner && user && <UsersTab currentUserId={user.id} onToast={showToast} />}
+        </main>
 
-      {/* MAIN */}
-      <main key={tab} style={{ flex: 1, minWidth: 0, animation: "adminFadeUp .3s ease both", overflowX: "hidden" }}>
-        {tab === "content" && <ContentTab onToast={showToast} />}
-        {tab === "instagram_posts" && <InstagramTab onToast={showToast} />}
-        {tab === "pages" && <PagesTab onToast={showToast} />}
-        {tab === "users" && isOwner && user && <UsersTab currentUserId={user.id} onToast={showToast} />}
-      </main>
+        {toast && (
+          <div style={{
+            position: "fixed", bottom: 24, right: 24,
+            background: toast.kind === "ok" ? "linear-gradient(180deg, #ef4444 0%, #dc2626 100%)" : "#3a0a0a",
+            color: "white", padding: "13px 22px", borderRadius: 10, fontSize: 13,
+            boxShadow: "0 12px 32px rgba(220,38,38,.4)", zIndex: 1000, fontWeight: 600,
+            border: toast.kind === "err" ? "1px solid #5a1a1a" : "none",
+            letterSpacing: "0.01em",
+          }}>{toast.msg}</div>
+        )}
+      </div>
+    );
+  }
 
-      {toast && (
-        <div style={{
-          position: "fixed", bottom: 24, right: 24,
-          background: toast.kind === "ok" ? "linear-gradient(180deg, #ef4444 0%, #dc2626 100%)" : "#3a0a0a",
-          color: "white", padding: "13px 22px", borderRadius: 10, fontSize: 13,
-          boxShadow: "0 12px 32px rgba(220,38,38,.4)", zIndex: 1000, fontWeight: 600,
-          border: toast.kind === "err" ? "1px solid #5a1a1a" : "none",
-          letterSpacing: "0.01em",
-        }}>{toast.msg}</div>
-      )}
-    </div>
+  // Se não tem role e ainda está carregando
+  if (loading) {
+    return <Center>Verificando acesso…</Center>;
+  }
+
+  // Se não tem usuário logado
+  if (!user) {
+    return <Center>Redirecionando para login…</Center>;
+  }
+
+  // Se tem erro de permissão ou não é admin
+  return (
+    <Center>
+      <div style={{ textAlign: 'center', padding: 20 }}>
+        <h2 style={{ color: '#ef4444', marginBottom: 12 }}>Acesso Negado</h2>
+        <p style={{ color: '#888', marginBottom: 20 }}>
+          {authError ? `Erro: ${authError}` : "Você não tem permissão para acessar esta área."}
+        </p>
+        <PrimaryBtn onClick={() => window.location.href = "/"}>Voltar ao Início</PrimaryBtn>
+      </div>
+    </Center>
   );
 }
 
