@@ -212,11 +212,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
-          {(hero.images ?? []).slice(0, 3).map((src: string, i: number) => (
-            <div key={i} className={`hero-img hero-img-${i + 1}`}>
-              <img src={src} alt={`Hero ${i + 1}`} loading="lazy" />
-            </div>
-          ))}
+          <div className="hero-img hero-img-1">
+            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+          </div>
+          <div className="hero-img hero-img-2">
+            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+          </div>
+          <div className="hero-img hero-img-3">
+            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+          </div>
         </div>
 
         <div className="hero-content">
