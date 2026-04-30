@@ -356,32 +356,25 @@ export function SiteContentEditor() {
                            />
                         </div>
                         <div className="space-y-2">
-                           <Label className="text-xs text-red-500">URL do Vídeo (MP4)</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
+                           <ImageUpload 
+                             label="URL do Vídeo (MP4)" 
                              value={v.src} 
-                             onChange={(e) => {
+                             onChange={(val) => {
                                const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], src: e.target.value };
+                               newItems[idx] = { ...newItems[idx], src: val };
                                setVideos({...videos, items: newItems});
-                             }}
+                             }} 
                            />
-                           {v.src && (
-                             <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
-                               <video src={v.src} className="w-full h-full object-contain" muted />
-                             </div>
-                           )}
                         </div>
                         <div className="space-y-2">
-                           <Label className="text-xs text-red-500">URL da Capa (Poster)</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
+                           <ImageUpload 
+                             label="URL da Capa (Poster)" 
                              value={v.poster} 
-                             onChange={(e) => {
+                             onChange={(val) => {
                                const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], poster: e.target.value };
+                               newItems[idx] = { ...newItems[idx], poster: val };
                                setVideos({...videos, items: newItems});
-                             }}
+                             }} 
                            />
                         </div>
                         <div className="flex items-center space-x-2 pt-2">
