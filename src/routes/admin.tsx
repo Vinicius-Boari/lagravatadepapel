@@ -41,7 +41,7 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ id: Tab; icon: string; l
 
 function AdminPage() {
   const navigate = useNavigate();
-  const { user, loading, isOwner, isAdmin } = useAuth();
+  const { user, loading, isOwner, isAdmin, error: authError } = useAuth();
   const [tab, setTab] = useState<Tab>("content");
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -62,7 +62,8 @@ function AdminPage() {
 
   if (loading) return <Center>Carregando…</Center>;
   if (!user) return <Center>Redirecionando…</Center>;
-  if (!isAdmin) return <Center>Acesso negado.</Center>;
+  if (authError) return <Center>Erro de permissão: {authError}</Center>;
+  if (!isAdmin) return <Center>Acesso negado. Usuário logado mas sem permissão administrativa.</Center>;
 
   return (
     <div style={{
