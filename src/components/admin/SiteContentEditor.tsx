@@ -911,7 +911,9 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Multi-idioma</CardTitle>
                  <CardDescription className="text-red-500/60">Configure quais idiomas estão ativos no seu site.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("languages", languages, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("languages", languages, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
