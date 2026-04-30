@@ -150,8 +150,8 @@ export function SiteContentEditor() {
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Nossos Serviços</CardTitle>
-                <CardDescription>Grid de serviços com imagem e descrição.</CardDescription>
+                <CardTitle className="text-red-500">Nossos Serviços</CardTitle>
+                <CardDescription className="text-red-500/60">Grid de serviços com imagem e descrição.</CardDescription>
               </div>
               <div className="flex space-x-2">
                 <Button size="sm" onClick={() => handleSave("services", services, false)}>Publicar Tudo</Button>
@@ -179,8 +179,8 @@ export function SiteContentEditor() {
 
               <div className="space-y-4 pt-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-sm font-medium">Itens de Serviço</h4>
-                  <Button size="sm" variant="outline" className="border-zinc-700" onClick={() => {
+                   <h4 className="text-sm font-medium text-red-500">Itens de Serviço</h4>
+                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
                     const newItems = [...(services.items || []), { title: "Novo Serviço", desc: "", img: "" }];
                     setServices({...services, items: newItems});
                   }}>
@@ -190,25 +190,25 @@ export function SiteContentEditor() {
 
                 <div className="space-y-3">
                   {(services.items || []).map((item: any, idx: number) => (
-                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-800 flex flex-col space-y-4">
+                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Serviço #{idx+1}</span>
+                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Serviço #{idx+1}</span>
                         <div className="flex space-x-1">
                           <Button size="icon" variant="ghost" className="h-7 w-7"><Trash2 className="w-3.5 h-3.5 text-red-500" /></Button>
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label className="text-xs">Título</Label>
-                          <Input className="bg-zinc-800 border-zinc-700" value={item.title} />
+                           <Label className="text-xs text-red-500">Título</Label>
+                           <Input className="bg-zinc-800 border-red-900 text-red-500" value={item.title} />
                         </div>
                         <div className="space-y-2">
-                          <Label className="text-xs">URL da Imagem</Label>
-                          <Input className="bg-zinc-800 border-zinc-700" value={item.img} />
+                           <Label className="text-xs text-red-500">URL da Imagem</Label>
+                           <Input className="bg-zinc-800 border-red-900 text-red-500" value={item.img} />
                         </div>
                         <div className="md:col-span-2 space-y-2">
-                          <Label className="text-xs">Descrição Curta</Label>
-                          <Textarea className="bg-zinc-800 border-zinc-700" value={item.desc} />
+                           <Label className="text-xs text-red-500">Descrição Curta</Label>
+                           <Textarea className="bg-zinc-800 border-red-900 text-red-500" value={item.desc} />
                         </div>
                       </div>
                     </div>
@@ -224,38 +224,38 @@ export function SiteContentEditor() {
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Rodapé</CardTitle>
-                <CardDescription>Informações de contato e links sociais.</CardDescription>
+                 <CardTitle className="text-red-500">Rodapé</CardTitle>
+                 <CardDescription className="text-red-500/60">Informações de contato e links sociais.</CardDescription>
               </div>
               <Button size="sm" onClick={() => handleSave("footer", footer, false)}>Publicar</Button>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Telefone (Exibição)</Label>
-                  <Input className="bg-zinc-800 border-zinc-700" value={footer.phone} />
+                   <Label className="text-red-500">Telefone (Exibição)</Label>
+                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.phone} />
                 </div>
                 <div className="space-y-2">
-                  <Label>WhatsApp Link</Label>
-                  <Input className="bg-zinc-800 border-zinc-700" value={footer.whatsapp_url} />
+                   <Label className="text-red-500">WhatsApp Link</Label>
+                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.whatsapp_url} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Copyright</Label>
-                  <Input className="bg-zinc-800 border-zinc-700" value={footer.copyright} />
+                   <Label className="text-red-500">Copyright</Label>
+                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.copyright} />
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Endereço Linha 1</Label>
-                  <Input className="bg-zinc-800 border-zinc-700" value={footer.address_line1} />
+                   <Label className="text-red-500">Endereço Linha 1</Label>
+                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line1} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Endereço Linha 2</Label>
-                  <Input className="bg-zinc-800 border-zinc-700" value={footer.address_line2} />
+                   <Label className="text-red-500">Endereço Linha 2</Label>
+                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line2} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Hashtag Destaque</Label>
-                  <Input className="bg-zinc-800 border-zinc-700" value={footer.hashtag} />
+                   <Label className="text-red-500">Hashtag Destaque</Label>
+                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.hashtag} />
                 </div>
               </div>
             </CardContent>
