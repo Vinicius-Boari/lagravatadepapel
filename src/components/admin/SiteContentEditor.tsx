@@ -641,7 +641,117 @@ export function SiteContentEditor() {
           </Card>
         </TabsContent>
 
-        {/* FOOTER SECTION */}
+        {/* PLACES SECTION */}
+        <TabsContent value="places" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Nossas Invasões</CardTitle>
+                <CardDescription className="text-red-500/60">Gerencie a galeria de locais e eventos visitados.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("places", places, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={places.heading}
+                    onChange={(e) => setPlaces({...places, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Subtítulo / Hashtag</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={places.heading2}
+                    onChange={(e) => setPlaces({...places, heading2: e.target.value})}
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-red-500">Link do Instagram</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={places.instagram_url}
+                    onChange={(e) => setPlaces({...places, instagram_url: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <div className="flex justify-between items-center">
+                   <h4 className="text-sm font-medium text-red-500">Galeria de Locais</h4>
+                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
+                    const newItems = [...(places.items || []), { title: "Novo Local", category: "", img: "" }];
+                    setPlaces({...places, items: newItems});
+                  }}>
+                    <Plus className="w-4 h-4 mr-1" /> Adicionar
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {(places.items || []).map((p: any, idx: number) => (
+                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Local #{idx+1}</span>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-7 w-7"
+                          onClick={() => {
+                            const newItems = places.items.filter((_: any, i: number) => i !== idx);
+                            setPlaces({...places, items: newItems});
+                          }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Título / Nome</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={p.title} 
+                             onChange={(e) => {
+                               const newItems = [...places.items];
+                               newItems[idx] = { ...newItems[idx], title: e.target.value };
+                               setPlaces({...places, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Categoria / Cidade</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={p.category} 
+                             onChange={(e) => {
+                               const newItems = [...places.items];
+                               newItems[idx] = { ...newItems[idx], category: e.target.value };
+                               setPlaces({...places, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="md:col-span-2">
+                          <ImageUpload 
+                            label="URL da Imagem / Vídeo" 
+                            value={p.img} 
+                            onChange={(val) => {
+                              const newItems = [...places.items];
+                              newItems[idx] = { ...newItems[idx], img: val };
+                              setPlaces({...places, items: newItems});
+                            }} 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="footer" className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
