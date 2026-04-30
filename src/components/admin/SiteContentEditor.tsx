@@ -152,21 +152,15 @@ export function SiteContentEditor() {
           case "languages": setLanguages({...data}); break;
         }
         
-        toast.success(isDraft ? "Rascunho salvo no painel!" : "Configurações publicadas no site com sucesso!", {
-          duration: 4000,
-          position: "top-center"
-        });
+        showToast(isDraft ? "Rascunho salvo no painel!" : "Configurações publicadas no site com sucesso!", 'success');
         
         setTimeout(() => setLoading(false), 500);
       } else {
-        throw new Error("Falha no updateSection retornou false");
+        throw new Error("Falha ao salvar: a operação não retornou sucesso.");
       }
     } catch (err) {
       console.error(`Erro crítico ao salvar seção ${section}:`, err);
-      toast.error(`ERRO: Não foi possível salvar no site. Verifique sua conexão.`, {
-        duration: 5000,
-        position: "top-center"
-      });
+      showToast(`ERRO: Não foi possível salvar no site. Verifique sua conexão.`, 'error');
       setLoading(false);
     }
   };
