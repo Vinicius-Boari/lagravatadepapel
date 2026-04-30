@@ -51,6 +51,7 @@ import {
 } from "@/server/backup.functions";
 
 export function BackupExport() {
+  console.log("[BackupExport] rendering");
   const [backups, setBackups] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
