@@ -265,6 +265,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
+      <InstagramCarousel3D config={content.instagram_config ?? {}} />
+
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
