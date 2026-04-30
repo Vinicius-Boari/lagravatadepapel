@@ -28,10 +28,23 @@ export function VisualIdentity() {
 
   const handleSave = async (isDraft = true) => {
     setLoading(true);
-    const success = await updateSection("visual", formData, isDraft);
-    if (success) {
-      setTimeout(() => setLoading(false), 500);
-    } else {
+    try {
+      console.log("Tentando salvar Identidade Visual", formData);
+      const success = await updateSection("visual", formData, isDraft);
+      
+      if (success) {
+        toast.success(isDraft ? "Rascunho visual salvo!" : "Identidade Visual publicada com sucesso!", {
+          position: "top-center"
+        });
+        setTimeout(() => setLoading(false), 500);
+      } else {
+        throw new Error("updateSection retornou false");
+      }
+    } catch (err) {
+      console.error("Erro ao salvar Identidade Visual:", err);
+      toast.error("Erro crítico: Não foi possível publicar as alterações visuais.", {
+        position: "top-center"
+      });
       setLoading(false);
     }
   };
