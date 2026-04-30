@@ -11,8 +11,8 @@ function AdminLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to login if not authenticated and not already on the login page
-    if (!loading && !user && window.location.pathname !== "/admin/login") {
+    const isLoginPage = window.location.pathname === "/admin/login";
+    if (!loading && !user && !isLoginPage) {
       navigate({ to: "/admin/login" });
     }
   }, [user, loading, navigate]);
