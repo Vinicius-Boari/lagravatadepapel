@@ -182,7 +182,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="nav-right">
           <button className="menu-btn" onClick={() => { setMenuOpen(true); onMenuClick?.(); }} aria-label="Abrir menu">
-            <div className="menu-lines"><span /><span /></div>
             <span>MENU</span>
           </button>
         </div>
