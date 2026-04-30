@@ -329,6 +329,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: { Args: never; Returns: boolean }
       is_owner: { Args: { _user_id: string }; Returns: boolean }
       transfer_ownership: {
         Args: { _new_owner_id: string }
