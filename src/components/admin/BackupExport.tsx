@@ -252,12 +252,12 @@ export function BackupExport() {
                 <Input 
                   type="number" 
                   value={settings?.interval_value ?? ""}
-                  onChange={(e) => setSettings({ ...(settings || {}), interval_value: e.target.value })}
+                  onChange={(e) => setSettings((prev: any) => ({ ...(prev || {}), interval_value: e.target.value }))}
                   className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
                 />
                 <Select 
                   value={settings?.interval_unit || "hours"} 
-                  onValueChange={(val) => setSettings({ ...(settings || {}), interval_unit: val })}
+                  onValueChange={(val) => setSettings((prev: any) => ({ ...(prev || {}), interval_unit: val }))}
                 >
                   <SelectTrigger className="bg-zinc-950 border-zinc-800 text-red-500">
                     <SelectValue />
@@ -278,7 +278,7 @@ export function BackupExport() {
                   <Input 
                     type="number" 
                     value={settings?.retention_count ?? ""}
-                    onChange={(e) => setSettings({ ...(settings || {}), retention_count: e.target.value })}
+                    onChange={(e) => setSettings((prev: any) => ({ ...(prev || {}), retention_count: e.target.value }))}
                     className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
                   />
                   <span className="text-xs text-zinc-500">últimos backups</span>
