@@ -9,23 +9,34 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<AppRole>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
     const fetchRole = async (uid: string) => {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", uid)
-        .order("role", { ascending: true }) // 'admin' < 'owner' alphabetically; we want owner if present
-        .limit(5);
-      if (!mounted) return;
-      if (data && data.length > 0) {
-        const owner = data.find((r) => r.role === "owner");
-        setRole(owner ? "owner" : (data[0].role as AppRole));
-      } else {
-        setRole(null);
+      try {
+        const { data, error: roleError } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", uid);
+        
+        if (!mounted) return;
+        
+        if (roleError) {
+          console.error("Error fetching role:", roleError);
+          setError(roleError.message);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const owner = data.find((r) => r.role === "owner");
+          setRole(owner ? "owner" : (data[0].role as AppRole));
+        } else {
+          setRole(null);
+        }
+      } catch (err) {
+        console.error("Exception fetching role:", err);
       }
     };
 
@@ -54,5 +65,5 @@ export function useAuth() {
     };
   }, []);
 
-  return { session, user, role, loading, isOwner: role === "owner", isAdmin: role === "admin" || role === "owner" };
+  return { session, user, role, loading, error, isOwner: role === "owner", isAdmin: role === "admin" || role === "owner" };
 }
