@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
@@ -12,10 +13,42 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
 
   useEffect(() => {
     document.body.classList.add("lg-body");
-    return () => document.body.classList.remove("lg-body");
+    
+    // Simulate initial loading progress for smooth experience
+    const interval = setInterval(() => {
+      setLoadProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(interval);
+          return 90;
+        }
+        return prev + 10;
+      });
+    }, 200);
+
+    const handleLoad = () => {
+      setLoadProgress(100);
+      setTimeout(() => {
+        setIsPageLoaded(true);
+        document.body.classList.add("loaded");
+      }, 500);
+    };
+
+    if (document.readyState === "complete") {
+      handleLoad();
+    } else {
+      window.addEventListener("load", handleLoad);
+    }
+
+    return () => {
+      document.body.classList.remove("lg-body", "loaded");
+      window.removeEventListener("load", handleLoad);
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -160,6 +193,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
   return (
     <>
+      <div className={`page-loader${isPageLoaded ? " fade-out" : ""}`}>
+        <div className="loader-logo">La Gravata<br />de Papel</div>
+        <div className="loader-bar-container">
+          <div className="loader-bar" style={{ width: `${loadProgress}%` }} />
+        </div>
+      </div>
+
       <canvas
         ref={canvasRef}
         style={{
@@ -206,13 +246,26 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="hero" id="hero">
         {hero.video_url && (
           <div className="hero-video-bg">
-            <video src={hero.video_url} autoPlay muted loop playsInline />
+            <video 
+              src={hero.video_url} 
+              autoPlay 
+              muted 
+              loop 
+              playsInline 
+              preload="auto"
+              onCanPlayThrough={() => setLoadProgress(prev => Math.max(prev, 95))}
+            />
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
           {(hero.images ?? []).slice(0, 3).map((src: string, i: number) => (
             <div key={i} className={`hero-img hero-img-${i + 1}`}>
-              <img src={src} alt={`Hero ${i + 1}`} />
+              <img 
+                src={src} 
+                alt={`Hero ${i + 1}`} 
+                loading="eager"
+                decoding="async"
+              />
             </div>
           ))}
         </div>
@@ -251,7 +304,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className="service-card tilt-3d scroll-3d reveal" key={i}>
-              <img src={s.img} alt={s.title} />
+              <img 
+                src={s.img} 
+                alt={s.title} 
+                loading="lazy"
+                decoding="async"
+              />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
