@@ -49,8 +49,8 @@ function AdminPage() {
   const save = async () => {
     if (!draft) return;
     setSaving(true);
-    const rows = (Object.keys(DEFAULTS) as ContentKey[]).map((k) => ({ key: k, value: draft[k] as never }));
-    const { error } = await supabase.from("site_content").upsert(rows as never, { onConflict: "key" });
+    const rows = (Object.keys(DEFAULTS) as ContentKey[]).map((k) => ({ key: k, value: draft[k] as object }));
+    const { error } = await supabase.from("site_content").upsert(rows, { onConflict: "key" });
     setSaving(false);
     if (error) { showToast(error.message, "err"); return; }
     queryClient.invalidateQueries({ queryKey: ["site-content"] });

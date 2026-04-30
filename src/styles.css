@@ -234,13 +234,10 @@ body.lg-body {
 
 /* HERO */
 .hero {
-  height: 100vh; position: fixed; top: 0; left: 0; width: 100%;
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  min-height: 100vh; position: relative; display: flex; align-items: center;
+  justify-content: center; overflow: hidden;
   background: linear-gradient(135deg, #2c0a0a 0%, #1a1a1a 40%, #0a0a0a 100%);
-  z-index: 1;
 }
-.ticker { position: relative; z-index: 2; margin-top: 100vh; background: var(--color-dark-lg); padding: 14px 0; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.06); }
-.services-section, .dark-section, .places-section, .lg-footer { position: relative; z-index: 2; }
 .hero-images { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .hero-img { position: absolute; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
 .hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -266,7 +263,7 @@ body.lg-body {
 .hero-cta a:hover .cta-dot { background: var(--color-dark-lg); }
 
 /* TICKER */
-/* ticker base merged above */
+.ticker { background: var(--color-dark-lg); padding: 14px 0; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.06); }
 .ticker-track { display: flex; animation: tickerScroll 30s linear infinite; gap: 60px; width: max-content; }
 .ticker-track span { font-family: var(--font-sans-lg); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); white-space: nowrap; }
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -334,8 +331,6 @@ body.lg-body {
 .footer-col a:hover { color: var(--color-red-lg); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .footer-bottom span { font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
-.footer-painel-link { color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.3s; }
-.footer-painel-link:hover { color: var(--color-red-lg); }
 
 /* REVEALS */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1); }
