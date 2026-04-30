@@ -1,1 +1,10 @@
 project_id = "lcjuezugcqdffweyhlkb"
+
+[functions.bootstrap-owner]
+verify_jwt = false
+
+[functions.create-admin]
+verify_jwt = false
+
+[functions.update-admin]
+verify_jwt = false
