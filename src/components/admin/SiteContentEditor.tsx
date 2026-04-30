@@ -330,16 +330,13 @@ export function SiteContentEditor() {
                    />
                 </div>
               </div>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line2} />
-                </div>
-                <div className="space-y-2">
-                   <Label className="text-red-500">Hashtag Destaque</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.hashtag} />
-                </div>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
       </Tabs>
     </div>
   );
