@@ -30,18 +30,28 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { data, error: err } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
-    if (err || !data.session) {
+    const { data, error: err } = await supabase.auth.signInWithPassword({ 
+      email: email.trim().toLowerCase(), 
+      password 
+    });
+
+    if (err) {
       setLoading(false);
-      setError(err?.message || "Credenciais inválidas");
-      console.error("Login error:", err);
+      const msg = err.message === "Invalid login credentials" 
+        ? "E-mail ou senha incorretos." 
+        : err.message;
+      setError(msg);
       return;
     }
-    // Garante que a sessão já está persistida antes de navegar
-    await supabase.auth.getSession();
-    setLoading(false);
-    // Hard navigation evita race com listeners de auth no destino
-    window.location.href = "/admin";
+
+    if (!data.session) {
+      setLoading(false);
+      setError("Não foi possível iniciar a sessão.");
+      return;
+    }
+
+    // Navegação imediata para maior rapidez
+    navigate({ to: "/admin" });
   };
 
   return (

@@ -47,8 +47,10 @@ function AdminPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [loading, user, navigate]);
+    if (!loading && !user) {
+      window.location.href = "/login";
+    }
+  }, [loading, user]);
 
   const showToast = (msg: string, kind: "ok" | "err" = "ok") => {
     setToast({ msg, kind });
