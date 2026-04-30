@@ -62,22 +62,24 @@ function AdminPage() {
     window.location.href = "/";
   };
 
-  if (loading && !isAdmin) return <Center>Carregando painel…</Center>;
-  if (!user) return <Center>Redirecionando…</Center>;
-  
-  // Only show auth error if we don't have a role already (bypass transient DB errors)
-  if (authError && !isAdmin) {
-    return (
-      <Center>
-        <div style={{ textAlign: 'center', padding: 20 }}>
-          <p style={{ color: '#ef4444', marginBottom: 16 }}>Erro de conexão com o banco de dados.</p>
-          <PrimaryBtn onClick={() => window.location.reload()}>Tentar novamente</PrimaryBtn>
-        </div>
-      </Center>
-    );
+  // Se já temos isAdmin (via cache), renderizamos o painel imediatamente
+  if (!isAdmin) {
+    if (loading) return <Center>Carregando painel…</Center>;
+    if (!user) return <Center>Redirecionando para login…</Center>;
+    
+    if (authError) {
+      return (
+        <Center>
+          <div style={{ textAlign: 'center', padding: 20 }}>
+            <p style={{ color: '#ef4444', marginBottom: 16 }}>Erro de conexão: {authError}</p>
+            <PrimaryBtn onClick={() => window.location.reload()}>Tentar novamente</PrimaryBtn>
+          </div>
+        </Center>
+      );
+    }
+    
+    return <Center>Acesso negado.</Center>;
   }
-
-  if (!isAdmin) return <Center>Acesso negado.</Center>;
 
   return (
     <div style={{
