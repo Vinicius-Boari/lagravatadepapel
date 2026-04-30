@@ -7,6 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+const showToast = (message: string, type: 'success' | 'error') => {
+  if (type === 'success') {
+    toast.success(message, { position: "top-center", duration: 4000 });
+  } else {
+    toast.error(message, { position: "top-center", duration: 5000 });
+  }
+};
+
 export function VisualIdentity() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
   const [loading, setLoading] = useState(false);
