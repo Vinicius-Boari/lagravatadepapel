@@ -455,8 +455,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção O Plano
+                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção O Plano"}
                 </Button>
               </div>
             </CardContent>
