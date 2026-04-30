@@ -79,9 +79,9 @@ export function MediaUploader({ value, onChange, label, folder = "uploads", acce
       >
         {value ? (
           isVideo ? (
-            <video src={value} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <video src={value} muted style={{ width: "100%", height: "100%", objectFit: "contain", background: "#050505" }} />
           ) : (
-            <img src={value} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src={value} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", background: "#050505" }} />
           )
         ) : (
           <div style={{ textAlign: "center", color: "#666", padding: 16 }}>
