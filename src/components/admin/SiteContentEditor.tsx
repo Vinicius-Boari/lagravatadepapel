@@ -936,18 +936,7 @@ export function SiteContentEditor() {
                   * Nota: Habilitar o idioma permite a troca no site. Você precisará traduzir o conteúdo manualmente nas abas correspondentes após a implementação da lógica de tradução.
                 </p>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("languages", languages, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Configurações de Idioma"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
