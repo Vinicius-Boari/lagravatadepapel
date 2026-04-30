@@ -314,8 +314,10 @@ function Index() {
       </section>
 
       <section className="about-section" id="sobre">
-        <div className="about-image">
-          <img src="/images/hero_venue.png" alt="Sobre La Gravata de Papel" />
+        <div className="about-image scene-3d">
+          <div className="scroll-3d tilt-3d">
+            <img src="/images/hero_venue.png" alt="Sobre La Gravata de Papel" />
+          </div>
         </div>
         <div className="about-text">
           <h2 className="reveal">La Gravata<br />de <em>Papel</em></h2>
