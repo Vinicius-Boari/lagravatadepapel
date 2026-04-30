@@ -70,6 +70,16 @@ export function HeroEditor({ value, onChange }: SectionEditorProps) {
           ))}
         </div>
       </FormField>
+
+      <FormField label="Vídeo de fundo (opcional)" hint="Se enviado, este vídeo aparecerá atrás das imagens da capa.">
+        <MediaUploader
+          folder="hero"
+          accept="video/*"
+          value={v.video_url ?? ""}
+          onChange={(url) => set("video_url", url)}
+          aspect="video"
+        />
+      </FormField>
     </Section>
   );
 }
