@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   LayoutDashboard, 
@@ -50,13 +50,13 @@ const SettingsTab = () => (
 
 export function AdminDashboard() {
   const { user, role, logout, isOwner } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    router.navigate({ to: "/" });
   };
 
   const menuItems = [
