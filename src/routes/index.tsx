@@ -107,12 +107,53 @@ function Index() {
     );
     document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 
+    // 3D Tilt-on-mouse-move for cards
+    const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
+    const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
+    tiltEls.forEach((el) => {
+      const move = (e: MouseEvent) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.setProperty("--tx", `${x * 14}deg`);
+        el.style.setProperty("--ty", `${-y * 14}deg`);
+      };
+      const leave = () => {
+        el.style.setProperty("--tx", `0deg`);
+        el.style.setProperty("--ty", `0deg`);
+      };
+      el.addEventListener("mousemove", move);
+      el.addEventListener("mouseleave", leave);
+      tiltHandlers.push({ el, move, leave });
+    });
+
+    // Scroll-driven 3D for elements with .scroll-3d
+    const scrollEls = document.querySelectorAll<HTMLElement>(".scroll-3d");
+    const onScroll3d = () => {
+      scrollEls.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const progress = (r.top + r.height / 2 - vh / 2) / vh; // -1..1 around center
+        const clamped = Math.max(-1, Math.min(1, progress));
+        el.style.setProperty("--sx", `${clamped * 8}deg`);
+        el.style.setProperty("--sy", `${clamped * -10}deg`);
+        el.style.setProperty("--sz", `${-Math.abs(clamped) * 60}px`);
+      });
+    };
+    window.addEventListener("scroll", onScroll3d, { passive: true });
+    onScroll3d();
+
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onScroll3d);
       cancelAnimationFrame(raf);
       hoverEls.forEach((el) => {
         el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      });
+      tiltHandlers.forEach(({ el, move, leave }) => {
+        el.removeEventListener("mousemove", move);
         el.removeEventListener("mouseleave", leave);
       });
       obs.disconnect();
