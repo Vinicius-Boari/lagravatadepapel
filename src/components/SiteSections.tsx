@@ -263,16 +263,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => (
             <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={i}>
-              {v.src ? (
-                <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
-              ) : (
-                <>
-                  {v.poster && <img src={v.poster} alt={v.title} />}
-                  <div className="video-card-placeholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                    <span>Vídeo em breve</span>
-                  </div>
-                </>
+              {v.poster && <img src={v.poster} alt={v.title} />}
+              {!v.poster && (
+                <div className="video-card-placeholder">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                  <span>Vídeo em breve</span>
+                </div>
               )}
               <div className="video-card-overlay">
                 <h3>{v.title}</h3>
@@ -317,9 +313,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
       <section className="about-section" id="sobre">
-        <div className="about-image scene-3d">
-          <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+        <div className="about-image scene-3d" style={{ background: 'var(--color-cream)' }}>
+          <div className="scroll-3d tilt-3d" style={{ background: 'var(--color-cream)' }}>
+            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" style={{ mixBlendMode: 'multiply' }} />}
           </div>
         </div>
         <div className="about-text">
