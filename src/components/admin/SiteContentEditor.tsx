@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash } from "lucide-react";
+import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon } from "lucide-react";
 
 export function SiteContentEditor() {
   const { content, updateSection, loading } = useSiteContent();
