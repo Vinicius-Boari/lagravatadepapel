@@ -34,8 +34,7 @@ export function SiteContentEditor() {
   });
 
   // Effect to update local states when content loads
-  import { useEffect as useSyncEffect } from "react";
-  useSyncEffect(() => {
+  useEffect(() => {
     if (!loading) {
       setHero(content.hero || {});
       setAbout(content.about || {});
