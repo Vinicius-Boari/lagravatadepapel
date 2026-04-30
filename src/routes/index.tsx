@@ -360,7 +360,13 @@ function Index() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 La Gravata de Papel — Nome registrado no INPI. Todos os direitos reservados.</span>
+          <span>
+            © 2026 La Gravata de Papel — Nome registrado no INPI. Todos os direitos reservados.
+            {" · "}
+            <Link to="/login" style={{ color: "inherit", opacity: 0.7, textDecoration: "underline" }}>
+              Painel
+            </Link>
+          </span>
           <span>#LAGRAVATADEPAPEL</span>
         </div>
       </footer>
