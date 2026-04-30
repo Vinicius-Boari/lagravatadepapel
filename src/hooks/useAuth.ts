@@ -1,31 +1,34 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
 export type AppRole = "owner" | "admin" | null;
 
-// Cache roles in memory to speed up navigation/reloads
-let cachedRole: AppRole = null;
-let cachedUid: string | null = null;
+// Extreme speed: use localStorage for instant role availability across sessions
+const STORAGE_KEY = "lg_user_role";
+const getCachedRole = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) as AppRole;
+  } catch {
+    return null;
+  }
+};
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<AppRole>(cachedRole);
-  const [loading, setLoading] = useState(!cachedRole);
+  const [role, setRole] = useState<AppRole>(getCachedRole());
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
     const fetchRole = async (uid: string) => {
-      if (cachedUid === uid && cachedRole) {
-        setRole(cachedRole);
-        setLoading(false);
-        return;
-      }
-
       try {
+        // Fast path: if we already have it in state, just clear loading
+        if (role && loading) setLoading(false);
+
         const { data, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
@@ -34,7 +37,9 @@ export function useAuth() {
         if (!mounted) return;
         
         if (roleError) {
-          setError(roleError.message);
+          // If schema cache error, we don't block the user if we have a cached role
+          console.warn("Role fetch warning:", roleError);
+          if (!role) setError(roleError.message);
           setLoading(false);
           return;
         }
@@ -46,25 +51,33 @@ export function useAuth() {
           else if (roles.includes("admin")) newRole = "admin";
         }
         
-        cachedRole = newRole;
-        cachedUid = uid;
+        if (newRole) {
+          localStorage.setItem(STORAGE_KEY, newRole);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+        
         setRole(newRole);
+        setError(null);
       } catch (err) {
-        console.error("Auth error:", err);
+        console.error("Auth exception:", err);
       } finally {
         if (mounted) setLoading(false);
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+      if (!mounted) return;
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) {
+      
+      if (event === "SIGNED_OUT") {
+        localStorage.removeItem(STORAGE_KEY);
+        setRole(null);
+        setLoading(false);
+      } else if (s?.user) {
         fetchRole(s.user.id);
       } else {
-        cachedRole = null;
-        cachedUid = null;
-        setRole(null);
         setLoading(false);
       }
     });
