@@ -151,9 +151,9 @@ export function VisualIdentity() {
       </Card>
       
       <div className="flex justify-end pt-6">
-        <Button onClick={() => handleSave(false)} className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-bold">
-          <Save className="mr-2 w-5 h-5" />
-          Publicar Identidade Visual
+        <Button onClick={() => handleSave(false)} className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-bold" disabled={loading}>
+          {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <Save className="mr-2 w-5 h-5" />}
+          {loading ? "Publicando..." : "Publicar Identidade Visual"}
         </Button>
       </div>
     </div>
