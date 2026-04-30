@@ -104,6 +104,7 @@ export function SiteContentEditor() {
   const { content, updateSection, loading: contentLoading, refresh } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  const [successSections, setSuccessSections] = useState<Record<string, boolean>>({});
 
   // Local state for each section to handle edits
   const [hero, setHero] = useState<any>(content.hero || {});
