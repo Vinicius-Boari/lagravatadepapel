@@ -167,17 +167,26 @@ body.lg-body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* CURSOR */
-.cursor-dot {
-  width: 8px; height: 8px; background: var(--color-red-lg); border-radius: 50%;
-  position: fixed; pointer-events: none; z-index: 10001; mix-blend-mode: difference;
+/* RED CURSOR LINE */
+.cursor-line-red {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-red-lg);
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: difference;
+  box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
 }
-.cursor-ring {
-  width: 40px; height: 40px; border: 1.5px solid rgba(192,57,43,0.4); border-radius: 50%;
-  position: fixed; pointer-events: none; z-index: 10000;
-  transition: width 0.3s, height 0.3s, border-color 0.3s; mix-blend-mode: difference;
+
+/* Hide default cursor on the whole body for a cleaner look if desired, 
+   but user didn't ask to hide the system cursor, only to replace the custom circles */
+@media (pointer: fine) {
+  .lg-body {
+    cursor: crosshair;
+  }
 }
-.cursor-ring.hover { width: 60px; height: 60px; border-color: var(--color-gold-lg); }
 
 /* HEADER */
 .lg-header {
