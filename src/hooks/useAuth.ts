@@ -10,7 +10,10 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<AppRole>(() => {
-    try { return localStorage.getItem(STORAGE_KEY) as AppRole; } catch { return null; }
+    try { 
+      const cached = localStorage.getItem(STORAGE_KEY);
+      return (cached === "owner" || cached === "admin") ? cached as AppRole : null;
+    } catch { return null; }
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
