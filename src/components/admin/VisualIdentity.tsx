@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export function VisualIdentity() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
