@@ -237,13 +237,41 @@ function Index() {
         <div className="section-header reveal">
           <h2>Nossos<br /><span>Serviços</span></h2>
         </div>
-        <div className="services-grid">
+        <div className="services-grid scene-3d">
           {services.map((s) => (
-            <div className="service-card reveal" key={s.title}>
+            <div className="service-card tilt-3d scroll-3d reveal" key={s.title}>
               <img src={s.img} alt={s.title} />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="video-section" id="videos">
+        <div className="video-section-header reveal">
+          <h2>Em <em><span>Movimento</span></em></h2>
+        </div>
+        <div className="video-grid scene-3d">
+          {videos.map((v) => (
+            <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={v.title}>
+              {v.src ? (
+                <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
+              ) : (
+                <>
+                  {v.poster && <img src={v.poster} alt={v.title} />}
+                  <div className="video-card-placeholder">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                    <span>Vídeo em breve</span>
+                    <em>Substitua pelo reel real</em>
+                  </div>
+                </>
+              )}
+              <div className="video-card-overlay">
+                <h3>{v.title}</h3>
+                <span>{v.tag}</span>
               </div>
             </div>
           ))}
@@ -272,9 +300,9 @@ function Index() {
             Ver no Instagram →
           </a>
         </div>
-        <div className="places-grid">
+        <div className="places-grid scene-3d">
           {places.map((p) => (
-            <div className="place-card reveal" key={p.title}>
+            <div className="place-card tilt-3d scroll-3d reveal" key={p.title}>
               <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
