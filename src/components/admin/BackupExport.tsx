@@ -51,7 +51,6 @@ import {
 } from "@/server/backup.functions";
 
 export function BackupExport() {
-  console.log("[BackupExport] rendering");
   const [backups, setBackups] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -153,23 +152,15 @@ export function BackupExport() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Tem certeza que deseja excluir este backup permanentemente? Esta ação não pode ser desfeita.")) {
-      return;
-    }
-
     const adminToken = getAdminToken();
-    try {
-      await toast.promise(deleteFn({ data: { adminToken, id } }), {
-        loading: "Excluindo backup...",
-        success: () => {
-          fetchData();
-          return "Backup excluído.";
-        },
-        error: (err) => `Erro ao excluir backup: ${err.message}`
-      });
-    } catch (error) {
-      // toast.promise handles it
-    }
+    toast.promise(deleteFn({ data: { adminToken, id } }), {
+      loading: "Excluindo backup...",
+      success: () => {
+        fetchData();
+        return "Backup excluído.";
+      },
+      error: "Erro ao excluir backup."
+    });
   };
 
   const handleRestore = async (id: string) => {
@@ -243,7 +234,7 @@ export function BackupExport() {
               </div>
               <Switch 
                 checked={!!settings?.auto_enabled} 
-                onCheckedChange={(val) => setSettings((prev: any) => ({ ...(prev || {}), auto_enabled: val }))}
+                onCheckedChange={(val) => setSettings({ ...(settings || {}), auto_enabled: val })}
               />
             </div>
 
@@ -253,12 +244,12 @@ export function BackupExport() {
                 <Input 
                   type="number" 
                   value={settings?.interval_value ?? ""}
-                  onChange={(e) => setSettings((prev: any) => ({ ...(prev || {}), interval_value: e.target.value }))}
+                  onChange={(e) => setSettings({ ...(settings || {}), interval_value: e.target.value })}
                   className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
                 />
                 <Select 
                   value={settings?.interval_unit || "hours"} 
-                  onValueChange={(val) => setSettings((prev: any) => ({ ...(prev || {}), interval_unit: val }))}
+                  onValueChange={(val) => setSettings({ ...(settings || {}), interval_unit: val })}
                 >
                   <SelectTrigger className="bg-zinc-950 border-zinc-800 text-red-500">
                     <SelectValue />
@@ -279,7 +270,7 @@ export function BackupExport() {
                   <Input 
                     type="number" 
                     value={settings?.retention_count ?? ""}
-                    onChange={(e) => setSettings((prev: any) => ({ ...(prev || {}), retention_count: e.target.value }))}
+                    onChange={(e) => setSettings({ ...(settings || {}), retention_count: e.target.value })}
                     className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
                   />
                   <span className="text-xs text-zinc-500">últimos backups</span>
@@ -339,7 +330,7 @@ export function BackupExport() {
                       {backups.map((b) => (
                         <tr key={b.id} className="group hover:bg-zinc-800/20 transition-colors">
                           <td className="py-4 pl-2 font-medium">
-                            <div className="text-red-500">{b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "N/A"}</div>
+                            <div className="text-red-500">{format(new Date(b.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}</div>
                             <div className="text-[10px] text-zinc-600 font-mono">{b.id.split('-')[0]}...</div>
                           </td>
                           <td className="py-4">
@@ -399,7 +390,7 @@ export function BackupExport() {
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>Restaurar este backup?</AlertDialogTitle>
                                         <AlertDialogDescription className="text-zinc-500">
-                                          Esta ação é irreversível e substituirá todos os dados atuais (páginas, posts, mídias e configurações) pelos dados deste backup de {b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm") : "data desconhecida"}.
+                                          Esta ação é irreversível e substituirá todos os dados atuais (páginas, posts, mídias e configurações) pelos dados deste backup de {format(new Date(b.created_at), "dd/MM/yyyy HH:mm")}.
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>

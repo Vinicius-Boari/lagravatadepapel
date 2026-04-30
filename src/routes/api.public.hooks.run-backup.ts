@@ -10,10 +10,7 @@ import {
 export const Route = createFileRoute("/api/public/hooks/run-backup")({
   server: {
     handlers: {
-      GET: async () => {
-        return Response.json({ message: "Use POST to trigger backup" });
-      },
-      POST: async ({ request }: { request: Request }) => {
+      POST: async ({ request }) => {
         const auth = request.headers.get("authorization") ?? "";
         const apikey = request.headers.get("apikey") ?? "";
         
