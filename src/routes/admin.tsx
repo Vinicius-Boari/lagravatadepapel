@@ -64,7 +64,19 @@ function AdminPage() {
 
   if (loading && !isAdmin) return <Center>Carregando painel…</Center>;
   if (!user) return <Center>Redirecionando…</Center>;
-  if (authError && !isAdmin) return <Center>Erro de permissão: {authError}</Center>;
+  
+  // Only show auth error if we don't have a role already (bypass transient DB errors)
+  if (authError && !isAdmin) {
+    return (
+      <Center>
+        <div style={{ textAlign: 'center', padding: 20 }}>
+          <p style={{ color: '#ef4444', marginBottom: 16 }}>Erro de conexão com o banco de dados.</p>
+          <PrimaryBtn onClick={() => window.location.reload()}>Tentar novamente</PrimaryBtn>
+        </div>
+      </Center>
+    );
+  }
+
   if (!isAdmin) return <Center>Acesso negado.</Center>;
 
   return (
