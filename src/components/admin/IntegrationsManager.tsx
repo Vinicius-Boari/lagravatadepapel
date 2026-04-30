@@ -233,8 +233,20 @@ export function IntegrationsManager() {
           </CardContent>
         </Card>
       </div>
-
-      
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button 
+          onClick={handleSave} 
+          className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          )}
+          {loading ? "Salvando..." : "Salvar Configurações"}
+        </Button>
+      </div>
     </div>
   );
 }
