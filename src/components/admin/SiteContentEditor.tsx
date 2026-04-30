@@ -32,17 +32,6 @@ export function SiteContentEditor() {
     }
   }, [loading, content]);
 
-  // Effect to update local states when content loads
-  useEffect(() => {
-    if (!loading) {
-      setHero(content.hero || {});
-      setAbout(content.about || {});
-      setPlan(content.plan || {});
-      setServices(content.services || { items: [] });
-      setVideos(content.videos || { items: [] });
-      setFooter(content.footer || {});
-    }
-  }, [loading, content]);
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
     await updateSection(section, data, isDraft);
