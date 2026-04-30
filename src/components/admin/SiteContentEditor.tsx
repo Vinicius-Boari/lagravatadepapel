@@ -208,21 +208,55 @@ export function SiteContentEditor() {
                       <div className="flex justify-between items-start">
                         <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Serviço #{idx+1}</span>
                         <div className="flex space-x-1">
-                          <Button size="icon" variant="ghost" className="h-7 w-7"><Trash2 className="w-3.5 h-3.5 text-red-500" /></Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-7 w-7"
+                            onClick={() => {
+                              const newItems = services.items.filter((_: any, i: number) => i !== idx);
+                              setServices({...services, items: newItems});
+                            }}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                          </Button>
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                            <Label className="text-xs text-red-500">Título</Label>
-                           <Input className="bg-zinc-800 border-red-900 text-red-500" value={item.title} />
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={item.title} 
+                             onChange={(e) => {
+                               const newItems = [...services.items];
+                               newItems[idx] = { ...newItems[idx], title: e.target.value };
+                               setServices({...services, items: newItems});
+                             }}
+                           />
                         </div>
                         <div className="space-y-2">
                            <Label className="text-xs text-red-500">URL da Imagem</Label>
-                           <Input className="bg-zinc-800 border-red-900 text-red-500" value={item.img} />
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={item.img} 
+                             onChange={(e) => {
+                               const newItems = [...services.items];
+                               newItems[idx] = { ...newItems[idx], img: e.target.value };
+                               setServices({...services, items: newItems});
+                             }}
+                           />
                         </div>
                         <div className="md:col-span-2 space-y-2">
                            <Label className="text-xs text-red-500">Descrição Curta</Label>
-                           <Textarea className="bg-zinc-800 border-red-900 text-red-500" value={item.desc} />
+                           <Textarea 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={item.desc} 
+                             onChange={(e) => {
+                               const newItems = [...services.items];
+                               newItems[idx] = { ...newItems[idx], desc: e.target.value };
+                               setServices({...services, items: newItems});
+                             }}
+                           />
                         </div>
                       </div>
                     </div>
@@ -247,24 +281,55 @@ export function SiteContentEditor() {
               <div className="space-y-4">
                 <div className="space-y-2">
                    <Label className="text-red-500">Telefone (Exibição)</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.phone} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.phone} 
+                     onChange={(e) => setFooter({...footer, phone: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">WhatsApp Link</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.whatsapp_url} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.whatsapp_url} 
+                     onChange={(e) => setFooter({...footer, whatsapp_url: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">Copyright</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.copyright} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.copyright} 
+                     onChange={(e) => setFooter({...footer, copyright: e.target.value})}
+                   />
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="space-y-2">
                    <Label className="text-red-500">Endereço Linha 1</Label>
-                   <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line1} />
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.address_line1} 
+                     onChange={(e) => setFooter({...footer, address_line1: e.target.value})}
+                   />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-red-500">Endereço Linha 2</Label>
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.address_line2} 
+                     onChange={(e) => setFooter({...footer, address_line2: e.target.value})}
+                   />
+                </div>
+                <div className="space-y-2">
+                   <Label className="text-red-500">Hashtag Destaque</Label>
+                   <Input 
+                     className="bg-zinc-800 border-red-900 text-red-500" 
+                     value={footer.hashtag} 
+                     onChange={(e) => setFooter({...footer, hashtag: e.target.value})}
+                   />
+                </div>
+              </div>
                    <Input className="bg-zinc-800 border-red-900 text-red-500" value={footer.address_line2} />
                 </div>
                 <div className="space-y-2">
