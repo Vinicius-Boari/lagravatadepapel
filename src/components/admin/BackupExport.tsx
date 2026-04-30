@@ -339,7 +339,7 @@ export function BackupExport() {
                       {backups.map((b) => (
                         <tr key={b.id} className="group hover:bg-zinc-800/20 transition-colors">
                           <td className="py-4 pl-2 font-medium">
-                            <div className="text-red-500">{format(new Date(b.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}</div>
+                            <div className="text-red-500">{b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "N/A"}</div>
                             <div className="text-[10px] text-zinc-600 font-mono">{b.id.split('-')[0]}...</div>
                           </td>
                           <td className="py-4">
@@ -399,7 +399,7 @@ export function BackupExport() {
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>Restaurar este backup?</AlertDialogTitle>
                                         <AlertDialogDescription className="text-zinc-500">
-                                          Esta ação é irreversível e substituirá todos os dados atuais (páginas, posts, mídias e configurações) pelos dados deste backup de {format(new Date(b.created_at), "dd/MM/yyyy HH:mm")}.
+                                          Esta ação é irreversível e substituirá todos os dados atuais (páginas, posts, mídias e configurações) pelos dados deste backup de {b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm") : "data desconhecida"}.
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>
