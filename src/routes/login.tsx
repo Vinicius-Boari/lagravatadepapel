@@ -30,10 +30,11 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { data, error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    const { data, error: err } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
     if (err || !data.session) {
       setLoading(false);
       setError(err?.message || "Credenciais inválidas");
+      console.error("Login error:", err);
       return;
     }
     // Garante que a sessão já está persistida antes de navegar
