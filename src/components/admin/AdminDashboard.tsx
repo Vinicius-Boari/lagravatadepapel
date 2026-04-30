@@ -73,7 +73,7 @@ export function AdminDashboard() {
       case "media": return <MediaLibrary />;
       case "integrations": return <IntegrationsManager />;
       case "pages": return <PagesRoutes />;
-      case "settings": return <ActivityLogs />; // Placeholder for now
+      case "settings": return <SettingsTab />;
       case "users": return isOwner ? <UserManagement /> : null;
       case "logs": return <ActivityLogs />;
       case "backup": return <BackupExport />;
