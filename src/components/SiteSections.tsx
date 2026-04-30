@@ -204,6 +204,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="hero" id="hero">
+        {hero.video_url && (
+          <div className="hero-video-bg">
+            <video src={hero.video_url} autoPlay muted loop playsInline />
+          </div>
+        )}
         <div className="hero-images" ref={heroImgsRef}>
           {(hero.images ?? []).slice(0, 3).map((src: string, i: number) => (
             <div key={i} className={`hero-img hero-img-${i + 1}`}>

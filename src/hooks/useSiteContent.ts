@@ -16,6 +16,7 @@ const FALLBACK: SiteContent = {
       "/images/hero_venue.png",
       "/images/hero_party.png",
     ],
+    video_url: "",
   },
   services: { heading: "Nossos", heading_em: "Serviços", items: [] },
   videos: { heading: "Em", heading_em: "Movimento", items: [] },
