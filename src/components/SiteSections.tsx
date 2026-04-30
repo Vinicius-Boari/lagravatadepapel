@@ -320,6 +320,19 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
             {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+            {about.video && (
+              <div className="about-video-container mt-4">
+                <video 
+                  src={about.video} 
+                  controls 
+                  autoPlay 
+                  muted 
+                  loop 
+                  playsInline 
+                  className="w-full rounded-lg shadow-lg"
+                />
+              </div>
+            )}
           </div>
         </div>
         <div className="about-text">
