@@ -127,7 +127,7 @@ export function AdminDashboard() {
             <div className="h-8 w-px bg-zinc-800" />
             <div className="flex items-center space-x-3">
               <div className="text-right hidden sm:block">
-                <div className="text-sm font-semibold text-zinc-100">{user?.full_name}</div>
+                <div className="text-sm font-semibold text-red-500">{user?.full_name}</div>
                 <div className={cn(
                   "text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded",
                   role === "owner" ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-500"
