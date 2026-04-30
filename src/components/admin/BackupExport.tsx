@@ -242,7 +242,7 @@ export function BackupExport() {
               </div>
               <Switch 
                 checked={!!settings?.auto_enabled} 
-                onCheckedChange={(val) => setSettings({ ...(settings || {}), auto_enabled: val })}
+                onCheckedChange={(val) => setSettings((prev: any) => ({ ...(prev || {}), auto_enabled: val }))}
               />
             </div>
 
