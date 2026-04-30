@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export type SiteContent = Record<string, any>;
 
-const FALLBACK: SiteContent = {
+export const FALLBACK_CONTENT: SiteContent = {
   hero: {
     title_lines: ["Vamos", "Invadir", "Seu Evento"],
     subtitle: "A hora da gravata\nnunca mais será\na mesma /",
     location: "São Paulo\nCapital",
     cta_label: "EXECUTAR O PLANO",
-    cta_url:
-      "https://api.whatsapp.com/send?phone=5511985111012&text=Olá,%20visitei%20o%20site%20de%20vocês%20e%20gostaria%20de%20saber%20mais%20sobre%20a%20La%20Gravata%20de%20Papel.",
-    images: [
-      "/images/hero_invasion.png",
-      "/images/hero_venue.png",
-      "/images/hero_party.png",
-    ],
+    cta_url: "https://api.whatsapp.com/send?phone=5511985111012",
+    images: [],
     video_url: "",
+  },
+  visual: {
+    primary_color: "#c0392b",
+    secondary_color: "#ffffff",
+    background_color: "#0a0a0a",
+    text_color: "#ffffff",
+    font_family: "Playfair Display",
+    logo_url: "",
+    favicon_url: "",
   },
   services: { heading: "Nossos", heading_em: "Serviços", items: [] },
   videos: { heading: "Em", heading_em: "Movimento", items: [] },
@@ -27,8 +32,18 @@ const FALLBACK: SiteContent = {
     handle: "lagravatadepapel",
     profile_url: "https://www.instagram.com/lagravatadepapel",
     title: "Siga no Instagram",
-    subtitle: "Os bastidores das nossas invasões — atualizados em tempo real.",
+    subtitle: "Os bastidores das nossas invasões.",
     mode: "manual",
+    access_token: "",
+    app_id: "",
+    app_secret: "",
+  },
+  integrations: {
+    google_analytics_id: "",
+    google_tag_manager_id: "",
+    facebook_pixel_id: "",
+    whatsapp_number: "5511985111012",
+    whatsapp_message: "Olá, gostaria de saber mais sobre a La Gravata de Papel.",
   },
   footer: {
     phone: "", phone_url: "#", address_line1: "", address_line2: "",
@@ -37,35 +52,54 @@ const FALLBACK: SiteContent = {
   },
 };
 
-/**
- * Loads the public site content. If `useDraft` is true, prefers `draft_value`
- * over `value` (for in-panel preview by admins).
- */
 export function useSiteContent(useDraft = false) {
-  const [content, setContent] = useState<SiteContent>(FALLBACK);
+  const [content, setContent] = useState<SiteContent>(FALLBACK_CONTENT);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
+  const fetchContent = async () => {
+    try {
       const { data, error } = await supabase
         .from("site_content")
         .select("key, value, draft_value");
-      if (!mounted) return;
+      
       if (!error && data) {
-        const merged: SiteContent = { ...FALLBACK };
+        const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          merged[row.key] = { ...(FALLBACK[row.key] ?? {}), ...(v as object) };
+          merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
         }
         setContent(merged);
       }
+    } catch (err) {
+      console.error("Error fetching content:", err);
+    } finally {
       setLoading(false);
-    })();
-    return () => {
-      mounted = false;
-    };
+    }
+  };
+
+  useEffect(() => {
+    fetchContent();
   }, [useDraft]);
 
-  return { content, loading };
+  const updateSection = async (key: string, newValue: any, isDraft = true) => {
+    try {
+      const updateData = isDraft ? { draft_value: newValue } : { value: newValue };
+      
+      const { error } = await supabase
+        .from("site_content")
+        .upsert({ key, ...updateData });
+
+      if (error) throw error;
+      
+      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas!");
+      await fetchContent();
+      return true;
+    } catch (err) {
+      console.error("Error updating content:", err);
+      toast.error("Erro ao salvar alterações.");
+      return false;
+    }
+  };
+
+  return { content, loading, updateSection, refresh: fetchContent };
 }
