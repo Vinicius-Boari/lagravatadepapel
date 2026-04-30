@@ -368,6 +368,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             {footer.copyright}
           </span>
           <span>{footer.hashtag}</span>
+          <a 
+            href="/admin/login" 
+            className="admin-access-link"
+            aria-label="Acesso Restrito"
+            title="Acesso Restrito"
+          >
+            🔒
+          </a>
         </div>
       </footer>
 
