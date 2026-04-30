@@ -131,6 +131,11 @@ export function SiteContentEditor() {
                       value={hero.image1 || ""}
                       onChange={(e) => setHero({...hero, image1: e.target.value})}
                     />
+                    {hero.image1 && (
+                      <div className="mt-2 relative aspect-[3/4] rounded-lg overflow-hidden border border-red-900/30">
+                        <img src={hero.image1} className="w-full h-full object-cover" />
+                      </div>
+                    )}
                     <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
                   </div>
                   <div className="space-y-2">
@@ -141,6 +146,11 @@ export function SiteContentEditor() {
                       value={hero.image2 || ""}
                       onChange={(e) => setHero({...hero, image2: e.target.value})}
                     />
+                    {hero.image2 && (
+                      <div className="mt-2 relative aspect-[3/4] rounded-lg overflow-hidden border border-red-900/30">
+                        <img src={hero.image2} className="w-full h-full object-cover" />
+                      </div>
+                    )}
                     <p className="text-[10px] text-red-500/50">Recomendação: Retrato 600x800px (Centro).</p>
                   </div>
                   <div className="space-y-2">
@@ -151,6 +161,11 @@ export function SiteContentEditor() {
                       value={hero.image3 || ""}
                       onChange={(e) => setHero({...hero, image3: e.target.value})}
                     />
+                    {hero.image3 && (
+                      <div className="mt-2 relative aspect-[3/4] rounded-lg overflow-hidden border border-red-900/30">
+                        <img src={hero.image3} className="w-full h-full object-cover" />
+                      </div>
+                    )}
                     <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
                   </div>
                 </div>
@@ -253,6 +268,11 @@ export function SiteContentEditor() {
                                setVideos({...videos, items: newItems});
                              }}
                            />
+                           {v.src && (
+                             <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
+                               <video src={v.src} className="w-full h-full object-contain" muted />
+                             </div>
+                           )}
                         </div>
                         <div className="space-y-2">
                            <Label className="text-xs text-red-500">URL da Capa (Poster)</Label>
@@ -391,6 +411,11 @@ export function SiteContentEditor() {
                     value={about.image}
                     onChange={(e) => setAbout({...about, image: e.target.value})}
                   />
+                  {about.image && (
+                    <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30">
+                      <img src={about.image} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-red-500">Link do Botão</Label>
@@ -491,6 +516,11 @@ export function SiteContentEditor() {
                                setServices({...services, items: newItems});
                              }}
                            />
+                           {item.img && (
+                             <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
+                               <img src={item.img} className="w-full h-full object-contain" />
+                             </div>
+                           )}
                         </div>
                         <div className="md:col-span-2 space-y-2">
                            <Label className="text-xs text-red-500">Descrição Curta</Label>
