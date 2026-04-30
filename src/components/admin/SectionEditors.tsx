@@ -263,7 +263,7 @@ export function FooterEditor({ value, onChange }: SectionEditorProps) {
   );
 }
 
-export const SECTION_EDITORS: Record<string, { label: string; icon: string; component: (props: SectionEditorProps) => JSX.Element }> = {
+export const SECTION_EDITORS: Record<string, { label: string; icon: string; component: (props: SectionEditorProps) => React.ReactElement }> = {
   hero: { label: "Capa (Hero)", icon: "🎬", component: HeroEditor },
   services: { label: "Serviços", icon: "✨", component: ServicesEditor },
   videos: { label: "Vídeos", icon: "🎥", component: VideosEditor },
