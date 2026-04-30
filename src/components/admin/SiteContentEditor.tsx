@@ -86,7 +86,8 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
 };
 
 export function SiteContentEditor() {
-  const { content, updateSection, loading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading, refresh } = useSiteContent();
+  const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
   // Local state for each section to handle edits
@@ -117,10 +118,17 @@ export function SiteContentEditor() {
 
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
-    await updateSection(section, data, isDraft);
+    setLoading(true);
+    const success = await updateSection(section, data, isDraft);
+    if (success) {
+      // Small delay to ensure DB propagation before state refresh is done by useSiteContent
+      setTimeout(() => setLoading(false), 500);
+    } else {
+      setLoading(false);
+    }
   };
 
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
@@ -153,8 +161,10 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)}>Salvar Rascunho</Button>
-                <Button size="sm" onClick={() => handleSave("hero", hero, false)}>Publicar</Button>
+                <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)} disabled={loading}>Salvar Rascunho</Button>
+                <Button size="sm" onClick={() => handleSave("hero", hero, false)} disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -261,7 +271,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção de Vídeos</CardTitle>
                 <CardDescription className="text-red-500/60">Gerencie a galeria de vídeos e seus destaques.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("videos", videos, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("videos", videos, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
@@ -396,7 +408,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção "O Plano"</CardTitle>
                 <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("plan", plan, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("plan", plan, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -443,8 +457,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção O Plano
+                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção O Plano"}
                 </Button>
               </div>
             </CardContent>
@@ -459,7 +473,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção Sobre</CardTitle>
                 <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("about", about, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("about", about, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -506,8 +522,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("about", about, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção Sobre
+                <Button onClick={() => handleSave("about", about, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Sobre"}
                 </Button>
               </div>
             </CardContent>
@@ -523,7 +539,9 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Grid de serviços com imagem e descrição.</CardDescription>
               </div>
               <div className="flex space-x-2">
-                <Button size="sm" onClick={() => handleSave("services", services, false)}>Publicar Tudo</Button>
+                 <Button size="sm" onClick={() => handleSave("services", services, false)} disabled={loading}>
+                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Tudo"}
+                 </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -619,8 +637,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("services", services, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção Serviços
+                <Button onClick={() => handleSave("services", services, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Serviços"}
                 </Button>
               </div>
             </CardContent>
@@ -635,7 +653,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Nossas Invasões</CardTitle>
                 <CardDescription className="text-red-500/60">Gerencie a galeria de locais e eventos visitados.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("places", places, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("places", places, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
@@ -736,8 +756,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("places", places, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção Invasões
+                <Button onClick={() => handleSave("places", places, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Invasões"}
                 </Button>
               </div>
             </CardContent>
@@ -751,7 +771,9 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Rodapé</CardTitle>
                  <CardDescription className="text-red-500/60">Informações de contato e links sociais.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("footer", footer, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("footer", footer, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -807,8 +829,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("footer", footer, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Rodapé
+                <Button onClick={() => handleSave("footer", footer, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Rodapé"}
                 </Button>
               </div>
             </CardContent>
@@ -823,7 +845,9 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Configurações de SEO</CardTitle>
                  <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("seo", seo, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("seo", seo, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -858,8 +882,8 @@ export function SiteContentEditor() {
                  <p className="text-[10px] text-zinc-500">Separe por vírgulas.</p>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("seo", seo, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Configurações SEO
+                <Button onClick={() => handleSave("seo", seo, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Configurações SEO"}
                 </Button>
               </div>
             </CardContent>
@@ -918,8 +942,8 @@ export function SiteContentEditor() {
                 </p>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("languages", languages, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Configurações de Idioma
+                <Button onClick={() => handleSave("languages", languages, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Configurações de Idioma"}
                 </Button>
               </div>
             </CardContent>

@@ -7,13 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2 } from "lucide-react";
+import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2 } from "lucide-react";
 
 export function IntegrationsManager() {
-  const { content, updateSection, loading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const [loading, setLoading] = useState(false);
   const integrations = content.integrations || {};
   const instagram = content.instagram_config || {};
-
+  
   const [formData, setFormData] = useState({
     google_analytics_id: integrations.google_analytics_id || "",
     google_tag_manager_id: integrations.google_tag_manager_id || "",
@@ -28,6 +29,7 @@ export function IntegrationsManager() {
   });
 
   const handleSave = async () => {
+    setLoading(true);
     const integrationsData = {
       google_analytics_id: formData.google_analytics_id,
       google_tag_manager_id: formData.google_tag_manager_id,
@@ -45,13 +47,19 @@ export function IntegrationsManager() {
       mode: formData.instagram_mode,
     };
 
-    await Promise.all([
+    const results = await Promise.all([
       updateSection("integrations", integrationsData, false),
       updateSection("instagram_config", instagramData, false)
     ]);
+
+    if (results.every(r => r === true)) {
+      setTimeout(() => setLoading(false), 500);
+    } else {
+      setLoading(false);
+    }
   };
 
-  if (loading) return <div className="p-8 text-zinc-400">Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-zinc-400">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
@@ -61,11 +69,12 @@ export function IntegrationsManager() {
           <p className="text-zinc-400">Conecte redes sociais, analytics e botões de contato.</p>
         </div>
         <button 
-          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-medium"
+          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-medium disabled:opacity-50"
           onClick={handleSave}
+          disabled={loading}
         >
-          <CheckCircle2 className="mr-2 w-4 h-4" />
-          Salvar Tudo
+          {loading ? <Loader2 className="mr-2 w-4 h-4 animate-spin" /> : <CheckCircle2 className="mr-2 w-4 h-4" />}
+          {loading ? "Salvando..." : "Salvar Tudo"}
         </button>
       </div>
 
@@ -211,11 +220,12 @@ export function IntegrationsManager() {
 
       <div className="flex justify-end pt-8">
         <button 
-          className="px-12 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-bold text-lg shadow-lg"
+          className="px-12 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-bold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSave}
+          disabled={loading}
         >
-          <CheckCircle2 className="mr-2 w-5 h-5" />
-          Publicar Todas as Integrações
+          {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <CheckCircle2 className="mr-2 w-5 h-5" />}
+          {loading ? "Publicando..." : "Publicar Todas as Integrações"}
         </button>
       </div>
     </div>

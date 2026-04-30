@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Save, Upload, Type } from "lucide-react";
+import { Save, Upload, Type, Loader2 } from "lucide-react";
 
 export function VisualIdentity() {
-  const { content, updateSection, loading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const [loading, setLoading] = useState(false);
   const visual = content.visual || {};
   
   const [formData, setFormData] = useState({
@@ -26,10 +27,16 @@ export function VisualIdentity() {
   };
 
   const handleSave = async (isDraft = true) => {
-    await updateSection("visual", formData, isDraft);
+    setLoading(true);
+    const success = await updateSection("visual", formData, isDraft);
+    if (success) {
+      setTimeout(() => setLoading(false), 500);
+    } else {
+      setLoading(false);
+    }
   };
 
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
@@ -144,9 +151,9 @@ export function VisualIdentity() {
       </Card>
       
       <div className="flex justify-end pt-6">
-        <Button onClick={() => handleSave(false)} className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-bold">
-          <Save className="mr-2 w-5 h-5" />
-          Publicar Identidade Visual
+        <Button onClick={() => handleSave(false)} className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-bold" disabled={loading}>
+          {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <Save className="mr-2 w-5 h-5" />}
+          {loading ? "Publicando..." : "Publicar Identidade Visual"}
         </Button>
       </div>
     </div>

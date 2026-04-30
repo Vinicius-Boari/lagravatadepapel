@@ -97,15 +97,17 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = true) => {
     try {
-      const updateData = isDraft ? { draft_value: newValue } : { value: newValue };
+      const updateData = isDraft 
+        ? { draft_value: newValue } 
+        : { value: newValue, draft_value: null }; // Clear draft when publishing
       
       const { error } = await supabase
         .from("site_content")
-        .upsert({ key, ...updateData });
+        .upsert({ key, ...updateData }, { onConflict: 'key' });
 
       if (error) throw error;
       
-      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas!");
+      // Success toast removed here to avoid double toast with SiteContentEditor
       await fetchContent();
       return true;
     } catch (err) {
