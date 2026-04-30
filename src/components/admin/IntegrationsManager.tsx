@@ -208,6 +208,16 @@ export function IntegrationsManager() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="flex justify-end pt-8">
+        <button 
+          className="px-12 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-bold text-lg shadow-lg"
+          onClick={handleSave}
+        >
+          <CheckCircle2 className="mr-2 w-5 h-5" />
+          Publicar Todas as Integrações
+        </button>
+      </div>
     </div>
   );
 }
