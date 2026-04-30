@@ -7,7 +7,7 @@ const AUTH_TOKEN_KEY = "lg_auth_token";
 
 export interface AdminUser {
   id: string;
-  email: string;
+  username: string;
   full_name: string;
   role: AppRole;
 }
@@ -28,19 +28,19 @@ export function useAuth() {
     setLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string): Promise<boolean> => {
     try {
       setError(null);
-      const cleanEmail = email.trim().toLowerCase();
+      const cleanUsername = username.trim();
       const cleanPassword = password.trim();
 
       const { data, error: dbError } = await supabase
         .from("admin_users")
         .select("*")
-        .eq("email", cleanEmail);
+        .eq("username", cleanUsername);
 
       if (dbError) {
-        console.error("Database error:", dbError);
+        console.error("Database error during login:", dbError);
         return false;
       }
 
@@ -56,7 +56,7 @@ export function useAuth() {
 
       const adminUser: AdminUser = {
         id: dbUser.id,
-        email: dbUser.email,
+        username: dbUser.username,
         full_name: dbUser.full_name,
         role: dbUser.role as AppRole,
       };
@@ -68,7 +68,7 @@ export function useAuth() {
       
       await supabase.from("admin_logs").insert({
         user_id: dbUser.id,
-        user_email: dbUser.email,
+        user_email: dbUser.username, // Using username as identifier for logs
         action: "login",
         entity_type: "user",
         entity_id: dbUser.id

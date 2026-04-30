@@ -58,30 +58,30 @@ export type Database = {
       admin_users: {
         Row: {
           created_at: string | null
-          email: string
           full_name: string
           id: string
           password_hash: string
           role: Database["public"]["Enums"]["admin_role"]
           updated_at: string | null
+          username: string
         }
         Insert: {
           created_at?: string | null
-          email: string
           full_name: string
           id?: string
           password_hash: string
           role?: Database["public"]["Enums"]["admin_role"]
           updated_at?: string | null
+          username: string
         }
         Update: {
           created_at?: string | null
-          email?: string
           full_name?: string
           id?: string
           password_hash?: string
           role?: Database["public"]["Enums"]["admin_role"]
           updated_at?: string | null
+          username?: string
         }
         Relationships: []
       }

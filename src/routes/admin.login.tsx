@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/login")({
 });
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -22,11 +22,11 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const success = await login(email, password);
+      const success = await login(username, password);
       if (success) {
         navigate({ to: "/admin/dashboard" });
       } else {
-        alert("E-mail ou senha incorretos.");
+        alert("Usuário ou senha incorretos.");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -53,13 +53,13 @@ function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="username">Usuário</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="Seu usuário"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
                 className="bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
               />
