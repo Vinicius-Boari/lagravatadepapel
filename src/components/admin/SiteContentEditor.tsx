@@ -152,7 +152,7 @@ export function SiteContentEditor() {
           case "languages": setLanguages({...data}); break;
         }
         
-        showToast(isDraft ? "Rascunho salvo no painel!" : "Configurações publicadas no site com sucesso!", 'success');
+        showToast(isDraft ? "Rascunho salvo no painel!" : "Configurações salvas no site com sucesso!", 'success');
         
         setTimeout(() => setLoading(false), 500);
       } else {
@@ -207,7 +207,7 @@ export function SiteContentEditor() {
                   }} 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                 </Button>
               </div>
             </CardHeader>
@@ -307,7 +307,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Home"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Home"}
                 </Button>
               </div>
             </CardContent>
@@ -330,7 +330,7 @@ export function SiteContentEditor() {
                   }} 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                 </Button>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -458,7 +458,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Vídeos"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Vídeos"}
                 </Button>
               </div>
             </CardContent>
@@ -474,7 +474,7 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
               </div>
                <Button size="sm" onClick={() => handleSave("plan", plan, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                </Button>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -523,7 +523,7 @@ export function SiteContentEditor() {
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
                 <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção O Plano"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção O Plano"}
                 </Button>
               </div>
             </CardContent>
@@ -539,7 +539,7 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
               </div>
                <Button size="sm" onClick={() => handleSave("about", about, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                </Button>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -595,7 +595,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Sobre"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Sobre"}
                 </Button>
               </div>
             </CardContent>
@@ -612,7 +612,7 @@ export function SiteContentEditor() {
               </div>
               <div className="flex space-x-2">
                  <Button size="sm" onClick={() => handleSave("services", services, false)} disabled={loading}>
-                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Tudo"}
+                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Tudo"}
                  </Button>
               </div>
             </CardHeader>
@@ -717,7 +717,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Serviços"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Serviços"}
                 </Button>
               </div>
             </CardContent>
@@ -733,7 +733,7 @@ export function SiteContentEditor() {
                 <CardDescription className="text-red-500/60">Gerencie a galeria de locais e eventos visitados.</CardDescription>
               </div>
                <Button size="sm" onClick={() => handleSave("places", places, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                </Button>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -843,7 +843,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Invasões"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Invasões"}
                 </Button>
               </div>
             </CardContent>
@@ -865,7 +865,7 @@ export function SiteContentEditor() {
                   }} 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                 </Button>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -930,7 +930,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Rodapé"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Rodapé"}
                 </Button>
               </div>
             </CardContent>
@@ -946,7 +946,7 @@ export function SiteContentEditor() {
                  <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
               </div>
                <Button size="sm" onClick={() => handleSave("seo", seo, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                </Button>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -990,7 +990,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Configurações SEO"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Configurações SEO"}
                 </Button>
               </div>
             </CardContent>
@@ -1013,7 +1013,7 @@ export function SiteContentEditor() {
                   }} 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
                 </Button>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -1066,7 +1066,7 @@ export function SiteContentEditor() {
                   className="bg-red-600 hover:bg-red-700 text-white px-8" 
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Configurações de Idioma"}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Configurações de Idioma"}
                 </Button>
               </div>
             </CardContent>

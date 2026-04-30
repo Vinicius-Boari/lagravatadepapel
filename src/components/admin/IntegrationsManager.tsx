@@ -64,7 +64,7 @@ export function IntegrationsManager() {
       ]);
 
       if (results.every(r => r === true)) {
-        showToast("Integrações e APIs publicadas com sucesso!", 'success');
+        showToast("Integrações e APIs salvas com sucesso!", 'success');
         setTimeout(() => setLoading(false), 500);
       } else {
         throw new Error("Alguma seção falhou ao salvar");
@@ -242,7 +242,7 @@ export function IntegrationsManager() {
           disabled={loading}
         >
           {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <CheckCircle2 className="mr-2 w-5 h-5" />}
-          {loading ? "Publicando..." : "Publicar Todas as Integrações"}
+          {loading ? "Salvando..." : "Salvar Todas as Integrações"}
         </button>
       </div>
     </div>
