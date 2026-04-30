@@ -43,13 +43,16 @@ export function useAuth() {
       const { data, error: dbError } = await supabase
         .from("admin_users")
         .select("*")
-        .eq("email", email)
-        .eq("password_hash", password) // User provided password as hash for simplicity in this specific request
-        .single();
+        .eq("email", email.trim())
+        .eq("password_hash", password.trim());
 
-      if (dbError || !data) {
+      console.log("Login attempt:", { email: email.trim(), success: !!data && !dbError, error: dbError });
+
+      if (dbError || !data || (Array.isArray(data) && data.length === 0)) {
         return false;
       }
+
+      const userRecord = Array.isArray(data) ? data[0] : data;
 
       const adminUser: AdminUser = {
         id: data.id,
