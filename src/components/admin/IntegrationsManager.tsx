@@ -47,10 +47,16 @@ export function IntegrationsManager() {
       mode: formData.instagram_mode,
     };
 
-    await Promise.all([
+    const results = await Promise.all([
       updateSection("integrations", integrationsData, false),
       updateSection("instagram_config", instagramData, false)
     ]);
+
+    if (results.every(r => r === true)) {
+      setTimeout(() => setLoading(false), 500);
+    } else {
+      setLoading(false);
+    }
   };
 
   if (loading) return <div className="p-8 text-zinc-400">Carregando...</div>;
