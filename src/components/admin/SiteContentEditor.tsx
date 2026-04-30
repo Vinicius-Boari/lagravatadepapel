@@ -123,22 +123,36 @@ export function SiteContentEditor() {
               <div className="space-y-4 pt-4 border-t border-zinc-800">
                 <h4 className="text-sm font-medium flex items-center"><ImageIcon className="mr-2 w-4 h-4" /> Cards Flutuantes (3 Imagens)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[0, 1, 2].map((i) => (
-                    <div key={i} className="space-y-2">
-                      <Label>Imagem do Card {i + 1}</Label>
-                      <Input 
-                        className="bg-zinc-800 border-zinc-700" 
-                        placeholder={`https://... (URL da imagem ${i + 1})`}
-                        value={hero.images?.[i] || ""}
-                        onChange={(e) => {
-                          const newImgs = [...(hero.images || [])];
-                          newImgs[i] = e.target.value;
-                          setHero({...hero, images: newImgs});
-                        }}
-                      />
-                      <p className="text-[10px] text-red-500/50">Recomendação: {i === 1 ? "Retrato 600x800px (Centro)" : "Retrato 450x700px (Lados)"}.</p>
-                    </div>
-                  ))}
+                  <div className="space-y-2">
+                    <Label className="text-red-500">Imagem do Card 1</Label>
+                    <Input 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
+                      placeholder="https://..."
+                      value={hero.image1 || ""}
+                      onChange={(e) => setHero({...hero, image1: e.target.value})}
+                    />
+                    <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-red-500">Imagem do Card 2</Label>
+                    <Input 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
+                      placeholder="https://..."
+                      value={hero.image2 || ""}
+                      onChange={(e) => setHero({...hero, image2: e.target.value})}
+                    />
+                    <p className="text-[10px] text-red-500/50">Recomendação: Retrato 600x800px (Centro).</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-red-500">Imagem do Card 3</Label>
+                    <Input 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
+                      placeholder="https://..."
+                      value={hero.image3 || ""}
+                      onChange={(e) => setHero({...hero, image3: e.target.value})}
+                    />
+                    <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
