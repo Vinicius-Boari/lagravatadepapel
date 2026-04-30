@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   LayoutDashboard, 
@@ -49,8 +50,14 @@ const SettingsTab = () => (
 
 export function AdminDashboard() {
   const { user, role, logout, isOwner } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const handleLogout = () => {
+    logout();
+    router.navigate({ to: "/" });
+  };
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -119,7 +126,7 @@ export function AdminDashboard() {
 
         <div className="p-4 border-t border-zinc-800 bg-zinc-900/50">
           <button 
-            onClick={() => logout()}
+            onClick={handleLogout}
             className="w-full flex items-center px-4 py-3 text-zinc-500 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/5"
           >
             <LogOut className="w-5 h-5" />
