@@ -108,17 +108,17 @@ export function DashboardOverview() {
             <Table>
               <TableHeader className="border-zinc-800">
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="text-zinc-400">Usuário</TableHead>
-                  <TableHead className="text-zinc-400">Ação</TableHead>
-                  <TableHead className="text-zinc-400">Data</TableHead>
+                  <TableHead className="text-red-400">Usuário</TableHead>
+                  <TableHead className="text-red-400">Ação</TableHead>
+                  <TableHead className="text-red-400">Data</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentLogs.map((log) => (
                   <TableRow key={log.id} className="border-zinc-800 hover:bg-zinc-800/50">
-                    <TableCell className="font-medium text-zinc-300">{log.user_email}</TableCell>
+                    <TableCell className="font-medium text-red-300">{log.user_email}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-zinc-800 border-zinc-700 text-zinc-300 capitalize">
+                      <Badge variant="outline" className="bg-zinc-800 border-zinc-700 text-red-300 capitalize">
                         {log.action}
                       </Badge>
                     </TableCell>
