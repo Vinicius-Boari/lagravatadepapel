@@ -466,15 +466,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("videos", videos, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["videos"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["videos"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["videos"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -540,15 +547,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("plan", plan, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["plan"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["plan"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["plan"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -614,15 +628,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("about", about, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["about"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["about"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["about"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -736,15 +757,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("services", services, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["services"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["services"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["services"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -864,15 +892,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("places", places, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["places"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["places"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["places"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -946,15 +981,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("footer", footer, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["footer"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["footer"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["footer"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -1005,15 +1047,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("seo", seo, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["seo"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["seo"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["seo"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
@@ -1073,15 +1122,22 @@ export function SiteContentEditor() {
           <div className="fixed bottom-6 right-6 z-50">
             <Button 
               onClick={() => handleSave("languages", languages, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              className={cn(
+                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
+                successSections["languages"] 
+                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
+              ) : successSections["languages"] ? (
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
                 <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
               )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
+              {loading ? "Salvando..." : successSections["languages"] ? "Salvo!" : "Salvar Configurações"}
             </Button>
           </div>
         </TabsContent>
