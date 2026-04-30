@@ -12,7 +12,7 @@ export function useAuth() {
   const [role, setRole] = useState<AppRole>(() => {
     try { return localStorage.getItem(STORAGE_KEY) as AppRole; } catch { return null; }
   });
-  const [loading, setLoading] = useState(!role);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,9 +29,10 @@ export function useAuth() {
         
         if (roleError) {
           console.error("Auth role error:", roleError);
-          // If we already have a cached role, don't show the error to user
-          const cached = localStorage.getItem(STORAGE_KEY);
-          if (!cached) setError(roleError.message);
+          // If we have a cached role, don't show error to user as a blocker
+          if (!role) {
+             setError(roleError.message);
+          }
           setLoading(false);
           return;
         }
@@ -43,8 +44,11 @@ export function useAuth() {
           else if (roles.includes("admin")) newRole = "admin";
         }
         
-        if (newRole) localStorage.setItem(STORAGE_KEY, newRole);
-        else localStorage.removeItem(STORAGE_KEY);
+        if (newRole) {
+          localStorage.setItem(STORAGE_KEY, newRole);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
         
         setRole(newRole);
         setError(null);
@@ -55,8 +59,21 @@ export function useAuth() {
       }
     };
 
+    // Initial check
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!mounted) return;
+      setSession(s);
+      setUser(s?.user ?? null);
+      if (s?.user) {
+        fetchRole(s.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       if (!mounted) return;
+      
       setSession(s);
       setUser(s?.user ?? null);
       
@@ -66,19 +83,9 @@ export function useAuth() {
         setLoading(false);
       } else if (s?.user) {
         fetchRole(s.user.id);
-      } else if (event === "SIGNED_IN") {
-        setLoading(true); // Ensure loading state while fetching role
       } else {
         setLoading(false);
       }
-    });
-
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (!mounted) return;
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) fetchRole(s.user.id);
-      else setLoading(false);
     });
 
     return () => {
@@ -87,6 +94,8 @@ export function useAuth() {
     };
   }, []);
 
+  const isAdmin = role === "admin" || role === "owner";
+
   return { 
     session, 
     user, 
@@ -94,6 +103,6 @@ export function useAuth() {
     loading, 
     error, 
     isOwner: role === "owner", 
-    isAdmin: role === "admin" || role === "owner" 
+    isAdmin 
   };
 }
