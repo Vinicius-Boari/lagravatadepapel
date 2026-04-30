@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { SiteContent } from "@/hooks/useSiteContent";
+import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
@@ -148,6 +149,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
           <a href="#videos" onClick={closeMenu}>Vídeos</a>
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
+          <a href="#instagram" onClick={closeMenu}>Instagram</a>
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
           <a href="#contato" onClick={closeMenu}>Contato</a>
         </nav>
@@ -263,6 +265,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           ))}
         </div>
       </section>
+
+      <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">

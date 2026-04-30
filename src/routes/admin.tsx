@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { SECTION_EDITORS } from "@/components/admin/SectionEditors";
 import { FormField, TextInput, TextArea, Section, ItemCard, AddBtn, PrimaryBtn, GhostBtn } from "@/components/admin/FormUI";
 import { MediaUploader } from "@/components/admin/MediaUploader";
+import { InstagramTab } from "@/components/admin/InstagramTab";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "content" | "pages" | "users";
+type Tab = "content" | "pages" | "instagram" | "users";
 type ContentRow = { key: string; value: any; draft_value: any | null };
 type PageRow = { id: string; slug: string; title: string; draft: any; published: any; is_published: boolean };
 type UserRow = { id: string; email: string; role: "owner" | "admin" };
@@ -74,6 +75,7 @@ function AdminPage() {
 
         <nav style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
           <SidebarItem icon="✏️" label="Conteúdo do site" active={tab === "content"} collapsed={!sidebarOpen} onClick={() => setTab("content")} />
+          <SidebarItem icon="📸" label="Instagram" active={tab === "instagram"} collapsed={!sidebarOpen} onClick={() => setTab("instagram")} />
           <SidebarItem icon="📄" label="Páginas extras" active={tab === "pages"} collapsed={!sidebarOpen} onClick={() => setTab("pages")} />
           {isOwner && <SidebarItem icon="👥" label="Usuários" active={tab === "users"} collapsed={!sidebarOpen} onClick={() => setTab("users")} />}
         </nav>
@@ -93,8 +95,9 @@ function AdminPage() {
       </aside>
 
       {/* MAIN */}
-      <main style={{ flex: 1, minWidth: 0 }}>
+      <main key={tab} style={{ flex: 1, minWidth: 0, animation: "adminFadeUp .35s ease both" }}>
         {tab === "content" && <ContentTab onToast={showToast} />}
+        {tab === "instagram" && <InstagramTab onToast={showToast} />}
         {tab === "pages" && <PagesTab onToast={showToast} />}
         {tab === "users" && isOwner && <UsersTab currentUserId={user.id} onToast={showToast} />}
       </main>
