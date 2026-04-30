@@ -502,19 +502,13 @@ export function SiteContentEditor() {
                     onChange={(e) => setAbout({...about, paragraphs: e.target.value.split("\n")})}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">URL da Imagem Lateral</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={about.image}
-                    onChange={(e) => setAbout({...about, image: e.target.value})}
-                  />
-                  {about.image && (
-                    <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30">
-                      <img src={about.image} className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                </div>
+                 <div className="space-y-2">
+                   <ImageUpload 
+                     label="URL da Imagem Lateral" 
+                     value={about.image} 
+                     onChange={(val) => setAbout({...about, image: val})} 
+                   />
+                 </div>
                 <div className="space-y-2">
                   <Label className="text-red-500">Link do Botão</Label>
                   <Input 
