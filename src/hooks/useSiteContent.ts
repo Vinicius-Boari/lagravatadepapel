@@ -50,6 +50,20 @@ export const FALLBACK_CONTENT: SiteContent = {
     instagram_url: "#", whatsapp_url: "#",
     copyright: "© La Gravata de Papel", hashtag: "#LAGRAVATADEPAPEL",
   },
+  seo: {
+    title: "La Gravata de Papel",
+    description: "A hora da gravata nunca mais será a mesma.",
+    keywords: "gravata, casamento, festa, animação, invasão",
+  },
+  languages: {
+    default: "pt",
+    enabled: ["pt"],
+    translations: {
+      pt: { name: "Português", flag: "🇧🇷" },
+      en: { name: "English", flag: "🇺🇸" },
+      es: { name: "Español", flag: "🇪🇸" }
+    }
+  }
 };
 
 export function useSiteContent(useDraft = false) {
