@@ -597,23 +597,17 @@ export function SiteContentEditor() {
                              }}
                            />
                         </div>
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">URL da Imagem</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={item.img} 
-                             onChange={(e) => {
-                               const newItems = [...services.items];
-                               newItems[idx] = { ...newItems[idx], img: e.target.value };
-                               setServices({...services, items: newItems});
-                             }}
-                           />
-                           {item.img && (
-                             <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
-                               <img src={item.img} className="w-full h-full object-contain" />
-                             </div>
-                           )}
-                        </div>
+                         <div className="space-y-2">
+                            <ImageUpload 
+                              label="URL da Imagem" 
+                              value={item.img} 
+                              onChange={(val) => {
+                                const newItems = [...services.items];
+                                newItems[idx] = { ...newItems[idx], img: val };
+                                setServices({...services, items: newItems});
+                              }} 
+                            />
+                         </div>
                         <div className="md:col-span-2 space-y-2">
                            <Label className="text-xs text-red-500">Descrição Curta</Label>
                            <Textarea 
