@@ -90,8 +90,8 @@ export function AdminDashboard() {
               className={cn(
                 "w-full flex items-center px-6 py-3 transition-all relative group",
                 activeTab === item.id 
-                  ? "bg-zinc-800/50 text-white" 
-                  : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/30"
+                  ? "bg-zinc-800/50 text-red-500" 
+                  : "text-zinc-500 hover:text-red-400 hover:bg-zinc-800/30"
               )}
             >
               {activeTab === item.id && <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-600" />}
