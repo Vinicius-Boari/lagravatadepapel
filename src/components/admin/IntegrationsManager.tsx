@@ -71,7 +71,7 @@ export function IntegrationsManager() {
       }
     } catch (err) {
       console.error("Erro ao salvar Integrações:", err);
-      showToast("Erro crítico: Não foi possível publicar as integrações.", 'error');
+      showToast("Erro crítico: Não foi possível salvar as integrações.", 'error');
       setLoading(false);
     }
   };

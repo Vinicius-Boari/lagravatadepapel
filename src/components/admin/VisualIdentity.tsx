@@ -49,7 +49,7 @@ export function VisualIdentity() {
       }
     } catch (err) {
       console.error("Erro ao salvar Identidade Visual:", err);
-      showToast("Erro crítico: Não foi possível publicar as alterações visuais.", 'error');
+      showToast("Erro crítico: Não foi possível salvar as alterações visuais.", 'error');
       setLoading(false);
     }
   };
@@ -69,7 +69,7 @@ export function VisualIdentity() {
           </Button>
           <Button className="bg-white text-black hover:bg-zinc-200" onClick={() => handleSave(false)}>
             <Save className="mr-2 w-4 h-4" />
-            Publicar
+            Salvar
           </Button>
         </div>
       </div>
@@ -152,7 +152,7 @@ export function VisualIdentity() {
       <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
         <CardHeader>
           <CardTitle className="text-lg text-red-500">Preview em Tempo Real</CardTitle>
-          <CardDescription className="text-red-500/60">Veja como as alterações afetam o estilo do site antes de publicar.</CardDescription>
+          <CardDescription className="text-red-500/60">Veja como as alterações afetam o estilo do site antes de salvar.</CardDescription>
         </CardHeader>
         <CardContent>
           <div 
