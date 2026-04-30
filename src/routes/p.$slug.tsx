@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,11 +9,6 @@ type PagePayload = {
 };
 
 export const Route = createFileRoute("/p/$slug")({
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: loaderData?.title ? `${loaderData.title} — La Gravata de Papel` : "La Gravata de Papel" },
-    ],
-  }),
   component: ExtraPage,
 });
 
