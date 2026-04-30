@@ -121,7 +121,20 @@ export function SiteContentEditor() {
     setLoading(true);
     const success = await updateSection(section, data, isDraft);
     if (success) {
-      // Small delay to ensure DB propagation before state refresh is done by useSiteContent
+      // For immediate feedback while refresh is happening
+      switch(section) {
+        case "hero": setHero({...data}); break;
+        case "about": setAbout({...data}); break;
+        case "plan": setPlan({...data}); break;
+        case "services": setServices({...data}); break;
+        case "videos": setVideos({...data}); break;
+        case "places": setPlaces({...data}); break;
+        case "footer": setFooter({...data}); break;
+        case "seo": setSeo({...data}); break;
+        case "languages": setLanguages({...data}); break;
+      }
+      
+      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas com sucesso!");
       setTimeout(() => setLoading(false), 500);
     } else {
       setLoading(false);
