@@ -243,6 +243,35 @@ export function AboutEditor({ value, onChange }: SectionEditorProps) {
   );
 }
 
+/* ---------------- INSTAGRAM CONFIG ---------------- */
+export function InstagramConfigEditor({ value, onChange }: SectionEditorProps) {
+  const v = value || {};
+  const set = (k: string, val: any) => onChange({ ...v, [k]: val });
+  return (
+    <Section
+      title="Instagram — Configuração"
+      description="Define o título da seção, o @ exibido e o link do perfil. Os posts são gerenciados na aba Instagram."
+    >
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <FormField label="Handle (@) sem o arroba"><TextInput value={v.handle ?? ""} onChange={(e) => set("handle", e.target.value.replace(/^@/, ""))} placeholder="lagravatadepapel" /></FormField>
+        <FormField label="URL do perfil"><TextInput value={v.profile_url ?? ""} onChange={(e) => set("profile_url", e.target.value)} placeholder="https://www.instagram.com/lagravatadepapel" /></FormField>
+      </div>
+      <FormField label="Título da seção"><TextInput value={v.title ?? ""} onChange={(e) => set("title", e.target.value)} placeholder="Siga no Instagram" /></FormField>
+      <FormField label="Subtítulo"><TextArea value={v.subtitle ?? ""} onChange={(e) => set("subtitle", e.target.value)} rows={2} /></FormField>
+      <FormField label="Modo de integração">
+        <select
+          value={v.mode ?? "manual"}
+          onChange={(e) => set("mode", e.target.value)}
+          style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", background: "white", fontSize: 14 }}
+        >
+          <option value="manual">Manual (eu adiciono os posts pelo painel)</option>
+          <option value="graph_api">Instagram Graph API (em breve)</option>
+        </select>
+      </FormField>
+    </Section>
+  );
+}
+
 /* ---------------- FOOTER ---------------- */
 export function FooterEditor({ value, onChange }: SectionEditorProps) {
   const v = value || {};
@@ -270,5 +299,6 @@ export const SECTION_EDITORS: Record<string, { label: string; icon: string; comp
   plan: { label: "O Plano", icon: "📋", component: PlanEditor },
   places: { label: "Invasões", icon: "🎉", component: PlacesEditor },
   about: { label: "Sobre", icon: "ℹ️", component: AboutEditor },
+  instagram_config: { label: "Instagram (config)", icon: "📸", component: InstagramConfigEditor },
   footer: { label: "Rodapé", icon: "📞", component: FooterEditor },
 };

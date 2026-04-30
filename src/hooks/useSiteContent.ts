@@ -22,6 +22,13 @@ const FALLBACK: SiteContent = {
   plan: { heading: "O Plano É", heading_em: "Surpreender", text: "", cta_label: "Contrate Agora", cta_url: "#" },
   places: { heading: "Nossas", heading2: "Invasões", instagram_url: "#", items: [] },
   about: { heading: "La Gravata", heading_em: "de Papel", image: "", paragraphs: [], cta_label: "Fale Conosco", cta_url: "#" },
+  instagram_config: {
+    handle: "lagravatadepapel",
+    profile_url: "https://www.instagram.com/lagravatadepapel",
+    title: "Siga no Instagram",
+    subtitle: "Os bastidores das nossas invasões — atualizados em tempo real.",
+    mode: "manual",
+  },
   footer: {
     phone: "", phone_url: "#", address_line1: "", address_line2: "",
     instagram_url: "#", whatsapp_url: "#",
