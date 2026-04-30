@@ -133,34 +133,45 @@ export function SiteContentEditor() {
 
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
+    if (loading) return; // Evitar múltiplos cliques
+
+    // Validação básica antes do envio
+    if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
+      showToast("Erro: Dados inválidos ou vazios para salvar.", 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       console.log(`Tentando salvar seção: ${section}`, data);
       const success = await updateSection(section, data, isDraft);
       
       if (success) {
-        // Para feedback imediato enquanto o refresh acontece
-        switch(section) {
-          case "hero": setHero({...data}); break;
-          case "about": setAbout({...data}); break;
-          case "plan": setPlan({...data}); break;
-          case "services": setServices({...data}); break;
-          case "videos": setVideos({...data}); break;
-          case "places": setPlaces({...data}); break;
-          case "footer": setFooter({...data}); break;
-          case "seo": setSeo({...data}); break;
-          case "languages": setLanguages({...data}); break;
+        // Feedback imediato
+        const updateState = (val: any) => ({...val});
+        const sectionMap: Record<string, any> = {
+          hero: setHero,
+          about: setAbout,
+          plan: setPlan,
+          services: setServices,
+          videos: setVideos,
+          places: setPlaces,
+          footer: setFooter,
+          seo: setSeo,
+          languages: setLanguages,
+        };
+        
+        if (sectionMap[section]) {
+          sectionMap[section](updateState(data));
         }
         
-        showToast(isDraft ? "Rascunho salvo no painel!" : "Configurações salvas no site com sucesso!", 'success');
-        
-        setTimeout(() => setLoading(false), 500);
-      } else {
-        throw new Error("Falha ao salvar: a operação não retornou sucesso.");
+        showToast(isDraft ? "Rascunho salvo no painel!" : "Salvo com sucesso!", 'success');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(`Erro crítico ao salvar seção ${section}:`, err);
-      showToast(`ERRO: Não foi possível salvar no site. Verifique sua conexão.`, 'error');
+      const errorMessage = err.message || "Tente novamente.";
+      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+    } finally {
       setLoading(false);
     }
   };
