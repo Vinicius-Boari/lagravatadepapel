@@ -24,25 +24,25 @@ export function SiteContentEditor() {
     await updateSection(section, data, isDraft);
   };
 
-  if (loading) return <div className="p-8 text-zinc-400">Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Conteúdo do Site</h2>
-          <p className="text-zinc-400">Edite textos, seções e banners de todas as páginas.</p>
+          <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
+          <p className="text-red-500/70">Edite textos, seções e banners de todas as páginas.</p>
         </div>
       </div>
 
       <Tabs defaultValue="hero" value={activeSection} onValueChange={setActiveSection} className="w-full">
-        <TabsList className="bg-zinc-900 border border-zinc-800 p-1 mb-8 overflow-x-auto w-full justify-start">
-          <TabsTrigger value="hero" className="data-[state=active]:bg-zinc-800">Home / Hero</TabsTrigger>
-          <TabsTrigger value="services" className="data-[state=active]:bg-zinc-800">Serviços</TabsTrigger>
-          <TabsTrigger value="videos" className="data-[state=active]:bg-zinc-800">Vídeos</TabsTrigger>
-          <TabsTrigger value="plan" className="data-[state=active]:bg-zinc-800">Seção "O Plano"</TabsTrigger>
-          <TabsTrigger value="about" className="data-[state=active]:bg-zinc-800">Sobre</TabsTrigger>
-          <TabsTrigger value="footer" className="data-[state=active]:bg-zinc-800">Rodapé</TabsTrigger>
+        <TabsList className="bg-zinc-900 border border-red-900 p-1 mb-8 overflow-x-auto w-full justify-start">
+          <TabsTrigger value="hero" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Home / Hero</TabsTrigger>
+          <TabsTrigger value="services" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Serviços</TabsTrigger>
+          <TabsTrigger value="videos" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Vídeos</TabsTrigger>
+          <TabsTrigger value="plan" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Seção "O Plano"</TabsTrigger>
+          <TabsTrigger value="about" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Sobre</TabsTrigger>
+          <TabsTrigger value="footer" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Rodapé</TabsTrigger>
         </TabsList>
 
         {/* HERO SECTION */}
@@ -50,11 +50,11 @@ export function SiteContentEditor() {
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Cabeçalho (Hero)</CardTitle>
-                <CardDescription>Primeira seção visível do site.</CardDescription>
+                <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
+                <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" onClick={() => handleSave("hero", hero, true)}>Salvar Rascunho</Button>
+                <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)}>Salvar Rascunho</Button>
                 <Button size="sm" onClick={() => handleSave("hero", hero, false)}>Publicar</Button>
               </div>
             </CardHeader>
@@ -62,7 +62,7 @@ export function SiteContentEditor() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Linhas do Título (uma por linha)</Label>
+                    <Label className="text-red-500">Linhas do Título (uma por linha)</Label>
                     <Textarea 
                       rows={4} 
                       className="bg-zinc-800 border-zinc-700" 
