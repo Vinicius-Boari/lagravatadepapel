@@ -349,8 +349,10 @@ body.lg-body {
 
 /* PLACES */
 .places-section { 
-  background: linear-gradient(180deg, #050505 0%, #0a0a0a 100%); 
-  padding: 120px 40px; 
+  background: linear-gradient(180deg, #000 0%, #0a0a0a 15%, #0a0a0a 85%, #000 100%); 
+  padding: 140px 40px;
+  position: relative;
+  border-top: 1px solid rgba(192, 57, 43, 0.08);
 }
 .places-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; padding: 0 20px; gap: 24px; flex-wrap: wrap; }
 .places-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: #fff; }
