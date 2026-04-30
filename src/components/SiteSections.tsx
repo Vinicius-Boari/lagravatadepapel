@@ -9,7 +9,7 @@ const tickerItems = [
 
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const headerRef = useRef<HTMLElement>(null);
-  const cursorLineRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -19,19 +19,56 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const cursorLine = cursorLineRef.current;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
     let mx = 0, my = 0;
-    
+    const points: { x: number; y: number; age: number }[] = [];
+    const maxAge = 40;
+
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
-      if (cursorLine) { 
-        cursorLine.style.left = mx + "px"; 
-        cursorLine.style.top = my + "px";
-      }
     };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    let raf: number;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      points.push({ x: mx, y: my, age: 0 });
+      if (points.length > 50) points.shift();
+
+      ctx.beginPath();
+      ctx.strokeStyle = "#c0392b";
+      ctx.lineWidth = 2;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        p.age++;
+        if (i === 0) {
+          ctx.moveTo(p.x, p.y);
+        } else {
+          ctx.lineTo(p.x, p.y);
+        }
+      }
+      ctx.stroke();
+
+      raf = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("resize", resize);
     document.addEventListener("mousemove", onMove);
+    resize();
+    raf = requestAnimationFrame(animate);
 
     const onScroll = () => {
       const c = window.scrollY;
@@ -93,9 +130,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     return () => {
       document.removeEventListener("mousemove", onMove);
+      window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("scroll", onScroll3d);
-      // Removed raf cancel as it's no longer used for cursor ring
+      cancelAnimationFrame(raf);
       tiltHandlers.forEach(({ el, move, leave }) => {
         el.removeEventListener("mousemove", move);
         el.removeEventListener("mouseleave", leave);
@@ -115,7 +153,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
   return (
     <>
-      <div className="cursor-line-red" ref={cursorLineRef} />
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 10000,
+          mixBlendMode: "difference",
+        }}
+      />
 
       <header className="lg-header" ref={headerRef}>
         <div className="logo">

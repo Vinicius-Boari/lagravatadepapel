@@ -167,19 +167,11 @@ body.lg-body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* RED CURSOR LINE */
-.cursor-line-red {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 100vh;
-  background: linear-gradient(to bottom, transparent, var(--color-red-lg) 0%, var(--color-red-lg) 100%);
-  pointer-events: none;
-  z-index: 10000;
-  mix-blend-mode: difference;
-  box-shadow: 0 0 8px rgba(192, 57, 43, 0.4);
-  transform-origin: top;
+/* CURSOR EFFECTS */
+@media (pointer: fine) {
+  .lg-body {
+    cursor: crosshair;
+  }
 }
 
 /* Hide default cursor on the whole body for a cleaner look if desired, 
