@@ -62,7 +62,7 @@ function AdminLayout() {
           <NavItem active={tab === "sections"} onClick={() => setTab("sections")} label="Seções do Site" icon="✦" />
           <NavItem active={tab === "instagram"} onClick={() => setTab("instagram")} label="Instagram" icon="◉" />
           <NavItem active={tab === "pages"} onClick={() => setTab("pages")} label="Páginas Extras" icon="▤" />
-          {isOwner && <NavItem active={tab === "users"} onClick={() => setTab("users")} label="Usuários" icon="◆" />}
+          {(isOwner || role === "Dono") && <NavItem active={tab === "users"} onClick={() => setTab("users")} label="Usuários" icon="◆" />}
         </nav>
 
         <div style={{ padding: 20, borderTop: "1px solid #111" }}>
@@ -76,7 +76,7 @@ function AdminLayout() {
         {tab === "sections" && <SectionsTab onToast={showToast} />}
         {tab === "instagram" && <InstagramTab onToast={showToast} />}
         {tab === "pages" && <PagesTab onToast={showToast} />}
-        {tab === "users" && <UsersTab onToast={showToast} />}
+        {tab === "users" && (isOwner || role === "Dono") && <UsersTab onToast={showToast} />}
       </main>
 
       {toast && <div style={{
