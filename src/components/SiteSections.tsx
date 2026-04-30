@@ -371,10 +371,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a 
             href="/admin/login" 
             className="admin-access-link"
-            aria-label="Acesso Restrito"
-            title="Acesso Restrito"
+            aria-label="Painel"
+            title="Painel"
           >
-            🔒
+            Painel
           </a>
         </div>
       </footer>
