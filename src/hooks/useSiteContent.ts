@@ -50,6 +50,20 @@ export const FALLBACK_CONTENT: SiteContent = {
     instagram_url: "#", whatsapp_url: "#",
     copyright: "© La Gravata de Papel", hashtag: "#LAGRAVATADEPAPEL",
   },
+  seo: {
+    title: "La Gravata de Papel",
+    description: "A hora da gravata nunca mais será a mesma.",
+    keywords: "gravata, casamento, festa, animação, invasão",
+  },
+  languages: {
+    default: "pt",
+    enabled: ["pt"],
+    translations: {
+      pt: { name: "Português", flag: "🇧🇷" },
+      en: { name: "English", flag: "🇺🇸" },
+      es: { name: "Español", flag: "🇪🇸" }
+    }
+  }
 };
 
 export function useSiteContent(useDraft = false) {
@@ -79,25 +93,55 @@ export function useSiteContent(useDraft = false) {
 
   useEffect(() => {
     fetchContent();
+
+    // Configurar Realtime Subscription para atualizações automáticas
+    const channel = supabase
+      .channel('site_content_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'site_content'
+        },
+        (payload) => {
+          console.log('Realtime update received:', payload);
+          fetchContent();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [useDraft]);
 
   const updateSection = async (key: string, newValue: any, isDraft = true) => {
     try {
-      const updateData = isDraft ? { draft_value: newValue } : { value: newValue };
+      console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
       
-      const { error } = await supabase
+      const updateData = isDraft 
+        ? { key, draft_value: newValue, updated_at: new Date().toISOString() } 
+        : { key, value: newValue, draft_value: null, updated_at: new Date().toISOString() }; 
+      
+      const { data, error } = await supabase
         .from("site_content")
-        .upsert({ key, ...updateData });
+        .upsert(updateData)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error(`Erro do Supabase ao salvar ${key}:`, error);
+        throw error;
+      }
       
-      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas!");
-      await fetchContent();
+      console.log(`Sucesso ao salvar ${key}:`, data);
+      
+      // Não precisamos chamar fetchContent aqui obrigatoriamente, 
+      // pois o Realtime Subscription cuidará disso ou o componente atualizará seu estado.
       return true;
-    } catch (err) {
-      console.error("Error updating content:", err);
-      toast.error("Erro ao salvar alterações.");
-      return false;
+    } catch (err: any) {
+      console.error(`Erro detalhado na atualização da seção ${key}:`, err);
+      throw err;
     }
   };
 

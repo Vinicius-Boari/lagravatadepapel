@@ -83,9 +83,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       const c = window.scrollY;
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
-        if (imgs[0]) imgs[0].style.transform = `rotate(-6deg) translateY(${c * 0.08}px)`;
-        if (imgs[1]) imgs[1].style.transform = `translate(-50%,-50%) rotate(2deg) translateY(${c * 0.04}px)`;
-        if (imgs[2]) imgs[2].style.transform = `rotate(5deg) translateY(${c * 0.06}px)`;
+        if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px)`;
+        if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px)`;
+        if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px)`;
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -182,7 +182,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="nav-right">
           <button className="menu-btn" onClick={() => { setMenuOpen(true); onMenuClick?.(); }} aria-label="Abrir menu">
-            <div className="menu-lines"><span /><span /></div>
             <span>MENU</span>
           </button>
         </div>
@@ -212,11 +211,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
-          {(hero.images ?? []).slice(0, 3).map((src: string, i: number) => (
-            <div key={i} className={`hero-img hero-img-${i + 1}`}>
-              <img src={src} alt={`Hero ${i + 1}`} loading="lazy" />
-            </div>
-          ))}
+          <div className="hero-img hero-img-1">
+            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+          </div>
+          <div className="hero-img hero-img-2">
+            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+          </div>
+          <div className="hero-img hero-img-3">
+            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+          </div>
         </div>
 
         <div className="hero-content">
@@ -265,7 +268,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="video-section" id="videos">
         <div className="video-section-header reveal">
-          <h2>{videos.heading} <em><span>{videos.heading_em}</span></em></h2>
+          <h2>{videos.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => (

@@ -1,14 +1,11 @@
 // Bootstrap the owner account. Idempotent: safe to call multiple times.
-// Creates the Vinicius account if it doesn't exist and assigns the 'owner' role.
+// SECURITY: Requires BOOTSTRAP_TOKEN header. Credentials read from secrets only.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-bootstrap-token",
 };
-
-const OWNER_EMAIL = "viniciusbataglia500@gmail.com";
-const OWNER_PASSWORD = "197541458";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -16,12 +13,30 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Require a one-time bootstrap token to prevent unauthenticated owner takeover.
+    const expectedToken = Deno.env.get("BOOTSTRAP_TOKEN");
+    const providedToken = req.headers.get("x-bootstrap-token");
+    if (!expectedToken || providedToken !== expectedToken) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const OWNER_EMAIL = Deno.env.get("BOOTSTRAP_OWNER_EMAIL");
+    const OWNER_PASSWORD = Deno.env.get("BOOTSTRAP_OWNER_PASSWORD");
+    if (!OWNER_EMAIL || !OWNER_PASSWORD) {
+      return new Response(
+        JSON.stringify({ error: "Owner credentials not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Check if owner already exists in user_roles
     const { data: existingOwner } = await supabase
       .from("user_roles")
       .select("user_id")
@@ -35,7 +50,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Try to find existing user by email
     const { data: list } = await supabase.auth.admin.listUsers();
     let user = list?.users?.find((u) => u.email === OWNER_EMAIL);
 
@@ -49,14 +63,12 @@ Deno.serve(async (req) => {
       user = created.user!;
     }
 
-    // Remove any admin role and grant owner role
     await supabase.from("user_roles").delete().eq("user_id", user.id);
     const { error: roleErr } = await supabase
       .from("user_roles")
       .insert({ user_id: user.id, role: "owner" });
     if (roleErr) throw roleErr;
 
-    // Ensure profile exists
     await supabase
       .from("profiles")
       .upsert({ id: user.id, email: user.email! }, { onConflict: "id" });
