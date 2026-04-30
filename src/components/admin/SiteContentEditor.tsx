@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -13,12 +13,25 @@ export function SiteContentEditor() {
   const [activeSection, setActiveSection] = useState("hero");
 
   // Local state for each section to handle edits
-  const [hero, setHero] = useState(content.hero || {});
-  const [about, setAbout] = useState(content.about || {});
-  const [plan, setPlan] = useState(content.plan || {});
-  const [services, setServices] = useState(content.services || { items: [] });
-  const [videos, setVideos] = useState(content.videos || { items: [] });
-  const [footer, setFooter] = useState(content.footer || {});
+  const [hero, setHero] = useState<any>(content.hero || {});
+  const [about, setAbout] = useState<any>(content.about || {});
+  const [plan, setPlan] = useState<any>(content.plan || {});
+  const [services, setServices] = useState<any>(content.services || { items: [] });
+  const [videos, setVideos] = useState<any>(content.videos || { items: [] });
+  const [footer, setFooter] = useState<any>(content.footer || {});
+
+  // Effect to update local states when content loads or changes
+  useEffect(() => {
+    if (!loading) {
+      setHero(content.hero || {});
+      setAbout(content.about || {});
+      setPlan(content.plan || {});
+      setServices(content.services || { items: [] });
+      setVideos(content.videos || { items: [] });
+      setFooter(content.footer || {});
+    }
+  }, [loading, content]);
+
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
     await updateSection(section, data, isDraft);
