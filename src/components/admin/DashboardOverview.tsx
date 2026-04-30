@@ -72,11 +72,11 @@ export function DashboardOverview() {
         {cards.map((card, i) => (
           <Card key={i} className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-zinc-400">{card.title}</CardTitle>
+              <CardTitle className="text-sm font-medium text-red-400">{card.title}</CardTitle>
               <card.icon className={cn("w-4 h-4", card.color)} />
             </CardHeader>
             <CardContent>
-              <div className={cn("font-bold", card.isDate ? "text-sm" : "text-2xl")}>
+              <div className={cn("font-bold text-red-500", card.isDate ? "text-sm" : "text-2xl")}>
                 {card.value}
               </div>
             </CardContent>
@@ -108,21 +108,21 @@ export function DashboardOverview() {
             <Table>
               <TableHeader className="border-zinc-800">
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="text-zinc-400">Usuário</TableHead>
-                  <TableHead className="text-zinc-400">Ação</TableHead>
-                  <TableHead className="text-zinc-400">Data</TableHead>
+                  <TableHead className="text-red-400">Usuário</TableHead>
+                  <TableHead className="text-red-400">Ação</TableHead>
+                  <TableHead className="text-red-400">Data</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentLogs.map((log) => (
                   <TableRow key={log.id} className="border-zinc-800 hover:bg-zinc-800/50">
-                    <TableCell className="font-medium text-zinc-300">{log.user_email}</TableCell>
+                    <TableCell className="font-medium text-red-300">{log.user_email}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-zinc-800 border-zinc-700 text-zinc-300 capitalize">
+                      <Badge variant="outline" className="bg-zinc-800 border-zinc-700 text-red-300 capitalize">
                         {log.action}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-zinc-400 text-xs">
+                    <TableCell className="text-red-400/70 text-xs">
                       {new Date(log.created_at).toLocaleString('pt-BR')}
                     </TableCell>
                   </TableRow>

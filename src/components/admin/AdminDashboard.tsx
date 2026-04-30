@@ -66,7 +66,7 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-zinc-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-zinc-950 text-red-600 overflow-hidden font-sans">
       {/* Sidebar */}
       <aside className={cn(
         "flex flex-col border-r border-zinc-800 bg-zinc-900 transition-all duration-300 ease-in-out z-50",
@@ -90,8 +90,8 @@ export function AdminDashboard() {
               className={cn(
                 "w-full flex items-center px-6 py-3 transition-all relative group",
                 activeTab === item.id 
-                  ? "bg-zinc-800/50 text-white" 
-                  : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/30"
+                  ? "bg-zinc-800/50 text-red-500" 
+                  : "text-zinc-500 hover:text-red-400 hover:bg-zinc-800/30"
               )}
             >
               {activeTab === item.id && <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-600" />}
@@ -115,10 +115,10 @@ export function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative">
         <header className="h-16 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-8">
-          <div className="flex items-center space-x-2 text-sm text-zinc-500">
+          <div className="flex items-center space-x-2 text-sm text-red-400">
             <span className="hover:text-zinc-300 cursor-pointer transition-colors" onClick={() => setActiveTab("dashboard")}>Início</span>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-zinc-100 font-medium">
+            <span className="text-red-500 font-medium">
               {menuItems.find(m => m.id === activeTab)?.label}
             </span>
           </div>
@@ -127,7 +127,7 @@ export function AdminDashboard() {
             <div className="h-8 w-px bg-zinc-800" />
             <div className="flex items-center space-x-3">
               <div className="text-right hidden sm:block">
-                <div className="text-sm font-semibold text-zinc-100">{user?.full_name}</div>
+                <div className="text-sm font-semibold text-red-500">{user?.full_name}</div>
                 <div className={cn(
                   "text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded",
                   role === "owner" ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-500"
