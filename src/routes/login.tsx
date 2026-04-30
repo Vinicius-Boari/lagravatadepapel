@@ -21,7 +21,9 @@ function LoginPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate({ to: "/admin" });
+      if (session) {
+        window.location.href = "/admin";
+      }
     });
   }, [navigate]);
 
