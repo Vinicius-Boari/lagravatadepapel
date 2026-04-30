@@ -118,7 +118,7 @@ export function AdminDashboard() {
           <div className="flex items-center space-x-2 text-sm text-zinc-500">
             <span className="hover:text-zinc-300 cursor-pointer transition-colors" onClick={() => setActiveTab("dashboard")}>Início</span>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-zinc-100 font-medium">
+            <span className="text-red-500 font-medium">
               {menuItems.find(m => m.id === activeTab)?.label}
             </span>
           </div>
