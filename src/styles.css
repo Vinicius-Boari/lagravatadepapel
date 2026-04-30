@@ -196,10 +196,10 @@ body.lg-body {
 .menu-btn {
   background: rgba(255,255,255,0.12); backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.15); color: var(--color-white-lg);
-  padding: 12px 32px; border-radius: 50px; cursor: pointer;
-  font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.15em;
-  text-transform: uppercase; display: flex; align-items: center; gap: 40px;
-  transition: background 0.3s;
+  padding: 8px 24px; border-radius: 50px; cursor: pointer;
+  font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em;
+  text-transform: uppercase; display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s; min-width: 100px;
 }
 .menu-btn:hover { background: rgba(255,255,255,0.2); }
 .menu-lines { display: flex; flex-direction: column; gap: 4px; }
