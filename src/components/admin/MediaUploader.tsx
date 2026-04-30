@@ -15,8 +15,10 @@ export function MediaUploader({ value, onChange, label, folder = "uploads", acce
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [urlInput, setUrlInput] = useState(value);
+  const [hover, setHover] = useState(false);
 
   const isVideo = value && /\.(mp4|webm|mov)$/i.test(value);
+  const acceptVideo = accept.includes("video");
 
   const aspectStyle: Record<string, string> = {
     square: "1 / 1",
@@ -48,23 +50,29 @@ export function MediaUploader({ value, onChange, label, folder = "uploads", acce
   return (
     <div>
       {label && <div style={labelStyle}>{label}</div>}
-      <div style={{
-        position: "relative",
-        width: "100%",
-        aspectRatio: aspectStyle[aspect],
-        background: "#f3f4f6",
-        border: "2px dashed #d1d5db",
-        borderRadius: 10,
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-      }}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: aspectStyle[aspect],
+          background: "#0a0a0a",
+          border: `2px dashed ${hover ? "#dc2626" : "#2c2c2c"}`,
+          borderRadius: 12,
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "border-color .15s, background .15s",
+        }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         onClick={() => fileRef.current?.click()}
-        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setHover(true); }}
+        onDragLeave={() => setHover(false)}
         onDrop={(e) => {
           e.preventDefault();
+          setHover(false);
           const f = e.dataTransfer.files?.[0];
           if (f) upload(f);
         }}
@@ -76,16 +84,19 @@ export function MediaUploader({ value, onChange, label, folder = "uploads", acce
             <img src={value} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           )
         ) : (
-          <div style={{ textAlign: "center", color: "#9ca3af", padding: 16 }}>
-            <div style={{ fontSize: 32 }}>📷</div>
-            <div style={{ fontSize: 12, marginTop: 6 }}>Clique ou arraste uma imagem</div>
+          <div style={{ textAlign: "center", color: "#666", padding: 16 }}>
+            <div style={{ fontSize: 36, marginBottom: 4, color: "#dc2626", opacity: 0.7 }}>{acceptVideo ? "▶" : "+"}</div>
+            <div style={{ fontSize: 11, color: "#888", letterSpacing: "0.05em", textTransform: "uppercase", fontWeight: 600 }}>
+              {acceptVideo ? "Adicionar vídeo" : "Adicionar imagem"}
+            </div>
+            <div style={{ fontSize: 10, marginTop: 4, color: "#555" }}>Clique ou arraste</div>
           </div>
         )}
         {busy && (
           <div style={{
-            position: "absolute", inset: 0, background: "rgba(0,0,0,.5)",
-            display: "grid", placeItems: "center", color: "white", fontSize: 13,
-          }}>Enviando...</div>
+            position: "absolute", inset: 0, background: "rgba(0,0,0,.7)",
+            display: "grid", placeItems: "center", color: "#dc2626", fontSize: 12, fontWeight: 600, letterSpacing: "0.05em",
+          }}>ENVIANDO…</div>
         )}
       </div>
 
@@ -109,8 +120,9 @@ export function MediaUploader({ value, onChange, label, folder = "uploads", acce
           onBlur={() => onChange(urlInput)}
           placeholder="ou cole uma URL"
           style={{
-            flex: 1, padding: "6px 10px", borderRadius: 6,
-            border: "1px solid #d1d5db", fontSize: 12, outline: "none",
+            flex: 1, padding: "7px 10px", borderRadius: 7,
+            border: "1px solid #2c2c2c", fontSize: 12, outline: "none",
+            background: "#0a0a0a", color: "#ccc",
           }}
         />
         {value && (
@@ -118,18 +130,18 @@ export function MediaUploader({ value, onChange, label, folder = "uploads", acce
             type="button"
             onClick={() => { onChange(""); setUrlInput(""); }}
             style={{
-              padding: "6px 10px", border: "1px solid #fee2e2", background: "#fef2f2",
-              color: "#b91c1c", borderRadius: 6, fontSize: 12, cursor: "pointer",
+              padding: "7px 12px", border: "1px solid #5a1a1a", background: "#1a0808",
+              color: "#fca5a5", borderRadius: 7, fontSize: 11, cursor: "pointer", fontWeight: 600,
             }}
           >Remover</button>
         )}
       </div>
 
-      {error && <div style={{ color: "#dc2626", fontSize: 11, marginTop: 4 }}>{error}</div>}
+      {error && <div style={{ color: "#fca5a5", fontSize: 11, marginTop: 6 }}>{error}</div>}
     </div>
   );
 }
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 12, color: "#374151", fontWeight: 600, marginBottom: 6,
+  fontSize: 11, color: "#e5e5e5", fontWeight: 600, marginBottom: 6, letterSpacing: "0.05em", textTransform: "uppercase",
 };
