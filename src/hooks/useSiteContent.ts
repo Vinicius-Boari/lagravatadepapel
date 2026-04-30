@@ -93,17 +93,33 @@ export function useSiteContent(useDraft = false) {
 
   useEffect(() => {
     fetchContent();
+
+    // Configurar Realtime Subscription para atualizações automáticas
+    const channel = supabase
+      .channel('site_content_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'site_content'
+        },
+        (payload) => {
+          console.log('Realtime update received:', payload);
+          fetchContent();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [useDraft]);
 
   const updateSection = async (key: string, newValue: any, isDraft = true) => {
     try {
       console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
       
-      // Validação básica: se newValue for um objeto, garantir que não está vazio se for obrigatório
-      if (newValue && typeof newValue === 'object' && Object.keys(newValue).length === 0) {
-        console.warn(`Aviso: Tentando salvar objeto vazio na seção ${key}`);
-      }
-
       const updateData = isDraft 
         ? { key, draft_value: newValue, updated_at: new Date().toISOString() } 
         : { key, value: newValue, draft_value: null, updated_at: new Date().toISOString() }; 
@@ -114,23 +130,17 @@ export function useSiteContent(useDraft = false) {
         .select();
 
       if (error) {
-        console.error(`Erro do Supabase ao salvar ${key}:`, {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
+        console.error(`Erro do Supabase ao salvar ${key}:`, error);
         throw error;
       }
       
       console.log(`Sucesso ao salvar ${key}:`, data);
       
-      // Forçamos a atualização do estado local após o salvamento
-      await fetchContent();
+      // Não precisamos chamar fetchContent aqui obrigatoriamente, 
+      // pois o Realtime Subscription cuidará disso ou o componente atualizará seu estado.
       return true;
     } catch (err: any) {
       console.error(`Erro detalhado na atualização da seção ${key}:`, err);
-      // O tratamento de erro amigável agora é feito no componente para maior flexibilidade
       throw err;
     }
   };
