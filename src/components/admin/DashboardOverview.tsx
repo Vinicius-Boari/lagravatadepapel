@@ -88,11 +88,11 @@ export function DashboardOverview() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg flex items-center">
-              <TrendingUp className="mr-2 w-5 h-5 text-zinc-400" />
-              Resumo de Acessos
+              <TrendingUp className="mr-2 w-5 h-5 text-red-400" />
+              <span className="text-red-500">Resumo de Acessos</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="h-64 flex items-center justify-center text-zinc-500 italic">
+          <CardContent className="h-64 flex items-center justify-center text-red-500/70 italic text-center">
             Gráfico de acessos em breve (Integração Google Analytics)
           </CardContent>
         </Card>
@@ -100,8 +100,8 @@ export function DashboardOverview() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader>
             <CardTitle className="text-lg flex items-center">
-              <History className="mr-2 w-5 h-5 text-zinc-400" />
-              Últimas Ações
+              <History className="mr-2 w-5 h-5 text-red-400" />
+              <span className="text-red-500">Últimas Ações</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
