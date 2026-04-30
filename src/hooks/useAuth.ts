@@ -12,7 +12,7 @@ export function useAuth() {
   const [role, setRole] = useState<AppRole>(() => {
     try { return localStorage.getItem(STORAGE_KEY) as AppRole; } catch { return null; }
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!role);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
