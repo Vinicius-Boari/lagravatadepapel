@@ -1,12 +1,89 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon } from "lucide-react";
+import { toast } from "sonner";
+import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
+
+const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val: string) => void, label: string }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      setUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `site_content/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('media')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(filePath);
+
+      onChange(publicUrl);
+      toast.success("Upload realizado com sucesso!");
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error("Erro ao fazer upload.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label className="text-xs text-red-500">{label}</Label>
+      <div className="flex gap-2">
+        <Input 
+          className="bg-zinc-800 border-red-900 text-red-500 flex-1" 
+          value={value} 
+          placeholder="URL da imagem..."
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          accept="image/*,video/*"
+          onChange={handleUpload}
+        />
+        <Button 
+          type="button"
+          size="icon" 
+          variant="outline" 
+          className="border-red-900 text-red-500 hover:bg-red-900/20"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+        </Button>
+      </div>
+      {value && (
+        <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
+          {value.match(/\.(mp4|webm|ogg)$/i) || value.includes('video') ? (
+            <video src={value} className="w-full h-full object-contain" muted />
+          ) : (
+            <img src={value} className="w-full h-full object-contain" />
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export function SiteContentEditor() {
   const { content, updateSection, loading } = useSiteContent();
