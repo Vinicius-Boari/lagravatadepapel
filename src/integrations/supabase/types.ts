@@ -85,87 +85,6 @@ export type Database = {
         }
         Relationships: []
       }
-      backup_settings: {
-        Row: {
-          auto_enabled: boolean
-          id: string
-          interval_unit: string
-          interval_value: number
-          last_run_at: string | null
-          next_run_at: string | null
-          retention_count: number
-          retention_days: number | null
-          singleton: boolean
-          updated_at: string
-          updated_by: string | null
-        }
-        Insert: {
-          auto_enabled?: boolean
-          id?: string
-          interval_unit?: string
-          interval_value?: number
-          last_run_at?: string | null
-          next_run_at?: string | null
-          retention_count?: number
-          retention_days?: number | null
-          singleton?: boolean
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Update: {
-          auto_enabled?: boolean
-          id?: string
-          interval_unit?: string
-          interval_value?: number
-          last_run_at?: string | null
-          next_run_at?: string | null
-          retention_count?: number
-          retention_days?: number | null
-          singleton?: boolean
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
-      backups: {
-        Row: {
-          completed_at: string | null
-          created_at: string
-          created_by: string | null
-          error_message: string | null
-          file_path: string | null
-          id: string
-          size_bytes: number
-          status: string
-          tables: Json
-          trigger: string
-        }
-        Insert: {
-          completed_at?: string | null
-          created_at?: string
-          created_by?: string | null
-          error_message?: string | null
-          file_path?: string | null
-          id?: string
-          size_bytes?: number
-          status?: string
-          tables?: Json
-          trigger?: string
-        }
-        Update: {
-          completed_at?: string | null
-          created_at?: string
-          created_by?: string | null
-          error_message?: string | null
-          file_path?: string | null
-          id?: string
-          size_bytes?: number
-          status?: string
-          tables?: Json
-          trigger?: string
-        }
-        Relationships: []
-      }
       instagram_posts: {
         Row: {
           caption: string
@@ -272,8 +191,6 @@ export type Database = {
         Row: {
           draft_value: Json | null
           key: string
-          language_config: Json | null
-          seo_config: Json | null
           updated_at: string
           updated_by: string | null
           value: Json
@@ -281,8 +198,6 @@ export type Database = {
         Insert: {
           draft_value?: Json | null
           key: string
-          language_config?: Json | null
-          seo_config?: Json | null
           updated_at?: string
           updated_by?: string | null
           value?: Json
@@ -290,8 +205,6 @@ export type Database = {
         Update: {
           draft_value?: Json | null
           key?: string
-          language_config?: Json | null
-          seo_config?: Json | null
           updated_at?: string
           updated_by?: string | null
           value?: Json

@@ -13,7 +13,6 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
-import { Route as ApiPublicHooksRunBackupRouteImport } from './routes/api.public.hooks.run-backup'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -35,25 +34,18 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiPublicHooksRunBackupRoute = ApiPublicHooksRunBackupRouteImport.update({
-  id: '/api/public/hooks/run-backup',
-  path: '/api/public/hooks/run-backup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
-  '/api/public/hooks/run-backup': typeof ApiPublicHooksRunBackupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
-  '/api/public/hooks/run-backup': typeof ApiPublicHooksRunBackupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,36 +53,18 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
-  '/api/public/hooks/run-backup': typeof ApiPublicHooksRunBackupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/admin/dashboard'
-    | '/admin/login'
-    | '/api/public/hooks/run-backup'
+  fullPaths: '/' | '/admin' | '/admin/dashboard' | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin'
-    | '/admin/dashboard'
-    | '/admin/login'
-    | '/api/public/hooks/run-backup'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/admin/dashboard'
-    | '/admin/login'
-    | '/api/public/hooks/run-backup'
+  to: '/' | '/admin' | '/admin/dashboard' | '/admin/login'
+  id: '__root__' | '/' | '/admin' | '/admin/dashboard' | '/admin/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  ApiPublicHooksRunBackupRoute: typeof ApiPublicHooksRunBackupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -123,13 +97,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/public/hooks/run-backup': {
-      id: '/api/public/hooks/run-backup'
-      path: '/api/public/hooks/run-backup'
-      fullPath: '/api/public/hooks/run-backup'
-      preLoaderRoute: typeof ApiPublicHooksRunBackupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -148,7 +115,6 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  ApiPublicHooksRunBackupRoute: ApiPublicHooksRunBackupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

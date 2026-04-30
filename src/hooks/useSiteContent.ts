@@ -50,20 +50,6 @@ export const FALLBACK_CONTENT: SiteContent = {
     instagram_url: "#", whatsapp_url: "#",
     copyright: "© La Gravata de Papel", hashtag: "#LAGRAVATADEPAPEL",
   },
-  seo: {
-    title: "La Gravata de Papel",
-    description: "A hora da gravata nunca mais será a mesma.",
-    keywords: "gravata, casamento, festa, animação, invasão",
-  },
-  languages: {
-    default: "pt",
-    enabled: ["pt"],
-    translations: {
-      pt: { name: "Português", flag: "🇧🇷" },
-      en: { name: "English", flag: "🇺🇸" },
-      es: { name: "Español", flag: "🇪🇸" }
-    }
-  }
 };
 
 export function useSiteContent(useDraft = false) {
@@ -97,41 +83,21 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = true) => {
     try {
-      console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
+      const updateData = isDraft ? { draft_value: newValue } : { value: newValue };
       
-      // Validação básica: se newValue for um objeto, garantir que não está vazio se for obrigatório
-      if (newValue && typeof newValue === 'object' && Object.keys(newValue).length === 0) {
-        console.warn(`Aviso: Tentando salvar objeto vazio na seção ${key}`);
-      }
-
-      const updateData = isDraft 
-        ? { key, draft_value: newValue, updated_at: new Date().toISOString() } 
-        : { key, value: newValue, draft_value: null, updated_at: new Date().toISOString() }; 
-      
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("site_content")
-        .upsert(updateData)
-        .select();
+        .upsert({ key, ...updateData });
 
-      if (error) {
-        console.error(`Erro do Supabase ao salvar ${key}:`, {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
-        throw error;
-      }
+      if (error) throw error;
       
-      console.log(`Sucesso ao salvar ${key}:`, data);
-      
-      // Forçamos a atualização do estado local após o salvamento
+      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas!");
       await fetchContent();
       return true;
-    } catch (err: any) {
-      console.error(`Erro detalhado na atualização da seção ${key}:`, err);
-      // O tratamento de erro amigável agora é feito no componente para maior flexibilidade
-      throw err;
+    } catch (err) {
+      console.error("Error updating content:", err);
+      toast.error("Erro ao salvar alterações.");
+      return false;
     }
   };
 
