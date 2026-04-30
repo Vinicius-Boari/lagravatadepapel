@@ -178,7 +178,7 @@ export function InstagramTab({ onToast }: { onToast: (m: string, kind?: "ok" | "
                 onChange={(e) => setConfig({ ...config, mode: e.target.value as any })}
                 style={{ width: "100%", padding: "11px 14px", borderRadius: 9, border: "1px solid #2c2c2c", background: "#0a0a0a", color: "#fafafa", fontSize: 14, outline: "none" }}
               >
-                <option value="manual">Manual — eu adiciono os posts</option>
+                <option value="manual">Manual (eu adiciono os posts pelo painel)</option>
                 <option value="graph_api">Instagram Graph API (em breve)</option>
               </select>
             </FormField>
