@@ -43,24 +43,23 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       points.push({ x: mx, y: my, age: 0 });
-      if (points.length > 50) points.shift();
+      if (points.length > 20) points.shift();
 
-      ctx.beginPath();
-      ctx.strokeStyle = "#c0392b";
-      ctx.lineWidth = 2;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-
-      for (let i = 0; i < points.length; i++) {
-        const p = points[i];
-        p.age++;
-        if (i === 0) {
-          ctx.moveTo(p.x, p.y);
-        } else {
-          ctx.lineTo(p.x, p.y);
+      if (points.length > 1) {
+        for (let i = 1; i < points.length; i++) {
+          const p1 = points[i - 1];
+          const p2 = points[i];
+          const opacity = i / points.length;
+          
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(192, 57, 67, ${opacity})`;
+          ctx.lineWidth = i * 0.4;
+          ctx.lineCap = "round";
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
         }
       }
-      ctx.stroke();
 
       raf = requestAnimationFrame(animate);
     };
