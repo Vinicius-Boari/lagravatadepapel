@@ -198,7 +198,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#videos" onClick={closeMenu}>Vídeos</a>
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
-          <a href="#sobre" onClick={closeMenu}>Sobre</a>
+          <a href="#sobre" onClick={closeMenu}>Orçamento</a>
           <a href="#contato" onClick={closeMenu}>Contato</a>
         </nav>
       </div>
@@ -343,7 +343,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               <a href="#hero">Home</a>
               <a href="#servicos">Serviços</a>
               <a href="#invasoes">Invasões</a>
-              <a href="#sobre">Sobre</a>
+              <a href="#sobre">Orçamento</a>
             </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
