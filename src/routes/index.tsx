@@ -1,47 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { buildWhatsAppUrl, parseEmbedUrl } from "@/lib/site-helpers";
+import { DEFAULTS } from "@/lib/site-content-defaults";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const WHATSAPP_DEFAULT =
-  "https://api.whatsapp.com/send?phone=5511985111012&text=Olá,%20visitei%20o%20site%20de%20vocês%20e%20gostaria%20de%20saber%20mais%20sobre%20a%20La%20Gravata%20de%20Papel.";
-const WHATSAPP_PLAN =
-  "https://api.whatsapp.com/send?phone=5511985111012&text=Olá,%20Gostaria%20de%20%22executar%20um%20plano%22%20com%20vocês.";
-
-const services = [
-  { img: "/images/hero_invasion.png", title: "Invasão Temática", desc: "Personagens da série invadem sua festa" },
-  { img: "/images/service_tequileiro.png", title: "Tequileiros", desc: "Animação premium na pista de dança" },
-  { img: "/images/service_robo.png", title: "Robô de LED", desc: "Show de luzes futurístico" },
-  { img: "/images/service_co2.png", title: "Bazuca CO2", desc: "Efeitos especiais de fumaça" },
-];
-
-const places = [
-  { img: "/images/hero_invasion.png", title: "Hora da Gravata", tag: "Invasão Temática" },
-  { img: "/images/hero_party.png", title: "Animação da Balada", tag: "Pista de Dança" },
-  { img: "/images/service_foto360.png", title: "Plataforma 360°", tag: "Vídeo Interativo" },
-];
-
-// Video showcase blocks — replace `src` with real .mp4 URLs (or use `poster` for thumbnails)
-const videos: { title: string; tag: string; src?: string; poster?: string; tall?: boolean }[] = [
-  { title: "Invasão ao Vivo", tag: "Reels Instagram", poster: "/images/hero_invasion.png" },
-  { title: "Tequileiros em Ação", tag: "Pista de Dança", poster: "/images/service_tequileiro.png", tall: true },
-  { title: "Robô de LED", tag: "Show de Luzes", poster: "/images/service_robo.png", tall: true },
-  { title: "Bazuca CO2", tag: "Efeito Especial", poster: "/images/service_co2.png" },
-];
-
-const tickerItems = [
-  "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
-  "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
-];
-
 function Index() {
+  const { data: content } = useSiteContent();
+  const c = content ?? DEFAULTS;
+
   const [menuOpen, setMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
+
+  const waDefault = buildWhatsAppUrl(c.whatsapp.phone, c.whatsapp.default_message);
+  const waPlan = buildWhatsAppUrl(c.whatsapp.phone, c.whatsapp.plan_message);
 
   // Add body class
   useEffect(() => {
@@ -49,7 +27,8 @@ function Index() {
     return () => document.body.classList.remove("lg-body");
   }, []);
 
-  // Cursor + parallax + header hide
+  // Cursor + parallax + header hide + reveal + tilt + scroll-3d.
+  // Re-runs when content changes so observers catch newly rendered nodes.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const dot = dotRef.current;
@@ -79,17 +58,17 @@ function Index() {
 
     let ls = 0;
     const onScroll = () => {
-      const c = window.scrollY;
+      const cy = window.scrollY;
       const hdr = headerRef.current;
       if (hdr) {
-        hdr.style.transform = c > ls && c > 100 ? "translateY(-100%)" : "translateY(0)";
+        hdr.style.transform = cy > ls && cy > 100 ? "translateY(-100%)" : "translateY(0)";
       }
-      ls = c;
-      if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
+      ls = cy;
+      if (cy < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
-        if (imgs[0]) imgs[0].style.transform = `rotate(-6deg) translateY(${c * 0.08}px)`;
-        if (imgs[1]) imgs[1].style.transform = `translate(-50%,-50%) rotate(2deg) translateY(${c * 0.04}px)`;
-        if (imgs[2]) imgs[2].style.transform = `rotate(5deg) translateY(${c * 0.06}px)`;
+        if (imgs[0]) imgs[0].style.transform = `rotate(-6deg) translateY(${cy * 0.08}px)`;
+        if (imgs[1]) imgs[1].style.transform = `translate(-50%,-50%) rotate(2deg) translateY(${cy * 0.04}px)`;
+        if (imgs[2]) imgs[2].style.transform = `rotate(5deg) translateY(${cy * 0.06}px)`;
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -107,7 +86,6 @@ function Index() {
     );
     document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 
-    // 3D Tilt-on-mouse-move for cards
     const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
     const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
     tiltEls.forEach((el) => {
@@ -127,13 +105,12 @@ function Index() {
       tiltHandlers.push({ el, move, leave });
     });
 
-    // Scroll-driven 3D for elements with .scroll-3d
     const scrollEls = document.querySelectorAll<HTMLElement>(".scroll-3d");
     const onScroll3d = () => {
       scrollEls.forEach((el) => {
         const r = el.getBoundingClientRect();
         const vh = window.innerHeight;
-        const progress = (r.top + r.height / 2 - vh / 2) / vh; // -1..1 around center
+        const progress = (r.top + r.height / 2 - vh / 2) / vh;
         const clamped = Math.max(-1, Math.min(1, progress));
         el.style.setProperty("--sx", `${clamped * 8}deg`);
         el.style.setProperty("--sy", `${clamped * -10}deg`);
@@ -158,7 +135,7 @@ function Index() {
       });
       obs.disconnect();
     };
-  }, []);
+  }, [content]);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -170,9 +147,9 @@ function Index() {
       <header className="lg-header" ref={headerRef}>
         <div className="logo">
           <div>
-            <div className="logo-text">La Gravata<br />de Papel</div>
+            <div className="logo-text">{c.logo.line1}<br />{c.logo.line2}</div>
           </div>
-          <span className="logo-tagline">Os Originais</span>
+          <span className="logo-tagline">{c.logo.tagline}</span>
         </div>
         <div className="nav-right">
           <button className="menu-btn" onClick={() => setMenuOpen(true)} aria-label="Abrir menu">
@@ -201,26 +178,36 @@ function Index() {
       <section className="hero" id="hero">
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src="/images/hero_invasion.png" alt="Invasão La Gravata de Papel" />
+            <img src={c.hero.image1} alt="Invasão La Gravata de Papel" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src="/images/hero_venue.png" alt="Evento Espetacular" />
+            <img src={c.hero.image2} alt="Evento Espetacular" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src="/images/hero_party.png" alt="Festa Premium" />
+            <img src={c.hero.image3} alt="Festa Premium" />
           </div>
         </div>
 
         <div className="hero-content">
-          <h1 className="hero-title">Vamos<br />Invadir<br /><em>Seu Evento</em></h1>
-          <p className="hero-subtitle">A hora da gravata<br />nunca mais será<br />a mesma /</p>
+          <h1 className="hero-title">
+            {c.hero.title_line1}<br />{c.hero.title_line2}<br /><em>{c.hero.title_line3}</em>
+          </h1>
+          <p className="hero-subtitle">
+            {c.hero.subtitle.split("\n").map((line, i, arr) => (
+              <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+            ))}
+          </p>
         </div>
 
-        <div className="hero-location">São Paulo<br />Capital</div>
+        <div className="hero-location">
+          {c.hero.location.split("\n").map((line, i, arr) => (
+            <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+          ))}
+        </div>
 
         <div className="hero-cta">
-          <a href={WHATSAPP_DEFAULT} target="_blank" rel="noopener noreferrer">
-            <span>EXECUTAR O PLANO</span>
+          <a href={waDefault} target="_blank" rel="noopener noreferrer">
+            <span>{c.hero.cta_label}</span>
             <span className="cta-dot" />
           </a>
         </div>
@@ -228,7 +215,7 @@ function Index() {
 
       <div className="ticker">
         <div className="ticker-track">
-          {[...tickerItems, ...tickerItems].map((t, i) => (
+          {[...c.tickers.items, ...c.tickers.items].map((t, i) => (
             <span key={i}>{t} •</span>
           ))}
         </div>
@@ -236,11 +223,11 @@ function Index() {
 
       <section className="services-section" id="servicos">
         <div className="section-header reveal">
-          <h2>Nossos<br /><span>Serviços</span></h2>
+          <h2>{c.services.heading_line1}<br /><span>{c.services.heading_line2}</span></h2>
         </div>
         <div className="services-grid scene-3d">
-          {services.map((s) => (
-            <div className="service-card tilt-3d scroll-3d reveal" key={s.title}>
+          {c.services.items.map((s, idx) => (
+            <div className="service-card tilt-3d scroll-3d reveal" key={idx}>
               <img src={s.img} alt={s.title} />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
@@ -253,42 +240,53 @@ function Index() {
 
       <section className="video-section" id="videos">
         <div className="video-section-header reveal">
-          <h2>Em <em><span>Movimento</span></em></h2>
+          <h2>{c.videos.heading.includes(" ") ? (
+            <>
+              {c.videos.heading.split(" ").slice(0, -1).join(" ")} <em><span>{c.videos.heading.split(" ").slice(-1)[0]}</span></em>
+            </>
+          ) : <em><span>{c.videos.heading}</span></em>}</h2>
         </div>
         <div className="video-grid scene-3d">
-          {videos.map((v) => (
-            <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={v.title}>
-              {v.src ? (
-                <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
-              ) : (
-                <>
-                  {v.poster && <img src={v.poster} alt={v.title} />}
-                  <div className="video-card-placeholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                    <span>Vídeo em breve</span>
-                    <em>Substitua pelo reel real</em>
-                  </div>
-                </>
-              )}
-              <div className="video-card-overlay">
-                <h3>{v.title}</h3>
-                <span>{v.tag}</span>
+          {c.videos.items.map((v, idx) => {
+            const embed = parseEmbedUrl(v.url);
+            return (
+              <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={idx}>
+                {v.src ? (
+                  <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
+                ) : embed ? (
+                  <iframe
+                    src={embed.embed}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+                    title={v.title}
+                  />
+                ) : (
+                  <>
+                    {v.poster && <img src={v.poster} alt={v.title} />}
+                    <div className="video-card-placeholder">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                      <span>Vídeo em breve</span>
+                      <em>Adicione no painel</em>
+                    </div>
+                  </>
+                )}
+                <div className="video-card-overlay">
+                  <h3>{v.title}</h3>
+                  <span>{v.tag}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
       <section className="dark-section">
         <div className="dark-content reveal">
-          <h2>O Plano É<br /><em>Surpreender</em></h2>
-          <p>
-            Vamos invadir seu casamento com personagens caracterizados como os da série "La Casa de Papel",
-            munidos com efeitos especiais de áudio e vídeo, além de surpresas e atuação teatral que ficará
-            na memória dos noivos e de cada convidado. Nós somos La Gravata de Papel — os originais.
-          </p>
-          <a href={WHATSAPP_PLAN} target="_blank" className="btn-outline" rel="noopener noreferrer">
-            <span>Contrate Agora</span>
+          <h2>{renderHeading(c.dark_cta.heading)}</h2>
+          <p>{c.dark_cta.text}</p>
+          <a href={waPlan} target="_blank" className="btn-outline" rel="noopener noreferrer">
+            <span>{c.dark_cta.button_label}</span>
             <span>→</span>
           </a>
         </div>
@@ -296,14 +294,14 @@ function Index() {
 
       <section className="places-section" id="invasoes">
         <div className="places-header reveal">
-          <h2>Nossas<br />Invasões</h2>
-          <a href="https://www.instagram.com/lagravatadepapel" target="_blank" rel="noopener noreferrer">
-            Ver no Instagram →
+          <h2>{c.invasions.heading_line1}<br />{c.invasions.heading_line2}</h2>
+          <a href={c.invasions.instagram_url} target="_blank" rel="noopener noreferrer">
+            {c.invasions.instagram_label}
           </a>
         </div>
         <div className="places-grid scene-3d">
-          {places.map((p) => (
-            <div className="place-card tilt-3d scroll-3d reveal" key={p.title}>
+          {c.invasions.items.map((p, idx) => (
+            <div className="place-card tilt-3d scroll-3d reveal" key={idx}>
               <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
@@ -317,23 +315,15 @@ function Index() {
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <img src="/images/hero_venue.png" alt="Sobre La Gravata de Papel" />
+            <img src={c.about.image} alt="Sobre La Gravata de Papel" />
           </div>
         </div>
         <div className="about-text">
-          <h2 className="reveal">La Gravata<br />de <em>Papel</em></h2>
-          <p className="reveal">
-            Somos especialistas em transformar a hora da gravata em um espetáculo cinematográfico. Com
-            personagens caracterizados, efeitos especiais de áudio e vídeo, e uma atuação teatral planejada,
-            criamos momentos que ficam eternizados na memória dos noivos e convidados.
-          </p>
-          <p className="reveal">
-            A Toronto Produções, empresa por trás da La Gravata de Papel, está no ramo de eventos há mais
-            de 20 anos. Além da invasão temática, oferecemos tequileiros, sapatinho da noiva, robô de LED,
-            bazuca de fumaça CO2, totem fotográfico e plataforma 360°.
-          </p>
-          <a href={WHATSAPP_DEFAULT} target="_blank" className="btn-outline reveal" rel="noopener noreferrer">
-            <span>Fale Conosco</span>
+          <h2 className="reveal">{renderHeading(c.about.heading)}</h2>
+          <p className="reveal">{c.about.paragraph1}</p>
+          <p className="reveal">{c.about.paragraph2}</p>
+          <a href={waDefault} target="_blank" className="btn-outline reveal" rel="noopener noreferrer">
+            <span>{c.about.button_label}</span>
             <span>→</span>
           </a>
         </div>
@@ -341,7 +331,7 @@ function Index() {
 
       <footer className="lg-footer" id="contato">
         <div className="footer-top">
-          <div className="footer-logo">La Gravata<br />de Papel</div>
+          <div className="footer-logo">{c.logo.line1}<br />{c.logo.line2}</div>
           <div className="footer-links">
             <div className="footer-col">
               <h4>Navegação</h4>
@@ -352,26 +342,37 @@ function Index() {
             </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
-              <a href="https://www.instagram.com/lagravatadepapel" target="_blank" rel="noopener noreferrer">Instagram</a>
-              <a href={WHATSAPP_DEFAULT} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+              <a href={c.footer.instagram_url} target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href={waDefault} target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
             <div className="footer-col">
               <h4>Contato</h4>
-              <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">(11) 98511-1012</a>
-              <a href="#">Rua Mesquita, 384</a>
-              <a href="#">Vila Deodoro, SP</a>
+              <a href={waDefault} target="_blank" rel="noopener noreferrer">{c.whatsapp.phone_display}</a>
+              <span>{c.footer.address_line1}</span>
+              <span>{c.footer.address_line2}</span>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 La Gravata de Papel — Nome registrado no INPI. Todos os direitos reservados.</span>
-          <span>#LAGRAVATADEPAPEL</span>
+          <span>{c.footer.copyright}</span>
+          <span>{c.footer.hashtag}</span>
         </div>
       </footer>
 
-      <a className="whatsapp-float" href={WHATSAPP_DEFAULT} target="_blank" rel="noopener noreferrer" aria-label="Fale pelo WhatsApp">
+      <a className="whatsapp-float" href={waDefault} target="_blank" rel="noopener noreferrer" aria-label="Fale pelo WhatsApp">
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
       </a>
+    </>
+  );
+}
+
+/** Render a heading with the last word emphasized. */
+function renderHeading(heading: string) {
+  const words = heading.trim().split(" ");
+  if (words.length < 2) return <em>{heading}</em>;
+  return (
+    <>
+      {words.slice(0, -1).join(" ")}<br /><em>{words.slice(-1)[0]}</em>
     </>
   );
 }
