@@ -117,7 +117,12 @@ export function SiteContentEditor() {
 
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
-    await updateSection(section, data, isDraft);
+    setLoading(true);
+    const success = await updateSection(section, data, isDraft);
+    if (success) {
+      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas com sucesso!");
+    }
+    setLoading(false);
   };
 
   if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
