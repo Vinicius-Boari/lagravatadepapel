@@ -76,7 +76,7 @@ export function DashboardOverview() {
               <card.icon className={cn("w-4 h-4", card.color)} />
             </CardHeader>
             <CardContent>
-              <div className={cn("font-bold", card.isDate ? "text-sm" : "text-2xl")}>
+              <div className={cn("font-bold text-red-500", card.isDate ? "text-sm" : "text-2xl")}>
                 {card.value}
               </div>
             </CardContent>
