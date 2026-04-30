@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Save, Upload, Type } from "lucide-react";
 
 export function VisualIdentity() {
-  const { content, updateSection, loading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const [loading, setLoading] = useState(false);
   const visual = content.visual || {};
   
   const [formData, setFormData] = useState({
@@ -26,7 +27,13 @@ export function VisualIdentity() {
   };
 
   const handleSave = async (isDraft = true) => {
-    await updateSection("visual", formData, isDraft);
+    setLoading(true);
+    const success = await updateSection("visual", formData, isDraft);
+    if (success) {
+      setTimeout(() => setLoading(false), 500);
+    } else {
+      setLoading(false);
+    }
   };
 
   if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
