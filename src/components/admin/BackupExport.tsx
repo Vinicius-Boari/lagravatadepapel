@@ -6,15 +6,12 @@ import {
   Upload, 
   History, 
   RefreshCcw,
-  FileJson,
-  AlertTriangle,
-  Settings,
-  Trash2,
-  Play,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  HardDrive
+  Settings, 
+  Trash2, 
+  Play, 
+  CheckCircle2, 
+  Clock, 
+  AlertCircle 
 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -60,6 +57,12 @@ export function BackupExport() {
   const [isRunningBackup, setIsRunningBackup] = useState(false);
   const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
 
+  // Custom token from localStorage as used in useAuth hook
+  const getAdminToken = () => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("lg_auth_token") || "";
+  };
+
   const listBackupsFn = useServerFn(listBackups);
   const getSettingsFn = useServerFn(getBackupSettings);
   const updateSettingsFn = useServerFn(updateBackupSettings);
@@ -70,14 +73,20 @@ export function BackupExport() {
 
   const fetchData = async () => {
     try {
-      const [{ backups }, { settings }] = await Promise.all([
-        listBackupsFn(),
-        getSettingsFn()
+      const adminToken = getAdminToken();
+      if (!adminToken) {
+        setIsLoading(false);
+        return;
+      }
+
+      const [backupsRes, settingsRes] = await Promise.all([
+        listBackupsFn({ data: { adminToken } }),
+        getSettingsFn({ data: { adminToken } })
       ]);
-      setBackups(backups);
-      setSettings(settings);
-    } catch (error) {
-      console.error(error);
+      setBackups(backupsRes.backups || []);
+      setSettings(settingsRes.settings || null);
+    } catch (error: any) {
+      console.error("Backup fetch error:", error);
       toast.error("Erro ao carregar dados de backup.");
     } finally {
       setIsLoading(false);
@@ -89,9 +98,15 @@ export function BackupExport() {
   }, []);
 
   const handleRunBackup = async () => {
+    const adminToken = getAdminToken();
+    if (!adminToken) {
+      toast.error("Sessão expirada. Faça login novamente.");
+      return;
+    }
+
     setIsRunningBackup(true);
     try {
-      await toast.promise(runNowFn(), {
+      await toast.promise(runNowFn({ data: { adminToken } }), {
         loading: "Iniciando backup...",
         success: () => {
           fetchData();
@@ -109,14 +124,23 @@ export function BackupExport() {
 
   const handleUpdateSettings = async () => {
     if (!settings) return;
+    const adminToken = getAdminToken();
+    if (!adminToken) {
+      toast.error("Sessão expirada. Faça login novamente.");
+      return;
+    }
+
     setIsUpdatingSettings(true);
     try {
       await updateSettingsFn({ data: {
-        auto_enabled: settings.auto_enabled,
-        interval_value: Number(settings.interval_value),
-        interval_unit: settings.interval_unit,
-        retention_count: Number(settings.retention_count),
-        retention_days: settings.retention_days ? Number(settings.retention_days) : null
+        adminToken,
+        data: {
+          auto_enabled: !!settings.auto_enabled,
+          interval_value: Number(settings.interval_value || 1),
+          interval_unit: settings.interval_unit || "hours",
+          retention_count: Number(settings.retention_count || 1),
+          retention_days: settings.retention_days ? Number(settings.retention_days) : null
+        }
       }});
       toast.success("Configurações salvas com sucesso!");
       fetchData();
@@ -128,7 +152,8 @@ export function BackupExport() {
   };
 
   const handleDelete = async (id: string) => {
-    toast.promise(deleteFn({ data: { id } }), {
+    const adminToken = getAdminToken();
+    toast.promise(deleteFn({ data: { adminToken, id } }), {
       loading: "Excluindo backup...",
       success: () => {
         fetchData();
@@ -139,7 +164,8 @@ export function BackupExport() {
   };
 
   const handleRestore = async (id: string) => {
-    toast.promise(restoreFn({ data: { id } }), {
+    const adminToken = getAdminToken();
+    toast.promise(restoreFn({ data: { adminToken, id } }), {
       loading: "Restaurando sistema (isso pode levar alguns segundos)...",
       success: () => {
         setTimeout(() => window.location.reload(), 2000);
@@ -151,7 +177,8 @@ export function BackupExport() {
 
   const handleDownload = async (id: string) => {
     try {
-      const { url } = await getDownloadFn({ data: { id } });
+      const adminToken = getAdminToken();
+      const { url } = await getDownloadFn({ data: { adminToken, id } });
       window.open(url, '_blank');
     } catch (error) {
       toast.error("Erro ao gerar link de download.");
@@ -175,10 +202,10 @@ export function BackupExport() {
   }
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
+    <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20 text-red-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-red-500">Backup e Restauração</h2>
+          <h2 className="text-2xl font-bold">Backup e Restauração</h2>
           <p className="text-red-500/70">Mantenha seus dados seguros com backups automáticos e manuais.</p>
         </div>
         <Button 
@@ -192,7 +219,6 @@ export function BackupExport() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Settings Card */}
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl lg:col-span-1">
           <CardHeader>
             <CardTitle className="text-red-500 flex items-center text-lg">
@@ -207,8 +233,8 @@ export function BackupExport() {
                 <p className="text-[10px] text-zinc-500">Ativa a execução em segundo plano.</p>
               </div>
               <Switch 
-                checked={settings?.auto_enabled} 
-                onCheckedChange={(val) => setSettings({ ...settings, auto_enabled: val })}
+                checked={!!settings?.auto_enabled} 
+                onCheckedChange={(val) => setSettings({ ...(settings || {}), auto_enabled: val })}
               />
             </div>
 
@@ -217,13 +243,13 @@ export function BackupExport() {
               <div className="flex gap-2">
                 <Input 
                   type="number" 
-                  value={settings?.interval_value}
-                  onChange={(e) => setSettings({ ...settings, interval_value: e.target.value })}
+                  value={settings?.interval_value ?? ""}
+                  onChange={(e) => setSettings({ ...(settings || {}), interval_value: e.target.value })}
                   className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
                 />
                 <Select 
-                  value={settings?.interval_unit} 
-                  onValueChange={(val) => setSettings({ ...settings, interval_unit: val })}
+                  value={settings?.interval_unit || "hours"} 
+                  onValueChange={(val) => setSettings({ ...(settings || {}), interval_unit: val })}
                 >
                   <SelectTrigger className="bg-zinc-950 border-zinc-800 text-red-500">
                     <SelectValue />
@@ -243,13 +269,12 @@ export function BackupExport() {
                 <div className="flex items-center gap-2">
                   <Input 
                     type="number" 
-                    value={settings?.retention_count}
-                    onChange={(e) => setSettings({ ...settings, retention_count: e.target.value })}
+                    value={settings?.retention_count ?? ""}
+                    onChange={(e) => setSettings({ ...(settings || {}), retention_count: e.target.value })}
                     className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
                   />
                   <span className="text-xs text-zinc-500">últimos backups</span>
                 </div>
-                <p className="text-[10px] text-zinc-600 italic">Backups mais antigos que o limite serão removidos automaticamente.</p>
               </div>
             </div>
 
@@ -276,7 +301,6 @@ export function BackupExport() {
           </CardContent>
         </Card>
 
-        {/* History Card */}
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-red-500 flex items-center text-lg">
@@ -412,37 +436,30 @@ export function BackupExport() {
                 <Database className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Tabelas Incluídas</p>
-                <p className="text-lg font-bold text-red-500">6</p>
-                <p className="text-[10px] text-zinc-600">Conteúdo, Páginas, Mídia, Posts, Configurações e SEO.</p>
+                <h4 className="font-bold">Dados Protegidos</h4>
+                <p className="text-xs text-zinc-500 mt-1">O backup inclui posts do instagram, páginas, configurações e mídias.</p>
               </div>
            </CardContent>
         </Card>
-
-        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-red-600">
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-blue-600">
            <CardContent className="pt-6 flex items-start space-x-4">
-              <div className="p-2 bg-red-500/10 rounded-lg">
-                <HardDrive className="w-6 h-6 text-red-500" />
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Clock className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Total Armazenado</p>
-                <p className="text-lg font-bold text-red-500">
-                  {formatSize(backups.reduce((acc, b) => acc + (b.size_bytes || 0), 0))}
-                </p>
-                <p className="text-[10px] text-zinc-600">{backups.filter(b => b.status === 'success').length} backups saudáveis.</p>
+                <h4 className="font-bold">Agendamento Inteligente</h4>
+                <p className="text-xs text-zinc-500 mt-1">O sistema roda em segundo plano mesmo com o painel fechado.</p>
               </div>
            </CardContent>
         </Card>
-
-        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-red-600">
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-green-600">
            <CardContent className="pt-6 flex items-start space-x-4">
-              <div className="p-2 bg-red-500/10 rounded-lg">
-                <History className="w-6 h-6 text-red-500" />
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <History className="w-6 h-6 text-green-500" />
               </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Retenção</p>
-                <p className="text-lg font-bold text-red-500">{settings?.retention_count || 10} Versões</p>
-                <p className="text-[10px] text-zinc-600">Limite configurado para autolimpeza.</p>
+                <h4 className="font-bold">Política de Retenção</h4>
+                <p className="text-xs text-zinc-500 mt-1">Limpamos backups antigos automaticamente para economizar espaço.</p>
               </div>
            </CardContent>
         </Card>
