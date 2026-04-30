@@ -333,6 +333,8 @@ body.lg-body {
 .footer-col a:hover { color: var(--color-red-lg); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .footer-bottom span { font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
+.footer-painel-link { color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.3s; }
+.footer-painel-link:hover { color: var(--color-red-lg); }
 
 /* REVEALS */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1); }
