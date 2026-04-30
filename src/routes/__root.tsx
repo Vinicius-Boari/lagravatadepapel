@@ -1,4 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
 import appCss from "../styles.css?url";
 
@@ -76,9 +78,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const location = useLocation();
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
+  }));
   const hidePanelBtn = location.pathname.startsWith("/login") || location.pathname.startsWith("/admin");
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Outlet />
       {!hidePanelBtn && (
         <Link
@@ -113,6 +118,6 @@ function RootComponent() {
           Painel
         </Link>
       )}
-    </>
+    </QueryClientProvider>
   );
 }
