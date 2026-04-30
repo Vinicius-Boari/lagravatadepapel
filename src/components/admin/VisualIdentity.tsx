@@ -36,20 +36,27 @@ export function VisualIdentity() {
   };
 
   const handleSave = async (isDraft = true) => {
+    if (loading) return;
+
+    // Validação básica
+    if (!formData.primary_color || !formData.font_family) {
+      showToast("Erro: Preencha os campos obrigatórios.", 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       console.log("Tentando salvar Identidade Visual", formData);
       const success = await updateSection("visual", formData, isDraft);
       
       if (success) {
-        showToast(isDraft ? "Rascunho visual salvo!" : "Identidade Visual salva com sucesso!", 'success');
-        setTimeout(() => setLoading(false), 500);
-      } else {
-        throw new Error("Falha ao salvar Identidade Visual.");
+        showToast(isDraft ? "Rascunho visual salvo!" : "Salvo com sucesso!", 'success');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao salvar Identidade Visual:", err);
-      showToast("Erro crítico: Não foi possível salvar as alterações visuais.", 'error');
+      const errorMessage = err.message || "Tente novamente.";
+      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+    } finally {
       setLoading(false);
     }
   };

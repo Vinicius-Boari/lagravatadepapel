@@ -38,9 +38,17 @@ export function IntegrationsManager() {
   });
 
   const handleSave = async () => {
+    if (loading) return;
+
     setLoading(true);
     try {
       console.log("Tentando salvar Integrações", formData);
+      
+      // Validação básica
+      if (!formData.whatsapp_number) {
+        showToast("Aviso: O número do WhatsApp é recomendado.", 'success');
+      }
+
       const integrationsData = {
         google_analytics_id: formData.google_analytics_id,
         google_tag_manager_id: formData.google_tag_manager_id,
@@ -64,14 +72,13 @@ export function IntegrationsManager() {
       ]);
 
       if (results.every(r => r === true)) {
-        showToast("Integrações e APIs salvas com sucesso!", 'success');
-        setTimeout(() => setLoading(false), 500);
-      } else {
-        throw new Error("Alguma seção falhou ao salvar");
+        showToast("Salvo com sucesso!", 'success');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao salvar Integrações:", err);
-      showToast("Erro crítico: Não foi possível salvar as integrações.", 'error');
+      const errorMessage = err.message || "Tente novamente.";
+      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+    } finally {
       setLoading(false);
     }
   };

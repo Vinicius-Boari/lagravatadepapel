@@ -99,6 +99,11 @@ export function useSiteContent(useDraft = false) {
     try {
       console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
       
+      // Validação básica: se newValue for um objeto, garantir que não está vazio se for obrigatório
+      if (newValue && typeof newValue === 'object' && Object.keys(newValue).length === 0) {
+        console.warn(`Aviso: Tentando salvar objeto vazio na seção ${key}`);
+      }
+
       const updateData = isDraft 
         ? { key, draft_value: newValue, updated_at: new Date().toISOString() } 
         : { key, value: newValue, draft_value: null, updated_at: new Date().toISOString() }; 
@@ -109,7 +114,12 @@ export function useSiteContent(useDraft = false) {
         .select();
 
       if (error) {
-        console.error(`Erro do Supabase ao salvar ${key}:`, error);
+        console.error(`Erro do Supabase ao salvar ${key}:`, {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
         throw error;
       }
       
@@ -120,9 +130,8 @@ export function useSiteContent(useDraft = false) {
       return true;
     } catch (err: any) {
       console.error(`Erro detalhado na atualização da seção ${key}:`, err);
-      const errorMessage = err.message || "Erro desconhecido ao salvar";
-      toast.error(`Erro ao salvar ${key}: ${errorMessage}`);
-      return false;
+      // O tratamento de erro amigável agora é feito no componente para maior flexibilidade
+      throw err;
     }
   };
 
