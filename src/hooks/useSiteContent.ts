@@ -107,7 +107,7 @@ export function useSiteContent(useDraft = false) {
 
       if (error) throw error;
       
-      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas!");
+      // Success toast removed here to avoid double toast with SiteContentEditor
       await fetchContent();
       return true;
     } catch (err) {
