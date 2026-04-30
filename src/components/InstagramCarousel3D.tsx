@@ -17,8 +17,10 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
   const { posts, loading } = useInstagramPosts();
   const stageRef = useRef<HTMLDivElement>(null);
   const angleRef = useRef(0);
-  const targetSpeedRef = useRef(0.05);
-  const speedRef = useRef(0.05);
+  // Speed: each card stays in front for ~2.5s. degrees/frame = (360/count) / (2.5 * 60fps)
+  const computedSpeed = (360 / (posts.length > 0 ? posts.length : 8)) / (2.5 * 60);
+  const targetSpeedRef = useRef(computedSpeed);
+  const speedRef = useRef(computedSpeed);
   const rafRef = useRef<number>(0);
   const [active, setActive] = useState<InstagramPost | null>(null);
 
@@ -70,7 +72,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
       <div
         className="ig3d-scene"
         onMouseEnter={() => { targetSpeedRef.current = 0; }}
-        onMouseLeave={() => { targetSpeedRef.current = 0.05; }}
+        onMouseLeave={() => { targetSpeedRef.current = computedSpeed; }}
       >
         <div className="ig3d-stage" ref={stageRef}>
           {list.map((post, i) => {
