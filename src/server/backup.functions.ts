@@ -28,29 +28,29 @@ async function verifyCustomAdmin(token: string) {
 }
 
 export const listBackups = createServerFn({ method: "POST" })
-  .input(z.object({ adminToken: z.string() }))
-  .handler(async ({ input }) => {
-    await verifyCustomAdmin(input.adminToken);
-    const { data, error } = await supabaseAdmin
+  .validator((input: any) => z.object({ adminToken: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    await verifyCustomAdmin(data.adminToken);
+    const { data: backups, error } = await supabaseAdmin
       .from("backups")
       .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
       .order("created_at", { ascending: false })
       .limit(100);
     if (error) throw new Error(error.message);
-    return { backups: data ?? [] };
+    return { backups: backups ?? [] };
   });
 
 export const getBackupSettings = createServerFn({ method: "POST" })
-  .input(z.object({ adminToken: z.string() }))
-  .handler(async ({ input }) => {
-    await verifyCustomAdmin(input.adminToken);
-    const { data, error } = await supabaseAdmin
+  .validator((input: any) => z.object({ adminToken: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    await verifyCustomAdmin(data.adminToken);
+    const { data: settings, error } = await supabaseAdmin
       .from("backup_settings")
       .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
       .limit(1)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return { settings: data };
+    return { settings };
   });
 
 const settingsSchema = z.object({
@@ -65,9 +65,9 @@ const settingsSchema = z.object({
 });
 
 export const updateBackupSettings = createServerFn({ method: "POST" })
-  .input(settingsSchema)
-  .handler(async ({ input }) => {
-    const user = await verifyCustomAdmin(input.adminToken);
+  .validator((input: any) => settingsSchema.parse(input))
+  .handler(async ({ data }) => {
+    const user = await verifyCustomAdmin(data.adminToken);
     const { data: existing } = await supabaseAdmin
       .from("backup_settings")
       .select("id")
@@ -75,7 +75,7 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
       .maybeSingle();
     
     const settingsData = {
-      ...input.data,
+      ...data.data,
       updated_at: new Date().toISOString(),
       updated_by: user.id,
     };
@@ -96,45 +96,45 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   });
 
 export const runBackupNow = createServerFn({ method: "POST" })
-  .input(z.object({ adminToken: z.string() }))
-  .handler(async ({ input }) => {
-    const user = await verifyCustomAdmin(input.adminToken);
+  .validator((input: any) => z.object({ adminToken: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    const user = await verifyCustomAdmin(data.adminToken);
     const result = await runBackup({ trigger: "manual", createdBy: user.id });
     await applyRetentionPolicy();
     return result;
   });
 
 export const restoreBackupFn = createServerFn({ method: "POST" })
-  .input(z.object({ adminToken: z.string(), id: z.string().uuid() }))
-  .handler(async ({ input }) => {
-    const user = await verifyCustomAdmin(input.adminToken);
-    await restoreBackup(input.id);
+  .validator((input: any) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const user = await verifyCustomAdmin(data.adminToken);
+    await restoreBackup(data.id);
     await supabaseAdmin.from("admin_logs").insert({
       action: "backup.restore",
-      user_email: user.id, // We don't have email in admin_users necessarily, using ID
+      user_email: user.id,
       user_id: user.id,
       entity_type: "backup",
-      entity_id: input.id,
+      entity_id: data.id,
     });
     return { success: true };
   });
 
 export const deleteBackupFn = createServerFn({ method: "POST" })
-  .input(z.object({ adminToken: z.string(), id: z.string().uuid() }))
-  .handler(async ({ input }) => {
-    await verifyCustomAdmin(input.adminToken);
-    await deleteBackup(input.id);
+  .validator((input: any) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    await verifyCustomAdmin(data.adminToken);
+    await deleteBackup(data.id);
     return { success: true };
   });
 
 export const getBackupDownloadUrl = createServerFn({ method: "POST" })
-  .input(z.object({ adminToken: z.string(), id: z.string().uuid() }))
-  .handler(async ({ input }) => {
-    await verifyCustomAdmin(input.adminToken);
+  .validator((input: any) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    await verifyCustomAdmin(data.adminToken);
     const { data: row } = await supabaseAdmin
       .from("backups")
       .select("file_path")
-      .eq("id", input.id)
+      .eq("id", data.id)
       .single();
     if (!row?.file_path) throw new Error("Arquivo indisponível");
     const url = await getSignedDownloadUrl(row.file_path);
