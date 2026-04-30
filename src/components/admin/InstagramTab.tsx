@@ -176,7 +176,7 @@ export function InstagramTab({ onToast }: { onToast: (m: string, kind?: "ok" | "
               <select
                 value={config.mode ?? "manual"}
                 onChange={(e) => setConfig({ ...config, mode: e.target.value as any })}
-                style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", background: "white", fontSize: 14 }}
+                style={{ width: "100%", padding: "11px 14px", borderRadius: 9, border: "1px solid #2c2c2c", background: "#0a0a0a", color: "#fafafa", fontSize: 14, outline: "none" }}
               >
                 <option value="manual">Manual — eu adiciono os posts</option>
                 <option value="graph_api">Instagram Graph API (em breve)</option>
@@ -236,36 +236,38 @@ function PostEditor({ post, onClose, onSaved, onError, nextPosition = 0 }: {
 
   return (
     <div onClick={onClose} style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,.6)",
+      position: "fixed", inset: 0, background: "rgba(0,0,0,.85)", backdropFilter: "blur(6px)",
       display: "grid", placeItems: "center", zIndex: 100, padding: 16,
       animation: "adminFade .2s ease",
     }}>
       <div onClick={(e) => e.stopPropagation()} style={{
-        background: "white", borderRadius: 14, width: "100%", maxWidth: 560, padding: 24,
+        background: "#0a0a0a", borderRadius: 14, width: "100%", maxWidth: 600, padding: 28,
+        border: "1px solid #2a2a2a",
+        boxShadow: "0 30px 80px rgba(220,38,38,.15)",
       }}>
-        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, margin: "0 0 16px" }}>
+        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, margin: "0 0 18px", color: "#fafafa", fontWeight: 600 }}>
           {post ? "Editar post" : "Novo post do Instagram"}
         </h3>
 
-        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 18 }}>
           <MediaUploader folder="instagram" value={imageUrl} onChange={setImageUrl} aspect="square" />
           <div>
             <FormField label="Legenda">
-              <TextArea value={caption} onChange={(e) => setCaption(e.target.value)} rows={4} placeholder="Texto que aparece no card." />
+              <TextArea value={caption} onChange={(e) => setCaption(e.target.value)} rows={4} placeholder="Texto do card." />
             </FormField>
             <FormField label="Link no Instagram (opcional)" hint="Cole a URL do post original.">
               <TextInput value={permalink} onChange={(e) => setPermalink(e.target.value)} placeholder="https://www.instagram.com/p/..." />
             </FormField>
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151" }}>
-              <input type="checkbox" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} />
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#ccc", cursor: "pointer" }}>
+              <input type="checkbox" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} style={{ accentColor: "#dc2626" }} />
               Publicar imediatamente no site
             </label>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 18 }}>
+        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 22 }}>
           <GhostBtn onClick={onClose}>Cancelar</GhostBtn>
-          <PrimaryBtn onClick={save} disabled={busy}>{busy ? "Salvando..." : "Salvar"}</PrimaryBtn>
+          <PrimaryBtn onClick={save} disabled={busy}>{busy ? "Salvando…" : "Salvar"}</PrimaryBtn>
         </div>
       </div>
     </div>
