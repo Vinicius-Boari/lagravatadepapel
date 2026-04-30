@@ -65,7 +65,7 @@ export function SiteContentEditor() {
                     <Label className="text-red-500">Linhas do Título (uma por linha)</Label>
                     <Textarea 
                       rows={4} 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.title_lines?.join("\n")}
                       onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
                     />
@@ -73,7 +73,7 @@ export function SiteContentEditor() {
                   <div className="space-y-2">
                     <Label className="text-red-500">Subtítulo</Label>
                     <Textarea 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.subtitle}
                       onChange={(e) => setHero({...hero, subtitle: e.target.value})}
                     />
@@ -83,7 +83,7 @@ export function SiteContentEditor() {
                   <div className="space-y-2">
                     <Label className="text-red-500">Localização (Canto Esquerdo)</Label>
                     <Input 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.location}
                       onChange={(e) => setHero({...hero, location: e.target.value})}
                     />
@@ -91,7 +91,7 @@ export function SiteContentEditor() {
                   <div className="space-y-2">
                     <Label className="text-red-500">Texto do Botão (CTA)</Label>
                     <Input 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.cta_label}
                       onChange={(e) => setHero({...hero, cta_label: e.target.value})}
                     />
@@ -99,7 +99,7 @@ export function SiteContentEditor() {
                   <div className="space-y-2">
                     <Label className="text-red-500">Link do Botão</Label>
                     <Input 
-                      className="bg-zinc-800 border-zinc-700" 
+                      className="bg-zinc-800 border-red-900 text-red-500" 
                       value={hero.cta_url}
                       onChange={(e) => setHero({...hero, cta_url: e.target.value})}
                     />
@@ -111,7 +111,7 @@ export function SiteContentEditor() {
                 <div className="space-y-2">
                   <Label className="text-red-500">URL do Vídeo (MP4/WebM)</Label>
                   <Input 
-                    className="bg-zinc-800 border-zinc-700" 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
                     placeholder="https://... (URL direta do arquivo)"
                     value={hero.video_url}
                     onChange={(e) => setHero({...hero, video_url: e.target.value})}
