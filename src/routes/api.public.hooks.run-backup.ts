@@ -6,23 +6,26 @@ import {
   markRunTimestamps,
 } from "@/server/backup.server";
 
-// Public cron endpoint. Protected by SUPABASE_SERVICE_ROLE_KEY as bearer token
-// because pg_cron runs in the database without a user session.
+// Public cron endpoint. Protected by SUPABASE_SERVICE_ROLE_KEY or PUBLISHABLE_KEY
 export const Route = createFileRoute("/api/public/hooks/run-backup")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // pg_cron passes a Bearer token. Accept either the service role key
-        // or the publishable key (sent via the apikey header by pg_net helpers).
         const auth = request.headers.get("authorization") ?? "";
         const apikey = request.headers.get("apikey") ?? "";
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
-        const pubKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
+        
+        // Try multiple possible env var names for keys
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+        const pubKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
+        
         const token = auth.replace(/^Bearer\s+/i, "");
-        const ok =
+        
+        const isAuthorized = 
           (serviceKey && (token === serviceKey || apikey === serviceKey)) ||
           (pubKey && (token === pubKey || apikey === pubKey));
-        if (!ok) {
+
+        if (!isAuthorized) {
+          console.error("[cron] Unauthorized access attempt to run-backup");
           return new Response("Unauthorized", { status: 401 });
         }
 
