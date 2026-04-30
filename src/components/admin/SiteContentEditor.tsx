@@ -126,7 +126,7 @@ export function SiteContentEditor() {
     setLoading(false);
   };
 
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
