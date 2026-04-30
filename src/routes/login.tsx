@@ -30,13 +30,17 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    setLoading(false);
-    if (err) {
-      setError("Credenciais inválidas");
+    const { data, error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (err || !data.session) {
+      setLoading(false);
+      setError(err?.message || "Credenciais inválidas");
       return;
     }
-    navigate({ to: "/admin" });
+    // Garante que a sessão já está persistida antes de navegar
+    await supabase.auth.getSession();
+    setLoading(false);
+    // Hard navigation evita race com listeners de auth no destino
+    window.location.href = "/admin";
   };
 
   return (
