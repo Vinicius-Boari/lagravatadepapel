@@ -9,12 +9,7 @@ const STORAGE_KEY = "lg_user_role";
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<AppRole>(() => {
-    try { 
-      const cached = localStorage.getItem(STORAGE_KEY);
-      return (cached === "owner" || cached === "admin") ? cached as AppRole : null;
-    } catch { return null; }
-  });
+  const [role, setRole] = useState<AppRole>(null); // Start clean to avoid cache loops
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,6 +18,9 @@ export function useAuth() {
 
     const fetchRole = async (uid: string) => {
       try {
+        // Clear previous error
+        setError(null);
+
         const { data, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
@@ -32,9 +30,12 @@ export function useAuth() {
         
         if (roleError) {
           console.error("Auth role error:", roleError);
-          // If we have a cached role, don't show error to user as a blocker
-          if (!role) {
-             setError(roleError.message);
+          // If we have a cached role in storage, use it as fallback during DB issues
+          const cached = localStorage.getItem(STORAGE_KEY);
+          if (cached) {
+            setRole(cached as AppRole);
+          } else {
+            setError(roleError.message);
           }
           setLoading(false);
           return;
@@ -43,6 +44,7 @@ export function useAuth() {
         let newRole: AppRole = null;
         if (data && data.length > 0) {
           const roles = data.map(r => r.role);
+          // Prioritize owner
           if (roles.includes("owner")) newRole = "owner";
           else if (roles.includes("admin")) newRole = "admin";
         }
@@ -54,7 +56,6 @@ export function useAuth() {
         }
         
         setRole(newRole);
-        setError(null);
       } catch (err) {
         console.error("Auth exception:", err);
       } finally {
@@ -62,18 +63,7 @@ export function useAuth() {
       }
     };
 
-    // Initial check
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (!mounted) return;
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) {
-        fetchRole(s.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
-
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       if (!mounted) return;
       
@@ -91,13 +81,25 @@ export function useAuth() {
       }
     });
 
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!mounted) return;
+      setSession(s);
+      setUser(s?.user ?? null);
+      if (s?.user) {
+        fetchRole(s.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
   }, []);
 
-  const isAdmin = role === "admin" || role === "owner" || role === ("Dono" as any) || role === ("Administrador" as any);
+  const isAdmin = role === "admin" || role === "owner";
 
   return { 
     session, 
