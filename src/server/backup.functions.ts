@@ -10,8 +10,8 @@ import {
   getSignedDownloadUrl,
 } from "./backup.server";
 
-async function assertAdmin(supabase: ReturnType<typeof requireAdminClient>, userId: string) {
-  const { data, error } = await supabase
+async function assertAdmin(userId: string) {
+  const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
     .eq("user_id", userId);
@@ -20,10 +20,6 @@ async function assertAdmin(supabase: ReturnType<typeof requireAdminClient>, user
   if (!roles.has("owner") && !roles.has("admin")) {
     throw new Error("Apenas administradores podem gerenciar backups");
   }
-}
-type SupaClient = Parameters<typeof assertAdmin>[0];
-function requireAdminClient(c: SupaClient) {
-  return c;
 }
 
 export const listBackups = createServerFn({ method: "GET" })
