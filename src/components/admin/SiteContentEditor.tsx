@@ -839,7 +839,9 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Configurações de SEO</CardTitle>
                  <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("seo", seo, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("seo", seo, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
