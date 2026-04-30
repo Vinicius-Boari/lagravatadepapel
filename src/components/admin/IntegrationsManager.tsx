@@ -64,18 +64,14 @@ export function IntegrationsManager() {
       ]);
 
       if (results.every(r => r === true)) {
-        toast.success("Integrações e APIs publicadas com sucesso!", {
-          position: "top-center"
-        });
+        showToast("Integrações e APIs publicadas com sucesso!", 'success');
         setTimeout(() => setLoading(false), 500);
       } else {
         throw new Error("Alguma seção falhou ao salvar");
       }
     } catch (err) {
       console.error("Erro ao salvar Integrações:", err);
-      toast.error("Erro crítico: Não foi possível publicar as integrações.", {
-        position: "top-center"
-      });
+      showToast("Erro crítico: Não foi possível publicar as integrações.", 'error');
       setLoading(false);
     }
   };
