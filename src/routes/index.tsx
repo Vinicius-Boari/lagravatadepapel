@@ -23,6 +23,14 @@ const places = [
   { img: "/images/service_foto360.png", title: "Plataforma 360°", tag: "Vídeo Interativo" },
 ];
 
+// Video showcase blocks — replace `src` with real .mp4 URLs (or use `poster` for thumbnails)
+const videos: { title: string; tag: string; src?: string; poster?: string; tall?: boolean }[] = [
+  { title: "Invasão ao Vivo", tag: "Reels Instagram", poster: "/images/hero_invasion.png" },
+  { title: "Tequileiros em Ação", tag: "Pista de Dança", poster: "/images/service_tequileiro.png", tall: true },
+  { title: "Robô de LED", tag: "Show de Luzes", poster: "/images/service_robo.png", tall: true },
+  { title: "Bazuca CO2", tag: "Efeito Especial", poster: "/images/service_co2.png" },
+];
+
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
