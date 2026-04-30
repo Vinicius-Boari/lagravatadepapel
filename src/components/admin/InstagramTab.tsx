@@ -77,10 +77,10 @@ export function InstagramTab({ onToast }: { onToast: (m: string, kind?: "ok" | "
   };
 
   return (
-    <div style={{ padding: "32px 32px 80px", maxWidth: 1400, margin: "0 auto" }}>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, margin: 0 }}>Instagram</h1>
-        <p style={{ fontSize: 14, color: "#6b7280", margin: "4px 0 0", maxWidth: 720 }}>
+    <div style={{ padding: "36px 36px 100px", maxWidth: 1280, margin: "0 auto" }}>
+      <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: "1px solid #1a1a1a" }}>
+        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, margin: 0, color: "#fafafa", letterSpacing: "-0.02em", fontWeight: 600 }}>Posts do Instagram</h1>
+        <p style={{ fontSize: 14, color: "#888", margin: "8px 0 0", maxWidth: 720, lineHeight: 1.5 }}>
           Gerencie a galeria 3D do Instagram que aparece no site público. Os posts são exibidos imediatamente assim que publicados.
         </p>
       </div>
@@ -94,15 +94,15 @@ export function InstagramTab({ onToast }: { onToast: (m: string, kind?: "ok" | "
             </div>
 
             {loading ? (
-              <div style={{ padding: 30, textAlign: "center", color: "#9ca3af" }}>Carregando...</div>
+              <div style={{ padding: 40, textAlign: "center", color: "#666", letterSpacing: "0.05em", textTransform: "uppercase", fontSize: 12 }}>Carregando…</div>
             ) : posts.length === 0 ? (
               <div style={{
                 padding: 60, textAlign: "center", borderRadius: 12,
-                background: "#fafafa", border: "2px dashed #e5e7eb", color: "#9ca3af",
+                background: "#0a0a0a", border: "2px dashed #1f1f1f", color: "#666",
               }}>
-                <div style={{ fontSize: 42, marginBottom: 10 }}>📸</div>
-                <p style={{ fontSize: 15, marginBottom: 4 }}>Nenhum post ainda.</p>
-                <p style={{ fontSize: 13 }}>Clique em "Adicionar post" para começar.</p>
+                <div style={{ fontSize: 42, marginBottom: 10, color: "#dc2626", opacity: 0.5 }}>◉</div>
+                <p style={{ fontSize: 15, marginBottom: 4, color: "#bbb" }}>Nenhum post ainda.</p>
+                <p style={{ fontSize: 13, color: "#666" }}>Clique em "Adicionar post" para começar.</p>
               </div>
             ) : (
               <div style={{ display: "grid", gap: 10 }}>
@@ -118,33 +118,35 @@ export function InstagramTab({ onToast }: { onToast: (m: string, kind?: "ok" | "
                     <div style={{ display: "grid", gridTemplateColumns: "100px 1fr auto", gap: 14, alignItems: "center" }}>
                       <div style={{
                         width: 100, height: 100, borderRadius: 10, overflow: "hidden",
-                        background: "#111", display: "grid", placeItems: "center",
+                        background: "#0a0a0a", display: "grid", placeItems: "center",
+                        border: "1px solid #1f1f1f",
                       }}>
                         {p.image_url
                           ? <img src={p.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                          : <span style={{ color: "#666", fontSize: 11 }}>sem imagem</span>}
+                          : <span style={{ color: "#444", fontSize: 11 }}>sem imagem</span>}
                       </div>
                       <div style={{ minWidth: 0 }}>
-                        <div style={{ fontSize: 13, color: "#374151", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                          {p.caption || <em style={{ color: "#999" }}>sem legenda</em>}
+                        <div style={{ fontSize: 13, color: "#ccc", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                          {p.caption || <em style={{ color: "#666" }}>sem legenda</em>}
                         </div>
-                        <div style={{ marginTop: 6, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                        <div style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                           <span style={{
-                            fontSize: 11, padding: "2px 8px", borderRadius: 999, fontWeight: 600,
-                            background: p.is_published ? "#dcfce7" : "#fef3c7",
-                            color: p.is_published ? "#15803d" : "#92400e",
+                            fontSize: 10, padding: "3px 10px", borderRadius: 999, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase",
+                            background: p.is_published ? "rgba(220,38,38,0.15)" : "#1a1a1a",
+                            color: p.is_published ? "#fca5a5" : "#888",
+                            border: p.is_published ? "1px solid #5a1a1a" : "1px solid #2a2a2a",
                           }}>{p.is_published ? "Publicado" : "Oculto"}</span>
                           {p.permalink && (
-                            <a href={p.permalink} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#0066cc" }}>
+                            <a href={p.permalink} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#dc2626", textDecoration: "none" }}>
                               ver no instagram ↗
                             </a>
                           )}
                         </div>
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                        <GhostBtn onClick={() => setEditing(p)}>✏️ Editar</GhostBtn>
+                        <GhostBtn onClick={() => setEditing(p)}>Editar</GhostBtn>
                         <GhostBtn onClick={() => togglePublish(p)}>
-                          {p.is_published ? "👁 Ocultar" : "🚀 Publicar"}
+                          {p.is_published ? "Ocultar" : "Publicar"}
                         </GhostBtn>
                       </div>
                     </div>
@@ -183,17 +185,17 @@ export function InstagramTab({ onToast }: { onToast: (m: string, kind?: "ok" | "
 
             {config.mode === "graph_api" && (
               <div style={{
-                marginTop: 8, padding: 12, borderRadius: 8,
-                background: "#fffbeb", border: "1px solid #fde68a", fontSize: 12, color: "#92400e",
+                marginTop: 8, padding: 12, borderRadius: 9,
+                background: "#1a0808", border: "1px solid #5a1a1a", fontSize: 12, color: "#fca5a5", lineHeight: 1.5,
               }}>
                 A integração com a Graph API requer um token de acesso de uma conta Business/Creator do Instagram conectada ao Facebook Page.
-                Quando estiver pronto para conectar, peça aqui no chat: <strong>"conectar Instagram Graph API"</strong>.
+                Quando estiver pronto, peça no chat: <strong>"conectar Instagram Graph API"</strong>.
               </div>
             )}
 
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
               <PrimaryBtn onClick={saveConfig} disabled={savingConfig}>
-                {savingConfig ? "Salvando..." : "💾 Salvar configuração"}
+                {savingConfig ? "Salvando…" : "Salvar configuração"}
               </PrimaryBtn>
             </div>
           </Section>
