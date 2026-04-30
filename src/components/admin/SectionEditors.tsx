@@ -293,12 +293,11 @@ export function FooterEditor({ value, onChange }: SectionEditorProps) {
 }
 
 export const SECTION_EDITORS: Record<string, { label: string; icon: string; component: (props: SectionEditorProps) => React.ReactElement }> = {
-  hero: { label: "Capa (Hero)", icon: "🎬", component: HeroEditor },
-  services: { label: "Serviços", icon: "✨", component: ServicesEditor },
-  videos: { label: "Vídeos", icon: "🎥", component: VideosEditor },
-  plan: { label: "O Plano", icon: "📋", component: PlanEditor },
-  places: { label: "Invasões", icon: "🎉", component: PlacesEditor },
-  about: { label: "Sobre", icon: "ℹ️", component: AboutEditor },
-  instagram_config: { label: "Instagram (config)", icon: "📸", component: InstagramConfigEditor },
-  footer: { label: "Rodapé", icon: "📞", component: FooterEditor },
+  hero: { label: "Capa (Hero)", icon: "▲", component: HeroEditor },
+  services: { label: "Serviços", icon: "✦", component: ServicesEditor },
+  videos: { label: "Vídeos", icon: "▶", component: VideosEditor },
+  plan: { label: "O Plano", icon: "❖", component: PlanEditor },
+  places: { label: "Invasões", icon: "✺", component: PlacesEditor },
+  about: { label: "Sobre", icon: "ⓘ", component: AboutEditor },
+  footer: { label: "Rodapé / Contato", icon: "☎", component: FooterEditor },
 };
