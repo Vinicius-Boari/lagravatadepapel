@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      pages: {
+        Row: {
+          created_at: string
+          draft: Json
+          id: string
+          is_published: boolean
+          published: Json
+          slug: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          draft?: Json
+          id?: string
+          is_published?: boolean
+          published?: Json
+          slug: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          draft?: Json
+          id?: string
+          is_published?: boolean
+          published?: Json
+          slug?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -37,18 +73,21 @@ export type Database = {
       }
       site_content: {
         Row: {
+          draft_value: Json | null
           key: string
           updated_at: string
           updated_by: string | null
           value: Json
         }
         Insert: {
+          draft_value?: Json | null
           key: string
           updated_at?: string
           updated_by?: string | null
           value?: Json
         }
         Update: {
+          draft_value?: Json | null
           key?: string
           updated_at?: string
           updated_by?: string | null
