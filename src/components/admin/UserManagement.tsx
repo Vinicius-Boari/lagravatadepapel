@@ -138,7 +138,7 @@ export function UserManagement() {
                 </select>
               </div>
             </div>
-            <Button className="w-full md:w-auto" onClick={handleAddAdmin}>Salvar Usuário</Button>
+            
           </CardContent>
         </Card>
       )}

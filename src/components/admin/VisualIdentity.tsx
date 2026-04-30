@@ -70,15 +70,6 @@ export function VisualIdentity() {
           <h2 className="text-2xl font-bold text-red-500">Identidade Visual</h2>
           <p className="text-red-500/70">Configure cores, fontes e logo do seu site.</p>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline" className="border-red-900 bg-zinc-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave(true)}>
-            Salvar Rascunho
-          </Button>
-          <Button className="bg-white text-black hover:bg-zinc-200" onClick={() => handleSave(false)}>
-            <Save className="mr-2 w-4 h-4" />
-            Salvar
-          </Button>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -175,12 +166,7 @@ export function VisualIdentity() {
         </CardContent>
       </Card>
       
-      <div className="flex justify-end pt-6">
-        <Button onClick={() => handleSave(false)} className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-bold" disabled={loading}>
-          {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <Save className="mr-2 w-5 h-5" />}
-          {loading ? "Salvando..." : "Salvar Identidade Visual"}
-        </Button>
-      </div>
+      
     </div>
   );
 }

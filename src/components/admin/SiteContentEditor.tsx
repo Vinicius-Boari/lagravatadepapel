@@ -208,19 +208,7 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
                 <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
               </div>
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => handleSave("hero", hero, true)} disabled={loading}>Salvar Rascunho</Button>
-                <Button 
-                  size="sm" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("hero", hero, false);
-                  }} 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-                </Button>
-              </div>
+              
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -309,18 +297,7 @@ export function SiteContentEditor() {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("hero", hero, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Home"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
