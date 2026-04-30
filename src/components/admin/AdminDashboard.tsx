@@ -66,7 +66,7 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-zinc-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-zinc-950 text-red-600 overflow-hidden font-sans">
       {/* Sidebar */}
       <aside className={cn(
         "flex flex-col border-r border-zinc-800 bg-zinc-900 transition-all duration-300 ease-in-out z-50",
