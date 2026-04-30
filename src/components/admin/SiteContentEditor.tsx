@@ -943,7 +943,6 @@ export function SiteContentEditor() {
           </div>
         </TabsContent>
 
-        {/* SEO SECTION */}
         <TabsContent value="seo" className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -951,7 +950,6 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Configurações de SEO</CardTitle>
                  <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
               </div>
-               
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -974,27 +972,7 @@ export function SiteContentEditor() {
                    placeholder="Descreva o seu site em poucas palavras..."
                  />
                  <p className="text-[10px] text-zinc-500">Recomendado: 150-160 caracteres.</p>
-                </div>
               </div>
-              
-            </CardContent>
-          </Card>
-
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("languages", languages, false)} 
-              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : "Salvar Configurações"}
-            </Button>
-          </div>
-        </TabsContent>
               <div className="space-y-2">
                  <Label className="text-red-500">Palavras-chave (Keywords)</Label>
                  <Input 
@@ -1005,7 +983,6 @@ export function SiteContentEditor() {
                  />
                  <p className="text-[10px] text-zinc-500">Separe por vírgulas.</p>
               </div>
-              
             </CardContent>
           </Card>
 
@@ -1025,7 +1002,6 @@ export function SiteContentEditor() {
           </div>
         </TabsContent>
 
-        {/* LANGUAGES SECTION */}
         <TabsContent value="languages" className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -1033,7 +1009,6 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Multi-idioma</CardTitle>
                  <CardDescription className="text-red-500/60">Configure quais idiomas estão ativos no seu site.</CardDescription>
               </div>
-                
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -1076,9 +1051,23 @@ export function SiteContentEditor() {
                   * Nota: Habilitar o idioma permite a troca no site. Você precisará traduzir o conteúdo manualmente nas abas correspondentes após a implementação da lógica de tradução.
                 </p>
               </div>
-              
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("languages", languages, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
