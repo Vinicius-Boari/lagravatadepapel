@@ -310,16 +310,7 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção de Vídeos</CardTitle>
                 <CardDescription className="text-red-500/60">Gerencie a galeria de vídeos e seus destaques.</CardDescription>
               </div>
-                <Button 
-                  size="sm" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("videos", videos, false);
-                  }} 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-                </Button>
+              
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
@@ -437,18 +428,7 @@ export function SiteContentEditor() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("videos", videos, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Vídeos"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -461,9 +441,7 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção "O Plano"</CardTitle>
                 <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
               </div>
-               <Button size="sm" onClick={() => handleSave("plan", plan, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-               </Button>
+               
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -509,11 +487,7 @@ export function SiteContentEditor() {
                   />
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("plan", plan, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção O Plano"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -526,9 +500,7 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção Sobre</CardTitle>
                 <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
               </div>
-               <Button size="sm" onClick={() => handleSave("about", about, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-               </Button>
+               
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -574,18 +546,7 @@ export function SiteContentEditor() {
                   />
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("about", about, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Sobre"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -598,11 +559,7 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Nossos Serviços</CardTitle>
                 <CardDescription className="text-red-500/60">Grid de serviços com imagem e descrição.</CardDescription>
               </div>
-              <div className="flex space-x-2">
-                 <Button size="sm" onClick={() => handleSave("services", services, false)} disabled={loading}>
-                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Tudo"}
-                 </Button>
-              </div>
+              
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
@@ -696,18 +653,7 @@ export function SiteContentEditor() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("services", services, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Serviços"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -720,9 +666,7 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Nossas Invasões</CardTitle>
                 <CardDescription className="text-red-500/60">Gerencie a galeria de locais e eventos visitados.</CardDescription>
               </div>
-               <Button size="sm" onClick={() => handleSave("places", places, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-               </Button>
+               
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
@@ -822,18 +766,7 @@ export function SiteContentEditor() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("places", places, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Seção Invasões"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -845,16 +778,7 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Rodapé</CardTitle>
                  <CardDescription className="text-red-500/60">Informações de contato e links sociais.</CardDescription>
               </div>
-                <Button 
-                  size="sm" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("footer", footer, false);
-                  }} 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-                </Button>
+                
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -909,18 +833,7 @@ export function SiteContentEditor() {
                    />
                 </div>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("footer", footer, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Rodapé"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -933,9 +846,7 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Configurações de SEO</CardTitle>
                  <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
               </div>
-               <Button size="sm" onClick={() => handleSave("seo", seo, false)} disabled={loading}>
-                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-               </Button>
+               
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -969,18 +880,7 @@ export function SiteContentEditor() {
                  />
                  <p className="text-[10px] text-zinc-500">Separe por vírgulas.</p>
               </div>
-              <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("seo", seo, false);
-                  }} 
-                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar Configurações SEO"}
-                </Button>
-              </div>
+              
             </CardContent>
           </Card>
         </TabsContent>
@@ -993,16 +893,7 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Multi-idioma</CardTitle>
                  <CardDescription className="text-red-500/60">Configure quais idiomas estão ativos no seu site.</CardDescription>
               </div>
-                <Button 
-                  size="sm" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSave("languages", languages, false);
-                  }} 
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}
-                </Button>
+                
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
