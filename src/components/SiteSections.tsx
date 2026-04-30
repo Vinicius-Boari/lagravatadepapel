@@ -43,7 +43,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Sophisticated interpolation: the trail "follows" with a delay
       trailX += (mx - trailX) * 0.15;
       trailY += (my - trailY) * 0.15;
 
@@ -55,12 +54,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           const p1 = points[i - 1];
           const p2 = points[i];
           
-          // Very thin and minimal opacity for a sophisticated look
-          const opacity = (i / points.length) * 0.4;
+          const progress = i / points.length; // 0 at tail, 1 at head
+          const opacity = progress * 0.5;
+          const width = progress * 2.5; // Starts thick at head (index length) and thins to tail
           
           ctx.beginPath();
           ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
-          ctx.lineWidth = 1; // Super fine line
+          ctx.lineWidth = width;
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
           ctx.moveTo(p1.x, p1.y);
