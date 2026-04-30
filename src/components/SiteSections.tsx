@@ -320,7 +320,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
             {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
-            {about.video && (
+            {about.video ? (
               <div className="about-video-container mt-4">
                 <video 
                   src={about.video} 
@@ -331,6 +331,17 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                   playsInline 
                   className="w-full rounded-lg shadow-lg"
                 />
+              </div>
+            ) : (
+              <div className="about-video-placeholder mt-4 aspect-video bg-zinc-900/50 rounded-lg border border-zinc-800 flex items-center justify-center">
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <svg className="w-6 h-6 text-zinc-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                  <p className="text-zinc-500 text-sm">Espaço para vídeo institucional</p>
+                </div>
               </div>
             )}
           </div>
