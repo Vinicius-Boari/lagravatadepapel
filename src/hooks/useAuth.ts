@@ -31,14 +31,13 @@ export function useAuth() {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setError(null);
-      const cleanEmail = email.trim();
+      const cleanEmail = email.trim().toLowerCase();
       const cleanPassword = password.trim();
 
       const { data, error: dbError } = await supabase
         .from("admin_users")
         .select("*")
-        .eq("email", cleanEmail)
-        .eq("password_hash", cleanPassword);
+        .eq("email", cleanEmail);
 
       if (dbError) {
         console.error("Database error:", dbError);
@@ -46,11 +45,14 @@ export function useAuth() {
       }
 
       if (!data || data.length === 0) {
-        console.warn("No user found with those credentials.");
         return false;
       }
 
       const dbUser = data[0];
+      
+      if (dbUser.password_hash !== cleanPassword) {
+        return false;
+      }
 
       const adminUser: AdminUser = {
         id: dbUser.id,
