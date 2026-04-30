@@ -252,7 +252,7 @@ body.lg-body {
 .hero-img-2 { width: 30vw; height: 60vh; left: 50%; top: 50%; z-index: 3; transform: translate(-50%, -50%) rotateZ(2deg); }
 .hero-img-3 { width: 22vw; height: 55vh; right: 5%; top: 15%; z-index: 2; transform: rotateY(6deg) rotateZ(5deg); }
 .hero-content { position: relative; z-index: 5; text-align: center; padding: 0 20px; }
-.hero-title { font-family: var(--font-serif); font-size: clamp(3rem, 10vw, 9rem); font-weight: 400; line-height: 0.9; color: var(--color-white-lg); text-shadow: 0 4px 30px rgba(0,0,0,0.6); margin-bottom: 24px; text-transform: uppercase; }
+.hero-title { font-family: var(--font-serif); font-size: clamp(3rem, 10vw, 8.5rem); font-weight: 400; line-height: 0.85; color: var(--color-white-lg); text-shadow: 0 4px 30px rgba(0,0,0,0.6); margin-bottom: 24px; text-transform: uppercase; letter-spacing: -0.02em; }
 .hero-title em { font-style: italic; color: var(--color-red-lg); text-transform: none; }
 .hero-subtitle { font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.4rem); color: rgba(255,255,255,0.7); letter-spacing: 0.05em; text-shadow: 0 2px 12px rgba(0,0,0,0.3); font-style: italic; }
 .hero-location { position: absolute; top: 20%; right: 12%; z-index: 6; text-align: right; color: rgba(255,255,255,0.6); font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; }
