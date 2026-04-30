@@ -98,12 +98,12 @@ export function useSiteContent(useDraft = false) {
   const updateSection = async (key: string, newValue: any, isDraft = true) => {
     try {
       const updateData = isDraft 
-        ? { draft_value: newValue } 
-        : { value: newValue, draft_value: null }; // Clear draft when publishing
+        ? { key, draft_value: newValue } 
+        : { key, value: newValue, draft_value: null }; 
       
       const { error } = await supabase
         .from("site_content")
-        .upsert({ key, ...updateData }, { onConflict: 'key' });
+        .upsert(updateData);
 
       if (error) throw error;
       
