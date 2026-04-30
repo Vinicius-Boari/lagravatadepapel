@@ -210,23 +210,32 @@ export function SiteContentEditor() {
               </div>
 
               <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h4 className="text-sm font-medium flex items-center"><ImageIcon className="mr-2 w-4 h-4" /> Cards Flutuantes (3 Imagens)</h4>
+                <h4 className="text-sm font-medium flex items-center text-red-500"><ImageIcon className="mr-2 w-4 h-4" /> Cards Flutuantes (3 Imagens)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <ImageUpload 
-                    label="Imagem do Card 1" 
-                    value={hero.image1 || ""} 
-                    onChange={(val) => setHero({...hero, image1: val})} 
-                  />
-                  <ImageUpload 
-                    label="Imagem do Card 2" 
-                    value={hero.image2 || ""} 
-                    onChange={(val) => setHero({...hero, image2: val})} 
-                  />
-                  <ImageUpload 
-                    label="Imagem do Card 3" 
-                    value={hero.image3 || ""} 
-                    onChange={(val) => setHero({...hero, image3: val})} 
-                  />
+                  <div className="space-y-1">
+                    <ImageUpload 
+                      label="Imagem do Card 1" 
+                      value={hero.image1 || ""} 
+                      onChange={(val) => setHero({...hero, image1: val})} 
+                    />
+                    <p className="text-[9px] text-red-500/40">Rec: Quadrada (1:1), 600x600px, máx. 500KB.</p>
+                  </div>
+                  <div className="space-y-1">
+                    <ImageUpload 
+                      label="Imagem do Card 2" 
+                      value={hero.image2 || ""} 
+                      onChange={(val) => setHero({...hero, image2: val})} 
+                    />
+                    <p className="text-[9px] text-red-500/40">Rec: Quadrada (1:1), 600x600px, máx. 500KB.</p>
+                  </div>
+                  <div className="space-y-1">
+                    <ImageUpload 
+                      label="Imagem do Card 3" 
+                      value={hero.image3 || ""} 
+                      onChange={(val) => setHero({...hero, image3: val})} 
+                    />
+                    <p className="text-[9px] text-red-500/40">Rec: Quadrada (1:1), 600x600px, máx. 500KB.</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
