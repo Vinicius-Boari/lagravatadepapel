@@ -366,8 +366,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="footer-bottom">
           <span>
             {footer.copyright}
-            {" · "}
-            <a href="/login" onClick={(e) => { e.preventDefault(); window.location.href = "/login"; }} className="footer-panel-link">Painel Admin</a>
           </span>
           <span>{footer.hashtag}</span>
         </div>
