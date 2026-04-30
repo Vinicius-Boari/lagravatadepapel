@@ -116,7 +116,7 @@ export function SiteContentEditor() {
                     value={hero.video_url}
                     onChange={(e) => setHero({...hero, video_url: e.target.value})}
                   />
-                  <p className="text-[10px] text-zinc-500">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
+                  <p className="text-[10px] text-red-500/50">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
                 </div>
               </div>
 
@@ -136,7 +136,7 @@ export function SiteContentEditor() {
                           setHero({...hero, images: newImgs});
                         }}
                       />
-                      <p className="text-[10px] text-zinc-500">Recomendação: {i === 1 ? "Retrato 600x800px (Centro)" : "Retrato 450x700px (Lados)"}.</p>
+                      <p className="text-[10px] text-red-500/50">Recomendação: {i === 1 ? "Retrato 600x800px (Centro)" : "Retrato 450x700px (Lados)"}.</p>
                     </div>
                   ))}
                 </div>
