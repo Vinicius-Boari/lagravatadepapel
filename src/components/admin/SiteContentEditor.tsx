@@ -119,24 +119,39 @@ export function SiteContentEditor() {
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
     setLoading(true);
-    const success = await updateSection(section, data, isDraft);
-    if (success) {
-      // For immediate feedback while refresh is happening
-      switch(section) {
-        case "hero": setHero({...data}); break;
-        case "about": setAbout({...data}); break;
-        case "plan": setPlan({...data}); break;
-        case "services": setServices({...data}); break;
-        case "videos": setVideos({...data}); break;
-        case "places": setPlaces({...data}); break;
-        case "footer": setFooter({...data}); break;
-        case "seo": setSeo({...data}); break;
-        case "languages": setLanguages({...data}); break;
-      }
+    try {
+      console.log(`Tentando salvar seção: ${section}`, data);
+      const success = await updateSection(section, data, isDraft);
       
-      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas com sucesso!");
-      setTimeout(() => setLoading(false), 500);
-    } else {
+      if (success) {
+        // Para feedback imediato enquanto o refresh acontece
+        switch(section) {
+          case "hero": setHero({...data}); break;
+          case "about": setAbout({...data}); break;
+          case "plan": setPlan({...data}); break;
+          case "services": setServices({...data}); break;
+          case "videos": setVideos({...data}); break;
+          case "places": setPlaces({...data}); break;
+          case "footer": setFooter({...data}); break;
+          case "seo": setSeo({...data}); break;
+          case "languages": setLanguages({...data}); break;
+        }
+        
+        toast.success(isDraft ? "Rascunho salvo no painel!" : "Configurações publicadas no site com sucesso!", {
+          duration: 4000,
+          position: "top-center"
+        });
+        
+        setTimeout(() => setLoading(false), 500);
+      } else {
+        throw new Error("Falha no updateSection retornou false");
+      }
+    } catch (err) {
+      console.error(`Erro crítico ao salvar seção ${section}:`, err);
+      toast.error(`ERRO: Não foi possível salvar no site. Verifique sua conexão.`, {
+        duration: 5000,
+        position: "top-center"
+      });
       setLoading(false);
     }
   };
