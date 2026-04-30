@@ -171,13 +171,15 @@ body.lg-body {
 .cursor-line-red {
   position: fixed;
   top: 0;
-  bottom: 0;
+  left: 0;
   width: 1px;
-  background: var(--color-red-lg);
+  height: 100vh;
+  background: linear-gradient(to bottom, transparent, var(--color-red-lg) 0%, var(--color-red-lg) 100%);
   pointer-events: none;
   z-index: 10000;
   mix-blend-mode: difference;
-  box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+  box-shadow: 0 0 8px rgba(192, 57, 43, 0.4);
+  transform-origin: top;
 }
 
 /* Hide default cursor on the whole body for a cleaner look if desired, 

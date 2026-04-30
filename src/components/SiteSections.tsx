@@ -21,12 +21,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   useEffect(() => {
     if (typeof window === "undefined") return;
     const cursorLine = cursorLineRef.current;
-    let mx = 0;
+    let mx = 0, my = 0;
     
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
+      my = e.clientY;
       if (cursorLine) { 
         cursorLine.style.left = mx + "px"; 
+        cursorLine.style.top = my + "px";
       }
     };
     document.addEventListener("mousemove", onMove);
