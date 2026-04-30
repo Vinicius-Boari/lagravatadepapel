@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash } from "lucide-react";
+import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon } from "lucide-react";
 
 export function SiteContentEditor() {
   const { content, updateSection, loading } = useSiteContent();
@@ -117,6 +117,28 @@ export function SiteContentEditor() {
                     onChange={(e) => setHero({...hero, video_url: e.target.value})}
                   />
                   <p className="text-[10px] text-zinc-500">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-zinc-800">
+                <h4 className="text-sm font-medium flex items-center"><ImageIcon className="mr-2 w-4 h-4" /> Cards Flutuantes (3 Imagens)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="space-y-2">
+                      <Label>Imagem do Card {i + 1}</Label>
+                      <Input 
+                        className="bg-zinc-800 border-zinc-700" 
+                        placeholder={`https://... (URL da imagem ${i + 1})`}
+                        value={hero.images?.[i] || ""}
+                        onChange={(e) => {
+                          const newImgs = [...(hero.images || [])];
+                          newImgs[i] = e.target.value;
+                          setHero({...hero, images: newImgs});
+                        }}
+                      />
+                      <p className="text-[10px] text-zinc-500">Recomendação: {i === 1 ? "Retrato 600x800px (Centro)" : "Retrato 450x700px (Lados)"}.</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </CardContent>

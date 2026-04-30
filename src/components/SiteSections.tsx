@@ -83,9 +83,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       const c = window.scrollY;
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
-        if (imgs[0]) imgs[0].style.transform = `translate3d(0, ${c * 0.08}px, 0)`;
-        if (imgs[1]) imgs[1].style.transform = `translate3d(-50%, calc(-50% + ${c * 0.04}px), 0)`;
-        if (imgs[2]) imgs[2].style.transform = `translate3d(0, ${c * 0.06}px, 0)`;
+        if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px)`;
+        if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px)`;
+        if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px)`;
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
