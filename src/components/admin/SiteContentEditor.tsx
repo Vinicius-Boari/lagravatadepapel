@@ -13,25 +13,24 @@ export function SiteContentEditor() {
   const [activeSection, setActiveSection] = useState("hero");
 
   // Local state for each section to handle edits
-  const [hero, setHero] = useState<any>(null);
-  const [about, setAbout] = useState<any>(null);
-  const [plan, setPlan] = useState<any>(null);
-  const [services, setServices] = useState<any>(null);
-  const [videos, setVideos] = useState<any>(null);
-  const [footer, setFooter] = useState<any>(null);
+  const [hero, setHero] = useState<any>(content.hero || {});
+  const [about, setAbout] = useState<any>(content.about || {});
+  const [plan, setPlan] = useState<any>(content.plan || {});
+  const [services, setServices] = useState<any>(content.services || { items: [] });
+  const [videos, setVideos] = useState<any>(content.videos || { items: [] });
+  const [footer, setFooter] = useState<any>(content.footer || {});
 
-  // Synchronize local state with fetched content
-  useState(() => {
+  // Effect to update local states when content loads or changes
+  useEffect(() => {
     if (!loading) {
-      if (content.hero && !hero) setHero(content.hero);
-      if (content.about && !about) setAbout(content.about);
-      if (content.plan && !plan) setPlan(content.plan);
-      if (content.services && !services) setServices(content.services);
-      if (content.videos && !videos) setVideos(content.videos);
-      if (content.footer && !footer) setFooter(content.footer);
+      setHero(content.hero || {});
+      setAbout(content.about || {});
+      setPlan(content.plan || {});
+      setServices(content.services || { items: [] });
+      setVideos(content.videos || { items: [] });
+      setFooter(content.footer || {});
     }
-    return undefined;
-  });
+  }, [loading, content]);
 
   // Effect to update local states when content loads
   useEffect(() => {
