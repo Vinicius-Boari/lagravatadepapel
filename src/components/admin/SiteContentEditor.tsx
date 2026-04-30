@@ -587,7 +587,14 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("about", about, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                <Button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSave("about", about, false);
+                  }} 
+                  className="bg-red-600 hover:bg-red-700 text-white px-8" 
+                  disabled={loading}
+                >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Sobre"}
                 </Button>
               </div>
