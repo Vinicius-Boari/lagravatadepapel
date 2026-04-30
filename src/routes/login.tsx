@@ -20,12 +20,9 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        window.location.href = "/admin";
-      }
-    });
-  }, [navigate]);
+    // No automatic redirect to /admin on mount.
+    // The user must consciously log in if they land here.
+  }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
