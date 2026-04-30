@@ -5,6 +5,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+const showToast = (message: string, type: 'success' | 'error') => {
+  if (type === 'success') {
+    toast.success(message, { position: "top-center", duration: 4000 });
+  } else {
+    toast.error(message, { position: "top-center", duration: 5000 });
+  }
+};
 
 export function VisualIdentity() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
@@ -28,10 +37,19 @@ export function VisualIdentity() {
 
   const handleSave = async (isDraft = true) => {
     setLoading(true);
-    const success = await updateSection("visual", formData, isDraft);
-    if (success) {
-      setTimeout(() => setLoading(false), 500);
-    } else {
+    try {
+      console.log("Tentando salvar Identidade Visual", formData);
+      const success = await updateSection("visual", formData, isDraft);
+      
+      if (success) {
+        showToast(isDraft ? "Rascunho visual salvo!" : "Identidade Visual publicada com sucesso!", 'success');
+        setTimeout(() => setLoading(false), 500);
+      } else {
+        throw new Error("Falha ao salvar Identidade Visual.");
+      }
+    } catch (err) {
+      console.error("Erro ao salvar Identidade Visual:", err);
+      showToast("Erro crítico: Não foi possível publicar as alterações visuais.", 'error');
       setLoading(false);
     }
   };

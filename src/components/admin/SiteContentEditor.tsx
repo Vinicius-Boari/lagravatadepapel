@@ -10,6 +10,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search } from "lucide-react";
 
+// Forçamos o toast a aparecer no topo e centralizado
+const showToast = (message: string, type: 'success' | 'error') => {
+  if (type === 'success') {
+    toast.success(message, {
+      position: "top-center",
+      duration: 4000,
+    });
+  } else {
+    toast.error(message, {
+      position: "top-center",
+      duration: 5000,
+    });
+  }
+};
+
 const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val: string) => void, label: string }) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -119,24 +134,33 @@ export function SiteContentEditor() {
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
     setLoading(true);
-    const success = await updateSection(section, data, isDraft);
-    if (success) {
-      // For immediate feedback while refresh is happening
-      switch(section) {
-        case "hero": setHero({...data}); break;
-        case "about": setAbout({...data}); break;
-        case "plan": setPlan({...data}); break;
-        case "services": setServices({...data}); break;
-        case "videos": setVideos({...data}); break;
-        case "places": setPlaces({...data}); break;
-        case "footer": setFooter({...data}); break;
-        case "seo": setSeo({...data}); break;
-        case "languages": setLanguages({...data}); break;
-      }
+    try {
+      console.log(`Tentando salvar seção: ${section}`, data);
+      const success = await updateSection(section, data, isDraft);
       
-      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas com sucesso!");
-      setTimeout(() => setLoading(false), 500);
-    } else {
+      if (success) {
+        // Para feedback imediato enquanto o refresh acontece
+        switch(section) {
+          case "hero": setHero({...data}); break;
+          case "about": setAbout({...data}); break;
+          case "plan": setPlan({...data}); break;
+          case "services": setServices({...data}); break;
+          case "videos": setVideos({...data}); break;
+          case "places": setPlaces({...data}); break;
+          case "footer": setFooter({...data}); break;
+          case "seo": setSeo({...data}); break;
+          case "languages": setLanguages({...data}); break;
+        }
+        
+        showToast(isDraft ? "Rascunho salvo no painel!" : "Configurações publicadas no site com sucesso!", 'success');
+        
+        setTimeout(() => setLoading(false), 500);
+      } else {
+        throw new Error("Falha ao salvar: a operação não retornou sucesso.");
+      }
+    } catch (err) {
+      console.error(`Erro crítico ao salvar seção ${section}:`, err);
+      showToast(`ERRO: Não foi possível salvar no site. Verifique sua conexão.`, 'error');
       setLoading(false);
     }
   };
