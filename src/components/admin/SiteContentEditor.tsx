@@ -446,6 +446,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("videos", videos, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* PLAN SECTION */}
@@ -505,6 +520,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("plan", plan, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* ABOUT SECTION */}
@@ -564,6 +594,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("about", about, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* SERVICES SECTION */}
@@ -671,6 +716,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("services", services, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* PLACES SECTION */}

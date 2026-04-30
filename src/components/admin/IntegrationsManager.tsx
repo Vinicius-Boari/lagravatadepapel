@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2 } from "lucide-react";
+import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 const showToast = (message: string, type: 'success' | 'error') => {
