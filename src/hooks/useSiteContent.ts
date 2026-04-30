@@ -97,22 +97,31 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = true) => {
     try {
+      console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
+      
       const updateData = isDraft 
-        ? { key, draft_value: newValue } 
-        : { key, value: newValue, draft_value: null }; 
+        ? { key, draft_value: newValue, updated_at: new Date().toISOString() } 
+        : { key, value: newValue, draft_value: null, updated_at: new Date().toISOString() }; 
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("site_content")
-        .upsert(updateData);
+        .upsert(updateData)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error(`Erro do Supabase ao salvar ${key}:`, error);
+        throw error;
+      }
       
-      // Success toast is now handled by the component for better control
+      console.log(`Sucesso ao salvar ${key}:`, data);
+      
+      // Forçamos a atualização do estado local após o salvamento
       await fetchContent();
       return true;
-    } catch (err) {
-      console.error("Error updating content:", err);
-      toast.error("Erro ao salvar alterações.");
+    } catch (err: any) {
+      console.error(`Erro detalhado na atualização da seção ${key}:`, err);
+      const errorMessage = err.message || "Erro desconhecido ao salvar";
+      toast.error(`Erro ao salvar ${key}: ${errorMessage}`);
       return false;
     }
   };
