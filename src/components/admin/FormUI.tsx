@@ -53,10 +53,10 @@ export function ItemCard({ index, onRemove, onMoveUp, onMoveDown, canMoveUp, can
         </span>
         <div style={{ display: "flex", gap: 6 }}>
           {onMoveUp && (
-            <button type="button" onClick={onMoveUp} disabled={!canMoveUp} style={iconBtn(canMoveUp)} title="Mover para cima">↑</button>
+            <button type="button" onClick={onMoveUp} disabled={!canMoveUp} style={iconBtn(!!canMoveUp)} title="Mover para cima">↑</button>
           )}
           {onMoveDown && (
-            <button type="button" onClick={onMoveDown} disabled={!canMoveDown} style={iconBtn(canMoveDown)} title="Mover para baixo">↓</button>
+            <button type="button" onClick={onMoveDown} disabled={!canMoveDown} style={iconBtn(!!canMoveDown)} title="Mover para baixo">↓</button>
           )}
           <button type="button" onClick={onRemove} style={{ ...iconBtn(true), color: "#b91c1c", borderColor: "#fecaca" }} title="Remover">✕</button>
         </div>
