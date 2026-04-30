@@ -71,7 +71,7 @@ export function SiteContentEditor() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Subtítulo</Label>
+                    <Label className="text-red-500">Subtítulo</Label>
                     <Textarea 
                       className="bg-zinc-800 border-zinc-700" 
                       value={hero.subtitle}
@@ -81,7 +81,7 @@ export function SiteContentEditor() {
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Localização (Canto Esquerdo)</Label>
+                    <Label className="text-red-500">Localização (Canto Esquerdo)</Label>
                     <Input 
                       className="bg-zinc-800 border-zinc-700" 
                       value={hero.location}
@@ -89,7 +89,7 @@ export function SiteContentEditor() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Texto do Botão (CTA)</Label>
+                    <Label className="text-red-500">Texto do Botão (CTA)</Label>
                     <Input 
                       className="bg-zinc-800 border-zinc-700" 
                       value={hero.cta_label}
@@ -97,7 +97,7 @@ export function SiteContentEditor() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Link do Botão</Label>
+                    <Label className="text-red-500">Link do Botão</Label>
                     <Input 
                       className="bg-zinc-800 border-zinc-700" 
                       value={hero.cta_url}
@@ -107,9 +107,9 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h4 className="text-sm font-medium flex items-center"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
+                <h4 className="text-sm font-medium flex items-center text-red-500"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
                 <div className="space-y-2">
-                  <Label>URL do Vídeo (MP4/WebM)</Label>
+                  <Label className="text-red-500">URL do Vídeo (MP4/WebM)</Label>
                   <Input 
                     className="bg-zinc-800 border-zinc-700" 
                     placeholder="https://... (URL direta do arquivo)"
