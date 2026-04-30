@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -80,10 +80,6 @@ function Index() {
     let ls = 0;
     const onScroll = () => {
       const c = window.scrollY;
-      const hdr = headerRef.current;
-      if (hdr) {
-        hdr.style.transform = c > ls && c > 100 ? "translateY(-100%)" : "translateY(0)";
-      }
       ls = c;
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
@@ -364,7 +360,13 @@ function Index() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 La Gravata de Papel — Nome registrado no INPI. Todos os direitos reservados.</span>
+          <span>
+            © 2026 La Gravata de Papel — Nome registrado no INPI. Todos os direitos reservados.
+            {" · "}
+            <Link to="/login" style={{ color: "inherit", opacity: 0.7, textDecoration: "underline" }}>
+              Painel
+            </Link>
+          </span>
           <span>#LAGRAVATADEPAPEL</span>
         </div>
       </footer>
