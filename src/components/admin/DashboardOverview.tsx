@@ -72,7 +72,7 @@ export function DashboardOverview() {
         {cards.map((card, i) => (
           <Card key={i} className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-zinc-400">{card.title}</CardTitle>
+              <CardTitle className="text-sm font-medium text-red-400">{card.title}</CardTitle>
               <card.icon className={cn("w-4 h-4", card.color)} />
             </CardHeader>
             <CardContent>
