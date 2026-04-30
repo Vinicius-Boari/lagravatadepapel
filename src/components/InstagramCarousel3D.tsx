@@ -81,10 +81,8 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
                 className="ig3d-card"
                 style={{ transform: `rotateY(${rot}deg) translateZ(${radius}px)` }}
                 onClick={() => {
-                  if (post.id.startsWith("placeholder")) {
-                    window.open(profileUrl, "_blank", "noopener,noreferrer");
-                  } else {
-                    setActive(post);
+                  if (post.permalink) {
+                    window.open(post.permalink, "_blank", "noopener,noreferrer");
                   }
                 }}
                 aria-label={post.caption || "Post do Instagram"}
