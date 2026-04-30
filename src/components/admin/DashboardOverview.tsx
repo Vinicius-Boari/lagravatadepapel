@@ -122,7 +122,7 @@ export function DashboardOverview() {
                         {log.action}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-zinc-400 text-xs">
+                    <TableCell className="text-red-400/70 text-xs">
                       {new Date(log.created_at).toLocaleString('pt-BR')}
                     </TableCell>
                   </TableRow>
