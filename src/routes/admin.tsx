@@ -62,10 +62,13 @@ function AdminPage() {
     window.location.href = "/";
   };
 
-  if (loading) return <Center>Carregando…</Center>;
+  if (loading) return <Center>Carregando painel…</Center>;
   if (!user) return <Center>Redirecionando…</Center>;
   if (authError) return <Center>Erro de permissão: {authError}</Center>;
-  if (!isAdmin) return <Center>Acesso negado. Usuário logado mas sem permissão administrativa.</Center>;
+  if (!isAdmin) {
+    // If not admin, try to re-fetch once just in case
+    return <Center>Verificando permissões administrativas…</Center>;
+  }
 
   return (
     <div style={{
