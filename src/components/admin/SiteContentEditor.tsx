@@ -134,21 +134,23 @@ export function SiteContentEditor() {
 
 
   const handleSave = async (section: string, data: any, isDraft = true) => {
-    if (loading) return; // Evitar múltiplos cliques
+    if (loading) return; 
 
-    // Validação básica antes do envio
     if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
       showToast("Erro: Dados inválidos ou vazios para salvar.", 'error');
       return;
     }
 
     setLoading(true);
+    setSuccessSections(prev => ({ ...prev, [section]: false }));
+    
     try {
       console.log(`Tentando salvar seção: ${section}`, data);
       const success = await updateSection(section, data, isDraft);
       
       if (success) {
-        // Feedback imediato
+        setSuccessSections(prev => ({ ...prev, [section]: true }));
+        
         const updateState = (val: any) => ({...val});
         const sectionMap: Record<string, any> = {
           hero: setHero,
@@ -167,6 +169,11 @@ export function SiteContentEditor() {
         }
         
         showToast(isDraft ? "Rascunho salvo no painel!" : "Salvo com sucesso!", 'success');
+        
+        // Remover o feedback de sucesso após 3 segundos
+        setTimeout(() => {
+          setSuccessSections(prev => ({ ...prev, [section]: false }));
+        }, 3000);
       }
     } catch (err: any) {
       console.error(`Erro crítico ao salvar seção ${section}:`, err);
