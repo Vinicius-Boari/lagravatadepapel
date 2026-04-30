@@ -159,6 +159,136 @@ export function SiteContentEditor() {
           </Card>
         </TabsContent>
 
+        {/* VIDEOS SECTION */}
+        <TabsContent value="videos" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Seção de Vídeos</CardTitle>
+                <CardDescription className="text-red-500/60">Gerencie a galeria de vídeos e seus destaques.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("videos", videos, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={videos.heading}
+                    onChange={(e) => setVideos({...videos, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={videos.heading_em}
+                    onChange={(e) => setVideos({...videos, heading_em: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <div className="flex justify-between items-center">
+                   <h4 className="text-sm font-medium text-red-500">Lista de Vídeos</h4>
+                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
+                    const newItems = [...(videos.items || []), { title: "Novo Vídeo", src: "", tag: "", poster: "", tall: false }];
+                    setVideos({...videos, items: newItems});
+                  }}>
+                    <Plus className="w-4 h-4 mr-1" /> Adicionar
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {(videos.items || []).map((v: any, idx: number) => (
+                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Vídeo #{idx+1}</span>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-7 w-7"
+                          onClick={() => {
+                            const newItems = videos.items.filter((_: any, i: number) => i !== idx);
+                            setVideos({...videos, items: newItems});
+                          }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Título</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.title} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], title: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Tag / Categoria</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.tag} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], tag: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">URL do Vídeo (MP4)</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.src} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], src: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">URL da Capa (Poster)</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={v.poster} 
+                             onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], poster: e.target.value };
+                               setVideos({...videos, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="flex items-center space-x-2 pt-2">
+                          <input 
+                            type="checkbox" 
+                            id={`tall-${idx}`}
+                            className="accent-red-500"
+                            checked={v.tall}
+                            onChange={(e) => {
+                               const newItems = [...videos.items];
+                               newItems[idx] = { ...newItems[idx], tall: e.target.checked };
+                               setVideos({...videos, items: newItems});
+                             }}
+                          />
+                          <Label htmlFor={`tall-${idx}`} className="text-xs text-red-500">Formato Vertical (Tall)</Label>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* SERVICES SECTION */}
         <TabsContent value="services" className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
