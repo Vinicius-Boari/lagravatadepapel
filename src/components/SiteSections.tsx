@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { SiteContent } from "@/hooks/useSiteContent";
+import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
