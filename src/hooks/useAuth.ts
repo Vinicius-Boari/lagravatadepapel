@@ -30,8 +30,14 @@ export function useAuth() {
         }
 
         if (data && data.length > 0) {
-          const owner = data.find((r) => r.role === "owner");
-          setRole(owner ? "owner" : (data[0].role as AppRole));
+          // Normalizes role to string and checks if any role grants admin access
+          const roles = data.map(r => r.role);
+          const hasOwner = roles.includes("owner");
+          const hasAdmin = roles.includes("admin");
+          
+          if (hasOwner) setRole("owner");
+          else if (hasAdmin) setRole("admin");
+          else setRole(null);
         } else {
           setRole(null);
         }
