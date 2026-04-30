@@ -844,6 +844,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("places", places, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         <TabsContent value="footer" className="space-y-6">
@@ -911,6 +926,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("footer", footer, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* SEO SECTION */}
@@ -944,7 +974,27 @@ export function SiteContentEditor() {
                    placeholder="Descreva o seu site em poucas palavras..."
                  />
                  <p className="text-[10px] text-zinc-500">Recomendado: 150-160 caracteres.</p>
+                </div>
               </div>
+              
+            </CardContent>
+          </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("languages", languages, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
+        </TabsContent>
               <div className="space-y-2">
                  <Label className="text-red-500">Palavras-chave (Keywords)</Label>
                  <Input 
@@ -958,6 +1008,21 @@ export function SiteContentEditor() {
               
             </CardContent>
           </Card>
+
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button 
+              onClick={() => handleSave("seo", seo, false)} 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
         </TabsContent>
 
         {/* LANGUAGES SECTION */}
