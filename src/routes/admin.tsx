@@ -146,7 +146,7 @@ function AdminPage() {
         </nav>
 
         <div style={{ padding: 12, borderTop: "1px solid #161616" }}>
-          {sidebarOpen && (
+          {sidebarOpen && user && (
             <div style={{
               fontSize: 11, color: "#888", marginBottom: 10, padding: "8px 10px",
               background: "#0d0d0d", borderRadius: 8, border: "1px solid #161616",
@@ -169,7 +169,7 @@ function AdminPage() {
         {tab === "content" && <ContentTab onToast={showToast} />}
         {tab === "instagram_posts" && <InstagramTab onToast={showToast} />}
         {tab === "pages" && <PagesTab onToast={showToast} />}
-        {tab === "users" && isOwner && <UsersTab currentUserId={user.id} onToast={showToast} />}
+        {tab === "users" && isOwner && user && <UsersTab currentUserId={user.id} onToast={showToast} />}
       </main>
 
       {toast && (
