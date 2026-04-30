@@ -137,13 +137,203 @@ function SectionsTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => vo
 }
 
 function PagesTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => void }) {
-  // Reduzido para brevidade, mas funcionará igual ao anterior com melhorias de UI
-  return <div>Gerenciamento de páginas extras em construção…</div>;
+  const [pages, setPages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<any | null>(null);
+  const [creating, setCreating] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.from("pages").select("*").order("created_at", { ascending: false });
+    if (data) setPages(data);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const onDelete = async (p: any) => {
+    if (!confirm(`Remover a página "${p.title || p.slug}"?`)) return;
+    const { error } = await supabase.from("pages").delete().eq("id", p.id);
+    if (error) onToast(error.message, "err");
+    else { onToast("Página removida"); load(); }
+  };
+
+  const togglePublish = async (p: any) => {
+    const { error } = await supabase.from("pages").update({ is_published: !p.is_published }).eq("id", p.id);
+    if (error) onToast(error.message, "err");
+    else { onToast(p.is_published ? "Página despublicada" : "Página publicada"); load(); }
+  };
+
+  if (loading) return <div>Carregando páginas…</div>;
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 30 }}>
+        <div>
+          <h1 style={{ fontSize: 32, fontFamily: "'Playfair Display', serif" }}>Páginas Extras</h1>
+          <p style={{ color: "#666", marginTop: 8 }}>Gerencie páginas com URLs personalizadas.</p>
+        </div>
+        <PrimaryBtn onClick={() => setCreating(true)}>+ Nova Página</PrimaryBtn>
+      </div>
+
+      <div style={{ display: "grid", gap: 12 }}>
+        {pages.map(p => (
+          <div key={p.id} style={cardStyle}>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 16 }}>{p.title || "Sem título"}</div>
+              <div style={{ fontSize: 12, color: "#444", marginTop: 4 }}>
+                <a href={`/p/${p.slug}`} target="_blank" style={{ color: "#8b1a1a", textDecoration: "none" }}>/p/{p.slug} ↗</a>
+                <span style={{ marginLeft: 12, color: p.is_published ? "#4ade80" : "#666" }}>
+                  {p.is_published ? "● No ar" : "○ Rascunho"}
+                </span>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <GhostBtn onClick={() => togglePublish(p)}>{p.is_published ? "Despublicar" : "Publicar"}</GhostBtn>
+              <GhostBtn onClick={() => setEditing(p)}>Editar</GhostBtn>
+              <DangerBtn onClick={() => onDelete(p)}>Remover</DangerBtn>
+            </div>
+          </div>
+        ))}
+        {pages.length === 0 && <div style={{ textAlign: "center", padding: 60, color: "#333", border: "1px dashed #222", borderRadius: 12 }}>Nenhuma página criada.</div>}
+      </div>
+
+      {(creating || editing) && (
+        <PageEditor 
+          page={editing} 
+          onClose={() => { setCreating(false); setEditing(null); }} 
+          onSaved={() => { setCreating(false); setEditing(null); load(); onToast("Página salva!"); }} 
+          onError={(m: string) => onToast(m, "err")} 
+        />
+      )}
+    </div>
+  );
+}
+
+function PageEditor({ page, onClose, onSaved, onError }: any) {
+  const [slug, setSlug] = useState(page?.slug ?? "");
+  const [title, setTitle] = useState(page?.title ?? "");
+  const initialSections = (page?.draft?.sections || page?.published?.sections || [{ heading: "", text: "", image: "" }]);
+  const [sections, setSections] = useState(initialSections);
+  const [busy, setBusy] = useState(false);
+
+  const save = async (publish: boolean) => {
+    if (!slug) return onError("URL é obrigatória");
+    setBusy(true);
+    const payload: any = { slug, title, draft: { sections } };
+    if (publish) { payload.published = { sections }; payload.is_published = true; }
+    
+    const { error } = page 
+      ? await supabase.from("pages").update(payload).eq("id", page.id)
+      : await supabase.from("pages").insert(payload);
+      
+    setBusy(false);
+    if (error) onError(error.message);
+    else onSaved();
+  };
+
+  return (
+    <div style={modalBg} onClick={onClose}>
+      <div style={modalContent} onClick={e => e.stopPropagation()}>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", marginBottom: 24 }}>{page ? "Editar Página" : "Nova Página"}</h2>
+        
+        <Section title="Geral">
+          <FormField label="Título da Página"><TextInput value={title} onChange={(e:any) => setTitle(e.target.value)} /></FormField>
+          <FormField label="URL (slug)">
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ color: "#444" }}>/p/</span>
+              <TextInput value={slug} onChange={(e:any) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} />
+            </div>
+          </FormField>
+        </Section>
+
+        <Section title="Conteúdo">
+          {sections.map((s: any, i: number) => (
+            <ItemCard key={i} index={i} title={s.heading || "Nova Seção"}
+              onRemove={() => setSections(sections.filter((_:any, ix:any) => ix !== i))}
+            >
+              <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 14 }}>
+                <MediaUploader folder="pages" value={s.image} onChange={(url: any) => {
+                  const n = [...sections]; n[i] = { ...n[i], image: url }; setSections(n);
+                }} />
+                <div>
+                  <FormField label="Título"><TextInput value={s.heading} onChange={(e:any) => {
+                    const n = [...sections]; n[i] = { ...n[i], heading: e.target.value }; setSections(n);
+                  }} /></FormField>
+                  <FormField label="Texto"><TextArea value={s.text} onChange={(e:any) => {
+                    const n = [...sections]; n[i] = { ...n[i], text: e.target.value }; setSections(n);
+                  }} /></FormField>
+                </div>
+              </div>
+            </ItemCard>
+          ))}
+          <AddBtn onClick={() => setSections([...sections, { heading: "", text: "", image: "" }])}>+ Adicionar Seção</AddBtn>
+        </Section>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 30 }}>
+          <GhostBtn onClick={onClose}>Cancelar</GhostBtn>
+          <GhostBtn onClick={() => save(false)} disabled={busy}>Salvar Rascunho</GhostBtn>
+          <PrimaryBtn onClick={() => save(true)} disabled={busy}>Publicar Agora</PrimaryBtn>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function UsersTab({ onToast }: { onToast: (m: string, k?: "ok" | "err") => void }) {
-  return <div>Gerenciamento de usuários em construção…</div>;
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data: profiles } = await supabase.from("profiles").select("id, email");
+    const { data: roles } = await supabase.from("user_roles").select("*");
+    if (profiles) {
+      setUsers(profiles.map(p => ({
+        ...p,
+        role: roles?.find(r => r.user_id === p.id)?.role || "user"
+      })));
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  if (loading) return <div>Carregando usuários…</div>;
+
+  return (
+    <div>
+      <div style={{ marginBottom: 30 }}>
+        <h1 style={{ fontSize: 32, fontFamily: "'Playfair Display', serif" }}>Equipe e Acesso</h1>
+        <p style={{ color: "#666", marginTop: 8 }}>Gerencie quem pode editar o site.</p>
+      </div>
+
+      <div style={{ display: "grid", gap: 12 }}>
+        {users.map(u => (
+          <div key={u.id} style={cardStyle}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#111", display: "grid", placeItems: "center", fontWeight: 700 }}>
+                {u.email[0].toUpperCase()}
+              </div>
+              <div>
+                <div style={{ fontWeight: 600 }}>{u.email}</div>
+                <div style={{ fontSize: 11, color: "#8b1a1a", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 2 }}>{u.role}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+const cardStyle = {
+  background: "#0d0d0d", padding: "16px 24px", borderRadius: 12, border: "1px solid #111",
+  display: "flex", justifyContent: "space-between", alignItems: "center"
+};
+
+const modalBg: any = { position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(5px)", display: "grid", placeItems: "center", zIndex: 2000, padding: 20 };
+const modalContent: any = { background: "#080808", padding: 40, borderRadius: 20, width: "100%", maxWidth: 800, maxHeight: "90vh", overflowY: "auto", border: "1px solid #111" };
 
 function NavItem({ active, onClick, label, icon }: any) {
   return (
