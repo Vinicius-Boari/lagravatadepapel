@@ -160,17 +160,17 @@ export function SiteContentEditor() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Título Principal</Label>
+                  <Label className="text-red-500">Título Principal</Label>
                   <Input 
-                    className="bg-zinc-800 border-zinc-700" 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
                     value={services.heading}
                     onChange={(e) => setServices({...services, heading: e.target.value})}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Título em Destaque (Itálico)</Label>
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
                   <Input 
-                    className="bg-zinc-800 border-zinc-700" 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
                     value={services.heading_em}
                     onChange={(e) => setServices({...services, heading_em: e.target.value})}
                   />
