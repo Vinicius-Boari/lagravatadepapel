@@ -1,12 +1,89 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon } from "lucide-react";
+import { toast } from "sonner";
+import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
+
+const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val: string) => void, label: string }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      setUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `site_content/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('media')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(filePath);
+
+      onChange(publicUrl);
+      toast.success("Upload realizado com sucesso!");
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error("Erro ao fazer upload.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label className="text-xs text-red-500">{label}</Label>
+      <div className="flex gap-2">
+        <Input 
+          className="bg-zinc-800 border-red-900 text-red-500 flex-1" 
+          value={value} 
+          placeholder="URL da imagem..."
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          accept="image/*,video/*"
+          onChange={handleUpload}
+        />
+        <Button 
+          type="button"
+          size="icon" 
+          variant="outline" 
+          className="border-red-900 text-red-500 hover:bg-red-900/20"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+        </Button>
+      </div>
+      {value && (
+        <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
+          {value.match(/\.(mp4|webm|ogg)$/i) || value.includes('video') ? (
+            <video src={value} className="w-full h-full object-contain" muted />
+          ) : (
+            <img src={value} className="w-full h-full object-contain" />
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export function SiteContentEditor() {
   const { content, updateSection, loading } = useSiteContent();
@@ -18,6 +95,7 @@ export function SiteContentEditor() {
   const [plan, setPlan] = useState<any>(content.plan || {});
   const [services, setServices] = useState<any>(content.services || { items: [] });
   const [videos, setVideos] = useState<any>(content.videos || { items: [] });
+  const [places, setPlaces] = useState<any>(content.places || { items: [] });
   const [footer, setFooter] = useState<any>(content.footer || {});
 
   // Effect to update local states when content loads or changes
@@ -28,6 +106,7 @@ export function SiteContentEditor() {
       setPlan(content.plan || {});
       setServices(content.services || { items: [] });
       setVideos(content.videos || { items: [] });
+      setPlaces(content.places || { items: [] });
       setFooter(content.footer || {});
     }
   }, [loading, content]);
@@ -53,6 +132,7 @@ export function SiteContentEditor() {
           <TabsTrigger value="hero" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Home / Hero</TabsTrigger>
           <TabsTrigger value="services" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Serviços</TabsTrigger>
           <TabsTrigger value="videos" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Vídeos</TabsTrigger>
+          <TabsTrigger value="places" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Nossas Invasões</TabsTrigger>
           <TabsTrigger value="plan" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Seção "O Plano"</TabsTrigger>
           <TabsTrigger value="about" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Sobre</TabsTrigger>
           <TabsTrigger value="footer" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Rodapé</TabsTrigger>
@@ -121,71 +201,32 @@ export function SiteContentEditor() {
               </div>
               <div className="space-y-4 pt-4 border-t border-zinc-800">
                 <h4 className="text-sm font-medium flex items-center text-red-500"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
-                <div className="space-y-2">
-                  <Label className="text-red-500">URL do Vídeo (MP4/WebM)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    placeholder="https://..."
-                    value={hero.video_url}
-                    onChange={(e) => setHero({...hero, video_url: e.target.value})}
-                  />
-                  {hero.video_url && (
-                    <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30">
-                      <video src={hero.video_url} className="w-full h-full object-cover" muted loop autoPlay playsInline />
-                    </div>
-                  )}
-                  <p className="text-[10px] text-red-500/50">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
-                </div>
+                <ImageUpload 
+                  label="URL do Vídeo (MP4/WebM)" 
+                  value={hero.video_url} 
+                  onChange={(val) => setHero({...hero, video_url: val})} 
+                />
+                <p className="text-[10px] text-red-500/50">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
               </div>
 
               <div className="space-y-4 pt-4 border-t border-zinc-800">
                 <h4 className="text-sm font-medium flex items-center"><ImageIcon className="mr-2 w-4 h-4" /> Cards Flutuantes (3 Imagens)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Imagem do Card 1</Label>
-                    <Input 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      placeholder="https://..."
-                      value={hero.image1 || ""}
-                      onChange={(e) => setHero({...hero, image1: e.target.value})}
-                    />
-                    {hero.image1 && (
-                      <div className="mt-2 relative aspect-[3/4] rounded-lg overflow-hidden border border-red-900/30">
-                        <img src={hero.image1} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Imagem do Card 2</Label>
-                    <Input 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      placeholder="https://..."
-                      value={hero.image2 || ""}
-                      onChange={(e) => setHero({...hero, image2: e.target.value})}
-                    />
-                    {hero.image2 && (
-                      <div className="mt-2 relative aspect-[3/4] rounded-lg overflow-hidden border border-red-900/30">
-                        <img src={hero.image2} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <p className="text-[10px] text-red-500/50">Recomendação: Retrato 600x800px (Centro).</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Imagem do Card 3</Label>
-                    <Input 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      placeholder="https://..."
-                      value={hero.image3 || ""}
-                      onChange={(e) => setHero({...hero, image3: e.target.value})}
-                    />
-                    {hero.image3 && (
-                      <div className="mt-2 relative aspect-[3/4] rounded-lg overflow-hidden border border-red-900/30">
-                        <img src={hero.image3} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <p className="text-[10px] text-red-500/50">Recomendação: Retrato 450x700px.</p>
-                  </div>
+                  <ImageUpload 
+                    label="Imagem do Card 1" 
+                    value={hero.image1 || ""} 
+                    onChange={(val) => setHero({...hero, image1: val})} 
+                  />
+                  <ImageUpload 
+                    label="Imagem do Card 2" 
+                    value={hero.image2 || ""} 
+                    onChange={(val) => setHero({...hero, image2: val})} 
+                  />
+                  <ImageUpload 
+                    label="Imagem do Card 3" 
+                    value={hero.image3 || ""} 
+                    onChange={(val) => setHero({...hero, image3: val})} 
+                  />
                 </div>
               </div>
             </CardContent>
@@ -276,32 +317,25 @@ export function SiteContentEditor() {
                            />
                         </div>
                         <div className="space-y-2">
-                           <Label className="text-xs text-red-500">URL do Vídeo (MP4)</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
+                           <ImageUpload 
+                             label="URL do Vídeo (MP4)" 
                              value={v.src} 
-                             onChange={(e) => {
+                             onChange={(val) => {
                                const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], src: e.target.value };
+                               newItems[idx] = { ...newItems[idx], src: val };
                                setVideos({...videos, items: newItems});
-                             }}
+                             }} 
                            />
-                           {v.src && (
-                             <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
-                               <video src={v.src} className="w-full h-full object-contain" muted />
-                             </div>
-                           )}
                         </div>
                         <div className="space-y-2">
-                           <Label className="text-xs text-red-500">URL da Capa (Poster)</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
+                           <ImageUpload 
+                             label="URL da Capa (Poster)" 
                              value={v.poster} 
-                             onChange={(e) => {
+                             onChange={(val) => {
                                const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], poster: e.target.value };
+                               newItems[idx] = { ...newItems[idx], poster: val };
                                setVideos({...videos, items: newItems});
-                             }}
+                             }} 
                            />
                         </div>
                         <div className="flex items-center space-x-2 pt-2">
@@ -422,19 +456,13 @@ export function SiteContentEditor() {
                     onChange={(e) => setAbout({...about, paragraphs: e.target.value.split("\n")})}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">URL da Imagem Lateral</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={about.image}
-                    onChange={(e) => setAbout({...about, image: e.target.value})}
-                  />
-                  {about.image && (
-                    <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30">
-                      <img src={about.image} className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                </div>
+                 <div className="space-y-2">
+                   <ImageUpload 
+                     label="URL da Imagem Lateral" 
+                     value={about.image} 
+                     onChange={(val) => setAbout({...about, image: val})} 
+                   />
+                 </div>
                 <div className="space-y-2">
                   <Label className="text-red-500">Link do Botão</Label>
                   <Input 
@@ -523,23 +551,17 @@ export function SiteContentEditor() {
                              }}
                            />
                         </div>
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">URL da Imagem</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={item.img} 
-                             onChange={(e) => {
-                               const newItems = [...services.items];
-                               newItems[idx] = { ...newItems[idx], img: e.target.value };
-                               setServices({...services, items: newItems});
-                             }}
-                           />
-                           {item.img && (
-                             <div className="mt-2 relative aspect-video rounded-lg overflow-hidden border border-red-900/30 bg-zinc-950">
-                               <img src={item.img} className="w-full h-full object-contain" />
-                             </div>
-                           )}
-                        </div>
+                         <div className="space-y-2">
+                            <ImageUpload 
+                              label="URL da Imagem" 
+                              value={item.img} 
+                              onChange={(val) => {
+                                const newItems = [...services.items];
+                                newItems[idx] = { ...newItems[idx], img: val };
+                                setServices({...services, items: newItems});
+                              }} 
+                            />
+                         </div>
                         <div className="md:col-span-2 space-y-2">
                            <Label className="text-xs text-red-500">Descrição Curta</Label>
                            <Textarea 
@@ -561,7 +583,117 @@ export function SiteContentEditor() {
           </Card>
         </TabsContent>
 
-        {/* FOOTER SECTION */}
+        {/* PLACES SECTION */}
+        <TabsContent value="places" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Nossas Invasões</CardTitle>
+                <CardDescription className="text-red-500/60">Gerencie a galeria de locais e eventos visitados.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("places", places, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={places.heading}
+                    onChange={(e) => setPlaces({...places, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Subtítulo / Hashtag</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={places.heading2}
+                    onChange={(e) => setPlaces({...places, heading2: e.target.value})}
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-red-500">Link do Instagram</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={places.instagram_url}
+                    onChange={(e) => setPlaces({...places, instagram_url: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <div className="flex justify-between items-center">
+                   <h4 className="text-sm font-medium text-red-500">Galeria de Locais</h4>
+                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
+                    const newItems = [...(places.items || []), { title: "Novo Local", category: "", img: "" }];
+                    setPlaces({...places, items: newItems});
+                  }}>
+                    <Plus className="w-4 h-4 mr-1" /> Adicionar
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {(places.items || []).map((p: any, idx: number) => (
+                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Local #{idx+1}</span>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-7 w-7"
+                          onClick={() => {
+                            const newItems = places.items.filter((_: any, i: number) => i !== idx);
+                            setPlaces({...places, items: newItems});
+                          }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Título / Nome</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={p.title} 
+                             onChange={(e) => {
+                               const newItems = [...places.items];
+                               newItems[idx] = { ...newItems[idx], title: e.target.value };
+                               setPlaces({...places, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="text-xs text-red-500">Categoria / Cidade</Label>
+                           <Input 
+                             className="bg-zinc-800 border-red-900 text-red-500" 
+                             value={p.category} 
+                             onChange={(e) => {
+                               const newItems = [...places.items];
+                               newItems[idx] = { ...newItems[idx], category: e.target.value };
+                               setPlaces({...places, items: newItems});
+                             }}
+                           />
+                        </div>
+                        <div className="md:col-span-2">
+                          <ImageUpload 
+                            label="URL da Imagem / Vídeo" 
+                            value={p.img} 
+                            onChange={(val) => {
+                              const newItems = [...places.items];
+                              newItems[idx] = { ...newItems[idx], img: val };
+                              setPlaces({...places, items: newItems});
+                            }} 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="footer" className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between">
