@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search } from "lucide-react";
+import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search, CheckCircle2 } from "lucide-react";
 
 // Forçamos o toast a aparecer no topo e centralizado
 const showToast = (message: string, type: 'success' | 'error') => {
