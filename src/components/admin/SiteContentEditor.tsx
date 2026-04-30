@@ -121,7 +121,20 @@ export function SiteContentEditor() {
     setLoading(true);
     const success = await updateSection(section, data, isDraft);
     if (success) {
-      // Small delay to ensure DB propagation before state refresh is done by useSiteContent
+      // For immediate feedback while refresh is happening
+      switch(section) {
+        case "hero": setHero({...data}); break;
+        case "about": setAbout({...data}); break;
+        case "plan": setPlan({...data}); break;
+        case "services": setServices({...data}); break;
+        case "videos": setVideos({...data}); break;
+        case "places": setPlaces({...data}); break;
+        case "footer": setFooter({...data}); break;
+        case "seo": setSeo({...data}); break;
+        case "languages": setLanguages({...data}); break;
+      }
+      
+      toast.success(isDraft ? "Rascunho salvo!" : "Alterações publicadas com sucesso!");
       setTimeout(() => setLoading(false), 500);
     } else {
       setLoading(false);
@@ -255,8 +268,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("hero", hero, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção Home
+                <Button onClick={() => handleSave("hero", hero, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Home"}
                 </Button>
               </div>
             </CardContent>
@@ -392,8 +405,8 @@ export function SiteContentEditor() {
                 </div>
               </div>
               <div className="flex justify-end pt-6 border-t border-zinc-800">
-                <Button onClick={() => handleSave("videos", videos, false)} className="bg-red-600 hover:bg-red-700 text-white px-8">
-                  Publicar Seção Vídeos
+                <Button onClick={() => handleSave("videos", videos, false)} className="bg-red-600 hover:bg-red-700 text-white px-8" disabled={loading}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar Seção Vídeos"}
                 </Button>
               </div>
             </CardContent>
@@ -898,7 +911,9 @@ export function SiteContentEditor() {
                  <CardTitle className="text-red-500">Multi-idioma</CardTitle>
                  <CardDescription className="text-red-500/60">Configure quais idiomas estão ativos no seu site.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("languages", languages, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("languages", languages, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">

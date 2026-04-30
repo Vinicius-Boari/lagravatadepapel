@@ -107,7 +107,7 @@ export function useSiteContent(useDraft = false) {
 
       if (error) throw error;
       
-      // Success toast removed here to avoid double toast with SiteContentEditor
+      // Success toast is now handled by the component for better control
       await fetchContent();
       return true;
     } catch (err) {
