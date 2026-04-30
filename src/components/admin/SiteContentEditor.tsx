@@ -206,7 +206,7 @@ export function SiteContentEditor() {
                   value={hero.video_url} 
                   onChange={(val) => setHero({...hero, video_url: val})} 
                 />
-                <p className="text-[10px] text-red-500/50">Recomendação: Vídeo sem som, máx. 10MB, loop infinito.</p>
+                <p className="text-[10px] text-red-500/50">Recomendado: Horizontal (16:9), máx. 10MB, loop infinito, sem som.</p>
               </div>
 
               <div className="space-y-4 pt-4 border-t border-zinc-800">
@@ -326,6 +326,7 @@ export function SiteContentEditor() {
                                setVideos({...videos, items: newItems});
                              }} 
                            />
+                           <p className="text-[9px] text-red-500/40">Rec: {v.tall ? "Vertical (9:16)" : "Horizontal (16:9)"}, máx. 15MB.</p>
                         </div>
                         <div className="space-y-2">
                            <ImageUpload 
@@ -337,6 +338,7 @@ export function SiteContentEditor() {
                                setVideos({...videos, items: newItems});
                              }} 
                            />
+                           <p className="text-[9px] text-red-500/40">Rec: {v.tall ? "450x700px" : "800x450px"}, máx. 300KB.</p>
                         </div>
                         <div className="flex items-center space-x-2 pt-2">
                           <input 
@@ -462,6 +464,7 @@ export function SiteContentEditor() {
                      value={about.image} 
                      onChange={(val) => setAbout({...about, image: val})} 
                    />
+                   <p className="text-[9px] text-red-500/40">Rec: Retrato (3:4), 800x1066px, máx. 800KB.</p>
                  </div>
                 <div className="space-y-2">
                   <Label className="text-red-500">Link do Botão</Label>
@@ -561,6 +564,7 @@ export function SiteContentEditor() {
                                 setServices({...services, items: newItems});
                               }} 
                             />
+                            <p className="text-[9px] text-red-500/40">Rec: Paisagem (4:3), 800x600px, máx. 500KB.</p>
                          </div>
                         <div className="md:col-span-2 space-y-2">
                            <Label className="text-xs text-red-500">Descrição Curta</Label>
@@ -674,7 +678,7 @@ export function SiteContentEditor() {
                              }}
                            />
                         </div>
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 space-y-2">
                           <ImageUpload 
                             label="URL da Imagem / Vídeo" 
                             value={p.img} 
@@ -684,6 +688,7 @@ export function SiteContentEditor() {
                               setPlaces({...places, items: newItems});
                             }} 
                           />
+                          <p className="text-[9px] text-red-500/40">Rec: Retrato (9:16), 1080x1920px (Mobile-friendly), máx. 1MB imagem / 10MB vídeo.</p>
                         </div>
                       </div>
                     </div>
