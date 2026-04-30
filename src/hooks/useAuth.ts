@@ -4,20 +4,14 @@ import type { Session, User } from "@supabase/supabase-js";
 
 export type AppRole = "owner" | "admin" | null;
 
-// Extreme speed: use localStorage for instant role availability across sessions
 const STORAGE_KEY = "lg_user_role";
-const getCachedRole = () => {
-  try {
-    return localStorage.getItem(STORAGE_KEY) as AppRole;
-  } catch {
-    return null;
-  }
-};
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<AppRole>(getCachedRole());
+  const [role, setRole] = useState<AppRole>(() => {
+    try { return localStorage.getItem(STORAGE_KEY) as AppRole; } catch { return null; }
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,9 +20,6 @@ export function useAuth() {
 
     const fetchRole = async (uid: string) => {
       try {
-        // Fast path: if we already have it in state, just clear loading
-        if (role && loading) setLoading(false);
-
         const { data, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
@@ -37,9 +28,10 @@ export function useAuth() {
         if (!mounted) return;
         
         if (roleError) {
-          // If schema cache error, we don't block the user if we have a cached role
-          console.warn("Role fetch warning:", roleError);
-          if (!role) setError(roleError.message);
+          console.error("Auth role error:", roleError);
+          // If we already have a cached role, don't show the error to user
+          const cached = localStorage.getItem(STORAGE_KEY);
+          if (!cached) setError(roleError.message);
           setLoading(false);
           return;
         }
@@ -51,11 +43,8 @@ export function useAuth() {
           else if (roles.includes("admin")) newRole = "admin";
         }
         
-        if (newRole) {
-          localStorage.setItem(STORAGE_KEY, newRole);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
+        if (newRole) localStorage.setItem(STORAGE_KEY, newRole);
+        else localStorage.removeItem(STORAGE_KEY);
         
         setRole(newRole);
         setError(null);
@@ -77,6 +66,8 @@ export function useAuth() {
         setLoading(false);
       } else if (s?.user) {
         fetchRole(s.user.id);
+      } else if (event === "SIGNED_IN") {
+        setLoading(true); // Ensure loading state while fetching role
       } else {
         setLoading(false);
       }
@@ -86,11 +77,8 @@ export function useAuth() {
       if (!mounted) return;
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) {
-        fetchRole(s.user.id);
-      } else {
-        setLoading(false);
-      }
+      if (s?.user) fetchRole(s.user.id);
+      else setLoading(false);
     });
 
     return () => {
@@ -99,8 +87,6 @@ export function useAuth() {
     };
   }, []);
 
-  const isAdmin = role === "admin" || role === "owner";
-
   return { 
     session, 
     user, 
@@ -108,6 +94,6 @@ export function useAuth() {
     loading, 
     error, 
     isOwner: role === "owner", 
-    isAdmin 
+    isAdmin: role === "admin" || role === "owner" 
   };
 }
