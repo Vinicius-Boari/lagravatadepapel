@@ -219,11 +219,12 @@ export function IntegrationsManager() {
 
       <div className="flex justify-end pt-8">
         <button 
-          className="px-12 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-bold text-lg shadow-lg"
+          className="px-12 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-bold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleSave}
+          disabled={loading}
         >
-          <CheckCircle2 className="mr-2 w-5 h-5" />
-          Publicar Todas as Integrações
+          {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <CheckCircle2 className="mr-2 w-5 h-5" />}
+          {loading ? "Publicando..." : "Publicar Todas as Integrações"}
         </button>
       </div>
     </div>
