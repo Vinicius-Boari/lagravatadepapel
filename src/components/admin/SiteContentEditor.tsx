@@ -86,7 +86,8 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
 };
 
 export function SiteContentEditor() {
-  const { content, updateSection, loading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading, refresh } = useSiteContent();
+  const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
   // Local state for each section to handle edits
