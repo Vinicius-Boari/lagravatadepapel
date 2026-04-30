@@ -23,13 +23,28 @@ import { DashboardOverview } from "./DashboardOverview";
 import { VisualIdentity } from "./VisualIdentity";
 import { SiteContentEditor } from "./SiteContentEditor";
 import { IntegrationsManager } from "./IntegrationsManager";
+import { MediaLibrary } from "./MediaLibrary";
+import { PagesRoutes } from "./PagesRoutes";
+import { UserManagement } from "./UserManagement";
+import { ActivityLogs } from "./ActivityLogs";
+import { BackupExport } from "./BackupExport";
 
-// Still placeholders for these more specialized tabs
-const MediaLibrary = () => <div className="p-8 text-zinc-400 animate-in slide-in-from-bottom-2 duration-300">Biblioteca de Mídia - Funcionalidade de upload e gestão de arquivos em breve.</div>;
-const PagesRoutes = () => <div className="p-8 text-zinc-400 animate-in slide-in-from-bottom-2 duration-300">Páginas e Rotas - Gestão de slugs e redirecionamentos em breve.</div>;
-const UserManagement = () => <div className="p-8 text-zinc-400 animate-in slide-in-from-bottom-2 duration-300">Gestão de Usuários - Lista de administradores e criação de novas contas em breve.</div>;
-const ActivityLogs = () => <div className="p-8 text-zinc-400 animate-in slide-in-from-bottom-2 duration-300">Log de Atividades - Histórico detalhado de alterações.</div>;
-const BackupExport = () => <div className="p-8 text-zinc-400 animate-in slide-in-from-bottom-2 duration-300">Backup e Exportação - Salvar configurações do site em JSON.</div>;
+const SettingsTab = () => (
+  <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
+    <div>
+      <h2 className="text-2xl font-bold text-red-500">Configurações Gerais</h2>
+      <p className="text-red-500/70">Ajustes globais do painel e do aplicativo.</p>
+    </div>
+    <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+      <CardHeader>
+        <CardTitle className="text-red-500">Preferências do Painel</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 text-red-500/70 italic text-sm">
+        Opções de idioma, notificações e tema do painel em breve.
+      </CardContent>
+    </Card>
+  </div>
+);
 
 export function AdminDashboard() {
   const { user, role, logout, isOwner } = useAuth();
