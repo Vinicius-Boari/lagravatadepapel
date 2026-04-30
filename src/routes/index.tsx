@@ -80,10 +80,6 @@ function Index() {
     let ls = 0;
     const onScroll = () => {
       const c = window.scrollY;
-      const hdr = headerRef.current;
-      if (hdr) {
-        hdr.style.transform = c > ls && c > 100 ? "translateY(-100%)" : "translateY(0)";
-      }
       ls = c;
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
