@@ -92,14 +92,6 @@ export function IntegrationsManager() {
           <h2 className="text-2xl font-bold text-red-500">Integrações e APIs</h2>
           <p className="text-zinc-400">Conecte redes sociais, analytics e botões de contato.</p>
         </div>
-        <button 
-          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-medium disabled:opacity-50"
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? <Loader2 className="mr-2 w-4 h-4 animate-spin" /> : <CheckCircle2 className="mr-2 w-4 h-4" />}
-          {loading ? "Salvando..." : "Salvar Tudo"}
-        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -242,16 +234,7 @@ export function IntegrationsManager() {
         </Card>
       </div>
 
-      <div className="flex justify-end pt-8">
-        <button 
-          className="px-12 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center font-bold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? <Loader2 className="mr-2 w-5 h-5 animate-spin" /> : <CheckCircle2 className="mr-2 w-5 h-5" />}
-          {loading ? "Salvando..." : "Salvar Todas as Integrações"}
-        </button>
-      </div>
+      
     </div>
   );
 }
