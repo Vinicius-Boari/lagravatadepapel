@@ -473,7 +473,9 @@ export function SiteContentEditor() {
                 <CardTitle className="text-red-500">Seção Sobre</CardTitle>
                 <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
               </div>
-              <Button size="sm" onClick={() => handleSave("about", about, false)}>Publicar</Button>
+               <Button size="sm" onClick={() => handleSave("about", about, false)} disabled={loading}>
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Publicar"}
+               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
