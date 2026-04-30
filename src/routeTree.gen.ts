@@ -13,7 +13,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
-import { Route as ApiPublicHooksRunBackupRouteImport } from './routes/api/public/hooks/run-backup'
+import { Route as ApiPublicHooksRunBackupRouteImport } from './routes/api.public.hooks.run-backup'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
