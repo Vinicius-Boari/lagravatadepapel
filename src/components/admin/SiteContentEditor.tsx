@@ -95,6 +95,7 @@ export function SiteContentEditor() {
   const [plan, setPlan] = useState<any>(content.plan || {});
   const [services, setServices] = useState<any>(content.services || { items: [] });
   const [videos, setVideos] = useState<any>(content.videos || { items: [] });
+  const [places, setPlaces] = useState<any>(content.places || { items: [] });
   const [footer, setFooter] = useState<any>(content.footer || {});
 
   // Effect to update local states when content loads or changes
