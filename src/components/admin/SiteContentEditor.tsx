@@ -289,6 +289,122 @@ export function SiteContentEditor() {
           </Card>
         </TabsContent>
 
+        {/* PLAN SECTION */}
+        <TabsContent value="plan" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Seção "O Plano"</CardTitle>
+                <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("plan", plan, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.heading}
+                    onChange={(e) => setPlan({...plan, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.heading_em}
+                    onChange={(e) => setPlan({...plan, heading_em: e.target.value})}
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-red-500">Texto Descritivo</Label>
+                  <Textarea 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    rows={4}
+                    value={plan.text}
+                    onChange={(e) => setPlan({...plan, text: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Texto do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.cta_label}
+                    onChange={(e) => setPlan({...plan, cta_label: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Link do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={plan.cta_url}
+                    onChange={(e) => setPlan({...plan, cta_url: e.target.value})}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ABOUT SECTION */}
+        <TabsContent value="about" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-red-500">Seção Sobre</CardTitle>
+                <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("about", about, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título Principal</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.heading}
+                    onChange={(e) => setAbout({...about, heading: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.heading_em}
+                    onChange={(e) => setAbout({...about, heading_em: e.target.value})}
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-red-500">Parágrafos (um por linha)</Label>
+                  <Textarea 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    rows={6}
+                    value={about.paragraphs?.join("\n")}
+                    onChange={(e) => setAbout({...about, paragraphs: e.target.value.split("\n")})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">URL da Imagem Lateral</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.image}
+                    onChange={(e) => setAbout({...about, image: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Link do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={about.cta_url}
+                    onChange={(e) => setAbout({...about, cta_url: e.target.value})}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* SERVICES SECTION */}
         <TabsContent value="services" className="space-y-6">
           <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
