@@ -337,7 +337,3 @@ export function SiteContentEditor() {
     </div>
   );
 }
-      </Tabs>
-    </div>
-  );
-}
