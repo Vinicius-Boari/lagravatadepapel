@@ -389,14 +389,14 @@ body.lg-body {
 .whatsapp-float svg { width: 30px; height: 30px; fill: white; }
 
 /* FOOTER */
-.lg-footer { background: var(--color-black-lg); color: var(--color-white-lg); padding: 80px 60px 40px; }
+.lg-footer { background: #000; color: var(--color-white-lg); padding: 120px 60px 40px; }
 .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 80px; flex-wrap: wrap; gap: 40px; }
 .footer-logo { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.3; }
 .footer-links { display: flex; gap: 60px; flex-wrap: wrap; }
 .footer-col h4 { font-family: var(--font-sans-lg); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
 .footer-col a { display: block; font-family: var(--font-serif); font-size: 1rem; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 10px; transition: color 0.3s; }
 .footer-col a:hover { color: var(--color-red-lg); }
-.footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .footer-bottom span { font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; }
 .footer-panel-link {
   color: rgba(255,255,255,0.55);
