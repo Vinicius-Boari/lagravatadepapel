@@ -191,6 +191,8 @@ export type Database = {
         Row: {
           draft_value: Json | null
           key: string
+          language_config: Json | null
+          seo_config: Json | null
           updated_at: string
           updated_by: string | null
           value: Json
@@ -198,6 +200,8 @@ export type Database = {
         Insert: {
           draft_value?: Json | null
           key: string
+          language_config?: Json | null
+          seo_config?: Json | null
           updated_at?: string
           updated_by?: string | null
           value?: Json
@@ -205,6 +209,8 @@ export type Database = {
         Update: {
           draft_value?: Json | null
           key?: string
+          language_config?: Json | null
+          seo_config?: Json | null
           updated_at?: string
           updated_by?: string | null
           value?: Json

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
+import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search } from "lucide-react";
 
 const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val: string) => void, label: string }) => {
   const [uploading, setUploading] = useState(false);
@@ -97,6 +97,8 @@ export function SiteContentEditor() {
   const [videos, setVideos] = useState<any>(content.videos || { items: [] });
   const [places, setPlaces] = useState<any>(content.places || { items: [] });
   const [footer, setFooter] = useState<any>(content.footer || {});
+  const [seo, setSeo] = useState<any>(content.seo || {});
+  const [languages, setLanguages] = useState<any>(content.languages || {});
 
   // Effect to update local states when content loads or changes
   useEffect(() => {
@@ -108,6 +110,8 @@ export function SiteContentEditor() {
       setVideos(content.videos || { items: [] });
       setPlaces(content.places || { items: [] });
       setFooter(content.footer || {});
+      setSeo(content.seo || {});
+      setLanguages(content.languages || {});
     }
   }, [loading, content]);
 
@@ -136,6 +140,8 @@ export function SiteContentEditor() {
           <TabsTrigger value="plan" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Seção "O Plano"</TabsTrigger>
           <TabsTrigger value="about" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Sobre</TabsTrigger>
           <TabsTrigger value="footer" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Rodapé</TabsTrigger>
+          <TabsTrigger value="seo" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400 flex items-center gap-1"><Search className="w-4 h-4" /> SEO</TabsTrigger>
+          <TabsTrigger value="languages" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400 flex items-center gap-1"><Globe className="w-4 h-4" /> Idiomas</TabsTrigger>
         </TabsList>
 
         {/* HERO SECTION */}
@@ -769,6 +775,107 @@ export function SiteContentEditor() {
                      onChange={(e) => setFooter({...footer, hashtag: e.target.value})}
                    />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* SEO SECTION */}
+        <TabsContent value="seo" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                 <CardTitle className="text-red-500">Configurações de SEO</CardTitle>
+                 <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("seo", seo, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                 <Label className="text-red-500">Título do Site (Meta Title)</Label>
+                 <Input 
+                   className="bg-zinc-800 border-red-900 text-red-500" 
+                   value={seo.title || ""} 
+                   onChange={(e) => setSeo({...seo, title: e.target.value})}
+                   placeholder="Ex: La Gravata de Papel - Invasões em Eventos"
+                 />
+                 <p className="text-[10px] text-zinc-500">Recomendado: Máximo 60 caracteres.</p>
+              </div>
+              <div className="space-y-2">
+                 <Label className="text-red-500">Descrição (Meta Description)</Label>
+                 <Textarea 
+                   className="bg-zinc-800 border-red-900 text-red-500" 
+                   value={seo.description || ""} 
+                   onChange={(e) => setSeo({...seo, description: e.target.value})}
+                   rows={3}
+                   placeholder="Descreva o seu site em poucas palavras..."
+                 />
+                 <p className="text-[10px] text-zinc-500">Recomendado: 150-160 caracteres.</p>
+              </div>
+              <div className="space-y-2">
+                 <Label className="text-red-500">Palavras-chave (Keywords)</Label>
+                 <Input 
+                   className="bg-zinc-800 border-red-900 text-red-500" 
+                   value={seo.keywords || ""} 
+                   onChange={(e) => setSeo({...seo, keywords: e.target.value})}
+                   placeholder="Ex: gravata, casamento, festa, animação"
+                 />
+                 <p className="text-[10px] text-zinc-500">Separe por vírgulas.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* LANGUAGES SECTION */}
+        <TabsContent value="languages" className="space-y-6">
+          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                 <CardTitle className="text-red-500">Multi-idioma</CardTitle>
+                 <CardDescription className="text-red-500/60">Configure quais idiomas estão ativos no seu site.</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => handleSave("languages", languages, false)}>Publicar</Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <Label className="text-red-500 block mb-2">Idiomas Habilitados</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {Object.entries(languages.translations || {}).map(([key, info]: [string, any]) => (
+                    <div 
+                      key={key} 
+                      className={`p-4 rounded-lg border flex items-center justify-between transition-colors ${
+                        languages.enabled?.includes(key) 
+                          ? "bg-red-900/10 border-red-900/50 text-red-500" 
+                          : "bg-zinc-800/50 border-zinc-700 text-zinc-500"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">{info.flag}</span>
+                        <div>
+                          <p className="font-bold text-sm">{info.name}</p>
+                          <p className="text-[10px] uppercase opacity-60">{key}</p>
+                        </div>
+                      </div>
+                      <input 
+                        type="checkbox" 
+                        className="accent-red-600 h-5 w-5"
+                        checked={languages.enabled?.includes(key)}
+                        onChange={(e) => {
+                          const newEnabled = e.target.checked 
+                            ? [...(languages.enabled || []), key]
+                            : (languages.enabled || []).filter((l: string) => l !== key);
+                          setLanguages({...languages, enabled: newEnabled});
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-zinc-800">
+                <p className="text-xs text-red-500 italic">
+                  * Nota: Habilitar o idioma permite a troca no site. Você precisará traduzir o conteúdo manualmente nas abas correspondentes após a implementação da lógica de tradução.
+                </p>
               </div>
             </CardContent>
           </Card>
