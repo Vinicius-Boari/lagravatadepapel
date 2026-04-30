@@ -90,18 +90,21 @@ export function BackupExport() {
 
   const handleRunBackup = async () => {
     setIsRunningBackup(true);
-    toast.promise(runNowFn().unwrap(), {
-      loading: "Iniciando backup...",
-      success: () => {
-        fetchData();
-        return "Backup concluído com sucesso!";
-      },
-      error: (err) => {
-        fetchData();
-        return `Erro ao executar backup: ${err.message}`;
-      },
-      finally: () => setIsRunningBackup(false)
-    });
+    try {
+      await toast.promise(runNowFn(), {
+        loading: "Iniciando backup...",
+        success: () => {
+          fetchData();
+          return "Backup concluído com sucesso!";
+        },
+        error: (err) => {
+          fetchData();
+          return `Erro ao executar backup: ${err.message}`;
+        }
+      });
+    } finally {
+      setIsRunningBackup(false);
+    }
   };
 
   const handleUpdateSettings = async () => {
@@ -114,7 +117,7 @@ export function BackupExport() {
         interval_unit: settings.interval_unit,
         retention_count: Number(settings.retention_count),
         retention_days: settings.retention_days ? Number(settings.retention_days) : null
-      }}).unwrap();
+      }});
       toast.success("Configurações salvas com sucesso!");
       fetchData();
     } catch (error: any) {
@@ -125,7 +128,7 @@ export function BackupExport() {
   };
 
   const handleDelete = async (id: string) => {
-    toast.promise(deleteFn({ data: { id } }).unwrap(), {
+    toast.promise(deleteFn({ data: { id } }), {
       loading: "Excluindo backup...",
       success: () => {
         fetchData();
@@ -136,21 +139,14 @@ export function BackupExport() {
   };
 
   const handleRestore = async (id: string) => {
-    const promise = restoreFn({ data: { id } }).unwrap();
-    toast.promise(promise, {
+    toast.promise(restoreFn({ data: { id } }), {
       loading: "Restaurando sistema (isso pode levar alguns segundos)...",
       success: () => {
+        setTimeout(() => window.location.reload(), 2000);
         return "Sistema restaurado com sucesso! A página será recarregada.";
       },
       error: (err) => `Erro na restauração: ${err.message}`
     });
-    
-    try {
-      await promise;
-      setTimeout(() => window.location.reload(), 2000);
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const handleDownload = async (id: string) => {
