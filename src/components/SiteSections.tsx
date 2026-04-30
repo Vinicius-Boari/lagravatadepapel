@@ -269,7 +269,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="video-section" id="videos">
         <div className="video-section-header reveal">
-          <h2>{videos.heading} <em><span>{videos.heading_em}</span></em></h2>
+          <h2>{videos.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => (
