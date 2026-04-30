@@ -30,7 +30,7 @@ export function HeroEditor({ value, onChange }: SectionEditorProps) {
               onChange={(e) => set("title_lines", lines.map((x, ix) => ix === i ? e.target.value : x))}
             />
             <button type="button" onClick={() => set("title_lines", lines.filter((_, ix) => ix !== i))}
-              style={{ padding: "0 12px", border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", borderRadius: 6, cursor: "pointer" }}>✕</button>
+              style={{ padding: "0 14px", border: "1px solid #5a1a1a", background: "#1a0808", color: "#fca5a5", borderRadius: 8, cursor: "pointer", fontWeight: 600 }}>✕</button>
           </div>
         ))}
         <AddBtn onClick={() => set("title_lines", [...lines, ""])}>+ Adicionar linha</AddBtn>
@@ -78,7 +78,7 @@ export function ServicesEditor({ value, onChange }: SectionEditorProps) {
   const updateItem = (i: number, patch: any) => set("items", items.map((it, ix) => ix === i ? { ...it, ...patch } : it));
 
   return (
-    <Section title="Serviços" description="Cards mostrando o que vocês oferecem.">
+    <Section title="Serviços" description="Cards mostrando o que vocês oferecem. Use apenas IMAGENS aqui — vídeos vão na seção 'Vídeos'.">
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <FormField label="Título (linha 1)"><TextInput value={v.heading ?? ""} onChange={(e) => set("heading", e.target.value)} /></FormField>
         <FormField label="Título (linha 2 — destacada)"><TextInput value={v.heading_em ?? ""} onChange={(e) => set("heading_em", e.target.value)} /></FormField>
@@ -116,7 +116,7 @@ export function VideosEditor({ value, onChange }: SectionEditorProps) {
   const updateItem = (i: number, patch: any) => set("items", items.map((it, ix) => ix === i ? { ...it, ...patch } : it));
 
   return (
-    <Section title="Vídeos" description="Galeria de vídeos. Deixe o vídeo em branco para mostrar apenas a imagem de capa.">
+    <Section title="Vídeos" description="Galeria de vídeos. Cada item precisa de uma capa (imagem) e um arquivo de vídeo (.mp4). Deixe o vídeo em branco para mostrar só a capa.">
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <FormField label="Título (linha 1)"><TextInput value={v.heading ?? ""} onChange={(e) => set("heading", e.target.value)} /></FormField>
         <FormField label="Título (destacado)"><TextInput value={v.heading_em ?? ""} onChange={(e) => set("heading_em", e.target.value)} /></FormField>
@@ -142,8 +142,8 @@ export function VideosEditor({ value, onChange }: SectionEditorProps) {
             <div>
               <FormField label="Título"><TextInput value={it.title ?? ""} onChange={(e) => updateItem(i, { title: e.target.value })} /></FormField>
               <FormField label="Tag/categoria"><TextInput value={it.tag ?? ""} onChange={(e) => updateItem(i, { tag: e.target.value })} /></FormField>
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151" }}>
-                <input type="checkbox" checked={!!it.tall} onChange={(e) => updateItem(i, { tall: e.target.checked })} />
+              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#ccc", cursor: "pointer" }}>
+                <input type="checkbox" checked={!!it.tall} onChange={(e) => updateItem(i, { tall: e.target.checked })} style={{ accentColor: "#dc2626" }} />
                 Card alto (ocupa 2 linhas)
               </label>
             </div>
@@ -230,7 +230,7 @@ export function AboutEditor({ value, onChange }: SectionEditorProps) {
           <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8 }}>
             <TextArea value={p} onChange={(e) => set("paragraphs", paragraphs.map((x, ix) => ix === i ? e.target.value : x))} rows={3} />
             <button type="button" onClick={() => set("paragraphs", paragraphs.filter((_, ix) => ix !== i))}
-              style={{ padding: "0 12px", alignSelf: "stretch", border: "1px solid #fecaca", background: "#fef2f2", color: "#b91c1c", borderRadius: 6, cursor: "pointer" }}>✕</button>
+              style={{ padding: "0 14px", alignSelf: "stretch", border: "1px solid #5a1a1a", background: "#1a0808", color: "#fca5a5", borderRadius: 8, cursor: "pointer", fontWeight: 600 }}>✕</button>
           </div>
         ))}
         <AddBtn onClick={() => set("paragraphs", [...paragraphs, ""])}>+ Adicionar parágrafo</AddBtn>
@@ -262,7 +262,7 @@ export function InstagramConfigEditor({ value, onChange }: SectionEditorProps) {
         <select
           value={v.mode ?? "manual"}
           onChange={(e) => set("mode", e.target.value)}
-          style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", background: "white", fontSize: 14 }}
+          style={{ width: "100%", padding: "11px 14px", borderRadius: 9, border: "1px solid #2c2c2c", background: "#0a0a0a", color: "#fafafa", fontSize: 14, outline: "none" }}
         >
           <option value="manual">Manual (eu adiciono os posts pelo painel)</option>
           <option value="graph_api">Instagram Graph API (em breve)</option>
@@ -293,12 +293,11 @@ export function FooterEditor({ value, onChange }: SectionEditorProps) {
 }
 
 export const SECTION_EDITORS: Record<string, { label: string; icon: string; component: (props: SectionEditorProps) => React.ReactElement }> = {
-  hero: { label: "Capa (Hero)", icon: "🎬", component: HeroEditor },
-  services: { label: "Serviços", icon: "✨", component: ServicesEditor },
-  videos: { label: "Vídeos", icon: "🎥", component: VideosEditor },
-  plan: { label: "O Plano", icon: "📋", component: PlanEditor },
-  places: { label: "Invasões", icon: "🎉", component: PlacesEditor },
-  about: { label: "Sobre", icon: "ℹ️", component: AboutEditor },
-  instagram_config: { label: "Instagram (config)", icon: "📸", component: InstagramConfigEditor },
-  footer: { label: "Rodapé", icon: "📞", component: FooterEditor },
+  hero: { label: "Capa (Hero)", icon: "▲", component: HeroEditor },
+  services: { label: "Serviços", icon: "✦", component: ServicesEditor },
+  videos: { label: "Vídeos", icon: "▶", component: VideosEditor },
+  plan: { label: "O Plano", icon: "❖", component: PlanEditor },
+  places: { label: "Invasões", icon: "✺", component: PlacesEditor },
+  about: { label: "Sobre", icon: "ⓘ", component: AboutEditor },
+  footer: { label: "Rodapé / Contato", icon: "☎", component: FooterEditor },
 };
