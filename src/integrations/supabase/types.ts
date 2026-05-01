@@ -247,6 +247,36 @@ export type Database = {
         }
         Relationships: []
       }
+      posts: {
+        Row: {
+          conteudo: string | null
+          created_at: string | null
+          id: number
+          midia_url: string | null
+          titulo: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          conteudo?: string | null
+          created_at?: string | null
+          id?: number
+          midia_url?: string | null
+          titulo: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          conteudo?: string | null
+          created_at?: string | null
+          id?: number
+          midia_url?: string | null
+          titulo?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
