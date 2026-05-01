@@ -55,7 +55,19 @@ export function VisualIdentity() {
     }
   }, [formData, updateSection]);
 
-  const { status } = useAutosave(formData, () => handleSave(false));
+  const { status, setSaveStatus } = useSaveStatus();
+
+  const handleManualSave = async () => {
+    setSaveStatus('saving');
+    try {
+      await handleSave(false);
+      setSaveStatus('saved');
+      showToast("Identidade Visual salva com sucesso!", "success");
+    } catch {
+      setSaveStatus('error');
+      showToast("Erro ao salvar Identidade Visual.", "error");
+    }
+  };
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
