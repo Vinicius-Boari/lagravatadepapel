@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 export function useAutosave<T>(
   data: T,
   onSave: (data: T) => Promise<void> | void,
-  debounceMs: number = 1000,
+  debounceMs: number = 2000,
   storageKey?: string
 ) {
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -16,10 +16,7 @@ export function useAutosave<T>(
       const saved = localStorage.getItem(storageKey);
       if (saved) {
         try {
-          const parsed = JSON.parse(saved);
-          // We don't necessarily want to trigger a save immediately, 
-          // just make sure the UI reflects it if needed.
-          // However, usually the component owner handles the initial state.
+          // const parsed = JSON.parse(saved);
         } catch (e) {
           console.error("Error parsing local storage", e);
         }
@@ -44,8 +41,8 @@ export function useAutosave<T>(
     } catch (error) {
       console.error('Autosave failed:', error);
       setStatus('error');
-      // Retry once after 3 seconds
-      setTimeout(() => performSave(currentData), 3000);
+      // Retry once after 5 seconds instead of 3
+      setTimeout(() => performSave(currentData), 5000);
     }
   }, [onSave, storageKey]);
 
