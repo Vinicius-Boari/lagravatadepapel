@@ -9,8 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { cn } from "@/lib/utils";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
