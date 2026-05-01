@@ -96,7 +96,7 @@ export function UserManagement() {
           <h2 className="text-2xl font-bold text-red-500">Gestão de Usuários</h2>
           <p className="text-red-500/70">Gerencie quem tem acesso ao painel administrativo.</p>
         </div>
-        <Button onClick={() => setShowAddForm(!showAddForm)}>
+        <Button onClick={() => setShowAddForm(!showAddForm)} className="bg-black hover:bg-zinc-900 text-white border-zinc-800 border">
           <UserPlus className="mr-2 w-4 h-4" />
           {showAddForm ? "Cancelar" : "Novo Administrador"}
         </Button>
