@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { 
   Database, 
@@ -14,6 +14,8 @@ import {
   AlertCircle 
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -123,11 +125,10 @@ export function BackupExport() {
     }
   };
 
-  const handleUpdateSettings = async () => {
+  const handleUpdateSettings = useCallback(async () => {
     if (!settings) return;
     const adminToken = getAdminToken();
     if (!adminToken) {
-      toast.error("Sessão expirada. Faça login novamente.");
       return;
     }
 
@@ -143,14 +144,16 @@ export function BackupExport() {
           retention_days: settings.retention_days ? Number(settings.retention_days) : null
         }
       }});
-      toast.success("Configurações salvas com sucesso!");
       fetchData();
     } catch (error: any) {
-      toast.error(`Erro ao salvar: ${error.message}`);
+      console.error("Error saving backup settings:", error);
+      throw error;
     } finally {
       setIsUpdatingSettings(false);
     }
-  };
+  }, [settings, updateSettingsFn]);
+
+  const { status } = useAutosave(settings, handleUpdateSettings);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este backup permanentemente? Esta ação não pode ser desfeita.")) {
