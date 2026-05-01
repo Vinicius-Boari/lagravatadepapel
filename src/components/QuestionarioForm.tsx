@@ -711,7 +711,7 @@ export function QuestionarioForm() {
             control={form.control}
             name="how_did_you_hear_about_us"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-4">
                 <FormLabel className="text-zinc-400">Como nos conheceu?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
@@ -728,6 +728,14 @@ export function QuestionarioForm() {
                     <SelectItem value="Outros">Outros</SelectItem>
                   </SelectContent>
                 </Select>
+                {field.value === "Outros" && (
+                  <FormControl>
+                    <Input 
+                      placeholder="Especifique como nos conheceu" 
+                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                    />
+                  </FormControl>
+                )}
                 <FormMessage className="text-primary" />
               </FormItem>
             )}
