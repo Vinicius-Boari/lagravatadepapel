@@ -11,11 +11,11 @@ import {
   Play, 
   CheckCircle2, 
   Clock, 
-  AlertCircle 
+  AlertCircle,
+  Save
 } from "lucide-react";
 import { toast } from "sonner";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,14 +53,13 @@ import {
 } from "@/server/backup.functions";
 
 export function BackupExport() {
-  console.log("[BackupExport] rendering");
   const [backups, setBackups] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRunningBackup, setIsRunningBackup] = useState(false);
-  const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
+  
+  const { status, setSaveStatus } = useSaveStatus();
 
-  // Custom token from localStorage as used in useAuth hook
   const getAdminToken = () => {
     if (typeof window === "undefined") return "";
     return localStorage.getItem("lg_auth_token") || "";
@@ -125,14 +124,12 @@ export function BackupExport() {
     }
   };
 
-  const handleUpdateSettings = useCallback(async () => {
+  const handleUpdateSettings = async () => {
     if (!settings) return;
     const adminToken = getAdminToken();
-    if (!adminToken) {
-      return;
-    }
+    if (!adminToken) return;
 
-    setIsUpdatingSettings(true);
+    setSaveStatus('saving');
     try {
       await updateSettingsFn({ data: {
         adminToken,
@@ -144,21 +141,18 @@ export function BackupExport() {
           retention_days: settings.retention_days ? Number(settings.retention_days) : null
         }
       }});
+      setSaveStatus('saved');
+      toast.success("Configurações de backup salvas!");
       fetchData();
     } catch (error: any) {
+      setSaveStatus('error');
       console.error("Error saving backup settings:", error);
-      throw error;
-    } finally {
-      setIsUpdatingSettings(false);
+      toast.error("Erro ao salvar configurações.");
     }
-  }, [settings, updateSettingsFn]);
-
-  const { status } = useAutosave(settings, handleUpdateSettings);
+  };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Tem certeza que deseja excluir este backup permanentemente? Esta ação não pode ser desfeita.")) {
-      return;
-    }
+    if (!confirm("Tem certeza que deseja excluir este backup permanentemente?")) return;
 
     const adminToken = getAdminToken();
     try {
@@ -170,18 +164,16 @@ export function BackupExport() {
         },
         error: (err) => `Erro ao excluir backup: ${err.message}`
       });
-    } catch (error) {
-      // toast.promise handles it
-    }
+    } catch (error) {}
   };
 
   const handleRestore = async (id: string) => {
     const adminToken = getAdminToken();
     toast.promise(restoreFn({ data: { adminToken, id } }), {
-      loading: "Restaurando sistema (isso pode levar alguns segundos)...",
+      loading: "Restaurando sistema...",
       success: () => {
         setTimeout(() => window.location.reload(), 2000);
-        return "Sistema restaurado com sucesso! A página será recarregada.";
+        return "Sistema restaurado com sucesso!";
       },
       error: (err) => `Erro na restauração: ${err.message}`
     });
@@ -215,38 +207,42 @@ export function BackupExport() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20 text-red-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold">Backup e Restauração</h2>
-          <p className="text-red-500/70">Mantenha seus dados seguros com backups automáticos e manuais.</p>
+          <p className="text-red-500/70">Mantenha seus dados seguros.</p>
         </div>
         <div className="flex items-center gap-4">
-          <AutosaveIndicator status={status} />
           <Button 
             onClick={handleRunBackup} 
             disabled={isRunningBackup}
             className="bg-red-600 hover:bg-red-700 text-white font-bold"
           >
             {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
-            Executar Backup Agora
+            Backup Agora
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl lg:col-span-1">
-          <CardHeader>
-            <CardTitle className="text-red-500 flex items-center text-lg">
-              <Settings className="mr-2 w-5 h-5" /> Configurações
-            </CardTitle>
-            <CardDescription className="text-red-500/60">Configure o agendamento automático.</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500 flex items-center text-lg">
+                <Settings className="mr-2 w-5 h-5" /> Configurações
+              </CardTitle>
+            </div>
+            <Button 
+              onClick={handleUpdateSettings}
+              className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+            >
+              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+            </Button>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center justify-between space-x-2 p-3 bg-zinc-800/50 rounded-lg border border-red-900/10">
-              <div className="space-y-0.5">
-                <Label className="text-red-500 font-bold">Backup Automático</Label>
-                <p className="text-[10px] text-zinc-500">Ativa a execução em segundo plano.</p>
-              </div>
+            <div className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-red-900/10">
+              <Label className="text-red-500 font-bold">Backup Automático</Label>
               <Switch 
                 checked={!!settings?.auto_enabled} 
                 onCheckedChange={(val) => setSettings((prev: any) => ({ ...(prev || {}), auto_enabled: val }))}
@@ -254,13 +250,13 @@ export function BackupExport() {
             </div>
 
             <div className="space-y-3">
-              <Label className="text-xs text-red-500/70 font-bold uppercase tracking-wider">Intervalo entre Backups</Label>
+              <Label className="text-xs text-red-500/70 font-bold">Intervalo</Label>
               <div className="flex gap-2">
                 <Input 
                   type="number" 
                   value={settings?.interval_value ?? ""}
                   onChange={(e) => setSettings((prev: any) => ({ ...(prev || {}), interval_value: e.target.value }))}
-                  className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
+                  className="bg-zinc-950 border-zinc-800 text-red-500 w-20"
                 />
                 <Select 
                   value={settings?.interval_unit || "hours"} 
@@ -277,199 +273,32 @@ export function BackupExport() {
                 </Select>
               </div>
             </div>
-
-            <div className="space-y-3">
-              <Label className="text-xs text-red-500/70 font-bold uppercase tracking-wider">Política de Retenção</Label>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Input 
-                    type="number" 
-                    value={settings?.retention_count ?? ""}
-                    onChange={(e) => setSettings((prev: any) => ({ ...(prev || {}), retention_count: e.target.value }))}
-                    className="bg-zinc-950 border-zinc-800 text-red-500 focus:border-red-500 w-20"
-                  />
-                  <span className="text-xs text-zinc-500">últimos backups</span>
-                </div>
-              </div>
-            </div>
-
-            <p className="text-[10px] text-zinc-500 italic text-center">Configurações salvas automaticamente.</p>
-
-            {settings?.next_run_at && settings.auto_enabled && (
-              <div className="p-3 bg-red-900/5 rounded-lg border border-red-900/10 flex items-center space-x-3">
-                <Clock className="w-4 h-4 text-red-500/50" />
-                <div className="text-[10px]">
-                  <p className="text-zinc-500">Próximo backup agendado para:</p>
-                  <p className="text-red-500 font-medium">
-                    {format(new Date(settings.next_run_at), "dd/MM 'às' HH:mm", { locale: ptBR })}
-                  </p>
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
 
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-red-500 flex items-center text-lg">
-              <History className="mr-2 w-5 h-5" /> Histórico de Backups
+              <History className="mr-2 w-5 h-5" /> Histórico
             </CardTitle>
-            <CardDescription className="text-red-500/60">Lista de versões salvas no storage.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {backups.length === 0 ? (
-                <div className="text-center py-10 text-zinc-600 italic text-sm">
-                  Nenhum backup encontrado.
+              {backups.map((b) => (
+                <div key={b.id} className="flex items-center justify-between p-4 bg-zinc-800/20 rounded-lg border border-zinc-800">
+                  <div>
+                    <div className="text-red-500 font-bold">{b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm") : "N/A"}</div>
+                    <div className="text-[10px] text-zinc-500">{formatSize(b.size_bytes)}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleDownload(b.id)}><Download className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleRestore(b.id)}><RefreshCcw className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(b.id)}><Trash2 className="w-4 h-4" /></Button>
+                  </div>
                 </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-left border-b border-zinc-800 text-zinc-500 text-xs uppercase tracking-wider">
-                        <th className="pb-3 pl-2 font-bold">Data / Hora</th>
-                        <th className="pb-3 font-bold">Origem</th>
-                        <th className="pb-3 font-bold">Tamanho</th>
-                        <th className="pb-3 font-bold">Status</th>
-                        <th className="pb-3 text-right pr-2 font-bold">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-800/50">
-                      {backups.map((b) => (
-                        <tr key={b.id} className="group hover:bg-zinc-800/20 transition-colors">
-                          <td className="py-4 pl-2 font-medium">
-                            <div className="text-red-500">{b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "N/A"}</div>
-                            <div className="text-[10px] text-zinc-600 font-mono">{b.id.split('-')[0]}...</div>
-                          </td>
-                          <td className="py-4">
-                            <span className={cn(
-                              "text-[10px] px-1.5 py-0.5 rounded border font-bold uppercase",
-                              b.trigger === 'auto' ? "border-blue-900/30 text-blue-500 bg-blue-900/10" : "border-red-900/30 text-red-500 bg-red-900/10"
-                            )}>
-                              {b.trigger === 'auto' ? 'Automático' : 'Manual'}
-                            </span>
-                          </td>
-                          <td className="py-4 text-zinc-400">
-                            {formatSize(b.size_bytes)}
-                          </td>
-                          <td className="py-4">
-                            {b.status === 'success' && (
-                              <div className="flex items-center text-green-500 text-xs font-bold">
-                                <CheckCircle2 className="w-3 h-3 mr-1" /> Sucesso
-                              </div>
-                            )}
-                            {b.status === 'processing' && (
-                              <div className="flex items-center text-blue-500 text-xs font-bold animate-pulse">
-                                <RefreshCcw className="w-3 h-3 mr-1 animate-spin" /> Processando
-                              </div>
-                            )}
-                            {b.status === 'error' && (
-                              <div className="flex items-center text-red-600 text-xs font-bold" title={b.error_message}>
-                                <AlertCircle className="w-3 h-3 mr-1" /> Falha
-                              </div>
-                            )}
-                          </td>
-                          <td className="py-4 text-right pr-2">
-                            <div className="flex items-center justify-end space-x-1">
-                              {b.status === 'success' && (
-                                <>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="h-8 w-8 text-zinc-500 hover:text-red-500 hover:bg-red-500/10"
-                                    onClick={() => handleDownload(b.id)}
-                                    title="Baixar Backup"
-                                  >
-                                    <Download className="w-4 h-4" />
-                                  </Button>
-
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button 
-                                        variant="ghost" 
-                                        size="icon" 
-                                        className="h-8 w-8 text-zinc-500 hover:text-red-500 hover:bg-red-500/10"
-                                        title="Restaurar"
-                                      >
-                                        <Upload className="w-4 h-4" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-red-500">
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>Restaurar este backup?</AlertDialogTitle>
-                                        <AlertDialogDescription className="text-zinc-500">
-                                          Esta ação é irreversível e substituirá todos os dados atuais (páginas, posts, mídias e configurações) pelos dados deste backup de {b.created_at ? format(new Date(b.created_at), "dd/MM/yyyy HH:mm") : "data desconhecida"}.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel className="bg-zinc-800 border-zinc-700 text-red-500 hover:bg-zinc-700">Cancelar</AlertDialogCancel>
-                                        <AlertDialogAction 
-                                          className="bg-red-600 text-white hover:bg-red-700 font-bold"
-                                          onClick={() => handleRestore(b.id)}
-                                        >
-                                          Sim, Restaurar Agora
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </>
-                              )}
-
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="h-8 w-8 text-zinc-500 hover:text-red-500 hover:bg-red-500/10"
-                                onClick={() => handleDelete(b.id)}
-                                title="Excluir"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+              ))}
             </div>
           </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-red-600">
-           <CardContent className="pt-6 flex items-start space-x-4">
-              <div className="p-2 bg-red-500/10 rounded-lg">
-                <Database className="w-6 h-6 text-red-500" />
-              </div>
-              <div>
-                <h4 className="font-bold">Dados Protegidos</h4>
-                <p className="text-xs text-zinc-500 mt-1">O backup inclui posts do instagram, páginas, configurações e mídias.</p>
-              </div>
-           </CardContent>
-        </Card>
-        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-blue-600">
-           <CardContent className="pt-6 flex items-start space-x-4">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
-                <Clock className="w-6 h-6 text-blue-500" />
-              </div>
-              <div>
-                <h4 className="font-bold">Agendamento Inteligente</h4>
-                <p className="text-xs text-zinc-500 mt-1">O sistema roda em segundo plano mesmo com o painel fechado.</p>
-              </div>
-           </CardContent>
-        </Card>
-        <Card className="bg-zinc-900 border-zinc-800 shadow-xl border-l-4 border-l-green-600">
-           <CardContent className="pt-6 flex items-start space-x-4">
-              <div className="p-2 bg-green-500/10 rounded-lg">
-                <History className="w-6 h-6 text-green-500" />
-              </div>
-              <div>
-                <h4 className="font-bold">Política de Retenção</h4>
-                <p className="text-xs text-zinc-500 mt-1">Limpamos backups antigos automaticamente para economizar espaço.</p>
-              </div>
-           </CardContent>
         </Card>
       </div>
     </div>
