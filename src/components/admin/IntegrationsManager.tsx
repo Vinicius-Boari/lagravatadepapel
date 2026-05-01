@@ -247,6 +247,17 @@ export function IntegrationsManager() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="flex justify-center pt-8 border-t border-zinc-800/50 pb-10">
+        <Button 
+          onClick={handleManualSave}
+          size="lg"
+          className={cn("transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
+          {status === 'saved' ? 'Integrações Salvas!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Integrações'}
+        </Button>
+      </div>
     </div>
   );
 }

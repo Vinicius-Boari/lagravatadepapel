@@ -267,13 +267,45 @@ export function SiteContentEditor() {
               </div>
             </div>
             <div className="space-y-4 pt-4">
-               <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setServices({...services, items: [...(services.items || []), {title: "Novo", desc: "", img: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button>
+               <div className="flex justify-between items-center">
+                 <Label className="text-red-500 italic">Lista de Serviços</Label>
+                 <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setServices({...services, items: [...(services.items || []), {title: "Novo Serviço", desc: "", img: ""}]})}>
+                   <Plus className="w-4 h-4 mr-1"/> Adicionar Serviço
+                 </Button>
+               </div>
+               
                {services.items?.map((item: any, idx: number) => (
-                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4">
-                   <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
-                   <ImageUpload label="Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
+                   <Button 
+                     variant="ghost" 
+                     size="icon" 
+                     className="absolute top-2 right-2 text-red-900 hover:text-red-500 hover:bg-red-900/10 h-8 w-8"
+                     onClick={() => {
+                       const newI = [...services.items];
+                       newI.splice(idx, 1);
+                       setServices({...services, items: newI});
+                     }}
+                   >
+                     <Trash2 className="w-4 h-4" />
+                   </Button>
+                   
+                   <div className="space-y-2">
+                     <Label className="text-xs text-red-500">Título do Serviço</Label>
+                     <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                   </div>
+                   <div className="space-y-2">
+                     <Label className="text-xs text-red-500">Descrição</Label>
+                     <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                   </div>
+                   <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
                  </div>
                ))}
+               
+               {(!services.items || services.items.length === 0) && (
+                 <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
+                   Nenhum serviço cadastrado.
+                 </div>
+               )}
             </div>
           </CardContent>
         </Card>
@@ -286,14 +318,48 @@ export function SiteContentEditor() {
             <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
-            <Input value={videos.heading || ""} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <Button size="sm" variant="outline" className="border-red-900 text-red-500 mt-4" onClick={() => setVideos({...videos, items: [...(videos.items || []), {title: "Novo", src: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button>
-            {videos.items?.map((v: any, idx: number) => (
-              <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 mt-2">
-                <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
-                <ImageUpload label="URL Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+            <div className="space-y-2">
+              <Label className="text-red-500">Título da Seção de Vídeos</Label>
+              <Input value={videos.heading || ""} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            </div>
+            
+            <div className="space-y-4 pt-4">
+              <div className="flex justify-between items-center">
+                <Label className="text-red-500">Galeria de Vídeos</Label>
+                <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setVideos({...videos, items: [...(videos.items || []), {title: "Novo Vídeo", src: ""}]})}>
+                  <Plus className="w-4 h-4 mr-1"/> Adicionar Vídeo
+                </Button>
               </div>
-            ))}
+              
+              {videos.items?.map((v: any, idx: number) => (
+                <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute top-2 right-2 text-red-900 hover:text-red-500 hover:bg-red-900/10 h-8 w-8"
+                    onClick={() => {
+                      const newV = [...videos.items];
+                      newV.splice(idx, 1);
+                      setVideos({...videos, items: newV});
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-xs text-red-500">Título do Vídeo</Label>
+                    <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                  </div>
+                  <ImageUpload label="URL ou Upload do Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+                </div>
+              ))}
+              
+              {(!videos.items || videos.items.length === 0) && (
+                <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
+                  Nenhum vídeo cadastrado.
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       )}
@@ -301,11 +367,61 @@ export function SiteContentEditor() {
       {activeSection === "places" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <div><CardTitle className="text-red-500">Invasões</CardTitle></div>
+            <div>
+              <CardTitle className="text-red-500">Invasões</CardTitle>
+              <CardDescription className="text-red-500/60">Lista de locais e invasões realizadas.</CardDescription>
+            </div>
             <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
           </CardHeader>
-          <CardContent>
-            <Input value={places.heading || ""} onChange={e => setPlaces({...places, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label className="text-red-500">Título da Seção</Label>
+              <Input value={places.heading || ""} onChange={e => setPlaces({...places, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            </div>
+            
+            <div className="space-y-4 pt-4">
+               <div className="flex justify-between items-center">
+                 <Label className="text-red-500">Itens das Invasões</Label>
+                 <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setPlaces({...places, items: [...(places.items || []), {title: "Novo Local", date: "", location: "", img: ""}]})}>
+                   <Plus className="w-4 h-4 mr-1"/> Adicionar Local
+                 </Button>
+               </div>
+               
+               {places.items?.map((item: any, idx: number) => (
+                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
+                   <Button 
+                     variant="ghost" 
+                     size="icon" 
+                     className="absolute top-2 right-2 text-red-900 hover:text-red-500 hover:bg-red-900/10 h-8 w-8"
+                     onClick={() => {
+                       const newI = [...places.items];
+                       newI.splice(idx, 1);
+                       setPlaces({...places, items: newI});
+                     }}
+                   >
+                     <Trash2 className="w-4 h-4" />
+                   </Button>
+                   
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div className="space-y-2">
+                       <Label className="text-xs text-red-500">Nome do Local</Label>
+                       <Input value={item.title} onChange={e => { const newI = [...places.items]; newI[idx].title = e.target.value; setPlaces({...places, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                     </div>
+                     <div className="space-y-2">
+                       <Label className="text-xs text-red-500">Cidade/Localização</Label>
+                       <Input value={item.location} onChange={e => { const newI = [...places.items]; newI[idx].location = e.target.value; setPlaces({...places, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                     </div>
+                   </div>
+                   <ImageUpload label="Imagem do Local" value={item.img} onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }} />
+                 </div>
+               ))}
+               
+               {(!places.items || places.items.length === 0) && (
+                 <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
+                   Nenhum local cadastrado. Clique em "Adicionar Local".
+                 </div>
+               )}
+            </div>
           </CardContent>
         </Card>
       )}
@@ -373,6 +489,47 @@ export function SiteContentEditor() {
           </CardContent>
         </Card>
       )}
+
+      <div className="flex justify-center pt-8 border-t border-zinc-800/50 pb-10">
+        <Button 
+          onClick={async () => {
+            const btnMap: Record<string, any> = {
+              hero: { data: hero, status: heroStatus, set: setHeroStatus },
+              services: { data: services, status: servicesStatus, set: setServicesStatus },
+              videos: { data: videos, status: videosStatus, set: setVideosStatus },
+              places: { data: places, status: placesStatus, set: setPlacesStatus },
+              plan: { data: plan, status: planStatus, set: setPlanStatus },
+              about: { data: about, status: aboutStatus, set: setAboutStatus },
+              footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              languages: { data: languages, status: langStatus, set: setLangStatus },
+            };
+            const current = btnMap[activeSection];
+            if (current) {
+              const btn = document.querySelector(`button[class*="getSaveButtonStyles"]`) as HTMLButtonElement;
+              if (btn) btn.click();
+            }
+          }}
+          size="lg"
+          className={cn(
+            "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
+            getSaveButtonStyles(
+              activeSection === "hero" ? heroStatus :
+              activeSection === "services" ? servicesStatus :
+              activeSection === "videos" ? videosStatus :
+              activeSection === "places" ? placesStatus :
+              activeSection === "plan" ? planStatus :
+              activeSection === "about" ? aboutStatus :
+              activeSection === "footer" ? footerStatus :
+              activeSection === "seo" ? seoStatus :
+              langStatus
+            )
+          )}
+        >
+          <Save className="w-6 h-6 mr-2" />
+          Salvar Alterações de {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+        </Button>
+      </div>
     </div>
   );
 }
