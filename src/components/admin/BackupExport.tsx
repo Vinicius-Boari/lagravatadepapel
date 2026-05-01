@@ -220,13 +220,18 @@ export function BackupExport() {
           <h2 className="text-2xl font-bold">Backup e Restauração</h2>
           <p className="text-red-500/70">Mantenha seus dados seguros com backups automáticos e manuais.</p>
         </div>
-        <AutosaveIndicator status={status} />
+        <div className="flex items-center gap-4">
+          <AutosaveIndicator status={status} />
+          <Button 
+            onClick={handleRunBackup} 
+            disabled={isRunningBackup}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold"
+          >
+            {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
+            Executar Backup Agora
+          </Button>
+        </div>
       </div>
-        <Button 
-          onClick={handleRunBackup} 
-          disabled={isRunningBackup}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold"
-        >
           {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
           Executar Backup Agora
         </Button>
