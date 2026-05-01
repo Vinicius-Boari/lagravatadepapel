@@ -235,7 +235,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
 
         <div className="hero-cta">
-          <a href={hero.cta_url} target="_blank" rel="noopener noreferrer">
+          <a href="/questionarioevento">
             <span>{hero.cta_label}</span>
             <span className="cta-dot" />
           </a>
@@ -338,7 +338,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(about.paragraphs ?? []).map((p: string, i: number) => (
             <p className="reveal" key={i}>{p}</p>
           ))}
-          <a href={about.cta_url} target="_blank" className="btn-outline reveal" rel="noopener noreferrer">
+          <a href="/questionarioevento" className="btn-outline reveal">
             <span>{about.cta_label}</span>
             <span>→</span>
           </a>
