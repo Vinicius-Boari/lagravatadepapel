@@ -600,11 +600,23 @@ export function SiteContentEditor() {
               footer: { data: footer, status: footerStatus, set: setFooterStatus },
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
+              instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
             };
             const current = btnMap[activeSection];
             if (current) {
-              const btn = document.querySelector(`button[class*="getSaveButtonStyles"]`) as HTMLButtonElement;
-              if (btn) btn.click();
+              current.set('saving');
+              try {
+                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                if (result) {
+                  current.set('saved');
+                  showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
+                } else {
+                  throw new Error("Falha ao salvar");
+                }
+              } catch (err: any) {
+                current.set('error');
+                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
+              }
             }
           }}
           size="lg"
@@ -619,6 +631,7 @@ export function SiteContentEditor() {
               activeSection === "about" ? aboutStatus :
               activeSection === "footer" ? footerStatus :
               activeSection === "seo" ? seoStatus :
+              activeSection === "instagram" ? instagramStatus :
               langStatus
             )
           )}
