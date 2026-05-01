@@ -178,9 +178,46 @@ export function SiteContentEditor() {
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-[60] py-4 -mt-4 border-b border-zinc-800/50 gap-4">
-        <div>
+        <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
-          
+          <Button 
+            onClick={async () => {
+              const btnMap: Record<string, any> = {
+                hero: { data: hero, status: heroStatus, set: setHeroStatus },
+                services: { data: services, status: servicesStatus, set: setServicesStatus },
+                videos: { data: videos, status: videosStatus, set: setVideosStatus },
+                places: { data: places, status: placesStatus, set: setPlacesStatus },
+                plan: { data: plan, status: planStatus, set: setPlanStatus },
+                about: { data: about, status: aboutStatus, set: setAboutStatus },
+                footer: { data: footer, status: footerStatus, set: setFooterStatus },
+                seo: { data: seo, status: seoStatus, set: setSeoStatus },
+                languages: { data: languages, status: langStatus, set: setLangStatus },
+              };
+              const current = btnMap[activeSection];
+              if (current) {
+                const btn = document.querySelector(`button[class*="getSaveButtonStyles"]`) as HTMLButtonElement;
+                if (btn) btn.click();
+              }
+            }}
+            size="sm"
+            className={cn(
+              "transition-all duration-300 w-32 font-bold shadow-lg",
+              getSaveButtonStyles(
+                activeSection === "hero" ? heroStatus :
+                activeSection === "services" ? servicesStatus :
+                activeSection === "videos" ? videosStatus :
+                activeSection === "places" ? placesStatus :
+                activeSection === "plan" ? planStatus :
+                activeSection === "about" ? aboutStatus :
+                activeSection === "footer" ? footerStatus :
+                activeSection === "seo" ? seoStatus :
+                langStatus
+              )
+            )}
+          >
+            <Save className="w-4 h-4 mr-2" />
+            Salvar
+          </Button>
         </div>
       </div>
 
@@ -298,6 +335,9 @@ export function SiteContentEditor() {
                      <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
                    <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                   <div className="flex justify-end pt-4">
+                     <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
+                   </div>
                  </div>
                ))}
                
@@ -351,6 +391,9 @@ export function SiteContentEditor() {
                     <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                   </div>
                   <ImageUpload label="URL ou Upload do Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+                  <div className="flex justify-end pt-2">
+                    <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
+                  </div>
                 </div>
               ))}
               
@@ -411,10 +454,13 @@ export function SiteContentEditor() {
                        <Label className="text-xs text-red-500">Cidade/Localização</Label>
                        <Input value={item.location} onChange={e => { const newI = [...places.items]; newI[idx].location = e.target.value; setPlaces({...places, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                      </div>
-                   </div>
-                   <ImageUpload label="Imagem do Local" value={item.img} onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }} />
-                 </div>
-               ))}
+                    </div>
+                    <ImageUpload label="Imagem do Local" value={item.img} onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }} />
+                    <div className="flex justify-end pt-2">
+                      <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
+                    </div>
+                  </div>
+                ))}
                
                {(!places.items || places.items.length === 0) && (
                  <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">

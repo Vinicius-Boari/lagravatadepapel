@@ -263,7 +263,15 @@ export function PostsManager() {
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-6 border-t border-zinc-800">
+                <div className="flex justify-between items-center pt-6 border-t border-zinc-800">
+                  <Button 
+                    variant="ghost" 
+                    className="text-red-900 hover:text-red-500 hover:bg-red-900/10"
+                    onClick={() => handleDeletePost(selectedPostId)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Excluir Post
+                  </Button>
                   <Button 
                     onClick={handleManualSave}
                     className={cn("transition-all duration-300 w-full md:w-48 text-lg font-bold h-12 shadow-lg", getSaveButtonStyles(status))}
