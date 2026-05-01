@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
@@ -35,31 +37,25 @@ export function VisualIdentity() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async (isDraft = true) => {
-    if (loading) return;
-
+  const handleSave = useCallback(async (isDraft = true) => {
     // Validação básica
     if (!formData.primary_color || !formData.font_family) {
-      showToast("Erro: Preencha os campos obrigatórios.", 'error');
       return;
     }
 
     setLoading(true);
     try {
       console.log("Tentando salvar Identidade Visual", formData);
-      const success = await updateSection("visual", formData, isDraft);
-      
-      if (success) {
-        showToast(isDraft ? "Rascunho visual salvo!" : "Salvo com sucesso!", 'success');
-      }
+      await updateSection("visual", formData, isDraft);
     } catch (err: any) {
       console.error("Erro ao salvar Identidade Visual:", err);
-      const errorMessage = err.message || "Tente novamente.";
-      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+      throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, updateSection]);
+
+  const { status } = useAutosave(formData, () => handleSave(false));
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
