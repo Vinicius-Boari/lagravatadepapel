@@ -166,7 +166,7 @@ export function SiteContentEditor() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-[60] py-4 -mt-4 border-b border-zinc-800/50 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
-          <p className="text-red-500/70 italic text-xs mt-1">* Salvamento automático desativado.</p>
+          
         </div>
       </div>
 

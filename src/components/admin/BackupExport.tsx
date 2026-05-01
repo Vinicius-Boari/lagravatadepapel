@@ -211,7 +211,7 @@ export function BackupExport() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50 gap-4">
         <div>
           <h2 className="text-2xl font-bold">Backup e Restauração</h2>
-          <p className="text-red-500/70">Mantenha seus dados seguros.</p>
+          
         </div>
         <div className="flex items-center gap-4">
           <Button 
