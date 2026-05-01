@@ -489,6 +489,47 @@ export function SiteContentEditor() {
           </CardContent>
         </Card>
       )}
+
+      <div className="flex justify-center pt-8 border-t border-zinc-800/50 pb-10">
+        <Button 
+          onClick={async () => {
+            const btnMap: Record<string, any> = {
+              hero: { data: hero, status: heroStatus, set: setHeroStatus },
+              services: { data: services, status: servicesStatus, set: setServicesStatus },
+              videos: { data: videos, status: videosStatus, set: setVideosStatus },
+              places: { data: places, status: placesStatus, set: setPlacesStatus },
+              plan: { data: plan, status: planStatus, set: setPlanStatus },
+              about: { data: about, status: aboutStatus, set: setAboutStatus },
+              footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              languages: { data: languages, status: langStatus, set: setLangStatus },
+            };
+            const current = btnMap[activeSection];
+            if (current) {
+              const btn = document.querySelector(`button[class*="getSaveButtonStyles"]`) as HTMLButtonElement;
+              if (btn) btn.click();
+            }
+          }}
+          size="lg"
+          className={cn(
+            "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
+            getSaveButtonStyles(
+              activeSection === "hero" ? heroStatus :
+              activeSection === "services" ? servicesStatus :
+              activeSection === "videos" ? videosStatus :
+              activeSection === "places" ? placesStatus :
+              activeSection === "plan" ? planStatus :
+              activeSection === "about" ? aboutStatus :
+              activeSection === "footer" ? footerStatus :
+              activeSection === "seo" ? seoStatus :
+              langStatus
+            )
+          )}
+        >
+          <Save className="w-6 h-6 mr-2" />
+          Salvar Alterações de {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+        </Button>
+      </div>
     </div>
   );
 }
