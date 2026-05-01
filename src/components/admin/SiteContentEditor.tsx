@@ -198,11 +198,12 @@ export function SiteContentEditor() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
           <p className="text-red-500/70">Edite textos, seções e banners de todas as páginas.</p>
         </div>
+        <AutosaveIndicator status={currentStatus} />
       </div>
 
       <Tabs defaultValue="hero" value={activeSection} onValueChange={setActiveSection} className="w-full">
@@ -319,27 +320,6 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
           
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("hero", hero, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["hero"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["hero"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["hero"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
         </TabsContent>
 
         {/* VIDEOS SECTION */}
