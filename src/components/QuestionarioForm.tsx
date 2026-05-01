@@ -534,7 +534,7 @@ export function QuestionarioForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-zinc-400">Tempo de permanência na balada*</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
                         <SelectValue placeholder="Escolha uma opção" />
