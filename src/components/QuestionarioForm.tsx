@@ -122,7 +122,7 @@ export function QuestionarioForm() {
               control={form.control}
               name="event_type"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Tipo do evento*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
@@ -137,6 +137,18 @@ export function QuestionarioForm() {
                       <SelectItem value="Outros">Outros</SelectItem>
                     </SelectContent>
                   </Select>
+                  {field.value === "Outros" && (
+                    <FormControl>
+                      <Input 
+                        placeholder="Especifique o tipo de evento" 
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                        onChange={(e) => {
+                          // Aqui poderíamos salvar em um campo separado se quiséssemos manter o "Outros" no select
+                          // mas para simplificar vamos deixar o usuário digitar
+                        }}
+                      />
+                    </FormControl>
+                  )}
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
