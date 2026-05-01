@@ -196,6 +196,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <nav className="menu-nav">
           <a href="#hero" onClick={closeMenu}>Home</a>
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
+          <a href="/questionarioevento" onClick={closeMenu}>Questionário</a>
           <a href="#videos" onClick={closeMenu}>Vídeos</a>
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
@@ -348,13 +349,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="footer-top">
           <div className="footer-logo">La Gravata<br />de Papel</div>
           <div className="footer-links">
-            <div className="footer-col">
-              <h4>Navegação</h4>
-              <a href="#hero">Home</a>
-              <a href="#servicos">Serviços</a>
-              <a href="#invasoes">Invasões</a>
-              <a href="#sobre">Sobre</a>
-            </div>
+          <div className="footer-col">
+            <h4>Navegação</h4>
+            <a href="#hero">Home</a>
+            <a href="#servicos">Serviços</a>
+            <a href="/questionarioevento">Questionário</a>
+            <a href="#invasoes">Invasões</a>
+            <a href="#sobre">Sobre</a>
+          </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
               <a href={footer.instagram_url} target="_blank" rel="noopener noreferrer">Instagram</a>
