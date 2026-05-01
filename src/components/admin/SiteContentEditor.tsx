@@ -391,6 +391,9 @@ export function SiteContentEditor() {
                     <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                   </div>
                   <ImageUpload label="URL ou Upload do Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+                  <div className="flex justify-end pt-2">
+                    <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
+                  </div>
                 </div>
               ))}
               
