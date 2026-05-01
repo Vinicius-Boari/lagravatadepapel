@@ -634,26 +634,10 @@ export function QuestionarioForm() {
         <div className="flex flex-col md:flex-row gap-4 pt-6">
           <Button 
             type="submit" 
-            className="flex-1 bg-primary hover:bg-primary/90 text-white font-bold py-6 text-lg rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95"
+            className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 text-lg rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95"
             disabled={submitting}
           >
             {submitting ? "ENVIANDO..." : "ENVIAR QUESTIONÁRIO"}
-          </Button>
-          <Button 
-            type="button"
-            variant="outline"
-            className="flex-1 border-zinc-700 hover:bg-zinc-900 text-white font-bold py-6 text-lg rounded-xl transition-all"
-            onClick={() => window.open("https://api.whatsapp.com/send?phone=5511985111012", "_blank")}
-          >
-            EXECUTAR O PLANO
-          </Button>
-          <Button 
-            type="button"
-            variant="outline"
-            className="flex-1 border-zinc-700 hover:bg-zinc-900 text-white font-bold py-6 text-lg rounded-xl transition-all"
-            onClick={() => window.open("https://api.whatsapp.com/send?phone=5511985111012", "_blank")}
-          >
-            CONTRATE AGORA
           </Button>
         </div>
       </form>
