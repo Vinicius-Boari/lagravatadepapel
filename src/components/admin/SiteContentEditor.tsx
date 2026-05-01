@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, Upload, Loader2, Search, Globe } from "lucide-react";
+import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
@@ -228,6 +228,11 @@ export function SiteContentEditor() {
               </div>
             </div>
             <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+              <ImageUpload label="Imagem Card 1" value={hero.image1 || ""} onChange={val => setHero({...hero, image1: val})} />
+              <ImageUpload label="Imagem Card 2" value={hero.image2 || ""} onChange={val => setHero({...hero, image2: val})} />
+              <ImageUpload label="Imagem Card 3" value={hero.image3 || ""} onChange={val => setHero({...hero, image3: val})} />
+            </div>
           </CardContent>
         </Card>
       )}
