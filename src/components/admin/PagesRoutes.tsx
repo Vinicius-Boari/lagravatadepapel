@@ -1,28 +1,43 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Link as LinkIcon, Plus, Trash2, Globe, Shield } from "lucide-react";
 import { toast } from "sonner";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 
 export function PagesRoutes() {
   const [routes, setRoutes] = useState([
     { path: "/", label: "Página Inicial (Home)", status: "Ativo", type: "Página" },
     { path: "/admin", label: "Painel Administrativo", status: "Restrito", type: "Admin" },
   ]);
+  const [redirect, setRedirect] = useState({ from: "", to: "" });
+
+  const handleSaveRedirect = useCallback(async () => {
+    if (!redirect.from || !redirect.to) return;
+    // Simulate save
+    console.log("Saving redirect:", redirect);
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }, [redirect]);
+
+  const { status } = useAutosave(redirect, handleSaveRedirect);
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Páginas e Rotas</h2>
           <p className="text-red-500/70">Visualize as rotas ativas do site e gerencie redirecionamentos.</p>
         </div>
-        <Button onClick={() => toast.info("Funcionalidade de criação de novas páginas em breve.")}>
-          <Plus className="mr-2 w-4 h-4" />
-          Nova Rota
-        </Button>
+        <div className="flex items-center gap-4">
+          <AutosaveIndicator status={status} />
+          <Button onClick={() => toast.info("Funcionalidade de criação de novas páginas em breve.")}>
+            <Plus className="mr-2 w-4 h-4" />
+            Nova Rota
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -72,14 +87,24 @@ export function PagesRoutes() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label className="text-red-500">De (Origem)</Label>
-                <Input className="bg-zinc-800 border-red-900 text-red-500" placeholder="/url-antiga" />
+                <Input 
+                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  placeholder="/url-antiga" 
+                  value={redirect.from}
+                  onChange={(e) => setRedirect(prev => ({ ...prev, from: e.target.value }))}
+                />
               </div>
               <div className="space-y-2">
                 <Label className="text-red-500">Para (Destino)</Label>
-                <Input className="bg-zinc-800 border-red-900 text-red-500" placeholder="/nova-url" />
+                <Input 
+                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  placeholder="/nova-url" 
+                  value={redirect.to}
+                  onChange={(e) => setRedirect(prev => ({ ...prev, to: e.target.value }))}
+                />
               </div>
               <div className="flex items-end">
-                <Button className="w-full" onClick={() => toast.info("Salvo com sucesso!")}>Adicionar Regra</Button>
+                <p className="text-[10px] text-zinc-500 italic pb-2">As alterações são salvas automaticamente.</p>
               </div>
             </div>
           </CardContent>

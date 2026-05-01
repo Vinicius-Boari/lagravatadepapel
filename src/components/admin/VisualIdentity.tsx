@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
@@ -35,41 +37,36 @@ export function VisualIdentity() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async (isDraft = true) => {
-    if (loading) return;
-
+  const handleSave = useCallback(async (isDraft = true) => {
     // Validação básica
     if (!formData.primary_color || !formData.font_family) {
-      showToast("Erro: Preencha os campos obrigatórios.", 'error');
       return;
     }
 
     setLoading(true);
     try {
       console.log("Tentando salvar Identidade Visual", formData);
-      const success = await updateSection("visual", formData, isDraft);
-      
-      if (success) {
-        showToast(isDraft ? "Rascunho visual salvo!" : "Salvo com sucesso!", 'success');
-      }
+      await updateSection("visual", formData, isDraft);
     } catch (err: any) {
       console.error("Erro ao salvar Identidade Visual:", err);
-      const errorMessage = err.message || "Tente novamente.";
-      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+      throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, updateSection]);
+
+  const { status } = useAutosave(formData, () => handleSave(false));
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Identidade Visual</h2>
           <p className="text-red-500/70">Configure cores, fontes e logo do seu site.</p>
         </div>
+        <AutosaveIndicator status={status} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -165,20 +162,6 @@ export function VisualIdentity() {
           </div>
         </CardContent>
       </Card>
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button 
-          onClick={() => handleSave(false)} 
-          className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
-          disabled={loading}
-        >
-          {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          )}
-          {loading ? "Salvando..." : "Salvar Configurações"}
-        </Button>
-      </div>
     </div>
   );
 }

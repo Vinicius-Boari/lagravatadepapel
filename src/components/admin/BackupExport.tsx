@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { 
   Database, 
@@ -14,6 +14,8 @@ import {
   AlertCircle 
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -123,11 +125,10 @@ export function BackupExport() {
     }
   };
 
-  const handleUpdateSettings = async () => {
+  const handleUpdateSettings = useCallback(async () => {
     if (!settings) return;
     const adminToken = getAdminToken();
     if (!adminToken) {
-      toast.error("Sessão expirada. Faça login novamente.");
       return;
     }
 
@@ -143,14 +144,16 @@ export function BackupExport() {
           retention_days: settings.retention_days ? Number(settings.retention_days) : null
         }
       }});
-      toast.success("Configurações salvas com sucesso!");
       fetchData();
     } catch (error: any) {
-      toast.error(`Erro ao salvar: ${error.message}`);
+      console.error("Error saving backup settings:", error);
+      throw error;
     } finally {
       setIsUpdatingSettings(false);
     }
-  };
+  }, [settings, updateSettingsFn]);
+
+  const { status } = useAutosave(settings, handleUpdateSettings);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este backup permanentemente? Esta ação não pode ser desfeita.")) {
@@ -212,19 +215,22 @@ export function BackupExport() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20 text-red-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold">Backup e Restauração</h2>
           <p className="text-red-500/70">Mantenha seus dados seguros com backups automáticos e manuais.</p>
         </div>
-        <Button 
-          onClick={handleRunBackup} 
-          disabled={isRunningBackup}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold"
-        >
-          {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
-          Executar Backup Agora
-        </Button>
+        <div className="flex items-center gap-4">
+          <AutosaveIndicator status={status} />
+          <Button 
+            onClick={handleRunBackup} 
+            disabled={isRunningBackup}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold"
+          >
+            {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
+            Executar Backup Agora
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -287,14 +293,7 @@ export function BackupExport() {
               </div>
             </div>
 
-            <Button 
-              className="w-full bg-red-900/20 text-red-500 border border-red-900/50 hover:bg-red-900/40"
-              onClick={handleUpdateSettings}
-              disabled={isUpdatingSettings}
-            >
-              {isUpdatingSettings && <RefreshCcw className="w-4 h-4 mr-2 animate-spin" />}
-              Salvar Configurações
-            </Button>
+            <p className="text-[10px] text-zinc-500 italic text-center">Configurações salvas automaticamente.</p>
 
             {settings?.next_run_at && settings.auto_enabled && (
               <div className="p-3 bg-red-900/5 rounded-lg border border-red-900/10 flex items-center space-x-3">

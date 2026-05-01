@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 
 // Forçamos o toast a aparecer no topo e centralizado
 const showToast = (message: string, type: 'success' | 'error') => {
@@ -134,24 +136,18 @@ export function SiteContentEditor() {
   }, [loading, content]);
 
 
-  const handleSave = async (section: string, data: any, isDraft = true) => {
-    if (loading) return; 
-
+  const handleSave = useCallback(async (section: string, data: any, isDraft = true) => {
     if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
-      showToast("Erro: Dados inválidos ou vazios para salvar.", 'error');
       return;
     }
 
     setLoading(true);
-    setSuccessSections(prev => ({ ...prev, [section]: false }));
     
     try {
       console.log(`Tentando salvar seção: ${section}`, data);
       const success = await updateSection(section, data, isDraft);
       
       if (success) {
-        setSuccessSections(prev => ({ ...prev, [section]: true }));
-        
         const updateState = (val: any) => ({...val});
         const sectionMap: Record<string, any> = {
           hero: setHero,
@@ -168,32 +164,46 @@ export function SiteContentEditor() {
         if (sectionMap[section]) {
           sectionMap[section](updateState(data));
         }
-        
-        showToast(isDraft ? "Rascunho salvo no painel!" : "Salvo com sucesso!", 'success');
-        
-        // Remover o feedback de sucesso após 3 segundos
-        setTimeout(() => {
-          setSuccessSections(prev => ({ ...prev, [section]: false }));
-        }, 3000);
       }
     } catch (err: any) {
       console.error(`Erro crítico ao salvar seção ${section}:`, err);
-      const errorMessage = err.message || "Tente novamente.";
-      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+      throw err; // Re-throw to be caught by useAutosave
     } finally {
       setLoading(false);
     }
-  };
+  }, [updateSection]);
+
+  const { status: heroStatus } = useAutosave(hero, (data) => handleSave("hero", data, false));
+  const { status: servicesStatus } = useAutosave(services, (data) => handleSave("services", data, false));
+  const { status: videosStatus } = useAutosave(videos, (data) => handleSave("videos", data, false));
+  const { status: placesStatus } = useAutosave(places, (data) => handleSave("places", data, false));
+  const { status: planStatus } = useAutosave(plan, (data) => handleSave("plan", data, false));
+  const { status: aboutStatus } = useAutosave(about, (data) => handleSave("about", data, false));
+  const { status: footerStatus } = useAutosave(footer, (data) => handleSave("footer", data, false));
+  const { status: seoStatus } = useAutosave(seo, (data) => handleSave("seo", data, false));
+  const { status: languagesStatus } = useAutosave(languages, (data) => handleSave("languages", data, false));
+
+  const currentStatus = 
+    heroStatus !== 'idle' ? heroStatus :
+    servicesStatus !== 'idle' ? servicesStatus :
+    videosStatus !== 'idle' ? videosStatus :
+    placesStatus !== 'idle' ? placesStatus :
+    planStatus !== 'idle' ? planStatus :
+    aboutStatus !== 'idle' ? aboutStatus :
+    footerStatus !== 'idle' ? footerStatus :
+    seoStatus !== 'idle' ? seoStatus :
+    languagesStatus !== 'idle' ? languagesStatus : 'idle';
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
           <p className="text-red-500/70">Edite textos, seções e banners de todas as páginas.</p>
         </div>
+        <AutosaveIndicator status={currentStatus} />
       </div>
 
       <Tabs defaultValue="hero" value={activeSection} onValueChange={setActiveSection} className="w-full">
@@ -310,27 +320,6 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
           
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("hero", hero, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["hero"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["hero"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["hero"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
         </TabsContent>
 
         {/* VIDEOS SECTION */}
@@ -463,27 +452,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("videos", videos, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["videos"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["videos"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["videos"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         {/* PLAN SECTION */}
@@ -544,27 +513,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("plan", plan, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["plan"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["plan"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["plan"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         {/* ABOUT SECTION */}
@@ -625,27 +574,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("about", about, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["about"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["about"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["about"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         {/* SERVICES SECTION */}
@@ -754,27 +683,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("services", services, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["services"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["services"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["services"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         {/* PLACES SECTION */}
@@ -889,27 +798,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("places", places, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["places"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["places"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["places"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         <TabsContent value="footer" className="space-y-6">
@@ -978,27 +867,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("footer", footer, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["footer"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["footer"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["footer"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         <TabsContent value="seo" className="space-y-6">
@@ -1044,27 +913,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("seo", seo, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["seo"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["seo"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["seo"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
 
         <TabsContent value="languages" className="space-y-6">
@@ -1119,27 +968,7 @@ export function SiteContentEditor() {
             </CardContent>
           </Card>
 
-          <div className="fixed bottom-6 right-6 z-50">
-            <Button 
-              onClick={() => handleSave("languages", languages, false)} 
-              className={cn(
-                "px-8 shadow-2xl flex items-center gap-2 group transition-all duration-300",
-                successSections["languages"] 
-                  ? "bg-green-600 hover:bg-green-700 text-white border-green-500 scale-105" 
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              )}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : successSections["languages"] ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              )}
-              {loading ? "Salvando..." : successSections["languages"] ? "Salvo!" : "Salvar Configurações"}
-            </Button>
-          </div>
+          
         </TabsContent>
       </Tabs>
     </div>
