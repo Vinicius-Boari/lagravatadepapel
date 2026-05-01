@@ -134,13 +134,13 @@ export async function restoreBackup(backupId: string): Promise<void> {
   const reverseTables = [...BACKUP_TABLES].reverse();
   for (const t of reverseTables) {
     console.log(`[restore] Cleaning table: ${t}`);
-    // site_content and site_settings use "key" as PK, not "id".
-    const pk = (t === "site_content" || t === "site_settings") ? "key" : "id";
     
-    const { error: delErr } = await supabaseAdmin
-      .from(t)
-      .delete()
-      .neq(pk, "_no_match_");
+    // Using any to bypass strict TS check on dynamic column name
+    const query = supabaseAdmin.from(t).delete();
+    
+    const { error: delErr } = (t === "site_content" || t === "site_settings") 
+      ? await (query as any).neq("key", "_no_match_")
+      : await (query as any).neq("id", "00000000-0000-0000-0000-000000000000");
       
     if (delErr) {
       console.error(`[restore] Failed to clean ${t}:`, delErr.message);
