@@ -382,7 +382,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             </a>
             <span>{footer.copyright}</span>
           </div>
-          <span>{footer.hashtag}</span>
         </div>
       </footer>
 
