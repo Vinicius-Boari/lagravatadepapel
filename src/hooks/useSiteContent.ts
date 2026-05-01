@@ -116,31 +116,36 @@ export function useSiteContent(useDraft = false) {
     };
   }, [useDraft]);
 
-  const updateSection = async (key: string, newValue: any, isDraft = true) => {
+  const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
+      console.log(`[useSiteContent] Updating section: ${key}`, { newValue });
       
-      const updateData = isDraft 
-        ? { key, draft_value: newValue, updated_at: new Date().toISOString(), value: newValue } 
-        : { key, value: newValue, draft_value: newValue, updated_at: new Date().toISOString() }; 
-
       const { data, error } = await supabase
         .from("site_content")
-        .upsert(updateData)
+        .upsert({ 
+          key, 
+          value: newValue, 
+          draft_value: newValue, 
+          updated_at: new Date().toISOString() 
+        })
         .select();
 
       if (error) {
-        console.error(`Erro do Supabase ao salvar ${key}:`, error);
+        console.error(`[useSiteContent] Supabase error saving ${key}:`, error);
         throw error;
       }
       
-      console.log(`Sucesso ao salvar ${key}:`, data);
+      console.log(`[useSiteContent] Successfully saved ${key}:`, data);
       
-      // Não precisamos chamar fetchContent aqui obrigatoriamente, 
-      // pois o Realtime Subscription cuidará disso ou o componente atualizará seu estado.
+      // Update local state directly to ensure immediate feedback
+      setContent(prev => ({
+        ...prev,
+        [key]: newValue
+      }));
+
       return true;
     } catch (err: any) {
-      console.error(`Erro detalhado na atualização da seção ${key}:`, err);
+      console.error(`[useSiteContent] Critical error saving ${key}:`, err);
       throw err;
     }
   };
