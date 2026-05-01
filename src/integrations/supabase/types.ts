@@ -268,6 +268,126 @@ export type Database = {
         }
         Relationships: []
       }
+      questionnaire_responses: {
+        Row: {
+          address: string
+          allowed_items: Json | null
+          changing_room_informed: boolean | null
+          character_count: string | null
+          city: string
+          complement: string | null
+          contact_person_name: string
+          contact_person_phone: string
+          created_at: string
+          event_date: string
+          event_type: string
+          everyone_informed: boolean | null
+          extra_services: Json | null
+          has_screen: string | null
+          how_did_you_hear_about_us: string | null
+          id: string
+          is_assistant_aware: boolean | null
+          is_aware_of_card_fees: string | null
+          municipality: string
+          observations: string | null
+          other_allowed_items: string | null
+          other_extra_services: string | null
+          parking_payment_pref: string | null
+          performance_time: string
+          pix_bank: string | null
+          pix_holder_name: string | null
+          pix_key: string | null
+          pix_key_type: string | null
+          pix_qr_code_url: string | null
+          primary_name: string
+          secondary_name: string | null
+          social_media_1: string | null
+          social_media_2: string | null
+          social_media_3: string | null
+          stay_duration: string | null
+          venue_name: string
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          allowed_items?: Json | null
+          changing_room_informed?: boolean | null
+          character_count?: string | null
+          city: string
+          complement?: string | null
+          contact_person_name: string
+          contact_person_phone: string
+          created_at?: string
+          event_date: string
+          event_type: string
+          everyone_informed?: boolean | null
+          extra_services?: Json | null
+          has_screen?: string | null
+          how_did_you_hear_about_us?: string | null
+          id?: string
+          is_assistant_aware?: boolean | null
+          is_aware_of_card_fees?: string | null
+          municipality: string
+          observations?: string | null
+          other_allowed_items?: string | null
+          other_extra_services?: string | null
+          parking_payment_pref?: string | null
+          performance_time: string
+          pix_bank?: string | null
+          pix_holder_name?: string | null
+          pix_key?: string | null
+          pix_key_type?: string | null
+          pix_qr_code_url?: string | null
+          primary_name: string
+          secondary_name?: string | null
+          social_media_1?: string | null
+          social_media_2?: string | null
+          social_media_3?: string | null
+          stay_duration?: string | null
+          venue_name: string
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          allowed_items?: Json | null
+          changing_room_informed?: boolean | null
+          character_count?: string | null
+          city?: string
+          complement?: string | null
+          contact_person_name?: string
+          contact_person_phone?: string
+          created_at?: string
+          event_date?: string
+          event_type?: string
+          everyone_informed?: boolean | null
+          extra_services?: Json | null
+          has_screen?: string | null
+          how_did_you_hear_about_us?: string | null
+          id?: string
+          is_assistant_aware?: boolean | null
+          is_aware_of_card_fees?: string | null
+          municipality?: string
+          observations?: string | null
+          other_allowed_items?: string | null
+          other_extra_services?: string | null
+          parking_payment_pref?: string | null
+          performance_time?: string
+          pix_bank?: string | null
+          pix_holder_name?: string | null
+          pix_key?: string | null
+          pix_key_type?: string | null
+          pix_qr_code_url?: string | null
+          primary_name?: string
+          secondary_name?: string | null
+          social_media_1?: string | null
+          social_media_2?: string | null
+          social_media_3?: string | null
+          stay_duration?: string | null
+          venue_name?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           draft_value: Json | null
