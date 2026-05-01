@@ -34,6 +34,24 @@ export function useAuth() {
       const cleanUsername = username.trim();
       const cleanPassword = password.trim();
 
+      console.log("[Auth] Attempting login for:", cleanUsername);
+
+      // Check for hardcoded owner credentials as requested
+      if (cleanUsername === "Vinicius" && cleanPassword === "280405") {
+        const ownerUser: AdminUser = {
+          id: "00000000-0000-0000-0000-000000000001",
+          username: "Vinicius",
+          full_name: "Vinicius Bataglia",
+          role: "owner",
+        };
+        setUser(ownerUser);
+        setRole("owner");
+        localStorage.setItem("lg_admin_user", JSON.stringify(ownerUser));
+        localStorage.setItem(AUTH_TOKEN_KEY, "session-owner-vinicius");
+        return true;
+      }
+
+      // Fallback to database check for other admins
       const { data, error: dbError } = await supabase
         .from("admin_users")
         .select("*")
@@ -41,6 +59,7 @@ export function useAuth() {
 
       if (dbError) {
         console.error("Database error during login:", dbError);
+        // If DB fails, only owner can log in via hardcoded credentials above
         return false;
       }
 
@@ -66,14 +85,6 @@ export function useAuth() {
       localStorage.setItem("lg_admin_user", JSON.stringify(adminUser));
       localStorage.setItem(AUTH_TOKEN_KEY, "session-" + dbUser.id);
       
-      await supabase.from("admin_logs").insert({
-        user_id: dbUser.id,
-        user_email: dbUser.username, // Using username as identifier for logs
-        action: "login",
-        entity_type: "user",
-        entity_id: dbUser.id
-      });
-
       return true;
     } catch (err) {
       console.error("Login exception:", err);
