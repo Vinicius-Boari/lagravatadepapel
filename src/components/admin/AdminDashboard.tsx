@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { 
@@ -33,22 +33,167 @@ import { ActivityLogs } from "./ActivityLogs";
 import { BackupExport } from "./BackupExport";
 import { PostsManager } from "./PostsManager";
 
-const SettingsTab = () => (
-  <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-    <div>
-      <h2 className="text-2xl font-bold text-red-500">Configurações Gerais</h2>
-      <p className="text-red-500/70">Ajustes globais do painel e do aplicativo.</p>
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { toast } from "sonner";
+import { Save, Loader2, Globe, Shield, Bell, Moon, Languages } from "lucide-react";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const SettingsTab = () => {
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const { status, setSaveStatus } = useSaveStatus();
+  const [settings, setSettings] = useState<any>({});
+
+  useEffect(() => {
+    if (!contentLoading && content.settings) {
+      setSettings(content.settings);
+    } else if (!contentLoading && !content.settings) {
+      setSettings({
+        notifications: true,
+        darkMode: true,
+        language: "pt",
+        maintenanceMode: false,
+        adminEmail: "",
+      });
+    }
+  }, [contentLoading, content]);
+
+  const handleSave = async () => {
+    setSaveStatus('saving');
+    try {
+      const success = await updateSection("settings", settings);
+      if (success) {
+        setSaveStatus('saved');
+        toast.success("Configurações salvas com sucesso!");
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      setSaveStatus('error');
+      toast.error("Erro ao salvar configurações.");
+    }
+  };
+
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
+
+  return (
+    <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
+        <div>
+          <h2 className="text-2xl font-bold text-red-500">Configurações Gerais</h2>
+          <p className="text-red-500/70">Ajustes globais do painel e do site.</p>
+        </div>
+        <Button 
+          onClick={handleSave}
+          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-red-500 flex items-center">
+              <Shield className="mr-2 w-5 h-5" /> Preferências do Painel
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-red-900/10">
+              <div className="flex items-center space-x-3">
+                <Bell className="w-5 h-5 text-red-500/50" />
+                <div>
+                  <p className="text-sm font-medium text-red-500">Notificações</p>
+                  <p className="text-xs text-red-500/40">Receber alertas de novos logs e atividades.</p>
+                </div>
+              </div>
+              <Switch 
+                checked={settings.notifications} 
+                onCheckedChange={(val) => setSettings({...settings, notifications: val})} 
+                className="data-[state=checked]:bg-red-600"
+              />
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-red-900/10">
+              <div className="flex items-center space-x-3">
+                <Moon className="w-5 h-5 text-red-500/50" />
+                <div>
+                  <p className="text-sm font-medium text-red-500">Modo Escuro (Interface)</p>
+                  <p className="text-xs text-red-500/40">Alternar entre tema claro e escuro no painel.</p>
+                </div>
+              </div>
+              <Switch 
+                checked={settings.darkMode} 
+                onCheckedChange={(val) => setSettings({...settings, darkMode: val})} 
+                className="data-[state=checked]:bg-red-600"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-red-500 flex items-center"><Languages className="mr-2 w-4 h-4" /> Idioma do Painel</Label>
+              <select 
+                value={settings.language} 
+                onChange={(e) => setSettings({...settings, language: e.target.value})}
+                className="w-full bg-zinc-800 border-red-900 text-red-500 rounded-md p-2 text-sm focus:ring-1 focus:ring-red-500 outline-none"
+              >
+                <option value="pt">Português (Brasil)</option>
+                <option value="en">English (US)</option>
+                <option value="es">Español</option>
+              </select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-red-500 flex items-center">
+              <Globe className="mr-2 w-5 h-5" /> Status do Site
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-red-900/10">
+              <div>
+                <p className="text-sm font-medium text-red-500">Modo Manutenção</p>
+                <p className="text-xs text-red-500/40">Bloquear acesso público ao site temporariamente.</p>
+              </div>
+              <Switch 
+                checked={settings.maintenanceMode} 
+                onCheckedChange={(val) => setSettings({...settings, maintenanceMode: val})} 
+                className="data-[state=checked]:bg-red-600"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-red-500">E-mail para Notificações Administrativas</Label>
+              <Input 
+                type="email" 
+                value={settings.adminEmail} 
+                onChange={(e) => setSettings({...settings, adminEmail: e.target.value})}
+                placeholder="exemplo@admin.com" 
+                className="bg-zinc-800 border-red-900 text-red-500"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex justify-center pt-8 border-t border-zinc-800/50 pb-10">
+        <Button 
+          onClick={handleSave}
+          size="lg"
+          className={cn("transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
+          {status === 'saved' ? 'Configurações Salvas!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Configurações'}
+        </Button>
+      </div>
     </div>
-    <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-red-500">Preferências do Painel</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 text-red-500/70 italic text-sm">
-        Opções de idioma, notificações e tema do painel em breve.
-      </CardContent>
-    </Card>
-  </div>
-);
+  );
+};
 
 export function AdminDashboard() {
   const { user, role, logout, isOwner } = useAuth();
