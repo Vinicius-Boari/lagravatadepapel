@@ -11,10 +11,14 @@ import {
   Shield, 
   Mail, 
   Lock,
-  UserCheck
+  UserCheck,
+  Save,
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { cn } from "@/lib/utils";
 
 export function UserManagement() {
   const [admins, setAdmins] = useState<any[]>([]);
@@ -26,6 +30,7 @@ export function UserManagement() {
     full_name: "",
     role: "admin"
   });
+  const { status, setSaveStatus } = useSaveStatus();
 
   const fetchAdmins = async () => {
     setLoading(true);
@@ -48,6 +53,7 @@ export function UserManagement() {
       return;
     }
 
+    setSaveStatus('saving');
     const { error } = await supabase.from("admin_users").insert({
       username: newAdmin.username,
       password_hash: newAdmin.password,
@@ -56,12 +62,16 @@ export function UserManagement() {
     });
 
     if (error) {
+      setSaveStatus('error');
       toast.error("Erro ao criar usuário.");
     } else {
+      setSaveStatus('saved');
       toast.success("Usuário criado com sucesso!");
-      setShowAddForm(false);
-      setNewAdmin({ username: "", password: "", full_name: "", role: "admin" });
-      fetchAdmins();
+      setTimeout(() => {
+        setShowAddForm(false);
+        setNewAdmin({ username: "", password: "", full_name: "", role: "admin" });
+        fetchAdmins();
+      }, 1000);
     }
   };
 
@@ -86,7 +96,7 @@ export function UserManagement() {
           <h2 className="text-2xl font-bold text-red-500">Gestão de Usuários</h2>
           <p className="text-red-500/70">Gerencie quem tem acesso ao painel administrativo.</p>
         </div>
-        <Button onClick={() => setShowAddForm(!showAddForm)}>
+        <Button onClick={() => setShowAddForm(!showAddForm)} className="bg-black hover:bg-zinc-900 text-white border-zinc-800 border">
           <UserPlus className="mr-2 w-4 h-4" />
           {showAddForm ? "Cancelar" : "Novo Administrador"}
         </Button>
@@ -138,7 +148,15 @@ export function UserManagement() {
                 </select>
               </div>
             </div>
-            
+            <div className="flex justify-end pt-2">
+              <Button 
+                onClick={handleAddAdmin}
+                className={cn("transition-all duration-300 w-48", getSaveButtonStyles(status))}
+              >
+                {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                {status === 'saved' ? 'Cadastrado!' : status === 'error' ? 'Erro!' : 'Cadastrar Usuário'}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}

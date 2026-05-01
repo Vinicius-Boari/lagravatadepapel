@@ -133,19 +133,17 @@ export async function restoreBackup(backupId: string): Promise<void> {
   // currently have no FKs.
   const reverseTables = [...BACKUP_TABLES].reverse();
   for (const t of reverseTables) {
-    // Use a guaranteed-true filter: delete all rows.
-    const { error: delErr } = await supabaseAdmin
-      .from(t)
-      .delete()
-      .not("id", "is", null);
-    // site_content and site_settings use "key" as PK, not "id".
-    if (delErr && /column "id"/i.test(delErr.message)) {
-      const { error: delErr2 } = await supabaseAdmin
-        .from(t)
-        .delete()
-        .not("key", "is", null);
-      if (delErr2) throw new Error(`Erro limpando ${t}: ${delErr2.message}`);
-    } else if (delErr) {
+    console.log(`[restore] Cleaning table: ${t}`);
+    
+    // Using any to bypass strict TS check on dynamic column name
+    const query = supabaseAdmin.from(t).delete();
+    
+    const { error: delErr } = (t === "site_content" || t === "site_settings") 
+      ? await (query as any).neq("key", "_no_match_")
+      : await (query as any).neq("id", "00000000-0000-0000-0000-000000000000");
+      
+    if (delErr) {
+      console.error(`[restore] Failed to clean ${t}:`, delErr.message);
       throw new Error(`Erro limpando ${t}: ${delErr.message}`);
     }
   }

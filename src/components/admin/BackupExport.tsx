@@ -141,16 +141,19 @@ export function BackupExport() {
     console.log("[BackupExport] Saving settings...", settings);
     setSaveStatus('saving');
     try {
+      const dataToSave = {
+        auto_enabled: !!settings.auto_enabled,
+        interval_value: Number(settings.interval_value || 1),
+        interval_unit: settings.interval_unit || "hours",
+        retention_count: Number(settings.retention_count || 1),
+        retention_days: settings.retention_days ? Number(settings.retention_days) : null
+      };
+
       await updateSettingsFn({ data: {
         adminToken,
-        data: {
-          auto_enabled: !!settings.auto_enabled,
-          interval_value: Number(settings.interval_value || 1),
-          interval_unit: settings.interval_unit || "hours",
-          retention_count: Number(settings.retention_count || 1),
-          retention_days: settings.retention_days ? Number(settings.retention_days) : null
-        }
+        data: dataToSave
       }});
+      
       setSaveStatus('saved');
       toast.success("Configurações de backup salvas!");
       fetchData();

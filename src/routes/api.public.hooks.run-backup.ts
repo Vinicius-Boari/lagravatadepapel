@@ -38,13 +38,16 @@ export const Route = createFileRoute("/api/public/hooks/run-backup")({
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
         const pubKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
         
-        const token = auth.replace(/^Bearer\s+/i, "");
+        const token = auth.replace(/^Bearer\s+/i, "").trim();
         
-        let isAuthorized = 
-          (serviceKey && (token === serviceKey || apikey === serviceKey)) ||
-          (pubKey && (token === pubKey || apikey === pubKey));
+        let isAuthorized = false;
 
-        if (!isAuthorized && token) {
+        // 1. Service Role Key or Anon Key (from env or header)
+        if (serviceKey && (token === serviceKey || apikey === serviceKey)) isAuthorized = true;
+        if (!isAuthorized && pubKey && (token === pubKey || apikey === pubKey)) isAuthorized = true;
+
+        // 2. Admin Session Token
+        if (!isAuthorized && token && token.startsWith("session-")) {
           const user = await verifyCustomAdmin(token);
           if (user) {
             isAuthorized = true;

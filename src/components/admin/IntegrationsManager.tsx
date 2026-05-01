@@ -61,10 +61,13 @@ export function IntegrationsManager() {
         mode: formData.instagram_mode,
       };
 
-      await Promise.all([
+      const results = await Promise.all([
         updateSection("integrations", integrationsData, false),
         updateSection("instagram_config", instagramData, false)
       ]);
+      
+      if (results.some(r => !r)) throw new Error("Falha ao salvar uma ou mais seções");
+      return true;
     } catch (err: any) {
       console.error("Erro ao salvar Integrações:", err);
       throw err;

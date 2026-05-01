@@ -154,8 +154,12 @@ export function SiteContentEditor() {
         setStatus('saving');
         try {
           const result = await handleSave(section, data);
-          setStatus('saved');
-          showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
+          if (result) {
+            setStatus('saved');
+            showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
+          } else {
+            throw new Error("Falha ao salvar");
+          }
         } catch (err: any) {
           console.error(`[SaveBtn] Error in section ${section}:`, err);
           setStatus('error');
