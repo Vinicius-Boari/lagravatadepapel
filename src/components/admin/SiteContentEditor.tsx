@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe } from "lucide-react";
+import { Save, Plus, Trash2, Video, Upload, Loader2, Search, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
@@ -126,11 +126,7 @@ export function SiteContentEditor() {
 
   const handleSave = useCallback(async (section: string, data: any) => {
     if (!data) return;
-    try {
-      await updateSection(section, data, false);
-    } catch (err) {
-      throw err;
-    }
+    await updateSection(section, data, false);
   }, [updateSection]);
 
   const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
@@ -150,7 +146,7 @@ export function SiteContentEditor() {
         try {
           await handleSave(section, data);
           setStatus('saved');
-          showToast(`${section.toUpperCase()} salvo com sucesso!`, 'success');
+          showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
         } catch {
           setStatus('error');
           showToast(`Erro ao salvar ${section}.`, 'error');
@@ -170,7 +166,7 @@ export function SiteContentEditor() {
       <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
-          <p className="text-red-500/70 italic text-xs mt-1">* O salvamento automático foi desativado. Use os botões de salvar em cada seção.</p>
+          <p className="text-red-500/70 italic text-xs mt-1">* Salvamento automático desativado.</p>
         </div>
       </div>
 
@@ -213,60 +209,25 @@ export function SiteContentEditor() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Linhas do Título (uma por linha)</Label>
-                  <Textarea 
-                    rows={4} 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={hero.title_lines?.join("\n")}
-                    onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Subtítulo</Label>
-                  <Textarea 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={hero.subtitle}
-                    onChange={(e) => setHero({...hero, subtitle: e.target.value})}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Linhas do Título</Label>
+                <Textarea 
+                  rows={4} 
+                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  value={hero.title_lines?.join("\n") || ""}
+                  onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
+                />
               </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Localização</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={hero.location}
-                    onChange={(e) => setHero({...hero, location: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Texto do Botão (CTA)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={hero.cta_label}
-                    onChange={(e) => setHero({...hero, cta_label: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Link do Botão</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={hero.cta_url}
-                    onChange={(e) => setHero({...hero, cta_url: e.target.value})}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Subtítulo</Label>
+                <Textarea 
+                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  value={hero.subtitle || ""}
+                  onChange={(e) => setHero({...hero, subtitle: e.target.value})}
+                />
               </div>
             </div>
-            <div className="pt-4 border-t border-zinc-800 space-y-4">
-               <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url} onChange={val => setHero({...hero, video_url: val})} />
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <ImageUpload label="Imagem Card 1" value={hero.image1} onChange={val => setHero({...hero, image1: val})} />
-                  <ImageUpload label="Imagem Card 2" value={hero.image2} onChange={val => setHero({...hero, image2: val})} />
-                  <ImageUpload label="Imagem Card 3" value={hero.image3} onChange={val => setHero({...hero, image3: val})} />
-               </div>
-            </div>
+            <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
           </CardContent>
         </Card>
       )}
@@ -276,7 +237,6 @@ export function SiteContentEditor() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-red-500">Serviços</CardTitle>
-              <CardDescription className="text-red-500/60">Edite os serviços prestados.</CardDescription>
             </div>
             <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
           </CardHeader>
@@ -284,20 +244,14 @@ export function SiteContentEditor() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-red-500">Título</Label>
-                <Input className="bg-zinc-800 border-red-900 text-red-500" value={services.heading} onChange={e => setServices({...services, heading: e.target.value})} />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-red-500">Destaque</Label>
-                <Input className="bg-zinc-800 border-red-900 text-red-500" value={services.heading_em} onChange={e => setServices({...services, heading_em: e.target.value})} />
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={services.heading || ""} onChange={e => setServices({...services, heading: e.target.value})} />
               </div>
             </div>
             <div className="space-y-4 pt-4">
-               <div className="flex justify-between items-center"><h4 className="text-sm font-medium text-red-500">Itens</h4><Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setServices({...services, items: [...(services.items || []), {title: "Novo", desc: "", img: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button></div>
+               <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setServices({...services, items: [...(services.items || []), {title: "Novo", desc: "", img: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button>
                {services.items?.map((item: any, idx: number) => (
                  <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4">
-                   <div className="flex justify-between items-center"><span className="text-xs text-red-500/50">Item #{idx+1}</span><Button size="icon" variant="ghost" onClick={() => setServices({...services, items: services.items.filter((_:any, i:number) => i !== idx)})}><Trash2 className="w-4 h-4 text-red-500"/></Button></div>
                    <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
-                   <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    <ImageUpload label="Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
                  </div>
                ))}
@@ -309,26 +263,18 @@ export function SiteContentEditor() {
       {activeSection === "videos" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-red-500">Vídeos</CardTitle>
-              <CardDescription className="text-red-500/60">Galeria de vídeos.</CardDescription>
-            </div>
+            <div><CardTitle className="text-red-500">Vídeos</CardTitle></div>
             <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <Input label="Título" value={videos.heading} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-              <Input label="Destaque" value={videos.heading_em} onChange={e => setVideos({...videos, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            </div>
-            <div className="space-y-4 pt-4">
-              <div className="flex justify-between items-center"><h4 className="text-sm font-medium text-red-500">Vídeos</h4><Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setVideos({...videos, items: [...(videos.items || []), {title: "Novo", src: "", poster: "", tall: false}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button></div>
-              {videos.items?.map((v: any, idx: number) => (
-                <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4">
-                  <Input value={v.title} onChange={e => { const newV = [...videos.items]; newI[idx].title = e.target.value; setVideos({...videos, items: newV}); }} />
-                  <ImageUpload label="URL do Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
-                </div>
-              ))}
-            </div>
+            <Input value={videos.heading || ""} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Button size="sm" variant="outline" className="border-red-900 text-red-500 mt-4" onClick={() => setVideos({...videos, items: [...(videos.items || []), {title: "Novo", src: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button>
+            {videos.items?.map((v: any, idx: number) => (
+              <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 mt-2">
+                <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                <ImageUpload label="URL Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+              </div>
+            ))}
           </CardContent>
         </Card>
       )}
@@ -336,14 +282,11 @@ export function SiteContentEditor() {
       {activeSection === "places" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-red-500">Invasões</CardTitle>
-            </div>
+            <div><CardTitle className="text-red-500">Invasões</CardTitle></div>
             <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Input value={places.heading} onChange={e => setPlaces({...places, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            {/* items... */}
+          <CardContent>
+            <Input value={places.heading || ""} onChange={e => setPlaces({...places, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
@@ -355,8 +298,8 @@ export function SiteContentEditor() {
             <SaveBtn section="plan" data={plan} status={planStatus} setStatus={setPlanStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input value={plan.heading} onChange={e => setPlan({...plan, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <Textarea value={plan.text} onChange={e => setPlan({...plan, text: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Input value={plan.heading || ""} onChange={e => setPlan({...plan, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea value={plan.text || ""} onChange={e => setPlan({...plan, text: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
@@ -368,9 +311,8 @@ export function SiteContentEditor() {
             <SaveBtn section="about" data={about} status={aboutStatus} setStatus={setAboutStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input value={about.heading} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <Textarea rows={6} value={about.paragraphs?.join("\n")} onChange={e => setAbout({...about, paragraphs: e.target.value.split("\n")})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <ImageUpload label="Imagem Sobre" value={about.image} onChange={val => setAbout({...about, image: val})} />
+            <Input value={about.heading || ""} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <ImageUpload label="Imagem" value={about.image || ""} onChange={val => setAbout({...about, image: val})} />
           </CardContent>
         </Card>
       )}
@@ -382,8 +324,8 @@ export function SiteContentEditor() {
             <SaveBtn section="footer" data={footer} status={footerStatus} setStatus={setFooterStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input value={footer.copyright} onChange={e => setFooter({...footer, copyright: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <Input value={footer.hashtag} onChange={e => setFooter({...footer, hashtag: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Input value={footer.copyright || ""} onChange={e => setFooter({...footer, copyright: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Input value={footer.hashtag || ""} onChange={e => setFooter({...footer, hashtag: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
@@ -395,8 +337,8 @@ export function SiteContentEditor() {
             <SaveBtn section="seo" data={seo} status={seoStatus} setStatus={setSeoStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input value={seo.title} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <Textarea value={seo.description} onChange={e => setSeo({...seo, description: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Input value={seo.title || ""} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea value={seo.description || ""} onChange={e => setSeo({...seo, description: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
@@ -407,8 +349,8 @@ export function SiteContentEditor() {
             <div><CardTitle className="text-red-500">Idiomas</CardTitle></div>
             <SaveBtn section="languages" data={languages} status={langStatus} setStatus={setLangStatus} />
           </CardHeader>
-          <CardContent className="space-y-4">
-             <p className="text-red-500 italic">Configure aqui os idiomas ativos do site.</p>
+          <CardContent>
+            <p className="text-red-500 italic">Idiomas ativos do site.</p>
           </CardContent>
         </Card>
       )}
