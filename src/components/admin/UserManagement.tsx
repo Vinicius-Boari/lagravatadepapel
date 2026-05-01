@@ -29,6 +29,7 @@ export function UserManagement() {
     password: "",
     full_name: "",
     role: "admin"
+  });
   const { status, setSaveStatus } = useSaveStatus();
 
   const fetchAdmins = async () => {
