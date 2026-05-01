@@ -174,26 +174,27 @@ export function SiteContentEditor() {
     }
   }, [updateSection]);
 
-  const { status: heroStatus } = useAutosave(hero, (data) => handleSave("hero", data, false), 2000, "hero_backup");
-  const { status: servicesStatus } = useAutosave(services, (data) => handleSave("services", data, false), 2000, "services_backup");
-  const { status: videosStatus } = useAutosave(videos, (data) => handleSave("videos", data, false), 2000, "videos_backup");
-  const { status: placesStatus } = useAutosave(places, (data) => handleSave("places", data, false), 2000, "places_backup");
-  const { status: planStatus } = useAutosave(plan, (data) => handleSave("plan", data, false), 2000, "plan_backup");
-  const { status: aboutStatus } = useAutosave(about, (data) => handleSave("about", data, false), 2000, "about_backup");
-  const { status: footerStatus } = useAutosave(footer, (data) => handleSave("footer", data, false), 2000, "footer_backup");
-  const { status: seoStatus } = useAutosave(seo, (data) => handleSave("seo", data, false), 2000, "seo_backup");
-  const { status: languagesStatus } = useAutosave(languages, (data) => handleSave("languages", data, false), 2000, "languages_backup");
+  const { status: heroSaveStatus, setSaveStatus: setHeroSaveStatus } = useSaveStatus();
+  const { status: servicesSaveStatus, setSaveStatus: setServicesSaveStatus } = useSaveStatus();
+  const { status: videosSaveStatus, setSaveStatus: setVideosSaveStatus } = useSaveStatus();
+  const { status: placesSaveStatus, setSaveStatus: setPlacesSaveStatus } = useSaveStatus();
+  const { status: planSaveStatus, setSaveStatus: setPlanSaveStatus } = useSaveStatus();
+  const { status: aboutSaveStatus, setSaveStatus: setAboutSaveStatus } = useSaveStatus();
+  const { status: footerSaveStatus, setSaveStatus: setFooterSaveStatus } = useSaveStatus();
+  const { status: seoSaveStatus, setSaveStatus: setSeoSaveStatus } = useSaveStatus();
+  const { status: languagesSaveStatus, setSaveStatus: setLanguagesSaveStatus } = useSaveStatus();
 
-  const currentStatus = 
-    heroStatus !== 'idle' ? heroStatus :
-    servicesStatus !== 'idle' ? servicesStatus :
-    videosStatus !== 'idle' ? videosStatus :
-    placesStatus !== 'idle' ? placesStatus :
-    planStatus !== 'idle' ? planStatus :
-    aboutStatus !== 'idle' ? aboutStatus :
-    footerStatus !== 'idle' ? footerStatus :
-    seoStatus !== 'idle' ? seoStatus :
-    languagesStatus !== 'idle' ? languagesStatus : 'idle';
+  const handleManualSave = async (section: string, data: any, setStatus: (s: any) => void) => {
+    setStatus('saving');
+    try {
+      await handleSave(section, data, false);
+      setStatus('saved');
+      showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
+    } catch (err) {
+      setStatus('error');
+      showToast(`Erro ao salvar ${section}.`, 'error');
+    }
+  };
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
@@ -204,7 +205,6 @@ export function SiteContentEditor() {
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
           <p className="text-red-500/70">Edite textos, seções e banners de todas as páginas.</p>
         </div>
-        <AutosaveIndicator status={currentStatus} />
       </div>
 
       <Tabs defaultValue="hero" value={activeSection} onValueChange={setActiveSection} className="w-full">
