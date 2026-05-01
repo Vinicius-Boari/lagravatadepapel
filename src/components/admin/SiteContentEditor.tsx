@@ -336,7 +336,11 @@ export function SiteContentEditor() {
                    </div>
                    <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
                  </div>
-               ))}
+                <div className="flex justify-end pt-4">
+                   <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
+                </div>
+              </div>
+            ))}
                
                {(!services.items || services.items.length === 0) && (
                  <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
