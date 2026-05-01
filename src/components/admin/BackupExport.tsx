@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Clock, 
   AlertCircle,
-  Save
+  Save,
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
@@ -207,7 +208,7 @@ export function BackupExport() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20 text-red-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50 gap-4">
         <div>
           <h2 className="text-2xl font-bold">Backup e Restauração</h2>
           <p className="text-red-500/70">Mantenha seus dados seguros.</p>
