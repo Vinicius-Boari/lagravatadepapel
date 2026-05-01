@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { cn } from "@/lib/utils";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
