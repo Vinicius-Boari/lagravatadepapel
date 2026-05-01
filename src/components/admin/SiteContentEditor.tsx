@@ -125,8 +125,13 @@ export function SiteContentEditor() {
   }, [contentLoading, content]);
 
   const handleSave = useCallback(async (section: string, data: any) => {
-    if (!data) return;
-    await updateSection(section, data, false);
+    if (!data || Object.keys(data).length === 0) {
+      console.warn(`[SiteContentEditor] Tentativa de salvar seção ${section} vazia.`);
+      return;
+    }
+    console.log(`[SiteContentEditor] Calling updateSection for: ${section}`, data);
+    const success = await updateSection(section, data, false);
+    return success;
   }, [updateSection]);
 
   const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
