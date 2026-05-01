@@ -62,6 +62,7 @@ export function PostsManager() {
     setSaveStatus('saving');
     
     try {
+      console.log("[PostsManager] Saving post:", { id: selectedPostId, titulo, conteudo, midiaUrl });
       const { error } = await supabase
         .from("posts")
         .upsert({
@@ -69,16 +70,18 @@ export function PostsManager() {
           titulo,
           conteudo,
           midia_url: midiaUrl,
+          updated_at: new Date().toISOString()
         });
 
       if (error) throw error;
       
       setSaveStatus('saved');
       toast.success("Post salvo com sucesso!");
-      fetchPosts(); // Refresh list
-    } catch {
+      await fetchPosts(); // Refresh list to ensure UI is in sync
+    } catch (err: any) {
+      console.error("[PostsManager] Error saving post:", err);
       setSaveStatus('error');
-      toast.error("Erro ao salvar post.");
+      toast.error(`Erro ao salvar post: ${err.message || "Erro desconhecido"}`);
     }
   };
 
