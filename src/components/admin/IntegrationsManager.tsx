@@ -96,7 +96,13 @@ export function IntegrationsManager() {
           <h2 className="text-2xl font-bold text-red-500">Integrações e APIs</h2>
           <p className="text-zinc-400">Conecte redes sociais, analytics e botões de contato.</p>
         </div>
-        <AutosaveIndicator status={status} />
+        <Button 
+          onClick={handleManualSave}
+          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
