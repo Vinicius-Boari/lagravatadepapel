@@ -166,7 +166,7 @@ export function PostsManager() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Gestão de Posts / Feed</h2>
           <p className="text-red-500/70">Crie e edite conteúdos dinâmicos para o site.</p>
