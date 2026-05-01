@@ -416,7 +416,7 @@ export function QuestionarioForm() {
 
         <Card className="bg-zinc-900/30 border-zinc-800">
           <CardContent className="pt-6">
-            <FormLabel className="text-lg font-bold mb-4 block">Serviços extras inclusos</FormLabel>
+            <h3 className="text-lg font-bold mb-4 block">Serviços extras inclusos</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 "Sapatinho",
