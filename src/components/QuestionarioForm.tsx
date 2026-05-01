@@ -65,17 +65,26 @@ export function QuestionarioForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("questionnaire_responses").insert({
+      const { error: dbError } = await supabase.from("questionnaire_responses").insert({
         ...values,
         is_assistant_aware: values.is_assistant_aware === "Sim",
         everyone_informed: values.everyone_informed === "Sim",
         changing_room_informed: values.changing_room_informed === "Sim",
       });
 
-      if (error) throw error;
+      if (dbError) throw dbError;
+
+      // Chama a função para processar e enviar por e-mail
+      await supabase.functions.invoke("process-questionnaire", {
+        body: { 
+          formData: values, 
+          targetEmail: "viniciusbataglia500@gmail.com" 
+        },
+      });
 
       toast.success("Questionário enviado com sucesso!");
       form.reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error: any) {
       console.error("Erro ao enviar:", error);
       toast.error("Erro ao enviar questionário. Tente novamente.");
