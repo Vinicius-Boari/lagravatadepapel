@@ -173,15 +173,15 @@ export function SiteContentEditor() {
     }
   }, [updateSection]);
 
-  const { status: heroStatus } = useAutosave(hero, (data) => handleSave("hero", data, false));
-  const { status: servicesStatus } = useAutosave(services, (data) => handleSave("services", data, false));
-  const { status: videosStatus } = useAutosave(videos, (data) => handleSave("videos", data, false));
-  const { status: placesStatus } = useAutosave(places, (data) => handleSave("places", data, false));
-  const { status: planStatus } = useAutosave(plan, (data) => handleSave("plan", data, false));
-  const { status: aboutStatus } = useAutosave(about, (data) => handleSave("about", data, false));
-  const { status: footerStatus } = useAutosave(footer, (data) => handleSave("footer", data, false));
-  const { status: seoStatus } = useAutosave(seo, (data) => handleSave("seo", data, false));
-  const { status: languagesStatus } = useAutosave(languages, (data) => handleSave("languages", data, false));
+  const { status: heroStatus } = useAutosave(hero, (data) => handleSave("hero", data, false), 1000, "hero_backup");
+  const { status: servicesStatus } = useAutosave(services, (data) => handleSave("services", data, false), 1000, "services_backup");
+  const { status: videosStatus } = useAutosave(videos, (data) => handleSave("videos", data, false), 1000, "videos_backup");
+  const { status: placesStatus } = useAutosave(places, (data) => handleSave("places", data, false), 1000, "places_backup");
+  const { status: planStatus } = useAutosave(plan, (data) => handleSave("plan", data, false), 1000, "plan_backup");
+  const { status: aboutStatus } = useAutosave(about, (data) => handleSave("about", data, false), 1000, "about_backup");
+  const { status: footerStatus } = useAutosave(footer, (data) => handleSave("footer", data, false), 1000, "footer_backup");
+  const { status: seoStatus } = useAutosave(seo, (data) => handleSave("seo", data, false), 1000, "seo_backup");
+  const { status: languagesStatus } = useAutosave(languages, (data) => handleSave("languages", data, false), 1000, "languages_backup");
 
   const currentStatus = 
     heroStatus !== 'idle' ? heroStatus :
