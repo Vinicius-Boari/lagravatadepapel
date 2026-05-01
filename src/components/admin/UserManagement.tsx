@@ -11,10 +11,14 @@ import {
   Shield, 
   Mail, 
   Lock,
-  UserCheck
+  UserCheck,
+  Save,
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { cn } from "@/lib/utils";
 
 export function UserManagement() {
   const [admins, setAdmins] = useState<any[]>([]);
@@ -25,7 +29,7 @@ export function UserManagement() {
     password: "",
     full_name: "",
     role: "admin"
-  });
+  const { status, setSaveStatus } = useSaveStatus();
 
   const fetchAdmins = async () => {
     setLoading(true);
@@ -48,6 +52,7 @@ export function UserManagement() {
       return;
     }
 
+    setSaveStatus('saving');
     const { error } = await supabase.from("admin_users").insert({
       username: newAdmin.username,
       password_hash: newAdmin.password,
@@ -56,12 +61,16 @@ export function UserManagement() {
     });
 
     if (error) {
+      setSaveStatus('error');
       toast.error("Erro ao criar usuário.");
     } else {
+      setSaveStatus('saved');
       toast.success("Usuário criado com sucesso!");
-      setShowAddForm(false);
-      setNewAdmin({ username: "", password: "", full_name: "", role: "admin" });
-      fetchAdmins();
+      setTimeout(() => {
+        setShowAddForm(false);
+        setNewAdmin({ username: "", password: "", full_name: "", role: "admin" });
+        fetchAdmins();
+      }, 1000);
     }
   };
 
