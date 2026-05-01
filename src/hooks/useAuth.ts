@@ -39,7 +39,7 @@ export function useAuth() {
       // Check for hardcoded owner credentials as requested
       if (cleanUsername === "Vinicius" && cleanPassword === "280405") {
         const ownerUser: AdminUser = {
-          id: "00000000-0000-0000-0000-000000000001",
+          id: "01a3d276-ac7f-4c7b-b98f-b793b0b1ead5", // ID real sincronizado com o banco
           username: "Vinicius",
           full_name: "Vinicius Bataglia",
           role: "owner",
