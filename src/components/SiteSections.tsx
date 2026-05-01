@@ -298,7 +298,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="dark-content reveal">
           <h2>{plan.heading}<br /><em>{plan.heading_em}</em></h2>
           <p>{plan.text}</p>
-          <a href={plan.cta_url} target="_blank" className="btn-outline" rel="noopener noreferrer">
+          <a href="/questionarioevento" className="btn-outline">
             <span>{plan.cta_label}</span>
             <span>→</span>
           </a>
