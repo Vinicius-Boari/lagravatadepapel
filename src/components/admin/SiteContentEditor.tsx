@@ -121,8 +121,9 @@ export function SiteContentEditor() {
   const [languages, setLanguages] = useState<any>(content.languages || {});
 
   // Effect to update local states when content loads or changes
+  const isInitialLoad = useRef(true);
   useEffect(() => {
-    if (!loading) {
+    if (!loading && isInitialLoad.current) {
       setHero(content.hero || {});
       setAbout(content.about || {});
       setPlan(content.plan || {});
@@ -132,6 +133,7 @@ export function SiteContentEditor() {
       setFooter(content.footer || {});
       setSeo(content.seo || {});
       setLanguages(content.languages || {});
+      isInitialLoad.current = false;
     }
   }, [loading, content]);
 
