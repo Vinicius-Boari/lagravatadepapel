@@ -29,7 +29,7 @@ import { MediaLibrary } from "./MediaLibrary";
 import { PagesRoutes } from "./PagesRoutes";
 import { UserManagement } from "./UserManagement";
 import { ActivityLogs } from "./ActivityLogs";
-import { BackupExport } from "./BackupExport";
+import { PostsManager } from "./PostsManager";
 
 const SettingsTab = () => (
   <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
