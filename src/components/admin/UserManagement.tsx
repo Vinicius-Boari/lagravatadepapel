@@ -148,7 +148,15 @@ export function UserManagement() {
                 </select>
               </div>
             </div>
-            
+            <div className="flex justify-end pt-2">
+              <Button 
+                onClick={handleAddAdmin}
+                className={cn("transition-all duration-300 w-48", getSaveButtonStyles(status))}
+              >
+                {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                {status === 'saved' ? 'Cadastrado!' : status === 'error' ? 'Erro!' : 'Cadastrar Usuário'}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
