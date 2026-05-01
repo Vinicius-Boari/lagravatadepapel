@@ -10,8 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 // Forçamos o toast a aparecer no topo e centralizado
 const showToast = (message: string, type: 'success' | 'error') => {
