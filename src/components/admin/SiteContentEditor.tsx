@@ -146,15 +146,20 @@ export function SiteContentEditor() {
 
   const SaveBtn = ({ section, data, status, setStatus }: any) => (
     <Button 
-      onClick={async () => {
+      type="button"
+      onClick={async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(`[SaveBtn] Clicked for section: ${section}`, data);
         setStatus('saving');
         try {
-          await handleSave(section, data);
+          const result = await handleSave(section, data);
           setStatus('saved');
           showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
-        } catch {
+        } catch (err: any) {
+          console.error(`[SaveBtn] Error in section ${section}:`, err);
           setStatus('error');
-          showToast(`Erro ao salvar ${section}.`, 'error');
+          showToast(`Erro ao salvar ${section}: ${err.message || 'Erro desconhecido'}`, 'error');
         }
       }}
       className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
