@@ -228,6 +228,11 @@ export function SiteContentEditor() {
               </div>
             </div>
             <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+              <ImageUpload label="Imagem Card 1" value={hero.image1 || ""} onChange={val => setHero({...hero, image1: val})} />
+              <ImageUpload label="Imagem Card 2" value={hero.image2 || ""} onChange={val => setHero({...hero, image2: val})} />
+              <ImageUpload label="Imagem Card 3" value={hero.image3 || ""} onChange={val => setHero({...hero, image3: val})} />
+            </div>
           </CardContent>
         </Card>
       )}
