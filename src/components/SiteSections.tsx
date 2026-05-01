@@ -196,6 +196,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <nav className="menu-nav">
           <a href="#hero" onClick={closeMenu}>Home</a>
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
+          <a href="/questionarioevento" onClick={closeMenu}>Questionário</a>
           <a href="#videos" onClick={closeMenu}>Vídeos</a>
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
