@@ -29,6 +29,7 @@ import { MediaLibrary } from "./MediaLibrary";
 import { PagesRoutes } from "./PagesRoutes";
 import { UserManagement } from "./UserManagement";
 import { ActivityLogs } from "./ActivityLogs";
+import { BackupExport } from "./BackupExport";
 import { PostsManager } from "./PostsManager";
 
 const SettingsTab = () => (
