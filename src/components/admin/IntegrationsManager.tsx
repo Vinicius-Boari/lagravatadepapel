@@ -73,7 +73,19 @@ export function IntegrationsManager() {
     }
   }, [formData, instagram, updateSection]);
 
-  const { status } = useAutosave(formData, handleSave);
+  const { status, setSaveStatus } = useSaveStatus();
+
+  const handleManualSave = async () => {
+    setSaveStatus('saving');
+    try {
+      await handleSave();
+      setSaveStatus('saved');
+      showToast("Integrações salvas com sucesso!", "success");
+    } catch {
+      setSaveStatus('error');
+      showToast("Erro ao salvar integrações.", "error");
+    }
+  };
 
   if (contentLoading) return <div className="p-8 text-zinc-400">Carregando...</div>;
 
