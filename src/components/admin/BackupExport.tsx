@@ -229,10 +229,17 @@ export function BackupExport() {
           <Button 
             onClick={handleRunBackup} 
             disabled={isRunningBackup}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold"
+            className="bg-zinc-800 hover:bg-zinc-700 text-red-500 border border-red-900/50"
           >
             {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
             Backup Agora
+          </Button>
+          <Button 
+            onClick={handleUpdateSettings}
+            className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+          >
+            {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+            {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
           </Button>
         </div>
       </div>
@@ -245,13 +252,6 @@ export function BackupExport() {
                 <Settings className="mr-2 w-5 h-5" /> Configurações
               </CardTitle>
             </div>
-            <Button 
-              onClick={handleUpdateSettings}
-              className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
-            >
-              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
-            </Button>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-red-900/10">
