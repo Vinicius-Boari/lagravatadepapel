@@ -207,17 +207,33 @@ export function SiteContentEditor() {
       </div>
 
       <Tabs defaultValue="hero" value={activeSection} onValueChange={setActiveSection} className="w-full">
-        <TabsList className="bg-zinc-900 border border-red-900 p-1 mb-8 overflow-x-auto w-full justify-start">
-          <TabsTrigger value="hero" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Home / Hero</TabsTrigger>
-          <TabsTrigger value="services" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Serviços</TabsTrigger>
-          <TabsTrigger value="videos" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Vídeos</TabsTrigger>
-          <TabsTrigger value="places" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Nossas Invasões</TabsTrigger>
-          <TabsTrigger value="plan" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Seção "O Plano"</TabsTrigger>
-          <TabsTrigger value="about" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Sobre</TabsTrigger>
-          <TabsTrigger value="footer" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400">Rodapé</TabsTrigger>
-          <TabsTrigger value="seo" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400 flex items-center gap-1"><Search className="w-4 h-4" /> SEO</TabsTrigger>
-          <TabsTrigger value="languages" className="data-[state=active]:bg-red-900/30 text-red-500 data-[state=active]:text-red-400 flex items-center gap-1"><Globe className="w-4 h-4" /> Idiomas</TabsTrigger>
-        </TabsList>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+          {[
+            { id: "hero", label: "Home / Hero" },
+            { id: "services", label: "Serviços" },
+            { id: "videos", label: "Vídeos" },
+            { id: "places", label: "Nossas Invasões" },
+            { id: "plan", label: "O Plano" },
+            { id: "about", label: "Sobre" },
+            { id: "footer", label: "Rodapé" },
+            { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
+            { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveSection(tab.id)}
+              className={cn(
+                "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all text-sm font-medium",
+                activeSection === tab.id
+                  ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-900/20"
+                  : "bg-zinc-900 border-zinc-800 text-red-500/70 hover:border-red-900/50 hover:bg-zinc-800"
+              )}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
         {/* HERO SECTION */}
         <TabsContent value="hero" className="space-y-6">
