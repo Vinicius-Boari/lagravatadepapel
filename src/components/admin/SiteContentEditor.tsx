@@ -454,10 +454,13 @@ export function SiteContentEditor() {
                        <Label className="text-xs text-red-500">Cidade/Localização</Label>
                        <Input value={item.location} onChange={e => { const newI = [...places.items]; newI[idx].location = e.target.value; setPlaces({...places, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                      </div>
-                   </div>
-                   <ImageUpload label="Imagem do Local" value={item.img} onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }} />
-                 </div>
-               ))}
+                    </div>
+                    <ImageUpload label="Imagem do Local" value={item.img} onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }} />
+                    <div className="flex justify-end pt-2">
+                      <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
+                    </div>
+                  </div>
+                ))}
                
                {(!places.items || places.items.length === 0) && (
                  <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
