@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
@@ -37,18 +39,11 @@ export function IntegrationsManager() {
     instagram_mode: instagram.mode || "manual",
   });
 
-  const handleSave = async () => {
-    if (loading) return;
-
+  const handleSave = useCallback(async () => {
     setLoading(true);
     try {
       console.log("Tentando salvar Integrações", formData);
       
-      // Validação básica
-      if (!formData.whatsapp_number) {
-        showToast("Aviso: O número do WhatsApp é recomendado.", 'success');
-      }
-
       const integrationsData = {
         google_analytics_id: formData.google_analytics_id,
         google_tag_manager_id: formData.google_tag_manager_id,
@@ -66,22 +61,19 @@ export function IntegrationsManager() {
         mode: formData.instagram_mode,
       };
 
-      const results = await Promise.all([
+      await Promise.all([
         updateSection("integrations", integrationsData, false),
         updateSection("instagram_config", instagramData, false)
       ]);
-
-      if (results.every(r => r === true)) {
-        showToast("Salvo com sucesso!", 'success');
-      }
     } catch (err: any) {
       console.error("Erro ao salvar Integrações:", err);
-      const errorMessage = err.message || "Tente novamente.";
-      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+      throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, instagram, updateSection]);
+
+  const { status } = useAutosave(formData, handleSave);
 
   if (contentLoading) return <div className="p-8 text-zinc-400">Carregando...</div>;
 
