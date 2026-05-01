@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAutosave } from "@/hooks/useAutosave";
+import { AutosaveIndicator } from "./AutosaveIndicator";
 
 // Forçamos o toast a aparecer no topo e centralizado
 const showToast = (message: string, type: 'success' | 'error') => {
@@ -134,24 +136,18 @@ export function SiteContentEditor() {
   }, [loading, content]);
 
 
-  const handleSave = async (section: string, data: any, isDraft = true) => {
-    if (loading) return; 
-
+  const handleSave = useCallback(async (section: string, data: any, isDraft = true) => {
     if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
-      showToast("Erro: Dados inválidos ou vazios para salvar.", 'error');
       return;
     }
 
     setLoading(true);
-    setSuccessSections(prev => ({ ...prev, [section]: false }));
     
     try {
       console.log(`Tentando salvar seção: ${section}`, data);
       const success = await updateSection(section, data, isDraft);
       
       if (success) {
-        setSuccessSections(prev => ({ ...prev, [section]: true }));
-        
         const updateState = (val: any) => ({...val});
         const sectionMap: Record<string, any> = {
           hero: setHero,
@@ -168,22 +164,35 @@ export function SiteContentEditor() {
         if (sectionMap[section]) {
           sectionMap[section](updateState(data));
         }
-        
-        showToast(isDraft ? "Rascunho salvo no painel!" : "Salvo com sucesso!", 'success');
-        
-        // Remover o feedback de sucesso após 3 segundos
-        setTimeout(() => {
-          setSuccessSections(prev => ({ ...prev, [section]: false }));
-        }, 3000);
       }
     } catch (err: any) {
       console.error(`Erro crítico ao salvar seção ${section}:`, err);
-      const errorMessage = err.message || "Tente novamente.";
-      showToast(`Erro ao salvar. ${errorMessage}`, 'error');
+      throw err; // Re-throw to be caught by useAutosave
     } finally {
       setLoading(false);
     }
-  };
+  }, [updateSection]);
+
+  const { status: heroStatus } = useAutosave(hero, (data) => handleSave("hero", data, false));
+  const { status: servicesStatus } = useAutosave(services, (data) => handleSave("services", data, false));
+  const { status: videosStatus } = useAutosave(videos, (data) => handleSave("videos", data, false));
+  const { status: placesStatus } = useAutosave(places, (data) => handleSave("places", data, false));
+  const { status: planStatus } = useAutosave(plan, (data) => handleSave("plan", data, false));
+  const { status: aboutStatus } = useAutosave(about, (data) => handleSave("about", data, false));
+  const { status: footerStatus } = useAutosave(footer, (data) => handleSave("footer", data, false));
+  const { status: seoStatus } = useAutosave(seo, (data) => handleSave("seo", data, false));
+  const { status: languagesStatus } = useAutosave(languages, (data) => handleSave("languages", data, false));
+
+  const currentStatus = 
+    heroStatus !== 'idle' ? heroStatus :
+    servicesStatus !== 'idle' ? servicesStatus :
+    videosStatus !== 'idle' ? videosStatus :
+    placesStatus !== 'idle' ? placesStatus :
+    planStatus !== 'idle' ? planStatus :
+    aboutStatus !== 'idle' ? aboutStatus :
+    footerStatus !== 'idle' ? footerStatus :
+    seoStatus !== 'idle' ? seoStatus :
+    languagesStatus !== 'idle' ? languagesStatus : 'idle';
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
