@@ -118,7 +118,7 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      console.log(`[useSiteContent] Updating section: ${key}`, { newValue });
+      console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
       
       const { data, error } = await supabase
         .from("site_content")
@@ -127,17 +127,17 @@ export function useSiteContent(useDraft = false) {
           value: newValue, 
           draft_value: newValue, 
           updated_at: new Date().toISOString() 
-        })
+        }, { onConflict: 'key' })
         .select();
 
       if (error) {
-        console.error(`[useSiteContent] Supabase error saving ${key}:`, error);
+        console.error(`[useSiteContent] Supabase error for ${key}:`, error);
+        toast.error(`Erro no Supabase: ${error.message}`);
         throw error;
       }
       
-      console.log(`[useSiteContent] Successfully saved ${key}:`, data);
+      console.log(`[useSiteContent] Update successful for ${key}:`, data);
       
-      // Update local state directly to ensure immediate feedback
       setContent(prev => ({
         ...prev,
         [key]: newValue
@@ -145,7 +145,8 @@ export function useSiteContent(useDraft = false) {
 
       return true;
     } catch (err: any) {
-      console.error(`[useSiteContent] Critical error saving ${key}:`, err);
+      console.error(`[useSiteContent] Catch block for ${key}:`, err);
+      toast.error(`Erro crítico ao salvar: ${err.message || 'Verifique sua conexão'}`);
       throw err;
     }
   };

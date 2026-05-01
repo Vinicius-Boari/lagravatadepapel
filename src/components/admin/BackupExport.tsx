@@ -125,11 +125,20 @@ export function BackupExport() {
     }
   };
 
-  const handleUpdateSettings = async () => {
+  const handleUpdateSettings = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     if (!settings) return;
     const adminToken = getAdminToken();
-    if (!adminToken) return;
+    if (!adminToken) {
+      toast.error("Sessão expirada. Faça login novamente.");
+      return;
+    }
 
+    console.log("[BackupExport] Saving settings...", settings);
     setSaveStatus('saving');
     try {
       await updateSettingsFn({ data: {
@@ -148,7 +157,7 @@ export function BackupExport() {
     } catch (error: any) {
       setSaveStatus('error');
       console.error("Error saving backup settings:", error);
-      toast.error("Erro ao salvar configurações.");
+      toast.error(`Erro ao salvar: ${error.message || 'Verifique o servidor'}`);
     }
   };
 
