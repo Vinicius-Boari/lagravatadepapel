@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe } from "lucide-react";
+import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
@@ -221,7 +221,7 @@ export function SiteContentEditor() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
         {[
           { id: "hero", label: "Home / Hero" },
           { id: "services", label: "Serviços" },
@@ -231,7 +231,8 @@ export function SiteContentEditor() {
           { id: "about", label: "Sobre" },
           { id: "footer", label: "Rodapé" },
           { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
-          { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> }
+          { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> },
+          { id: "instagram", label: "Instagram", icon: <Instagram className="w-4 h-4" /> }
         ].map((tab) => (
           <button
             key={tab.id}
