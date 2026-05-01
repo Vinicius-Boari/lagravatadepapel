@@ -371,18 +371,18 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         </div>
         <div className="footer-bottom">
-          <span>
-            {footer.copyright}
-          </span>
+          <div className="footer-copyright-stack">
+            <a 
+              href="/admin/login" 
+              className="admin-access-link"
+              aria-label="Painel"
+              title="Painel"
+            >
+              painel
+            </a>
+            <span>{footer.copyright}</span>
+          </div>
           <span>{footer.hashtag}</span>
-          <a 
-            href="/admin/login" 
-            className="admin-access-link"
-            aria-label="Administrador"
-            title="Administrador"
-          >
-            Administrador
-          </a>
         </div>
       </footer>
 
