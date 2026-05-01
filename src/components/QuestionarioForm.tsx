@@ -53,6 +53,7 @@ const formSchema = z.object({
 
 export function QuestionarioForm() {
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,8 +83,8 @@ export function QuestionarioForm() {
         },
       });
 
+      setSubmitted(true);
       toast.success("Questionário enviado com sucesso!");
-      form.reset();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error: any) {
       console.error("Erro ao enviar:", error);
@@ -91,6 +92,32 @@ export function QuestionarioForm() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (submitted) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 text-center space-y-8 animate-in fade-in zoom-in duration-500">
+        <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center">
+          <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-white uppercase tracking-tighter">O Plano foi Concluído com Sucesso!</h2>
+          <p className="text-xl md:text-2xl text-zinc-400 italic">Muito obrigado por responder nosso questionário.</p>
+        </div>
+        <p className="text-2xl md:text-3xl text-primary font-bold animate-pulse uppercase tracking-widest pt-4">
+          Prepare-se para o maior evento da sua vida! 🧨
+        </p>
+        <Button 
+          variant="outline" 
+          className="mt-8 border-zinc-800 text-zinc-400 hover:text-white"
+          onClick={() => window.location.reload()}
+        >
+          VOLTAR AO INÍCIO
+        </Button>
+      </div>
+    );
   }
 
   return (
