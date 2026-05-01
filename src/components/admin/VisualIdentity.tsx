@@ -61,11 +61,12 @@ export function VisualIdentity() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Identidade Visual</h2>
           <p className="text-red-500/70">Configure cores, fontes e logo do seu site.</p>
         </div>
+        <AutosaveIndicator status={status} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -161,20 +162,6 @@ export function VisualIdentity() {
           </div>
         </CardContent>
       </Card>
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button 
-          onClick={() => handleSave(false)} 
-          className="bg-red-600 hover:bg-red-700 text-white px-8 shadow-2xl flex items-center gap-2 group"
-          disabled={loading}
-        >
-          {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          )}
-          {loading ? "Salvando..." : "Salvar Configurações"}
-        </Button>
-      </div>
     </div>
   );
 }
