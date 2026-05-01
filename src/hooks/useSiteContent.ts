@@ -121,9 +121,9 @@ export function useSiteContent(useDraft = false) {
       console.log(`Iniciando atualização da seção: ${key}`, { isDraft, newValue });
       
       const updateData = isDraft 
-        ? { key, draft_value: newValue, updated_at: new Date().toISOString() } 
-        : { key, value: newValue, draft_value: null, updated_at: new Date().toISOString() }; 
-      
+        ? { key, draft_value: newValue, updated_at: new Date().toISOString(), value: newValue } 
+        : { key, value: newValue, draft_value: newValue, updated_at: new Date().toISOString() }; 
+
       const { data, error } = await supabase
         .from("site_content")
         .upsert(updateData)
