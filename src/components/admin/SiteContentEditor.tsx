@@ -107,6 +107,8 @@ export function SiteContentEditor() {
   const [footer, setFooter] = useState<any>({});
   const [seo, setSeo] = useState<any>({});
   const [languages, setLanguages] = useState<any>({});
+  const [instagramConfig, setInstagramConfig] = useState<any>({});
+  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
@@ -120,6 +122,7 @@ export function SiteContentEditor() {
       setFooter(content.footer || {});
       setSeo(content.seo || {});
       setLanguages(content.languages || {});
+      setInstagramConfig(content.instagram_config || {});
       isInitialLoad.current = false;
     }
   }, [contentLoading, content]);
@@ -192,11 +195,23 @@ export function SiteContentEditor() {
                 footer: { data: footer, status: footerStatus, set: setFooterStatus },
                 seo: { data: seo, status: seoStatus, set: setSeoStatus },
                 languages: { data: languages, status: langStatus, set: setLangStatus },
+                instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
               };
               const current = btnMap[activeSection];
               if (current) {
-                const btn = document.querySelector(`button[class*="getSaveButtonStyles"]`) as HTMLButtonElement;
-                if (btn) btn.click();
+                current.set('saving');
+                try {
+                  const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                  if (result) {
+                    current.set('saved');
+                    showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
+                  } else {
+                    throw new Error("Falha ao salvar");
+                  }
+                } catch (err: any) {
+                  current.set('error');
+                  showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
+                }
               }
             }}
             size="sm"
@@ -211,6 +226,7 @@ export function SiteContentEditor() {
                 activeSection === "about" ? aboutStatus :
                 activeSection === "footer" ? footerStatus :
                 activeSection === "seo" ? seoStatus :
+                activeSection === "instagram" ? instagramStatus :
                 langStatus
               )
             )}
@@ -521,6 +537,40 @@ export function SiteContentEditor() {
           <CardContent className="space-y-4">
             <Input value={seo.title || ""} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
             <Textarea value={seo.description || ""} onChange={e => setSeo({...seo, description: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          </CardContent>
+        </Card>
+      )}
+
+      {activeSection === "instagram" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Instagram Config (Feed)</CardTitle>
+              <CardDescription className="text-red-500/60">Textos e links da seção do Instagram.</CardDescription>
+            </div>
+            <SaveBtn section="instagram_config" data={instagramConfig} status={instagramStatus} setStatus={setInstagramStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Título</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={instagramConfig.title || ""} onChange={e => setInstagramConfig({...instagramConfig, title: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Subtítulo</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={instagramConfig.subtitle || ""} onChange={e => setInstagramConfig({...instagramConfig, subtitle: e.target.value})} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Handle (@usuário)</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={instagramConfig.handle || ""} onChange={e => setInstagramConfig({...instagramConfig, handle: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">URL do Perfil</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={instagramConfig.profile_url || ""} onChange={e => setInstagramConfig({...instagramConfig, profile_url: e.target.value})} />
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
