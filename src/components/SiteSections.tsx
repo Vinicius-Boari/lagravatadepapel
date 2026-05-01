@@ -378,10 +378,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a 
             href="/admin/login" 
             className="admin-access-link"
-            aria-label="Painel"
-            title="Painel"
+            aria-label="Administrador"
+            title="Administrador"
           >
-            Painel
+            Administrador
           </a>
         </div>
       </footer>
