@@ -231,11 +231,6 @@ export function BackupExport() {
             Executar Backup Agora
           </Button>
         </div>
-      </div>
-          {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2 fill-current" />}
-          Executar Backup Agora
-        </Button>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl lg:col-span-1">
