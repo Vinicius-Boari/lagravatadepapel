@@ -9,8 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { cn } from "@/lib/utils";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
@@ -73,7 +73,19 @@ export function IntegrationsManager() {
     }
   }, [formData, instagram, updateSection]);
 
-  const { status } = useAutosave(formData, handleSave);
+  const { status, setSaveStatus } = useSaveStatus();
+
+  const handleManualSave = async () => {
+    setSaveStatus('saving');
+    try {
+      await handleSave();
+      setSaveStatus('saved');
+      showToast("Integrações salvas com sucesso!", "success");
+    } catch {
+      setSaveStatus('error');
+      showToast("Erro ao salvar integrações.", "error");
+    }
+  };
 
   if (contentLoading) return <div className="p-8 text-zinc-400">Carregando...</div>;
 
@@ -84,7 +96,13 @@ export function IntegrationsManager() {
           <h2 className="text-2xl font-bold text-red-500">Integrações e APIs</h2>
           <p className="text-zinc-400">Conecte redes sociais, analytics e botões de contato.</p>
         </div>
-        <AutosaveIndicator status={status} />
+        <Button 
+          onClick={handleManualSave}
+          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

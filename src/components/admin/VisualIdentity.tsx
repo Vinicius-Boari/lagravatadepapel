@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Type, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { cn } from "@/lib/utils";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
@@ -55,7 +55,19 @@ export function VisualIdentity() {
     }
   }, [formData, updateSection]);
 
-  const { status } = useAutosave(formData, () => handleSave(false));
+  const { status, setSaveStatus } = useSaveStatus();
+
+  const handleManualSave = async () => {
+    setSaveStatus('saving');
+    try {
+      await handleSave(false);
+      setSaveStatus('saved');
+      showToast("Identidade Visual salva com sucesso!", "success");
+    } catch {
+      setSaveStatus('error');
+      showToast("Erro ao salvar Identidade Visual.", "error");
+    }
+  };
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
@@ -66,7 +78,13 @@ export function VisualIdentity() {
           <h2 className="text-2xl font-bold text-red-500">Identidade Visual</h2>
           <p className="text-red-500/70">Configure cores, fontes e logo do seu site.</p>
         </div>
-        <AutosaveIndicator status={status} />
+        <Button 
+          onClick={handleManualSave}
+          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

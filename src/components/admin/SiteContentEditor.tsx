@@ -6,25 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, MoveUp, MoveDown, Layout, Type, Video, Hash, Image as ImageIcon, Upload, Loader2, Globe, Search, CheckCircle2 } from "lucide-react";
+import { Save, Plus, Trash2, Video, Upload, Loader2, Search, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
-// Forçamos o toast a aparecer no topo e centralizado
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
-    toast.success(message, {
-      position: "top-center",
-      duration: 4000,
-    });
+    toast.success(message, { position: "top-center", duration: 4000 });
   } else {
-    toast.error(message, {
-      position: "top-center",
-      duration: 5000,
-    });
+    toast.error(message, { position: "top-center", duration: 5000 });
   }
 };
 
@@ -104,26 +95,22 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
 };
 
 export function SiteContentEditor() {
-  const { content, updateSection, loading: contentLoading, refresh } = useSiteContent();
-  const [loading, setLoading] = useState(false);
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
   const [activeSection, setActiveSection] = useState("hero");
-  const [successSections, setSuccessSections] = useState<Record<string, boolean>>({});
 
-  // Local state for each section to handle edits
-  const [hero, setHero] = useState<any>(content.hero || {});
-  const [about, setAbout] = useState<any>(content.about || {});
-  const [plan, setPlan] = useState<any>(content.plan || {});
-  const [services, setServices] = useState<any>(content.services || { items: [] });
-  const [videos, setVideos] = useState<any>(content.videos || { items: [] });
-  const [places, setPlaces] = useState<any>(content.places || { items: [] });
-  const [footer, setFooter] = useState<any>(content.footer || {});
-  const [seo, setSeo] = useState<any>(content.seo || {});
-  const [languages, setLanguages] = useState<any>(content.languages || {});
+  const [hero, setHero] = useState<any>({});
+  const [about, setAbout] = useState<any>({});
+  const [plan, setPlan] = useState<any>({});
+  const [services, setServices] = useState<any>({ items: [] });
+  const [videos, setVideos] = useState<any>({ items: [] });
+  const [places, setPlaces] = useState<any>({ items: [] });
+  const [footer, setFooter] = useState<any>({});
+  const [seo, setSeo] = useState<any>({});
+  const [languages, setLanguages] = useState<any>({});
 
-  // Effect to update local states when content loads or changes
   const isInitialLoad = useRef(true);
   useEffect(() => {
-    if (!loading && isInitialLoad.current) {
+    if (!contentLoading && isInitialLoad.current && Object.keys(content).length > 0) {
       setHero(content.hero || {});
       setAbout(content.about || {});
       setPlan(content.plan || {});
@@ -135,66 +122,42 @@ export function SiteContentEditor() {
       setLanguages(content.languages || {});
       isInitialLoad.current = false;
     }
-  }, [loading, content]);
+  }, [contentLoading, content]);
 
-
-  const handleSave = useCallback(async (section: string, data: any, isDraft = true) => {
-    if (!data || (typeof data === 'object' && Object.keys(data).length === 0)) {
-      return;
-    }
-
-    setLoading(true);
-    
-    try {
-      console.log(`Tentando salvar seção: ${section}`, data);
-      const success = await updateSection(section, data, isDraft);
-      
-      if (success) {
-        const updateState = (val: any) => ({...val});
-        const sectionMap: Record<string, any> = {
-          hero: setHero,
-          about: setAbout,
-          plan: setPlan,
-          services: setServices,
-          videos: setVideos,
-          places: setPlaces,
-          footer: setFooter,
-          seo: setSeo,
-          languages: setLanguages,
-        };
-        
-        if (sectionMap[section]) {
-          sectionMap[section](updateState(data));
-        }
-      }
-    } catch (err: any) {
-      console.error(`Erro crítico ao salvar seção ${section}:`, err);
-      throw err; // Re-throw to be caught by useAutosave
-    } finally {
-      setLoading(false);
-    }
+  const handleSave = useCallback(async (section: string, data: any) => {
+    if (!data) return;
+    await updateSection(section, data, false);
   }, [updateSection]);
 
-  const { status: heroStatus } = useAutosave(hero, (data) => handleSave("hero", data, false), 2000, "hero_backup");
-  const { status: servicesStatus } = useAutosave(services, (data) => handleSave("services", data, false), 2000, "services_backup");
-  const { status: videosStatus } = useAutosave(videos, (data) => handleSave("videos", data, false), 2000, "videos_backup");
-  const { status: placesStatus } = useAutosave(places, (data) => handleSave("places", data, false), 2000, "places_backup");
-  const { status: planStatus } = useAutosave(plan, (data) => handleSave("plan", data, false), 2000, "plan_backup");
-  const { status: aboutStatus } = useAutosave(about, (data) => handleSave("about", data, false), 2000, "about_backup");
-  const { status: footerStatus } = useAutosave(footer, (data) => handleSave("footer", data, false), 2000, "footer_backup");
-  const { status: seoStatus } = useAutosave(seo, (data) => handleSave("seo", data, false), 2000, "seo_backup");
-  const { status: languagesStatus } = useAutosave(languages, (data) => handleSave("languages", data, false), 2000, "languages_backup");
+  const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
+  const { status: aboutStatus, setSaveStatus: setAboutStatus } = useSaveStatus();
+  const { status: planStatus, setSaveStatus: setPlanStatus } = useSaveStatus();
+  const { status: servicesStatus, setSaveStatus: setServicesStatus } = useSaveStatus();
+  const { status: videosStatus, setSaveStatus: setVideosStatus } = useSaveStatus();
+  const { status: placesStatus, setSaveStatus: setPlacesStatus } = useSaveStatus();
+  const { status: footerStatus, setSaveStatus: setFooterStatus } = useSaveStatus();
+  const { status: seoStatus, setSaveStatus: setSeoStatus } = useSaveStatus();
+  const { status: langStatus, setSaveStatus: setLangStatus } = useSaveStatus();
 
-  const currentStatus = 
-    heroStatus !== 'idle' ? heroStatus :
-    servicesStatus !== 'idle' ? servicesStatus :
-    videosStatus !== 'idle' ? videosStatus :
-    placesStatus !== 'idle' ? placesStatus :
-    planStatus !== 'idle' ? planStatus :
-    aboutStatus !== 'idle' ? aboutStatus :
-    footerStatus !== 'idle' ? footerStatus :
-    seoStatus !== 'idle' ? seoStatus :
-    languagesStatus !== 'idle' ? languagesStatus : 'idle';
+  const SaveBtn = ({ section, data, status, setStatus }: any) => (
+    <Button 
+      onClick={async () => {
+        setStatus('saving');
+        try {
+          await handleSave(section, data);
+          setStatus('saved');
+          showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
+        } catch {
+          setStatus('error');
+          showToast(`Erro ao salvar ${section}.`, 'error');
+        }
+      }}
+      className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+    >
+      {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+      {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+    </Button>
+  );
 
   if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
@@ -203,792 +166,194 @@ export function SiteContentEditor() {
       <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
-          <p className="text-red-500/70">Edite textos, seções e banners de todas as páginas.</p>
+          <p className="text-red-500/70 italic text-xs mt-1">* Salvamento automático desativado.</p>
         </div>
-        <AutosaveIndicator status={currentStatus} />
       </div>
 
-      <Tabs defaultValue="hero" value={activeSection} onValueChange={setActiveSection} className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
-          {[
-            { id: "hero", label: "Home / Hero" },
-            { id: "services", label: "Serviços" },
-            { id: "videos", label: "Vídeos" },
-            { id: "places", label: "Nossas Invasões" },
-            { id: "plan", label: "O Plano" },
-            { id: "about", label: "Sobre" },
-            { id: "footer", label: "Rodapé" },
-            { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
-            { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveSection(tab.id)}
-              className={cn(
-                "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all text-sm font-medium",
-                activeSection === tab.id
-                  ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-900/20"
-                  : "bg-zinc-900 border-zinc-800 text-red-500/70 hover:border-red-900/50 hover:bg-zinc-800"
-              )}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+        {[
+          { id: "hero", label: "Home / Hero" },
+          { id: "services", label: "Serviços" },
+          { id: "videos", label: "Vídeos" },
+          { id: "places", label: "Nossas Invasões" },
+          { id: "plan", label: "O Plano" },
+          { id: "about", label: "Sobre" },
+          { id: "footer", label: "Rodapé" },
+          { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
+          { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveSection(tab.id)}
+            className={cn(
+              "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all text-sm font-medium",
+              activeSection === tab.id
+                ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-900/20"
+                : "bg-zinc-900 border-zinc-800 text-red-500/70 hover:border-red-900/50 hover:bg-zinc-800"
+            )}
+          >
+            {tab.icon}
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-        {/* HERO SECTION */}
-        <TabsContent value="hero" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
-                <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
-              </div>
-              
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Linhas do Título (uma por linha)</Label>
-                    <Textarea 
-                      rows={4} 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      value={hero.title_lines?.join("\n")}
-                      onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Subtítulo</Label>
-                    <Textarea 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      value={hero.subtitle}
-                      onChange={(e) => setHero({...hero, subtitle: e.target.value})}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Localização (Canto Esquerdo)</Label>
-                    <Input 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      value={hero.location}
-                      onChange={(e) => setHero({...hero, location: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Texto do Botão (CTA)</Label>
-                    <Input 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      value={hero.cta_label}
-                      onChange={(e) => setHero({...hero, cta_label: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-red-500">Link do Botão</Label>
-                    <Input 
-                      className="bg-zinc-800 border-red-900 text-red-500" 
-                      value={hero.cta_url}
-                      onChange={(e) => setHero({...hero, cta_url: e.target.value})}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h4 className="text-sm font-medium flex items-center text-red-500"><Video className="mr-2 w-4 h-4" /> Vídeo de Fundo</h4>
-                <ImageUpload 
-                  label="URL do Vídeo (MP4/WebM)" 
-                  value={hero.video_url} 
-                  onChange={(val) => setHero({...hero, video_url: val})} 
+      {activeSection === "hero" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
+              <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
+            </div>
+            <SaveBtn section="hero" data={hero} status={heroStatus} setStatus={setHeroStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Linhas do Título</Label>
+                <Textarea 
+                  rows={4} 
+                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  value={hero.title_lines?.join("\n") || ""}
+                  onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
                 />
-                <p className="text-[10px] text-red-500/50">Recomendado: Horizontal (16:9), máx. 10MB, loop infinito, sem som.</p>
               </div>
-
-              <div className="space-y-4 pt-4 border-t border-zinc-800">
-                <h4 className="text-sm font-medium flex items-center text-red-500"><ImageIcon className="mr-2 w-4 h-4" /> Cards Flutuantes (3 Imagens)</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <ImageUpload 
-                      label="Imagem do Card 1" 
-                      value={hero.image1 || ""} 
-                      onChange={(val) => setHero({...hero, image1: val})} 
-                    />
-                    <p className="text-[9px] text-red-500/40">Rec: Quadrada (1:1), 600x600px, máx. 500KB.</p>
-                  </div>
-                  <div className="space-y-1">
-                    <ImageUpload 
-                      label="Imagem do Card 2" 
-                      value={hero.image2 || ""} 
-                      onChange={(val) => setHero({...hero, image2: val})} 
-                    />
-                    <p className="text-[9px] text-red-500/40">Rec: Quadrada (1:1), 600x600px, máx. 500KB.</p>
-                  </div>
-                  <div className="space-y-1">
-                    <ImageUpload 
-                      label="Imagem do Card 3" 
-                      value={hero.image3 || ""} 
-                      onChange={(val) => setHero({...hero, image3: val})} 
-                    />
-                    <p className="text-[9px] text-red-500/40">Rec: Quadrada (1:1), 600x600px, máx. 500KB.</p>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Subtítulo</Label>
+                <Textarea 
+                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  value={hero.subtitle || ""}
+                  onChange={(e) => setHero({...hero, subtitle: e.target.value})}
+                />
               </div>
-              
-            </CardContent>
-          </Card>
-          
-        </TabsContent>
+            </div>
+            <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
+          </CardContent>
+        </Card>
+      )}
 
-        {/* VIDEOS SECTION */}
-        <TabsContent value="videos" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-red-500">Seção de Vídeos</CardTitle>
-                <CardDescription className="text-red-500/60">Gerencie a galeria de vídeos e seus destaques.</CardDescription>
+      {activeSection === "services" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Serviços</CardTitle>
+            </div>
+            <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-red-500">Título</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={services.heading || ""} onChange={e => setServices({...services, heading: e.target.value})} />
               </div>
-              
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título Principal</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={videos.heading}
-                    onChange={(e) => setVideos({...videos, heading: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={videos.heading_em}
-                    onChange={(e) => setVideos({...videos, heading_em: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4 pt-4">
-                <div className="flex justify-between items-center">
-                   <h4 className="text-sm font-medium text-red-500">Lista de Vídeos</h4>
-                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
-                    const newItems = [...(videos.items || []), { title: "Novo Vídeo", src: "", tag: "", poster: "", tall: false }];
-                    setVideos({...videos, items: newItems});
-                  }}>
-                    <Plus className="w-4 h-4 mr-1" /> Adicionar
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  {(videos.items || []).map((v: any, idx: number) => (
-                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
-                      <div className="flex justify-between items-start">
-                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Vídeo #{idx+1}</span>
-                        <Button 
-                          size="icon" 
-                          variant="ghost" 
-                          className="h-7 w-7"
-                          onClick={() => {
-                            const newItems = videos.items.filter((_: any, i: number) => i !== idx);
-                            setVideos({...videos, items: newItems});
-                          }}
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                        </Button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">Título</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={v.title} 
-                             onChange={(e) => {
-                               const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], title: e.target.value };
-                               setVideos({...videos, items: newItems});
-                             }}
-                           />
-                        </div>
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">Tag / Categoria</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={v.tag} 
-                             onChange={(e) => {
-                               const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], tag: e.target.value };
-                               setVideos({...videos, items: newItems});
-                             }}
-                           />
-                        </div>
-                        <div className="space-y-2">
-                           <ImageUpload 
-                             label="URL do Vídeo (MP4)" 
-                             value={v.src} 
-                             onChange={(val) => {
-                               const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], src: val };
-                               setVideos({...videos, items: newItems});
-                             }} 
-                           />
-                           <p className="text-[9px] text-red-500/40">Rec: {v.tall ? "Vertical (9:16)" : "Horizontal (16:9)"}, máx. 15MB.</p>
-                        </div>
-                        <div className="space-y-2">
-                           <ImageUpload 
-                             label="URL da Capa (Poster)" 
-                             value={v.poster} 
-                             onChange={(val) => {
-                               const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], poster: val };
-                               setVideos({...videos, items: newItems});
-                             }} 
-                           />
-                           <p className="text-[9px] text-red-500/40">Rec: {v.tall ? "450x700px" : "800x450px"}, máx. 300KB.</p>
-                        </div>
-                        <div className="flex items-center space-x-2 pt-2">
-                          <input 
-                            type="checkbox" 
-                            id={`tall-${idx}`}
-                            className="accent-red-500"
-                            checked={v.tall}
-                            onChange={(e) => {
-                               const newItems = [...videos.items];
-                               newItems[idx] = { ...newItems[idx], tall: e.target.checked };
-                               setVideos({...videos, items: newItems});
-                             }}
-                          />
-                          <Label htmlFor={`tall-${idx}`} className="text-xs text-red-500">Formato Vertical (Tall)</Label>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-            </CardContent>
-          </Card>
-
-          
-        </TabsContent>
-
-        {/* PLAN SECTION */}
-        <TabsContent value="plan" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-red-500">Seção "O Plano"</CardTitle>
-                <CardDescription className="text-red-500/60">Edite o conteúdo da seção informativa.</CardDescription>
-              </div>
-               
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título Principal</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={plan.heading}
-                    onChange={(e) => setPlan({...plan, heading: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={plan.heading_em}
-                    onChange={(e) => setPlan({...plan, heading_em: e.target.value})}
-                  />
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <Label className="text-red-500">Texto Descritivo</Label>
-                  <Textarea 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    rows={4}
-                    value={plan.text}
-                    onChange={(e) => setPlan({...plan, text: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Texto do Botão</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={plan.cta_label}
-                    onChange={(e) => setPlan({...plan, cta_label: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Link do Botão</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={plan.cta_url}
-                    onChange={(e) => setPlan({...plan, cta_url: e.target.value})}
-                  />
-                </div>
-              </div>
-              
-            </CardContent>
-          </Card>
-
-          
-        </TabsContent>
-
-        {/* ABOUT SECTION */}
-        <TabsContent value="about" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-red-500">Seção Sobre</CardTitle>
-                <CardDescription className="text-red-500/60">Edite a história e imagem da marca.</CardDescription>
-              </div>
-               
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título Principal</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={about.heading}
-                    onChange={(e) => setAbout({...about, heading: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={about.heading_em}
-                    onChange={(e) => setAbout({...about, heading_em: e.target.value})}
-                  />
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <Label className="text-red-500">Parágrafos (um por linha)</Label>
-                  <Textarea 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    rows={6}
-                    value={about.paragraphs?.join("\n")}
-                    onChange={(e) => setAbout({...about, paragraphs: e.target.value.split("\n")})}
-                  />
-                </div>
-                 <div className="space-y-2">
-                   <ImageUpload 
-                     label="URL da Imagem Lateral" 
-                     value={about.image} 
-                     onChange={(val) => setAbout({...about, image: val})} 
-                   />
-                   <p className="text-[9px] text-red-500/40">Rec: Retrato (3:4), 800x1066px, máx. 800KB.</p>
+            </div>
+            <div className="space-y-4 pt-4">
+               <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setServices({...services, items: [...(services.items || []), {title: "Novo", desc: "", img: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button>
+               {services.items?.map((item: any, idx: number) => (
+                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4">
+                   <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                   <ImageUpload label="Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
                  </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Link do Botão</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={about.cta_url}
-                    onChange={(e) => setAbout({...about, cta_url: e.target.value})}
-                  />
-                </div>
-              </div>
-              
-            </CardContent>
-          </Card>
+               ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-          
-        </TabsContent>
+      {activeSection === "videos" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Vídeos</CardTitle></div>
+            <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <Input value={videos.heading || ""} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Button size="sm" variant="outline" className="border-red-900 text-red-500 mt-4" onClick={() => setVideos({...videos, items: [...(videos.items || []), {title: "Novo", src: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button>
+            {videos.items?.map((v: any, idx: number) => (
+              <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 mt-2">
+                <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                <ImageUpload label="URL Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
-        {/* SERVICES SECTION */}
-        <TabsContent value="services" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-red-500">Nossos Serviços</CardTitle>
-                <CardDescription className="text-red-500/60">Grid de serviços com imagem e descrição.</CardDescription>
-              </div>
-              
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título Principal</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={services.heading}
-                    onChange={(e) => setServices({...services, heading: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título em Destaque (Itálico)</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={services.heading_em}
-                    onChange={(e) => setServices({...services, heading_em: e.target.value})}
-                  />
-                </div>
-              </div>
+      {activeSection === "places" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Invasões</CardTitle></div>
+            <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
+          </CardHeader>
+          <CardContent>
+            <Input value={places.heading || ""} onChange={e => setPlaces({...places, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          </CardContent>
+        </Card>
+      )}
 
-              <div className="space-y-4 pt-4">
-                <div className="flex justify-between items-center">
-                   <h4 className="text-sm font-medium text-red-500">Itens de Serviço</h4>
-                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
-                    const newItems = [...(services.items || []), { title: "Novo Serviço", desc: "", img: "" }];
-                    setServices({...services, items: newItems});
-                  }}>
-                    <Plus className="w-4 h-4 mr-1" /> Adicionar
-                  </Button>
-                </div>
+      {activeSection === "plan" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">O Plano</CardTitle></div>
+            <SaveBtn section="plan" data={plan} status={planStatus} setStatus={setPlanStatus} />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input value={plan.heading || ""} onChange={e => setPlan({...plan, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea value={plan.text || ""} onChange={e => setPlan({...plan, text: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          </CardContent>
+        </Card>
+      )}
 
-                <div className="space-y-3">
-                  {(services.items || []).map((item: any, idx: number) => (
-                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
-                      <div className="flex justify-between items-start">
-                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Serviço #{idx+1}</span>
-                        <div className="flex space-x-1">
-                          <Button 
-                            size="icon" 
-                            variant="ghost" 
-                            className="h-7 w-7"
-                            onClick={() => {
-                              const newItems = services.items.filter((_: any, i: number) => i !== idx);
-                              setServices({...services, items: newItems});
-                            }}
-                          >
-                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">Título</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={item.title} 
-                             onChange={(e) => {
-                               const newItems = [...services.items];
-                               newItems[idx] = { ...newItems[idx], title: e.target.value };
-                               setServices({...services, items: newItems});
-                             }}
-                           />
-                        </div>
-                         <div className="space-y-2">
-                            <ImageUpload 
-                              label="URL da Imagem" 
-                              value={item.img} 
-                              onChange={(val) => {
-                                const newItems = [...services.items];
-                                newItems[idx] = { ...newItems[idx], img: val };
-                                setServices({...services, items: newItems});
-                              }} 
-                            />
-                            <p className="text-[9px] text-red-500/40">Rec: Paisagem (4:3), 800x600px, máx. 500KB.</p>
-                         </div>
-                        <div className="md:col-span-2 space-y-2">
-                           <Label className="text-xs text-red-500">Descrição Curta</Label>
-                           <Textarea 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={item.desc} 
-                             onChange={(e) => {
-                               const newItems = [...services.items];
-                               newItems[idx] = { ...newItems[idx], desc: e.target.value };
-                               setServices({...services, items: newItems});
-                             }}
-                           />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-            </CardContent>
-          </Card>
+      {activeSection === "about" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Sobre</CardTitle></div>
+            <SaveBtn section="about" data={about} status={aboutStatus} setStatus={setAboutStatus} />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input value={about.heading || ""} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <ImageUpload label="Imagem" value={about.image || ""} onChange={val => setAbout({...about, image: val})} />
+          </CardContent>
+        </Card>
+      )}
 
-          
-        </TabsContent>
+      {activeSection === "footer" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Rodapé</CardTitle></div>
+            <SaveBtn section="footer" data={footer} status={footerStatus} setStatus={setFooterStatus} />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input value={footer.copyright || ""} onChange={e => setFooter({...footer, copyright: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Input value={footer.hashtag || ""} onChange={e => setFooter({...footer, hashtag: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          </CardContent>
+        </Card>
+      )}
 
-        {/* PLACES SECTION */}
-        <TabsContent value="places" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-red-500">Nossas Invasões</CardTitle>
-                <CardDescription className="text-red-500/60">Gerencie a galeria de locais e eventos visitados.</CardDescription>
-              </div>
-               
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-red-500">Título Principal</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={places.heading}
-                    onChange={(e) => setPlaces({...places, heading: e.target.value})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-red-500">Subtítulo / Hashtag</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={places.heading2}
-                    onChange={(e) => setPlaces({...places, heading2: e.target.value})}
-                  />
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <Label className="text-red-500">Link do Instagram</Label>
-                  <Input 
-                    className="bg-zinc-800 border-red-900 text-red-500" 
-                    value={places.instagram_url}
-                    onChange={(e) => setPlaces({...places, instagram_url: e.target.value})}
-                  />
-                </div>
-              </div>
+      {activeSection === "seo" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">SEO</CardTitle></div>
+            <SaveBtn section="seo" data={seo} status={seoStatus} setStatus={setSeoStatus} />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input value={seo.title || ""} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea value={seo.description || ""} onChange={e => setSeo({...seo, description: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          </CardContent>
+        </Card>
+      )}
 
-              <div className="space-y-4 pt-4">
-                <div className="flex justify-between items-center">
-                   <h4 className="text-sm font-medium text-red-500">Galeria de Locais</h4>
-                   <Button size="sm" variant="outline" className="border-red-900 text-red-500 hover:bg-red-900/20" onClick={() => {
-                    const newItems = [...(places.items || []), { title: "Novo Local", category: "", img: "" }];
-                    setPlaces({...places, items: newItems});
-                  }}>
-                    <Plus className="w-4 h-4 mr-1" /> Adicionar
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  {(places.items || []).map((p: any, idx: number) => (
-                    <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 flex flex-col space-y-4">
-                      <div className="flex justify-between items-start">
-                        <span className="text-xs font-bold text-red-500/50 uppercase tracking-widest">Local #{idx+1}</span>
-                        <Button 
-                          size="icon" 
-                          variant="ghost" 
-                          className="h-7 w-7"
-                          onClick={() => {
-                            const newItems = places.items.filter((_: any, i: number) => i !== idx);
-                            setPlaces({...places, items: newItems});
-                          }}
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                        </Button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">Título / Nome</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={p.title} 
-                             onChange={(e) => {
-                               const newItems = [...places.items];
-                               newItems[idx] = { ...newItems[idx], title: e.target.value };
-                               setPlaces({...places, items: newItems});
-                             }}
-                           />
-                        </div>
-                        <div className="space-y-2">
-                           <Label className="text-xs text-red-500">Categoria / Cidade</Label>
-                           <Input 
-                             className="bg-zinc-800 border-red-900 text-red-500" 
-                             value={p.category} 
-                             onChange={(e) => {
-                               const newItems = [...places.items];
-                               newItems[idx] = { ...newItems[idx], category: e.target.value };
-                               setPlaces({...places, items: newItems});
-                             }}
-                           />
-                        </div>
-                        <div className="md:col-span-2 space-y-2">
-                          <ImageUpload 
-                            label="URL da Imagem / Vídeo" 
-                            value={p.img} 
-                            onChange={(val) => {
-                              const newItems = [...places.items];
-                              newItems[idx] = { ...newItems[idx], img: val };
-                              setPlaces({...places, items: newItems});
-                            }} 
-                          />
-                          <p className="text-[9px] text-red-500/40">Rec: Retrato (9:16), 1080x1920px (Mobile-friendly), máx. 1MB imagem / 10MB vídeo.</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-            </CardContent>
-          </Card>
-
-          
-        </TabsContent>
-
-        <TabsContent value="footer" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                 <CardTitle className="text-red-500">Rodapé</CardTitle>
-                 <CardDescription className="text-red-500/60">Informações de contato e links sociais.</CardDescription>
-              </div>
-                
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                   <Label className="text-red-500">Telefone (Exibição)</Label>
-                   <Input 
-                     className="bg-zinc-800 border-red-900 text-red-500" 
-                     value={footer.phone} 
-                     onChange={(e) => setFooter({...footer, phone: e.target.value})}
-                   />
-                </div>
-                <div className="space-y-2">
-                   <Label className="text-red-500">WhatsApp Link</Label>
-                   <Input 
-                     className="bg-zinc-800 border-red-900 text-red-500" 
-                     value={footer.whatsapp_url} 
-                     onChange={(e) => setFooter({...footer, whatsapp_url: e.target.value})}
-                   />
-                </div>
-                <div className="space-y-2">
-                   <Label className="text-red-500">Copyright</Label>
-                   <Input 
-                     className="bg-zinc-800 border-red-900 text-red-500" 
-                     value={footer.copyright} 
-                     onChange={(e) => setFooter({...footer, copyright: e.target.value})}
-                   />
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                   <Label className="text-red-500">Endereço Linha 1</Label>
-                   <Input 
-                     className="bg-zinc-800 border-red-900 text-red-500" 
-                     value={footer.address_line1} 
-                     onChange={(e) => setFooter({...footer, address_line1: e.target.value})}
-                   />
-                </div>
-                <div className="space-y-2">
-                   <Label className="text-red-500">Endereço Linha 2</Label>
-                   <Input 
-                     className="bg-zinc-800 border-red-900 text-red-500" 
-                     value={footer.address_line2} 
-                     onChange={(e) => setFooter({...footer, address_line2: e.target.value})}
-                   />
-                </div>
-                <div className="space-y-2">
-                   <Label className="text-red-500">Hashtag Destaque</Label>
-                   <Input 
-                     className="bg-zinc-800 border-red-900 text-red-500" 
-                     value={footer.hashtag} 
-                     onChange={(e) => setFooter({...footer, hashtag: e.target.value})}
-                   />
-                </div>
-              </div>
-              
-            </CardContent>
-          </Card>
-
-          
-        </TabsContent>
-
-        <TabsContent value="seo" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                 <CardTitle className="text-red-500">Configurações de SEO</CardTitle>
-                 <CardDescription className="text-red-500/60">Apareça melhor nos resultados de busca (Google, Bing, etc).</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                 <Label className="text-red-500">Título do Site (Meta Title)</Label>
-                 <Input 
-                   className="bg-zinc-800 border-red-900 text-red-500" 
-                   value={seo.title || ""} 
-                   onChange={(e) => setSeo({...seo, title: e.target.value})}
-                   placeholder="Ex: La Gravata de Papel - Invasões em Eventos"
-                 />
-                 <p className="text-[10px] text-zinc-500">Recomendado: Máximo 60 caracteres.</p>
-              </div>
-              <div className="space-y-2">
-                 <Label className="text-red-500">Descrição (Meta Description)</Label>
-                 <Textarea 
-                   className="bg-zinc-800 border-red-900 text-red-500" 
-                   value={seo.description || ""} 
-                   onChange={(e) => setSeo({...seo, description: e.target.value})}
-                   rows={3}
-                   placeholder="Descreva o seu site em poucas palavras..."
-                 />
-                 <p className="text-[10px] text-zinc-500">Recomendado: 150-160 caracteres.</p>
-              </div>
-              <div className="space-y-2">
-                 <Label className="text-red-500">Palavras-chave (Keywords)</Label>
-                 <Input 
-                   className="bg-zinc-800 border-red-900 text-red-500" 
-                   value={seo.keywords || ""} 
-                   onChange={(e) => setSeo({...seo, keywords: e.target.value})}
-                   placeholder="Ex: gravata, casamento, festa, animação"
-                 />
-                 <p className="text-[10px] text-zinc-500">Separe por vírgulas.</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          
-        </TabsContent>
-
-        <TabsContent value="languages" className="space-y-6">
-          <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                 <CardTitle className="text-red-500">Multi-idioma</CardTitle>
-                 <CardDescription className="text-red-500/60">Configure quais idiomas estão ativos no seu site.</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <Label className="text-red-500 block mb-2">Idiomas Habilitados</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {Object.entries(languages.translations || {}).map(([key, info]: [string, any]) => (
-                    <div 
-                      key={key} 
-                      className={`p-4 rounded-lg border flex items-center justify-between transition-colors ${
-                        languages.enabled?.includes(key) 
-                          ? "bg-red-900/10 border-red-900/50 text-red-500" 
-                          : "bg-zinc-800/50 border-zinc-700 text-zinc-500"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{info.flag}</span>
-                        <div>
-                          <p className="font-bold text-sm">{info.name}</p>
-                          <p className="text-[10px] uppercase opacity-60">{key}</p>
-                        </div>
-                      </div>
-                      <input 
-                        type="checkbox" 
-                        className="accent-red-600 h-5 w-5"
-                        checked={languages.enabled?.includes(key)}
-                        onChange={(e) => {
-                          const newEnabled = e.target.checked 
-                            ? [...(languages.enabled || []), key]
-                            : (languages.enabled || []).filter((l: string) => l !== key);
-                          setLanguages({...languages, enabled: newEnabled});
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-zinc-800">
-                <p className="text-xs text-red-500 italic">
-                  * Nota: Habilitar o idioma permite a troca no site. Você precisará traduzir o conteúdo manualmente nas abas correspondentes após a implementação da lógica de tradução.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          
-        </TabsContent>
-      </Tabs>
+      {activeSection === "languages" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Idiomas</CardTitle></div>
+            <SaveBtn section="languages" data={languages} status={langStatus} setStatus={setLangStatus} />
+          </CardHeader>
+          <CardContent>
+            <p className="text-red-500 italic">Idiomas ativos do site.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

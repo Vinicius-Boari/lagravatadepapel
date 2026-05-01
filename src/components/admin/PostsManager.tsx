@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search } from "lucide-react";
+import { Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Save, FileText } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 export function PostsManager() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -41,22 +41,6 @@ export function PostsManager() {
 
   useEffect(() => {
     fetchPosts();
-
-    // Realtime sync
-    const channel = supabase
-      .channel("posts-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "posts" },
-        () => {
-          fetchPosts();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
   // Update form state when selection changes
@@ -71,29 +55,32 @@ export function PostsManager() {
     }
   }, [selectedPostId, posts]);
 
-  const handleSave = async (data: any) => {
-    if (!selectedPostId) return;
-    
-    const { error } = await supabase
-      .from("posts")
-      .upsert({
-        id: selectedPostId,
-        titulo: data.titulo,
-        conteudo: data.conteudo,
-        midia_url: data.midia_url,
-      });
+  const { status, setSaveStatus } = useSaveStatus();
 
-    if (error) {
-      throw error;
+  const handleManualSave = async () => {
+    if (!selectedPostId) return;
+    setSaveStatus('saving');
+    
+    try {
+      const { error } = await supabase
+        .from("posts")
+        .upsert({
+          id: selectedPostId,
+          titulo,
+          conteudo,
+          midia_url: midiaUrl,
+        });
+
+      if (error) throw error;
+      
+      setSaveStatus('saved');
+      toast.success("Post salvo com sucesso!");
+      fetchPosts(); // Refresh list
+    } catch {
+      setSaveStatus('error');
+      toast.error("Erro ao salvar post.");
     }
   };
-
-  const { status } = useAutosave(
-    { titulo, conteudo, midia_url: midiaUrl },
-    handleSave,
-    1000,
-    selectedPostId ? `post_backup_${selectedPostId}` : undefined
-  );
 
   const handleCreatePost = async () => {
     const { data, error } = await supabase
@@ -172,7 +159,15 @@ export function PostsManager() {
           <p className="text-red-500/70">Crie e edite conteúdos dinâmicos para o site.</p>
         </div>
         <div className="flex items-center gap-4">
-          <AutosaveIndicator status={status} />
+          {selectedPostId && (
+            <Button 
+              onClick={handleManualSave}
+              className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+            >
+              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+            </Button>
+          )}
           <Button onClick={handleCreatePost} className="bg-red-600 hover:bg-red-700 text-white border-none">
             <Plus className="mr-2 w-4 h-4" />
             Novo Post
@@ -222,9 +217,6 @@ export function PostsManager() {
                 </Button>
               </div>
             ))}
-            {filteredPosts.length === 0 && (
-              <div className="text-center py-10 text-zinc-600 italic text-sm">Nenhum post encontrado.</div>
-            )}
           </div>
         </div>
 
@@ -239,77 +231,40 @@ export function PostsManager() {
                     value={titulo}
                     onChange={(e) => setTitulo(e.target.value)}
                     className="bg-zinc-800 border-zinc-700 text-red-500 text-lg font-bold h-12 focus:border-red-500 transition-colors"
-                    placeholder="Ex: Invasão no Casamento de Maria & João"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-red-500 uppercase text-[10px] font-bold tracking-widest">Conteúdo / Descrição</Label>
+                  <Label className="text-red-500 uppercase text-[10px] font-bold tracking-widest">Conteúdo</Label>
                   <Textarea 
                     value={conteudo}
                     onChange={(e) => setConteudo(e.target.value)}
                     className="bg-zinc-800 border-zinc-700 text-red-500 min-h-[200px] focus:border-red-500 transition-colors"
-                    placeholder="Conte como foi essa invasão..."
                   />
                 </div>
 
                 <div className="space-y-4 pt-4 border-t border-zinc-800">
                   <Label className="text-red-500 uppercase text-[10px] font-bold tracking-widest flex items-center">
-                    <ImageIcon className="w-3 h-3 mr-2" /> Mídia (Foto ou Vídeo)
+                    <ImageIcon className="w-3 h-3 mr-2" /> Mídia
                   </Label>
-                  
                   <div className="flex gap-4">
                     <Input 
                       value={midiaUrl}
                       onChange={(e) => setMidiaUrl(e.target.value)}
                       className="bg-zinc-800 border-zinc-700 text-red-500 flex-1"
-                      placeholder="URL da imagem ou vídeo..."
                     />
-                    <input 
-                      type="file" 
-                      id="post-media-upload"
-                      className="hidden" 
-                      accept="image/*,video/*"
-                      onChange={handleUpload}
-                    />
-                    <Button 
-                      onClick={() => document.getElementById('post-media-upload')?.click()}
-                      disabled={uploading}
-                      className="border-red-900 text-red-500 hover:bg-red-900/10 variant-outline"
-                      variant="outline"
-                    >
-                      {uploading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />}
-                      Upload
+                    <input type="file" id="post-upload" className="hidden" onChange={handleUpload} />
+                    <Button onClick={() => document.getElementById('post-upload')?.click()} variant="outline" className="border-red-900 text-red-500">
+                      {uploading ? <Loader2 className="animate-spin h-4 w-4" /> : <Upload className="h-4 w-4" />}
                     </Button>
                   </div>
-
-                  {midiaUrl && (
-                    <div className="mt-4 relative aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 shadow-2xl group">
-                      {midiaUrl.match(/\.(mp4|webm|ogg)$/i) || midiaUrl.includes('video') ? (
-                        <video src={midiaUrl} className="w-full h-full object-contain" controls />
-                      ) : (
-                        <img src={midiaUrl} className="w-full h-full object-contain" />
-                      )}
-                      <Button 
-                        size="icon" 
-                        variant="destructive" 
-                        className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => setMidiaUrl("")}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </CardContent>
             </Card>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-zinc-500 space-y-4 border-2 border-dashed border-zinc-800 rounded-2xl p-20">
+            <div className="h-full flex flex-col items-center justify-center text-zinc-500 border-2 border-dashed border-zinc-800 rounded-2xl p-20">
               <FileText className="w-16 h-16 opacity-10" />
-              <p className="italic">Selecione um post ao lado ou crie um novo para começar a editar.</p>
-              <Button onClick={handleCreatePost} variant="outline" className="border-zinc-800 text-zinc-400">
-                Criar primeiro post
-              </Button>
+              <p className="italic">Selecione um post para editar.</p>
             </div>
           )}
         </div>
@@ -317,5 +272,3 @@ export function PostsManager() {
     </div>
   );
 }
-
-import { FileText } from "lucide-react";
