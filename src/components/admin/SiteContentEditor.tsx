@@ -178,9 +178,46 @@ export function SiteContentEditor() {
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-[60] py-4 -mt-4 border-b border-zinc-800/50 gap-4">
-        <div>
+        <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
-          
+          <Button 
+            onClick={async () => {
+              const btnMap: Record<string, any> = {
+                hero: { data: hero, status: heroStatus, set: setHeroStatus },
+                services: { data: services, status: servicesStatus, set: setServicesStatus },
+                videos: { data: videos, status: videosStatus, set: setVideosStatus },
+                places: { data: places, status: placesStatus, set: setPlacesStatus },
+                plan: { data: plan, status: planStatus, set: setPlanStatus },
+                about: { data: about, status: aboutStatus, set: setAboutStatus },
+                footer: { data: footer, status: footerStatus, set: setFooterStatus },
+                seo: { data: seo, status: seoStatus, set: setSeoStatus },
+                languages: { data: languages, status: langStatus, set: setLangStatus },
+              };
+              const current = btnMap[activeSection];
+              if (current) {
+                const btn = document.querySelector(`button[class*="getSaveButtonStyles"]`) as HTMLButtonElement;
+                if (btn) btn.click();
+              }
+            }}
+            size="sm"
+            className={cn(
+              "transition-all duration-300 w-32 font-bold shadow-lg",
+              getSaveButtonStyles(
+                activeSection === "hero" ? heroStatus :
+                activeSection === "services" ? servicesStatus :
+                activeSection === "videos" ? videosStatus :
+                activeSection === "places" ? placesStatus :
+                activeSection === "plan" ? planStatus :
+                activeSection === "about" ? aboutStatus :
+                activeSection === "footer" ? footerStatus :
+                activeSection === "seo" ? seoStatus :
+                langStatus
+              )
+            )}
+          >
+            <Save className="w-4 h-4 mr-2" />
+            Salvar
+          </Button>
         </div>
       </div>
 
