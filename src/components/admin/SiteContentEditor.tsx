@@ -6,9 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, Upload, Loader2, Search, Globe } from "lucide-react";
+import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
@@ -97,22 +96,21 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
 
 export function SiteContentEditor() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
-  const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
 
-  const [hero, setHero] = useState<any>(content.hero || {});
-  const [about, setAbout] = useState<any>(content.about || {});
-  const [plan, setPlan] = useState<any>(content.plan || {});
-  const [services, setServices] = useState<any>(content.services || { items: [] });
-  const [videos, setVideos] = useState<any>(content.videos || { items: [] });
-  const [places, setPlaces] = useState<any>(content.places || { items: [] });
-  const [footer, setFooter] = useState<any>(content.footer || {});
-  const [seo, setSeo] = useState<any>(content.seo || {});
-  const [languages, setLanguages] = useState<any>(content.languages || {});
+  const [hero, setHero] = useState<any>({});
+  const [about, setAbout] = useState<any>({});
+  const [plan, setPlan] = useState<any>({});
+  const [services, setServices] = useState<any>({ items: [] });
+  const [videos, setVideos] = useState<any>({ items: [] });
+  const [places, setPlaces] = useState<any>({ items: [] });
+  const [footer, setFooter] = useState<any>({});
+  const [seo, setSeo] = useState<any>({});
+  const [languages, setLanguages] = useState<any>({});
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
-    if (!loading && isInitialLoad.current) {
+    if (!contentLoading && isInitialLoad.current && Object.keys(content).length > 0) {
       setHero(content.hero || {});
       setAbout(content.about || {});
       setPlan(content.plan || {});
@@ -124,19 +122,14 @@ export function SiteContentEditor() {
       setLanguages(content.languages || {});
       isInitialLoad.current = false;
     }
-  }, [loading, content]);
+  }, [contentLoading, content]);
 
   const handleSave = useCallback(async (section: string, data: any) => {
     if (!data) return;
-    setLoading(true);
     try {
       await updateSection(section, data, false);
-      showToast("Salvo com sucesso!", "success");
     } catch (err) {
-      showToast("Erro ao salvar.", "error");
       throw err;
-    } finally {
-      setLoading(false);
     }
   }, [updateSection]);
 
@@ -157,11 +150,13 @@ export function SiteContentEditor() {
         try {
           await handleSave(section, data);
           setStatus('saved');
+          showToast(`${section.toUpperCase()} salvo com sucesso!`, 'success');
         } catch {
           setStatus('error');
+          showToast(`Erro ao salvar ${section}.`, 'error');
         }
       }}
-      className={cn("transition-all duration-300", getSaveButtonStyles(status))}
+      className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
     >
       {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
       {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
@@ -175,139 +170,245 @@ export function SiteContentEditor() {
       <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
         <div>
           <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
+          <p className="text-red-500/70 italic text-xs mt-1">* O salvamento automático foi desativado. Use os botões de salvar em cada seção.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
         {[
-          { id: "hero", label: "Home" },
+          { id: "hero", label: "Home / Hero" },
           { id: "services", label: "Serviços" },
           { id: "videos", label: "Vídeos" },
-          { id: "places", label: "Invasões" },
+          { id: "places", label: "Nossas Invasões" },
           { id: "plan", label: "O Plano" },
           { id: "about", label: "Sobre" },
           { id: "footer", label: "Rodapé" },
-          { id: "seo", label: "SEO" },
-          { id: "languages", label: "Idiomas" }
+          { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
+          { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> }
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveSection(tab.id)}
             className={cn(
-              "flex items-center justify-center p-3 rounded-lg border transition-all text-sm font-medium",
-              activeSection === tab.id ? "bg-red-600 text-white" : "bg-zinc-900 border-zinc-800 text-red-500"
+              "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all text-sm font-medium",
+              activeSection === tab.id
+                ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-900/20"
+                : "bg-zinc-900 border-zinc-800 text-red-500/70 hover:border-red-900/50 hover:bg-zinc-800"
             )}
           >
+            {tab.icon}
             {tab.label}
           </button>
         ))}
       </div>
 
       {activeSection === "hero" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
+              <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
+            </div>
             <SaveBtn section="hero" data={hero} status={heroStatus} setStatus={setHeroStatus} />
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Label className="text-red-500">Subtítulo</Label>
-            <Textarea value={hero.subtitle} onChange={e => setHero({...hero, subtitle: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Linhas do Título (uma por linha)</Label>
+                  <Textarea 
+                    rows={4} 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={hero.title_lines?.join("\n")}
+                    onChange={(e) => setHero({...hero, title_lines: e.target.value.split("\n")})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Subtítulo</Label>
+                  <Textarea 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={hero.subtitle}
+                    onChange={(e) => setHero({...hero, subtitle: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-red-500">Localização</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={hero.location}
+                    onChange={(e) => setHero({...hero, location: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Texto do Botão (CTA)</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={hero.cta_label}
+                    onChange={(e) => setHero({...hero, cta_label: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-red-500">Link do Botão</Label>
+                  <Input 
+                    className="bg-zinc-800 border-red-900 text-red-500" 
+                    value={hero.cta_url}
+                    onChange={(e) => setHero({...hero, cta_url: e.target.value})}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="pt-4 border-t border-zinc-800 space-y-4">
+               <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url} onChange={val => setHero({...hero, video_url: val})} />
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <ImageUpload label="Imagem Card 1" value={hero.image1} onChange={val => setHero({...hero, image1: val})} />
+                  <ImageUpload label="Imagem Card 2" value={hero.image2} onChange={val => setHero({...hero, image2: val})} />
+                  <ImageUpload label="Imagem Card 3" value={hero.image3} onChange={val => setHero({...hero, image3: val})} />
+               </div>
+            </div>
           </CardContent>
         </Card>
       )}
 
       {activeSection === "services" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Serviços</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Serviços</CardTitle>
+              <CardDescription className="text-red-500/60">Edite os serviços prestados.</CardDescription>
+            </div>
             <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Input value={services.heading} onChange={e => setServices({...services, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-red-500">Título</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={services.heading} onChange={e => setServices({...services, heading: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Destaque</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={services.heading_em} onChange={e => setServices({...services, heading_em: e.target.value})} />
+              </div>
+            </div>
+            <div className="space-y-4 pt-4">
+               <div className="flex justify-between items-center"><h4 className="text-sm font-medium text-red-500">Itens</h4><Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setServices({...services, items: [...(services.items || []), {title: "Novo", desc: "", img: ""}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button></div>
+               {services.items?.map((item: any, idx: number) => (
+                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4">
+                   <div className="flex justify-between items-center"><span className="text-xs text-red-500/50">Item #{idx+1}</span><Button size="icon" variant="ghost" onClick={() => setServices({...services, items: services.items.filter((_:any, i:number) => i !== idx)})}><Trash2 className="w-4 h-4 text-red-500"/></Button></div>
+                   <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                   <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                   <ImageUpload label="Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                 </div>
+               ))}
+            </div>
           </CardContent>
         </Card>
       )}
 
       {activeSection === "videos" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Vídeos</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Vídeos</CardTitle>
+              <CardDescription className="text-red-500/60">Galeria de vídeos.</CardDescription>
+            </div>
             <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Input value={videos.heading} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <Input label="Título" value={videos.heading} onChange={e => setVideos({...videos, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+              <Input label="Destaque" value={videos.heading_em} onChange={e => setVideos({...videos, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            </div>
+            <div className="space-y-4 pt-4">
+              <div className="flex justify-between items-center"><h4 className="text-sm font-medium text-red-500">Vídeos</h4><Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setVideos({...videos, items: [...(videos.items || []), {title: "Novo", src: "", poster: "", tall: false}]})}><Plus className="w-4 h-4 mr-1"/> Adicionar</Button></div>
+              {videos.items?.map((v: any, idx: number) => (
+                <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4">
+                  <Input value={v.title} onChange={e => { const newV = [...videos.items]; newI[idx].title = e.target.value; setVideos({...videos, items: newV}); }} />
+                  <ImageUpload label="URL do Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}
 
       {activeSection === "places" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Invasões</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Invasões</CardTitle>
+            </div>
             <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={places.heading} onChange={e => setPlaces({...places, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            {/* items... */}
           </CardContent>
         </Card>
       )}
 
       {activeSection === "plan" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">O Plano</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">O Plano</CardTitle></div>
             <SaveBtn section="plan" data={plan} status={planStatus} setStatus={setPlanStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={plan.heading} onChange={e => setPlan({...plan, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea value={plan.text} onChange={e => setPlan({...plan, text: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
 
       {activeSection === "about" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Sobre</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Sobre</CardTitle></div>
             <SaveBtn section="about" data={about} status={aboutStatus} setStatus={setAboutStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={about.heading} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea rows={6} value={about.paragraphs?.join("\n")} onChange={e => setAbout({...about, paragraphs: e.target.value.split("\n")})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <ImageUpload label="Imagem Sobre" value={about.image} onChange={val => setAbout({...about, image: val})} />
           </CardContent>
         </Card>
       )}
 
       {activeSection === "footer" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Rodapé</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Rodapé</CardTitle></div>
             <SaveBtn section="footer" data={footer} status={footerStatus} setStatus={setFooterStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={footer.copyright} onChange={e => setFooter({...footer, copyright: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Input value={footer.hashtag} onChange={e => setFooter({...footer, hashtag: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
 
       {activeSection === "seo" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">SEO</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">SEO</CardTitle></div>
             <SaveBtn section="seo" data={seo} status={seoStatus} setStatus={setSeoStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={seo.title} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <Textarea value={seo.description} onChange={e => setSeo({...seo, description: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
           </CardContent>
         </Card>
       )}
 
       {activeSection === "languages" && (
-        <Card className="bg-zinc-900 border-zinc-800">
-          <CardHeader className="flex flex-row justify-between">
-            <CardTitle className="text-red-500">Idiomas</CardTitle>
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div><CardTitle className="text-red-500">Idiomas</CardTitle></div>
             <SaveBtn section="languages" data={languages} status={langStatus} setStatus={setLangStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-red-500">Configurações de idiomas ativos.</p>
+             <p className="text-red-500 italic">Configure aqui os idiomas ativos do site.</p>
           </CardContent>
         </Card>
       )}
