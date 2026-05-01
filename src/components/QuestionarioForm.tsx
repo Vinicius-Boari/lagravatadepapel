@@ -154,7 +154,7 @@ export function QuestionarioForm() {
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                        <SelectValue placeholder="Escolha uma opção" />
+                        <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -450,7 +450,7 @@ export function QuestionarioForm() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                      <SelectValue placeholder="Escolha uma opção" />
+                      <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -560,7 +560,7 @@ export function QuestionarioForm() {
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                        <SelectValue placeholder="Escolha uma opção" />
+                        <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -593,7 +593,7 @@ export function QuestionarioForm() {
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                        <SelectValue placeholder="Escolha uma opção" />
+                        <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -696,7 +696,7 @@ export function QuestionarioForm() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                      <SelectValue placeholder="Escolha uma opção" />
+                      <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -743,7 +743,7 @@ export function QuestionarioForm() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                      <SelectValue placeholder="Escolha uma opção" />
+                      <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
