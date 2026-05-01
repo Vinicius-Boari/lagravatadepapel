@@ -47,7 +47,7 @@ export function useAuth() {
         setUser(ownerUser);
         setRole("owner");
         localStorage.setItem("lg_admin_user", JSON.stringify(ownerUser));
-        localStorage.setItem(AUTH_TOKEN_KEY, "session-owner-vinicius");
+        localStorage.setItem(AUTH_TOKEN_KEY, "session-" + ownerUser.id);
         return true;
       }
 
