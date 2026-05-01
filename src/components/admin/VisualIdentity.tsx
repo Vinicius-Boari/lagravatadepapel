@@ -37,16 +37,22 @@ export function VisualIdentity() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = useCallback(async (isDraft = true) => {
+  const handleSave = useCallback(async (isDraft = false) => {
+    // Use the latest formData values passed in or from state
+    const dataToSave = formData;
+    
     // Validação básica
-    if (!formData.primary_color || !formData.font_family) {
-      return;
+    if (!dataToSave.primary_color || !dataToSave.font_family) {
+      toast.error("Preencha a cor primária e a fonte.");
+      throw new Error("Validation failed");
     }
 
     setLoading(true);
     try {
-      console.log("Tentando salvar Identidade Visual", formData);
-      await updateSection("visual", formData, isDraft);
+      console.log("Tentando salvar Identidade Visual", dataToSave);
+      const success = await updateSection("visual", dataToSave, isDraft);
+      if (!success) throw new Error("Update failed");
+      return true;
     } catch (err: any) {
       console.error("Erro ao salvar Identidade Visual:", err);
       throw err;
