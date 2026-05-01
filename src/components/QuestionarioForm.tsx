@@ -75,12 +75,17 @@ export function QuestionarioForm() {
 
       if (dbError) throw dbError;
 
-      // Chama a função para processar e enviar por e-mail
-      await supabase.functions.invoke("process-questionnaire", {
-        body: { 
-          formData: values, 
-          targetEmail: "viniciusbataglia500@gmail.com" 
+      // Envia para o Formspree
+      await fetch("https://formspree.io/f/xvgzbgkg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          ...values,
+          _subject: `Novo Questionário: ${values.primary_name} - ${values.event_date}`,
+          _to: "viniciusbataglia500@gmail.com"
+        }),
       });
 
       setSubmitted(true);
