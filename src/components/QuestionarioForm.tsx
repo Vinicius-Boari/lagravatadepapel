@@ -79,7 +79,7 @@ export function QuestionarioForm() {
       await supabase.functions.invoke("process-questionnaire", {
         body: { 
           formData: values, 
-          targetEmail: "viniciusbataglia500@gmail.com" 
+          targetEmail: "dados.lagravata@gmail.com" 
         },
       });
 
