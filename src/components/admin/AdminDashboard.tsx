@@ -42,6 +42,34 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+const AutoBackupTrigger = () => {
+  useEffect(() => {
+    const triggerAutoBackup = async () => {
+      const token = localStorage.getItem("lg_auth_token");
+      if (!token) return;
+
+      try {
+        // We trigger it silently in the background
+        await fetch("/api/public/hooks/run-backup", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+      } catch (e) {
+        console.error("Auto backup check failed", e);
+      }
+    };
+    
+    // Check every 5 minutes while dashboard is open, or immediately on load
+    triggerAutoBackup();
+    const interval = setInterval(triggerAutoBackup, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return null;
+};
+
 const SettingsTab = () => {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
   const { status, setSaveStatus } = useSaveStatus();
@@ -315,6 +343,7 @@ export function AdminDashboard() {
         </header>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth">
+          <AutoBackupTrigger />
           {renderContent()}
         </div>
       </main>
