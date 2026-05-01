@@ -231,6 +231,7 @@ export function BackupExport() {
             Executar Backup Agora
           </Button>
         </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl lg:col-span-1">
