@@ -30,11 +30,11 @@ export function useSaveStatus() {
 export function getSaveButtonStyles(status: SaveStatus) {
   switch (status) {
     case 'saving':
-      return "bg-black text-white cursor-wait";
+      return "bg-black text-white cursor-wait border-zinc-800";
     case 'saved':
-      return "bg-green-600 hover:bg-green-700 text-white border-green-700 shadow-[0_0_15px_rgba(22,163,74,0.5)]";
+      return "bg-green-600 hover:bg-green-700 text-white border-green-800 shadow-[0_0_15px_rgba(22,163,74,0.4)]";
     case 'error':
-      return "bg-red-600 hover:bg-red-700 text-white border-red-700 shadow-[0_0_15px_rgba(220,38,38,0.5)]";
+      return "bg-red-600 hover:bg-red-700 text-white border-red-800 shadow-[0_0_15px_rgba(220,38,38,0.4)]";
     default:
       return "bg-black hover:bg-zinc-900 text-white border-zinc-800";
   }
