@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   runBackup,
   applyRetentionPolicy,
@@ -6,7 +7,23 @@ import {
   markRunTimestamps,
 } from "@/server/backup.server";
 
-// Public cron endpoint. Protected by SUPABASE_SERVICE_ROLE_KEY or PUBLISHABLE_KEY
+async function verifyCustomAdmin(token: string) {
+  if (!token) return null;
+  if (!token.startsWith("session-")) return null;
+  
+  const userId = token.replace("session-", "");
+  const { data: user, error } = await supabaseAdmin
+    .from("admin_users")
+    .select("id, role")
+    .eq("id", userId)
+    .single();
+
+  if (error || !user) return null;
+  if (user.role !== "owner" && user.role !== "admin") return null;
+  return user;
+}
+
+// Public cron endpoint. Protected by SUPABASE_SERVICE_ROLE_KEY, PUBLISHABLE_KEY OR Admin Login
 export const Route = createFileRoute("/api/public/hooks/run-backup")({
   server: {
     handlers: {
@@ -23,9 +40,16 @@ export const Route = createFileRoute("/api/public/hooks/run-backup")({
         
         const token = auth.replace(/^Bearer\s+/i, "");
         
-        const isAuthorized = 
+        let isAuthorized = 
           (serviceKey && (token === serviceKey || apikey === serviceKey)) ||
           (pubKey && (token === pubKey || apikey === pubKey));
+
+        if (!isAuthorized && token) {
+          const user = await verifyCustomAdmin(token);
+          if (user) {
+            isAuthorized = true;
+          }
+        }
 
         if (!isAuthorized) {
           console.error("[cron] Unauthorized access attempt to run-backup");
