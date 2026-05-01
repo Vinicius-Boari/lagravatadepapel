@@ -528,7 +528,7 @@ export function QuestionarioForm() {
               control={form.control}
               name="character_count"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Quantos personagens contratados?*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
@@ -545,6 +545,14 @@ export function QuestionarioForm() {
                       <SelectItem value="Outro">Outro</SelectItem>
                     </SelectContent>
                   </Select>
+                  {field.value === "Outro" && (
+                    <FormControl>
+                      <Input 
+                        placeholder="Especifique a quantidade" 
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                      />
+                    </FormControl>
+                  )}
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
