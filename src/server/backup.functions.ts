@@ -96,7 +96,11 @@ const settingsSchema = z.object({
   interval_unit: z.enum(["minutes", "hours", "days"]),
   retention_count: z.number().int().min(1).max(1000),
   retention_days: z.number().int().min(0).max(3650).nullable().optional(),
+  backup_type: z.string().optional(),
+  bucket_name: z.string().optional(),
+  backup_path: z.string().optional(),
 });
+
 
 export const updateBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
