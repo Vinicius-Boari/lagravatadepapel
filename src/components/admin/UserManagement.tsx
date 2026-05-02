@@ -60,10 +60,10 @@ export function UserManagement() {
 
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, email")
+      .select("id, email, full_name")
       .in("id", userIds);
 
-    const profileMap = new Map((profiles ?? []).map((p) => [p.id, p.email]));
+    const profileMap = new Map((profiles ?? []).map((p) => [p.id, { email: p.email, full_name: p.full_name }]));
 
     // Resolve papel mais alto por usuário
     const byUser = new Map<string, "owner" | "admin">();
