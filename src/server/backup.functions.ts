@@ -51,17 +51,26 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    console.log("[backup.functions] getBackupSettings starting for user:", context.userId);
     try {
       await assertIsAdmin(context.userId);
+      console.log("[backup.functions] getBackupSettings: admin check passed");
+      
       const { data: settings, error } = await supabaseAdmin
         .from("backup_settings")
         .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
         .limit(1)
         .maybeSingle();
-      if (error) throw new Error(error.message);
+      
+      if (error) {
+        console.error("[backup.functions] getBackupSettings database error:", error.message);
+        throw new Error(error.message);
+      }
+      
+      console.log("[backup.functions] getBackupSettings success, data found:", !!settings);
       return { settings };
     } catch (err: any) {
-      console.error("[backup.functions] getBackupSettings error:", err.message);
+      console.error("[backup.functions] getBackupSettings caught error:", err.message);
       throw new Error(err.message || "Internal Server Error");
     }
   });
