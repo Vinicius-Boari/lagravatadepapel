@@ -209,10 +209,10 @@ body.lg-body {
 .orcamento-header-btn {
   background: var(--color-red-lg);
   color: white;
-  padding: 8px 24px; border-radius: 50px; cursor: pointer;
+  padding: 8px 20px; border-radius: 50px; cursor: pointer;
   font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em;
   text-transform: uppercase; display: flex; align-items: center; justify-content: center;
-  transition: all 0.3s; min-width: 120px;
+  transition: all 0.3s; min-width: 110px;
   text-decoration: none;
   border: 1px solid var(--color-red-lg);
 }
@@ -221,6 +221,14 @@ body.lg-body {
   color: var(--color-white-lg);
   border-color: rgba(255,255,255,0.3);
   backdrop-filter: blur(20px);
+}
+
+@media (max-width: 640px) {
+  .orcamento-header-btn {
+    padding: 6px 12px;
+    min-width: 90px;
+    font-size: 0.6rem;
+  }
 }
 
 .fullscreen-menu {
