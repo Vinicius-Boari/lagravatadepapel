@@ -125,7 +125,8 @@ export function BackupExport() {
         },
         error: (err) => {
           fetchData();
-          return `Erro ao executar backup: ${err.message}`;
+          const errorMessage = err instanceof Response ? `Erro ${err.status}` : err.message || "Erro desconhecido";
+          return `Erro ao executar backup: ${errorMessage}`;
         }
       });
     } finally {
