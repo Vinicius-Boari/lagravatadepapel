@@ -33,6 +33,7 @@ export function UserManagement() {
     email: "",
     password: "",
     full_name: "",
+    role: "admin" as "admin" | "owner",
   });
   const { status, setSaveStatus } = useSaveStatus();
 
@@ -113,10 +114,10 @@ export function UserManagement() {
       return;
     }
 
-    // Promove para admin (apenas owner consegue, conforme RLS)
+    // Promove para o papel selecionado (apenas owner consegue, conforme RLS)
     const { error: roleError } = await supabase
       .from("user_roles")
-      .insert({ user_id: data.user.id, role: "admin" });
+      .insert({ user_id: data.user.id, role: newAdmin.role });
 
     if (roleError) {
       setSaveStatus('error');
@@ -128,7 +129,7 @@ export function UserManagement() {
     toast.success("Administrador cadastrado!");
     setTimeout(() => {
       setShowAddForm(false);
-      setNewAdmin({ email: "", password: "", full_name: "" });
+      setNewAdmin({ email: "", password: "", full_name: "", role: "admin" });
       fetchUsers();
     }, 1000);
   };
@@ -190,6 +191,17 @@ export function UserManagement() {
                   value={newAdmin.password}
                   onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
                 />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-red-500">Papel / Nível de Acesso</Label>
+                <select
+                  value={newAdmin.role}
+                  onChange={(e) => setNewAdmin({ ...newAdmin, role: e.target.value as "admin" | "owner" })}
+                  className="w-full bg-zinc-800 border-red-900 text-red-500 rounded-md p-2 text-sm focus:ring-1 focus:ring-red-500 outline-none"
+                >
+                  <option value="admin">Administrador (Acesso Geral)</option>
+                  <option value="owner">Dono (Acesso Total + Gestão de Usuários)</option>
+                </select>
               </div>
             </div>
             <div className="flex justify-end pt-2">
