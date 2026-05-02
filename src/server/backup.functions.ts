@@ -73,7 +73,7 @@ export const getBackupSettings = createServerFn({ method: "POST" })
       
       const { data: settings, error } = await supabaseAdmin
         .from("backup_settings")
-        .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
+        .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at, backup_type, bucket_name, backup_path")
         .limit(1)
         .maybeSingle();
       
@@ -96,7 +96,11 @@ const settingsSchema = z.object({
   interval_unit: z.enum(["minutes", "hours", "days"]),
   retention_count: z.number().int().min(1).max(1000),
   retention_days: z.number().int().min(0).max(3650).nullable().optional(),
+  backup_type: z.string().optional(),
+  bucket_name: z.string().optional(),
+  backup_path: z.string().optional(),
 });
+
 
 export const updateBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
