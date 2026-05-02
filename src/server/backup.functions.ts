@@ -12,19 +12,28 @@ import {
 
 async function assertIsAdmin(userId: string) {
   console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  if (!userId) {
+    console.error("[backup.functions] assertIsAdmin: No userId provided");
+    throw new Error("Usuário não identificado");
+  }
+  
   const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
-    .in("role", ["admin", "owner"]);
+    .eq("user_id", userId);
   
   if (error) {
     console.error("[backup.functions] assertIsAdmin database error:", error);
     throw new Error(`Erro de permissão: ${error.message}`);
   }
   
-  if (!data || data.length === 0) {
-    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner`);
+  const roles = data?.map(r => r.role) || [];
+  console.log("[backup.functions] assertIsAdmin: User roles found:", roles);
+  
+  const isAdmin = roles.some(role => ["admin", "owner"].includes(role));
+  
+  if (!isAdmin) {
+    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner. Roles:`, roles);
     throw new Error("Apenas administradores podem gerenciar backups");
   }
 }
@@ -51,17 +60,27 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    console.log("[backup.functions] getBackupSettings starting for user:", context.userId);
     try {
+      console.log("[backup.functions] getBackupSettings: Checking admin for user", context.userId);
       await assertIsAdmin(context.userId);
+      console.log("[backup.functions] getBackupSettings: admin check passed");
+      
       const { data: settings, error } = await supabaseAdmin
         .from("backup_settings")
         .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
         .limit(1)
         .maybeSingle();
-      if (error) throw new Error(error.message);
+      
+      if (error) {
+        console.error("[backup.functions] getBackupSettings database error:", error.message);
+        throw new Error(error.message);
+      }
+      
+      console.log("[backup.functions] getBackupSettings success, data found:", !!settings);
       return { settings };
     } catch (err: any) {
-      console.error("[backup.functions] getBackupSettings error:", err.message);
+      console.error("[backup.functions] getBackupSettings caught error:", err.message);
       throw new Error(err.message || "Internal Server Error");
     }
   });
