@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.owner_exists() FROM authenticated;
