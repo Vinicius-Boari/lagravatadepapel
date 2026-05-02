@@ -37,14 +37,19 @@ async function assertIsAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertIsAdmin(context.userId);
-    const { data: backups, error } = await supabaseAdmin
-      .from("backups")
-      .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
-      .order("created_at", { ascending: false })
-      .limit(100);
-    if (error) throw new Error(error.message);
-    return { backups: backups ?? [] };
+    try {
+      await assertIsAdmin(context.userId);
+      const { data: backups, error } = await supabaseAdmin
+        .from("backups")
+        .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw new Error(error.message);
+      return { backups: backups ?? [] };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
+    }
   });
 
 export const getBackupSettings = createServerFn({ method: "POST" })
