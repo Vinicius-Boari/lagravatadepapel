@@ -12,43 +12,55 @@ import {
 
 // Verifica que o usuário autenticado (via JWT do Supabase) tem papel admin/owner.
 async function assertIsAdmin(userId: string) {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .in("role", ["admin", "owner"]);
-    
-    if (error) {
-      console.error("[assertIsAdmin] Database error:", error);
-      throw new Error(`Database error: ${error.message}`);
-    }
-    
-    if (!data || data.length === 0) {
-      console.warn(`[assertIsAdmin] User ${userId} is not an admin/owner`);
-      throw new Error("Apenas administradores podem gerenciar backups");
-    }
-  } catch (err: any) {
-    console.error("[assertIsAdmin] Unexpected error:", err);
-    throw new Response(err.message || "Unauthorized", { status: 403 });
+  console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["admin", "owner"]);
+  
+  if (error) {
+    console.error("[backup.functions] assertIsAdmin database error:", error);
+    throw new Error(`Erro de permissão: ${error.message}`);
   }
+  
+  if (!data || data.length === 0) {
+    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner`);
+    throw new Error("Apenas administradores podem gerenciar backups");
+  }
+  console.log("[backup.functions] assertIsAdmin: User is authorized");
 }
 
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    console.log("[backup.functions] listBackups handler started");
     try {
+      if (!context.userId) {
+        console.error("[backup.functions] listBackups: No userId in context");
+        throw new Error("Usuário não autenticado");
+      }
+
       await assertIsAdmin(context.userId);
+      
+      console.log("[backup.functions] listBackups: Fetching backups from DB");
       const { data: backups, error } = await supabaseAdmin
         .from("backups")
         .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
         .order("created_at", { ascending: false })
         .limit(100);
-      if (error) throw new Error(error.message);
+
+      if (error) {
+        console.error("[backup.functions] listBackups DB error:", error);
+        throw new Error(`Erro ao buscar backups: ${error.message}`);
+      }
+
+      console.log("[backup.functions] listBackups: Found", backups?.length || 0, "backups");
       return { backups: backups ?? [] };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] listBackups final catch:", err.message || err);
+      // Re-throw as Error for TanStack Start to handle correctly
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
