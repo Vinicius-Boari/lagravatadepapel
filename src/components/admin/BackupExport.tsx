@@ -166,7 +166,8 @@ export function BackupExport() {
       fetchData();
     } catch (error: any) {
       setSaveStatus('error');
-      toast.error(`Erro ao salvar: ${error.message}`);
+      const errorMessage = error instanceof Response ? `Erro ${error.status}` : error.message || "Erro desconhecido";
+      toast.error(`Erro ao salvar: ${errorMessage}`);
     }
   };
 
