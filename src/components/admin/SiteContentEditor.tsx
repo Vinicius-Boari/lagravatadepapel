@@ -180,7 +180,7 @@ export function SiteContentEditor() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl gap-4 mb-6">
         <div className="flex items-center gap-4">
           <div className="bg-red-600/10 p-2 rounded-lg">
             <Globe className="w-5 h-5 text-red-500" />
