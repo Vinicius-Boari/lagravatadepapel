@@ -99,7 +99,8 @@ export function BackupExport() {
       });
     } catch (error: any) {
       console.error("Backup fetch error:", error);
-      toast.error("Erro ao carregar dados de backup.");
+      const errorMessage = error instanceof Response ? `Erro ${error.status}: ${error.statusText}` : error.message || "Erro desconhecido";
+      toast.error(`Erro ao carregar dados de backup: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
