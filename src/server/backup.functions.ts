@@ -82,32 +82,37 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => settingsSchema.parse(input))
   .handler(async ({ data, context }) => {
-    await assertIsAdmin(context.userId);
-    const { data: existing } = await supabaseAdmin
-      .from("backup_settings")
-      .select("id")
-      .limit(1)
-      .maybeSingle();
-
-    const settingsData = {
-      ...data,
-      updated_at: new Date().toISOString(),
-      updated_by: context.userId,
-    };
-
-    if (existing) {
-      const { error } = await supabaseAdmin
+    try {
+      await assertIsAdmin(context.userId);
+      const { data: existing } = await supabaseAdmin
         .from("backup_settings")
-        .update(settingsData)
-        .eq("id", existing.id);
-      if (error) throw new Error(error.message);
-    } else {
-      const { error } = await supabaseAdmin
-        .from("backup_settings")
-        .insert({ ...settingsData, id: crypto.randomUUID() });
-      if (error) throw new Error(error.message);
+        .select("id")
+        .limit(1)
+        .maybeSingle();
+
+      const settingsData = {
+        ...data,
+        updated_at: new Date().toISOString(),
+        updated_by: context.userId,
+      };
+
+      if (existing) {
+        const { error } = await supabaseAdmin
+          .from("backup_settings")
+          .update(settingsData)
+          .eq("id", existing.id);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabaseAdmin
+          .from("backup_settings")
+          .insert({ ...settingsData, id: crypto.randomUUID() });
+        if (error) throw new Error(error.message);
+      }
+      return { success: true };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
     }
-    return { success: true };
   });
 
 export const runBackupNow = createServerFn({ method: "POST" })
