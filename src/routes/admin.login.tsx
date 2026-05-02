@@ -20,7 +20,7 @@ function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasOwner, setHasOwner] = useState<boolean | null>(null);
-  const { login, signup, user } = useAuth();
+  const { login, signup, user, error: authError } = useAuth();
   const navigate = useNavigate();
 
   // Verifica se já existe um owner. Se não existir, mostra o cadastro inicial.
@@ -53,12 +53,12 @@ function LoginPage() {
           const loginOk = await login(email, password);
           if (loginOk) navigate({ to: "/admin/dashboard" });
         } else {
-          toast.error("Não foi possível criar a conta. Verifique os dados.");
+          toast.error(authError || "Não foi possível criar a conta. Verifique os dados.");
         }
       } else {
         const ok = await login(email, password);
         if (ok) navigate({ to: "/admin/dashboard" });
-        else toast.error("Email ou senha incorretos.");
+        else toast.error(authError || "Email ou senha incorretos.");
       }
     } catch (err) {
       console.error(err);
