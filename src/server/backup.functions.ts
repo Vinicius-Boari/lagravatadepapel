@@ -118,51 +118,71 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
 export const runBackupNow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertIsAdmin(context.userId);
-    const result = await runBackup({ trigger: "manual", createdBy: context.userId });
-    await applyRetentionPolicy();
-    return result;
+    try {
+      await assertIsAdmin(context.userId);
+      const result = await runBackup({ trigger: "manual", createdBy: context.userId });
+      await applyRetentionPolicy();
+      return result;
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
+    }
   });
 
 export const restoreBackupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertIsAdmin(context.userId);
-    await restoreBackup(data.id);
-    await supabaseAdmin.from("admin_logs").insert({
-      action: "backup.restore",
-      user_email: context.userId,
-      user_id: context.userId,
-      entity_type: "backup",
-      entity_id: data.id,
-    });
-    return { success: true };
+    try {
+      await assertIsAdmin(context.userId);
+      await restoreBackup(data.id);
+      await supabaseAdmin.from("admin_logs").insert({
+        action: "backup.restore",
+        user_email: context.userId,
+        user_id: context.userId,
+        entity_type: "backup",
+        entity_id: data.id,
+      });
+      return { success: true };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
+    }
   });
 
 export const deleteBackupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertIsAdmin(context.userId);
-    await deleteBackup(data.id);
-    return { success: true };
+    try {
+      await assertIsAdmin(context.userId);
+      await deleteBackup(data.id);
+      return { success: true };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
+    }
   });
 
 export const getBackupDownloadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertIsAdmin(context.userId);
-    const { data: row, error } = await supabaseAdmin
-      .from("backups")
-      .select("file_path")
-      .eq("id", data.id)
-      .maybeSingle();
+    try {
+      await assertIsAdmin(context.userId);
+      const { data: row, error } = await supabaseAdmin
+        .from("backups")
+        .select("file_path")
+        .eq("id", data.id)
+        .maybeSingle();
 
-    if (error) throw new Error(`Erro ao buscar arquivo: ${error.message}`);
-    if (!row?.file_path) throw new Error("Arquivo indisponível");
-    const url = await getSignedDownloadUrl(row.file_path);
-    if (!url) throw new Error("Falha ao gerar URL de download");
-    return { url };
+      if (error) throw new Error(`Erro ao buscar arquivo: ${error.message}`);
+      if (!row?.file_path) throw new Error("Arquivo indisponível");
+      const url = await getSignedDownloadUrl(row.file_path);
+      if (!url) throw new Error("Falha ao gerar URL de download");
+      return { url };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
+    }
   });
