@@ -12,19 +12,28 @@ import {
 
 async function assertIsAdmin(userId: string) {
   console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  if (!userId) {
+    console.error("[backup.functions] assertIsAdmin: No userId provided");
+    throw new Error("Usuário não identificado");
+  }
+  
   const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
-    .in("role", ["admin", "owner"]);
+    .eq("user_id", userId);
   
   if (error) {
     console.error("[backup.functions] assertIsAdmin database error:", error);
     throw new Error(`Erro de permissão: ${error.message}`);
   }
   
-  if (!data || data.length === 0) {
-    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner`);
+  const roles = data?.map(r => r.role) || [];
+  console.log("[backup.functions] assertIsAdmin: User roles found:", roles);
+  
+  const isAdmin = roles.some(role => ["admin", "owner"].includes(role));
+  
+  if (!isAdmin) {
+    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner. Roles:`, roles);
     throw new Error("Apenas administradores podem gerenciar backups");
   }
 }
