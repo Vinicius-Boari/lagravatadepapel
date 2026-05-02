@@ -99,7 +99,8 @@ export function BackupExport() {
       });
     } catch (error: any) {
       console.error("Backup fetch error:", error);
-      toast.error("Erro ao carregar dados de backup.");
+      const errorMessage = error instanceof Response ? `Erro ${error.status}: ${error.statusText}` : error.message || "Erro desconhecido";
+      toast.error(`Erro ao carregar dados de backup: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +125,8 @@ export function BackupExport() {
         },
         error: (err) => {
           fetchData();
-          return `Erro ao executar backup: ${err.message}`;
+          const errorMessage = err instanceof Response ? `Erro ${err.status}` : err.message || "Erro desconhecido";
+          return `Erro ao executar backup: ${errorMessage}`;
         }
       });
     } finally {
@@ -164,7 +166,8 @@ export function BackupExport() {
       fetchData();
     } catch (error: any) {
       setSaveStatus('error');
-      toast.error(`Erro ao salvar: ${error.message}`);
+      const errorMessage = error instanceof Response ? `Erro ${error.status}` : error.message || "Erro desconhecido";
+      toast.error(`Erro ao salvar: ${errorMessage}`);
     }
   };
 

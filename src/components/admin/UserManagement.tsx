@@ -79,8 +79,8 @@ export function UserManagement() {
         const p = profileMap.get(id);
         return {
           id,
-          email: p?.email ?? "(sem email)",
-          full_name: p?.full_name ?? "Administrador",
+          email: p?.email ?? "viniciusbataglia500@gmail.com",
+          full_name: p?.full_name ?? "Vinicius Boari Bataglia",
           role,
         };
       });
