@@ -532,20 +532,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      delete_admin_user: { Args: { _target_id: string }; Returns: undefined }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_admin: { Args: never; Returns: boolean }
-      is_owner: { Args: { _user_id: string }; Returns: boolean }
-      transfer_ownership: {
-        Args: { _new_owner_id: string }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role: "owner" | "admin"
