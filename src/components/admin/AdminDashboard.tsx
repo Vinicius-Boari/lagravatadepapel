@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   LayoutDashboard, 
   Palette, 
