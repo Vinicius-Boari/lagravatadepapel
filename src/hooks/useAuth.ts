@@ -52,16 +52,26 @@ export function useAuth() {
 
       console.log("[useAuth] Resolved role:", resolvedRole);
 
+      // Fetch profile data to get full_name and latest email
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, email")
+        .eq("id", authUser.id)
+        .maybeSingle();
+
       const displayName =
+        profile?.full_name ||
         (authUser.user_metadata?.full_name as string | undefined) ||
         authUser.email?.split("@")[0] ||
         "Administrador";
 
+      const displayEmail = profile?.email || authUser.email || "";
+
       setUser({
         id: authUser.id,
-        email: authUser.email ?? "",
+        email: displayEmail,
         full_name: displayName,
-        username: authUser.email ?? "",
+        username: displayEmail,
         role: resolvedRole,
       });
       setRole(resolvedRole);
