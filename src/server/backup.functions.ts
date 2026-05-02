@@ -12,14 +12,25 @@ import {
 
 // Verifica que o usuário autenticado (via JWT do Supabase) tem papel admin/owner.
 async function assertIsAdmin(userId: string) {
-  const { data, error } = await supabaseAdmin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .in("role", ["admin", "owner"]);
-  if (error) throw new Error(error.message);
-  if (!data || data.length === 0) {
-    throw new Error("Apenas administradores podem gerenciar backups");
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .in("role", ["admin", "owner"]);
+    
+    if (error) {
+      console.error("[assertIsAdmin] Database error:", error);
+      throw new Error(`Database error: ${error.message}`);
+    }
+    
+    if (!data || data.length === 0) {
+      console.warn(`[assertIsAdmin] User ${userId} is not an admin/owner`);
+      throw new Error("Apenas administradores podem gerenciar backups");
+    }
+  } catch (err: any) {
+    console.error("[assertIsAdmin] Unexpected error:", err);
+    throw new Response(err.message || "Unauthorized", { status: 403 });
   }
 }
 
