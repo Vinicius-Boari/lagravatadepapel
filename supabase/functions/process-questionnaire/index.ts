@@ -21,10 +21,25 @@ serve(async (req) => {
       );
     }
 
-    const { formData, targetEmail } = await req.json();
+    const { formData: rawFormData, targetEmail } = await req.json();
 
-    if (!targetEmail || !formData) {
+    if (!targetEmail || !rawFormData) {
       throw new Error("Dados ausentes para processamento.");
+    }
+
+    // HTML-escape helper to prevent injection in email body
+    const esc = (s: unknown): string =>
+      String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    // Escape every field used in the template
+    const formData: Record<string, string> = {};
+    for (const [k, v] of Object.entries(rawFormData)) {
+      formData[k] = esc(v);
     }
 
     // Prepare HTML content for the email
