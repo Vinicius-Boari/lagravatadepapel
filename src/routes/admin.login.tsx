@@ -58,7 +58,7 @@ function LoginPage() {
       } else {
         const ok = await login(email, password);
         if (ok) navigate({ to: "/admin/dashboard" });
-        else toast.error("Email ou senha incorretos.");
+        else toast.error(authError || "Email ou senha incorretos.");
       }
     } catch (err) {
       console.error(err);
