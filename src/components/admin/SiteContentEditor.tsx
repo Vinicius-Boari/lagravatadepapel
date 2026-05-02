@@ -180,61 +180,71 @@ export function SiteContentEditor() {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-[60] py-4 -mt-4 border-b border-zinc-800/50 gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl gap-4">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold text-red-500">Conteúdo do Site</h2>
-          <Button 
-            onClick={async () => {
-              const btnMap: Record<string, any> = {
-                hero: { data: hero, status: heroStatus, set: setHeroStatus },
-                services: { data: services, status: servicesStatus, set: setServicesStatus },
-                videos: { data: videos, status: videosStatus, set: setVideosStatus },
-                places: { data: places, status: placesStatus, set: setPlacesStatus },
-                plan: { data: plan, status: planStatus, set: setPlanStatus },
-                about: { data: about, status: aboutStatus, set: setAboutStatus },
-                footer: { data: footer, status: footerStatus, set: setFooterStatus },
-                seo: { data: seo, status: seoStatus, set: setSeoStatus },
-                languages: { data: languages, status: langStatus, set: setLangStatus },
-                instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
-              };
-              const current = btnMap[activeSection];
-              if (current) {
-                current.set('saving');
-                try {
-                  const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
-                  if (result) {
-                    current.set('saved');
-                    showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
-                  } else {
-                    throw new Error("Falha ao salvar");
-                  }
-                } catch (err: any) {
-                  current.set('error');
-                  showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
-                }
-              }
-            }}
-            size="sm"
-            className={cn(
-              "transition-all duration-300 w-32 font-bold shadow-lg",
-              getSaveButtonStyles(
-                activeSection === "hero" ? heroStatus :
-                activeSection === "services" ? servicesStatus :
-                activeSection === "videos" ? videosStatus :
-                activeSection === "places" ? placesStatus :
-                activeSection === "plan" ? planStatus :
-                activeSection === "about" ? aboutStatus :
-                activeSection === "footer" ? footerStatus :
-                activeSection === "seo" ? seoStatus :
-                activeSection === "instagram" ? instagramStatus :
-                langStatus
-              )
-            )}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Salvar
-          </Button>
+          <div className="bg-red-600/10 p-2 rounded-lg">
+            <Globe className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-red-500 leading-none">Conteúdo do Site</h2>
+            <p className="text-[10px] text-red-500/50 uppercase tracking-widest mt-1">Gerencie as informações públicas</p>
+          </div>
         </div>
+        
+        <Button 
+          onClick={async () => {
+            const btnMap: Record<string, any> = {
+              hero: { data: hero, status: heroStatus, set: setHeroStatus },
+              services: { data: services, status: servicesStatus, set: setServicesStatus },
+              videos: { data: videos, status: videosStatus, set: setVideosStatus },
+              places: { data: places, status: placesStatus, set: setPlacesStatus },
+              plan: { data: plan, status: planStatus, set: setPlanStatus },
+              about: { data: about, status: aboutStatus, set: setAboutStatus },
+              footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              languages: { data: languages, status: langStatus, set: setLangStatus },
+              instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
+            };
+            const current = btnMap[activeSection];
+            if (current) {
+              current.set('saving');
+              try {
+                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                if (result) {
+                  current.set('saved');
+                  showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
+                } else {
+                  throw new Error("Falha ao salvar");
+                }
+              } catch (err: any) {
+                current.set('error');
+                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
+              }
+            }
+          }}
+          size="sm"
+          className={cn(
+            "transition-all duration-300 w-40 font-bold shadow-lg h-10",
+            getSaveButtonStyles(
+              activeSection === "hero" ? heroStatus :
+              activeSection === "services" ? servicesStatus :
+              activeSection === "videos" ? videosStatus :
+              activeSection === "places" ? placesStatus :
+              activeSection === "plan" ? planStatus :
+              activeSection === "about" ? aboutStatus :
+              activeSection === "footer" ? footerStatus :
+              activeSection === "seo" ? seoStatus :
+              activeSection === "instagram" ? instagramStatus :
+              langStatus
+            )
+          )}
+        >
+          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving') 
+            ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> 
+            : <Save className="w-4 h-4 mr-2" />
+          }
+          Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
