@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   runBackup,
   restoreBackup,
@@ -9,28 +10,23 @@ import {
   getSignedDownloadUrl,
 } from "./backup.server";
 
-async function verifyCustomAdmin(token: string) {
-  if (!token) throw new Error("Token de autenticação ausente");
-  if (!token.startsWith("session-")) throw new Error("Token inválido");
-  
-  const userId = token.replace("session-", "");
-  const { data: user, error } = await supabaseAdmin
-    .from("admin_users")
-    .select("id, role")
-    .eq("id", userId)
-    .single();
-
-  if (error || !user) throw new Error("Administrador não encontrado");
-  if (user.role !== "owner" && user.role !== "admin") {
+// Verifica que o usuário autenticado (via JWT do Supabase) tem papel admin/owner.
+async function assertIsAdmin(userId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["admin", "owner"]);
+  if (error) throw new Error(error.message);
+  if (!data || data.length === 0) {
     throw new Error("Apenas administradores podem gerenciar backups");
   }
-  return user;
 }
 
 export const listBackups = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ adminToken: z.string() }).parse(input))
-  .handler(async ({ data }) => {
-    await verifyCustomAdmin(data.adminToken);
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertIsAdmin(context.userId);
     const { data: backups, error } = await supabaseAdmin
       .from("backups")
       .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
@@ -41,9 +37,9 @@ export const listBackups = createServerFn({ method: "POST" })
   });
 
 export const getBackupSettings = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ adminToken: z.string() }).parse(input))
-  .handler(async ({ data }) => {
-    await verifyCustomAdmin(data.adminToken);
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertIsAdmin(context.userId);
     const { data: settings, error } = await supabaseAdmin
       .from("backup_settings")
       .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
@@ -54,30 +50,28 @@ export const getBackupSettings = createServerFn({ method: "POST" })
   });
 
 const settingsSchema = z.object({
-  adminToken: z.string(),
-  data: z.object({
-    auto_enabled: z.boolean(),
-    interval_value: z.number().int().min(1).max(10000),
-    interval_unit: z.enum(["minutes", "hours", "days"]),
-    retention_count: z.number().int().min(1).max(1000),
-    retention_days: z.number().int().min(0).max(3650).nullable().optional(),
-  }),
+  auto_enabled: z.boolean(),
+  interval_value: z.number().int().min(1).max(10000),
+  interval_unit: z.enum(["minutes", "hours", "days"]),
+  retention_count: z.number().int().min(1).max(1000),
+  retention_days: z.number().int().min(0).max(3650).nullable().optional(),
 });
 
 export const updateBackupSettings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => settingsSchema.parse(input))
-  .handler(async ({ data }) => {
-    const user = await verifyCustomAdmin(data.adminToken);
+  .handler(async ({ data, context }) => {
+    await assertIsAdmin(context.userId);
     const { data: existing } = await supabaseAdmin
       .from("backup_settings")
       .select("id")
       .limit(1)
       .maybeSingle();
-    
+
     const settingsData = {
-      ...data.data,
+      ...data,
       updated_at: new Date().toISOString(),
-      updated_by: user.id,
+      updated_by: context.userId,
     };
 
     if (existing) {
@@ -96,23 +90,24 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   });
 
 export const runBackupNow = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ adminToken: z.string() }).parse(input))
-  .handler(async ({ data }) => {
-    const user = await verifyCustomAdmin(data.adminToken);
-    const result = await runBackup({ trigger: "manual", createdBy: user.id });
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertIsAdmin(context.userId);
+    const result = await runBackup({ trigger: "manual", createdBy: context.userId });
     await applyRetentionPolicy();
     return result;
   });
 
 export const restoreBackupFn = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
-  .handler(async ({ data }) => {
-    const user = await verifyCustomAdmin(data.adminToken);
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertIsAdmin(context.userId);
     await restoreBackup(data.id);
     await supabaseAdmin.from("admin_logs").insert({
       action: "backup.restore",
-      user_email: user.id,
-      user_id: user.id,
+      user_email: context.userId,
+      user_id: context.userId,
       entity_type: "backup",
       entity_id: data.id,
     });
@@ -120,23 +115,25 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
   });
 
 export const deleteBackupFn = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
-  .handler(async ({ data }) => {
-    await verifyCustomAdmin(data.adminToken);
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertIsAdmin(context.userId);
     await deleteBackup(data.id);
     return { success: true };
   });
 
 export const getBackupDownloadUrl = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ adminToken: z.string(), id: z.string().uuid() }).parse(input))
-  .handler(async ({ data }) => {
-    await verifyCustomAdmin(data.adminToken);
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertIsAdmin(context.userId);
     const { data: row, error } = await supabaseAdmin
       .from("backups")
       .select("file_path")
       .eq("id", data.id)
       .maybeSingle();
-    
+
     if (error) throw new Error(`Erro ao buscar arquivo: ${error.message}`);
     if (!row?.file_path) throw new Error("Arquivo indisponível");
     const url = await getSignedDownloadUrl(row.file_path);

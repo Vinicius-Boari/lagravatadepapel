@@ -45,44 +45,6 @@ export type Database = {
           user_email?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_logs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      admin_users: {
-        Row: {
-          created_at: string | null
-          full_name: string
-          id: string
-          password_hash: string
-          role: Database["public"]["Enums"]["admin_role"]
-          updated_at: string | null
-          username: string
-        }
-        Insert: {
-          created_at?: string | null
-          full_name: string
-          id?: string
-          password_hash: string
-          role?: Database["public"]["Enums"]["admin_role"]
-          updated_at?: string | null
-          username: string
-        }
-        Update: {
-          created_at?: string | null
-          full_name?: string
-          id?: string
-          password_hash?: string
-          role?: Database["public"]["Enums"]["admin_role"]
-          updated_at?: string | null
-          username?: string
-        }
         Relationships: []
       }
       backup_settings: {
@@ -574,7 +536,6 @@ export type Database = {
       }
     }
     Enums: {
-      admin_role: "owner" | "admin"
       app_role: "owner" | "admin"
     }
     CompositeTypes: {
@@ -703,7 +664,6 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      admin_role: ["owner", "admin"],
       app_role: ["owner", "admin"],
     },
   },

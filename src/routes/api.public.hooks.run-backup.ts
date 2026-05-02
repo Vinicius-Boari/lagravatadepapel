@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createClient } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   runBackup,
@@ -7,23 +8,31 @@ import {
   markRunTimestamps,
 } from "@/server/backup.server";
 
-async function verifyCustomAdmin(token: string) {
-  if (!token) return null;
-  if (!token.startsWith("session-")) return null;
-  
-  const userId = token.replace("session-", "");
-  const { data: user, error } = await supabaseAdmin
-    .from("admin_users")
-    .select("id, role")
-    .eq("id", userId)
-    .single();
+// Verifica se o JWT do Supabase pertence a um admin/owner.
+async function verifySupabaseAdmin(token: string): Promise<boolean> {
+  if (!token) return false;
+  const url = process.env.SUPABASE_URL;
+  const pubKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !pubKey) return false;
 
-  if (error || !user) return null;
-  if (user.role !== "owner" && user.role !== "admin") return null;
-  return user;
+  const client = createClient(url, pubKey, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
+  });
+
+  const { data, error } = await client.auth.getUser(token);
+  if (error || !data?.user) return false;
+
+  const { data: roles } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", data.user.id)
+    .in("role", ["admin", "owner"]);
+
+  return !!roles && roles.length > 0;
 }
 
-// Public cron endpoint. Protected by SUPABASE_SERVICE_ROLE_KEY, PUBLISHABLE_KEY OR Admin Login
+// Public cron endpoint. Authorized via service-role key (cron) or admin JWT.
 export const Route = createFileRoute("/api/public/hooks/run-backup")({
   server: {
     handlers: {
@@ -33,25 +42,20 @@ export const Route = createFileRoute("/api/public/hooks/run-backup")({
       POST: async ({ request }: { request: Request }) => {
         const auth = request.headers.get("authorization") ?? "";
         const apikey = request.headers.get("apikey") ?? "";
-        
-        // Try multiple possible env var names for keys
+
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-        const pubKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
-        
         const token = auth.replace(/^Bearer\s+/i, "").trim();
-        
+
         let isAuthorized = false;
 
-        // 1. Service Role Key or Anon Key (from env or header)
-        if (serviceKey && (token === serviceKey || apikey === serviceKey)) isAuthorized = true;
-        if (!isAuthorized && pubKey && (token === pubKey || apikey === pubKey)) isAuthorized = true;
+        // 1. Cron caller via service role key
+        if (serviceKey && (token === serviceKey || apikey === serviceKey)) {
+          isAuthorized = true;
+        }
 
-        // 2. Admin Session Token
-        if (!isAuthorized && token && token.startsWith("session-")) {
-          const user = await verifyCustomAdmin(token);
-          if (user) {
-            isAuthorized = true;
-          }
+        // 2. Admin user via Supabase JWT
+        if (!isAuthorized && token) {
+          isAuthorized = await verifySupabaseAdmin(token);
         }
 
         if (!isAuthorized) {
