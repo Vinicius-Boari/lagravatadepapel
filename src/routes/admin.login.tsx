@@ -20,7 +20,7 @@ function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasOwner, setHasOwner] = useState<boolean | null>(null);
-  const { login, signup, user } = useAuth();
+  const { login, signup, user, error: authError } = useAuth();
   const navigate = useNavigate();
 
   // Verifica se já existe um owner. Se não existir, mostra o cadastro inicial.
