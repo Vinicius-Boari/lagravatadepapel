@@ -109,7 +109,7 @@ const SettingsTab = () => {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center sticky top-0 md:top-16 bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl">
+      <div className="flex justify-between items-center bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl mb-6">
         <div className="flex items-center gap-4">
           <div className="bg-red-600/10 p-2 rounded-lg">
             <Settings className="w-5 h-5 text-red-500" />
