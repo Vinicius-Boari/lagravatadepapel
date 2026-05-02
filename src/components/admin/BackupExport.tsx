@@ -168,7 +168,8 @@ export function BackupExport() {
   const handleDownload = async (id: string) => {
     try {
       const { url } = await getDownloadFn({ data: { id } });
-      window.open(url, '_blank');
+      if (url) window.open(url, '_blank');
+      else toast.error("URL de download não disponível.");
     } catch (error) {
       toast.error("Erro ao gerar link de download.");
     }
