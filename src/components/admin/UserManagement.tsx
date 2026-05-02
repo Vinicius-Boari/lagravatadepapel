@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 interface UserRow {
   id: string;
   email: string;
+  full_name: string;
   role: "owner" | "admin";
 }
 
@@ -59,10 +60,10 @@ export function UserManagement() {
 
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, email")
+      .select("id, email, full_name")
       .in("id", userIds);
 
-    const profileMap = new Map((profiles ?? []).map((p) => [p.id, p.email]));
+    const profileMap = new Map((profiles ?? []).map((p) => [p.id, { email: p.email, full_name: p.full_name }]));
 
     // Resolve papel mais alto por usuário
     const byUser = new Map<string, "owner" | "admin">();
@@ -74,11 +75,15 @@ export function UserManagement() {
 
     const list: UserRow[] = Array.from(byUser.entries())
       .filter(([, role]) => role === "admin" || role === "owner")
-      .map(([id, role]) => ({
-        id,
-        email: profileMap.get(id) ?? "(sem email)",
-        role,
-      }));
+      .map(([id, role]) => {
+        const p = profileMap.get(id);
+        return {
+          id,
+          email: p?.email ?? "(sem email)",
+          full_name: p?.full_name ?? "Administrador",
+          role,
+        };
+      });
 
     setUsers(list);
     setLoading(false);
@@ -229,7 +234,7 @@ export function UserManagement() {
                   {u.role === 'owner' ? 'Dono' : 'Admin'}
                 </Badge>
               </div>
-              <h3 className="text-lg font-bold text-red-500 mb-1 truncate">{u.email}</h3>
+              <h3 className="text-lg font-bold text-red-500 mb-1 truncate">{u.full_name}</h3>
               <div className="flex items-center text-sm text-zinc-500 mb-4">
                 <Mail className="w-3.5 h-3.5 mr-2" />
                 {u.email}
