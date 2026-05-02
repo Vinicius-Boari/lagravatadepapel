@@ -234,7 +234,7 @@ export function UserManagement() {
                   {u.role === 'owner' ? 'Dono' : 'Admin'}
                 </Badge>
               </div>
-              <h3 className="text-lg font-bold text-red-500 mb-1 truncate">{u.email}</h3>
+              <h3 className="text-lg font-bold text-red-500 mb-1 truncate">{u.full_name}</h3>
               <div className="flex items-center text-sm text-zinc-500 mb-4">
                 <Mail className="w-3.5 h-3.5 mr-2" />
                 {u.email}
