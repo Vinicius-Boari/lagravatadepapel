@@ -15,6 +15,7 @@ import {
   Save,
   Loader2
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
