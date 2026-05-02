@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 interface UserRow {
   id: string;
   email: string;
+  full_name: string;
   role: "owner" | "admin";
 }
 
