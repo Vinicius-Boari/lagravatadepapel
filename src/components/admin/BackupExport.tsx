@@ -61,11 +61,6 @@ export function BackupExport() {
   
   const { status, setSaveStatus } = useSaveStatus();
 
-  const getAdminToken = () => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("lg_auth_token") || "";
-  };
-
   const listBackupsFn = useServerFn(listBackups);
   const getSettingsFn = useServerFn(getBackupSettings);
   const updateSettingsFn = useServerFn(updateBackupSettings);
@@ -76,15 +71,9 @@ export function BackupExport() {
 
   const fetchData = async () => {
     try {
-      const adminToken = getAdminToken();
-      if (!adminToken) {
-        setIsLoading(false);
-        return;
-      }
-
       const [backupsRes, settingsRes] = await Promise.all([
-        listBackupsFn({ data: { adminToken } }),
-        getSettingsFn({ data: { adminToken } })
+        listBackupsFn(),
+        getSettingsFn(),
       ]);
       setBackups(backupsRes.backups || []);
       setSettings(settingsRes.settings || null);
@@ -101,15 +90,9 @@ export function BackupExport() {
   }, []);
 
   const handleRunBackup = async () => {
-    const adminToken = getAdminToken();
-    if (!adminToken) {
-      toast.error("Sessão expirada. Faça login novamente.");
-      return;
-    }
-
     setIsRunningBackup(true);
     try {
-      await toast.promise(runNowFn({ data: { adminToken } }), {
+      await toast.promise(runNowFn(), {
         loading: "Iniciando backup...",
         success: () => {
           fetchData();
@@ -130,13 +113,8 @@ export function BackupExport() {
       e.preventDefault();
       e.stopPropagation();
     }
-    
+
     if (!settings) return;
-    const adminToken = getAdminToken();
-    if (!adminToken) {
-      toast.error("Sessão expirada. Faça login novamente.");
-      return;
-    }
 
     console.log("[BackupExport] Saving settings...", settings);
     setSaveStatus('saving');
@@ -149,11 +127,8 @@ export function BackupExport() {
         retention_days: settings.retention_days ? Number(settings.retention_days) : null
       };
 
-      await updateSettingsFn({ data: {
-        adminToken,
-        data: dataToSave
-      }});
-      
+      await updateSettingsFn({ data: dataToSave });
+
       setSaveStatus('saved');
       toast.success("Configurações de backup salvas!");
       fetchData();
@@ -167,9 +142,8 @@ export function BackupExport() {
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este backup permanentemente?")) return;
 
-    const adminToken = getAdminToken();
     try {
-      await toast.promise(deleteFn({ data: { adminToken, id } }), {
+      await toast.promise(deleteFn({ data: { id } }), {
         loading: "Excluindo backup...",
         success: () => {
           fetchData();
@@ -181,8 +155,7 @@ export function BackupExport() {
   };
 
   const handleRestore = async (id: string) => {
-    const adminToken = getAdminToken();
-    toast.promise(restoreFn({ data: { adminToken, id } }), {
+    toast.promise(restoreFn({ data: { id } }), {
       loading: "Restaurando sistema...",
       success: () => {
         setTimeout(() => window.location.reload(), 2000);
@@ -194,8 +167,7 @@ export function BackupExport() {
 
   const handleDownload = async (id: string) => {
     try {
-      const adminToken = getAdminToken();
-      const { url } = await getDownloadFn({ data: { adminToken, id } });
+      const { url } = await getDownloadFn({ data: { id } });
       window.open(url, '_blank');
     } catch (error) {
       toast.error("Erro ao gerar link de download.");
