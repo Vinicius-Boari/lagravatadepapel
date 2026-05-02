@@ -265,7 +265,7 @@ export function AdminDashboard() {
       case "integrations": return <IntegrationsManager />;
       case "pages": return <PagesRoutes />;
       case "settings": return <SettingsTab />;
-      case "users": return isOwner ? <UserManagement /> : null;
+      case "users": return isOwner ? <UserManagement /> : <div className="p-8 text-red-500">Apenas o Dono pode acessar esta seção.</div>;
       case "logs": return <ActivityLogs />;
       case "backup": return <BackupExport />;
       default: return <DashboardOverview />;
@@ -334,12 +334,12 @@ export function AdminDashboard() {
             <div className="h-8 w-px bg-zinc-800" />
             <div className="flex items-center space-x-3">
               <div className="text-right hidden sm:block">
-                <div className="text-sm font-semibold text-red-500">{user?.full_name}</div>
+                <div className="text-sm font-semibold text-red-500">{user?.full_name || "Administrador"}</div>
                 <div className={cn(
                   "text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded",
-                  role === "owner" ? "bg-red-500/10 text-red-500" : "bg-red-500/10 text-red-500"
+                  isOwner ? "bg-red-500/10 text-red-500 border border-red-500/20" : "bg-zinc-500/10 text-zinc-500 border border-zinc-500/20"
                 )}>
-                  {role === "owner" ? "Dono" : "Administrador"}
+                  {isOwner ? "Dono" : role === "admin" ? "Administrador" : "Sem Acesso"}
                 </div>
               </div>
               <div className="p-2 rounded-full bg-zinc-800 border border-zinc-700 shadow-inner">
