@@ -1,115 +1,125 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Session, User } from "@supabase/supabase-js";
 
 export type AppRole = "owner" | "admin" | null;
 
-const AUTH_TOKEN_KEY = "lg_auth_token";
-
 export interface AdminUser {
   id: string;
-  username: string;
+  email: string;
   full_name: string;
+  username: string;
   role: AppRole;
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<AdminUser | null>(() => {
-    try {
-      if (typeof window === "undefined") return null;
-      const cached = localStorage.getItem("lg_admin_user");
-      return cached ? JSON.parse(cached) : null;
-    } catch { return null; }
-  });
-  const [role, setRole] = useState<AppRole>(() => user?.role ?? null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AdminUser | null>(null);
+  const [role, setRole] = useState<AppRole>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  const login = async (username: string, password: string): Promise<boolean> => {
-    try {
-      setError(null);
-      const cleanUsername = username.trim();
-      const cleanPassword = password.trim();
-
-      console.log("[Auth] Attempting login for:", cleanUsername);
-
-      // Check for hardcoded owner credentials as requested
-      if (cleanUsername === "Vinicius" && cleanPassword === "280405") {
-        const ownerUser: AdminUser = {
-          id: "01a3d276-ac7f-4c7b-b98f-b793b0b1ead5", // ID real sincronizado com o banco
-          username: "Vinicius",
-          full_name: "Vinicius Bataglia",
-          role: "owner",
-        };
-        setUser(ownerUser);
-        setRole("owner");
-        localStorage.setItem("lg_admin_user", JSON.stringify(ownerUser));
-        localStorage.setItem(AUTH_TOKEN_KEY, "session-" + ownerUser.id);
-        return true;
-      }
-
-      // Fallback to database check for other admins
-      const { data, error: dbError } = await supabase
-        .from("admin_users")
-        .select("*")
-        .eq("username", cleanUsername);
-
-      if (dbError) {
-        console.error("Database error during login:", dbError);
-        // If DB fails, only owner can log in via hardcoded credentials above
-        return false;
-      }
-
-      if (!data || data.length === 0) {
-        return false;
-      }
-
-      const dbUser = data[0];
-      
-      if (dbUser.password_hash !== cleanPassword) {
-        return false;
-      }
-
-      const adminUser: AdminUser = {
-        id: dbUser.id,
-        username: dbUser.username,
-        full_name: dbUser.full_name,
-        role: dbUser.role as AppRole,
-      };
-
-      setUser(adminUser);
-      setRole(adminUser.role);
-      localStorage.setItem("lg_admin_user", JSON.stringify(adminUser));
-      localStorage.setItem(AUTH_TOKEN_KEY, "session-" + dbUser.id);
-      
-      return true;
-    } catch (err) {
-      console.error("Login exception:", err);
-      setError("Erro ao realizar login.");
-      return false;
+  // Carrega o papel (role) do usuário autenticado a partir da tabela user_roles.
+  const loadRole = async (authUser: User | null) => {
+    if (!authUser) {
+      setUser(null);
+      setRole(null);
+      return;
     }
+
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", authUser.id);
+
+    let resolvedRole: AppRole = null;
+    if (roles && roles.length > 0) {
+      if (roles.some((r) => r.role === "owner")) resolvedRole = "owner";
+      else if (roles.some((r) => r.role === "admin")) resolvedRole = "admin";
+    }
+
+    const displayName =
+      (authUser.user_metadata?.full_name as string | undefined) ||
+      authUser.email?.split("@")[0] ||
+      "Administrador";
+
+    setUser({
+      id: authUser.id,
+      email: authUser.email ?? "",
+      full_name: displayName,
+      username: authUser.email ?? "",
+      role: resolvedRole,
+    });
+    setRole(resolvedRole);
   };
 
-  const logout = () => {
+  useEffect(() => {
+    // IMPORTANTE: registrar o listener ANTES de chamar getSession (regra do Supabase).
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      // Defer Supabase calls para evitar deadlock no callback.
+      setTimeout(() => {
+        loadRole(newSession?.user ?? null);
+      }, 0);
+    });
+
+    supabase.auth.getSession().then(({ data: { session: existing } }) => {
+      setSession(existing);
+      loadRole(existing?.user ?? null).finally(() => setLoading(false));
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    setError(null);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    if (signInError) {
+      setError(signInError.message);
+      return false;
+    }
+    return true;
+  };
+
+  const signup = async (email: string, password: string, fullName?: string): Promise<boolean> => {
+    setError(null);
+    const { error: signUpError } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/admin/dashboard`,
+        data: fullName ? { full_name: fullName } : undefined,
+      },
+    });
+    if (signUpError) {
+      setError(signUpError.message);
+      return false;
+    }
+    return true;
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setRole(null);
-    localStorage.removeItem("lg_admin_user");
-    localStorage.removeItem(AUTH_TOKEN_KEY);
+    setSession(null);
   };
 
   const isAdmin = role === "admin" || role === "owner";
 
-  return { 
-    user, 
-    role, 
-    loading, 
-    error, 
-    isOwner: role === "owner", 
+  return {
+    user,
+    role,
+    session,
+    loading,
+    error,
+    isOwner: role === "owner",
     isAdmin,
     login,
-    logout
+    signup,
+    logout,
   };
 }
