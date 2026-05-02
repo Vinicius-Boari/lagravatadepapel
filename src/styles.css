@@ -205,7 +205,24 @@ body.lg-body {
 .menu-lines { display: flex; flex-direction: column; gap: 4px; }
 .menu-lines span { display: block; width: 24px; height: 1.5px; background: var(--color-white-lg); }
 
-/* FULLSCREEN MENU */
+
+.orcamento-header-btn {
+  background: var(--color-red-lg);
+  color: white;
+  padding: 8px 24px; border-radius: 50px; cursor: pointer;
+  font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em;
+  text-transform: uppercase; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s; min-width: 120px;
+  text-decoration: none;
+  border: 1px solid var(--color-red-lg);
+}
+.orcamento-header-btn:hover { 
+  background: rgba(255,255,255,0.2); 
+  color: var(--color-white-lg);
+  border-color: rgba(255,255,255,0.3);
+  backdrop-filter: blur(20px);
+}
+
 .fullscreen-menu {
   position: fixed; inset: 0; z-index: 9999;
   background-image: url('/images/marble.png'); background-size: cover;
