@@ -45,7 +45,8 @@ import { Textarea } from "@/components/ui/textarea";
 const AutoBackupTrigger = () => {
   useEffect(() => {
     const triggerAutoBackup = async () => {
-      const token = localStorage.getItem("lg_auth_token");
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
       if (!token) return;
 
       try {
@@ -60,7 +61,7 @@ const AutoBackupTrigger = () => {
         console.error("Auto backup check failed", e);
       }
     };
-    
+
     // Check every 5 minutes while dashboard is open, or immediately on load
     triggerAutoBackup();
     const interval = setInterval(triggerAutoBackup, 5 * 60 * 1000);
