@@ -104,7 +104,11 @@ export function BackupExport() {
   const handleRunBackup = async () => {
     setIsRunningBackup(true);
     try {
-      await toast.promise(runNowFn(), {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers = { Authorization: `Bearer ${token}` };
+
+      await toast.promise(runNowFn({ headers }), {
         loading: "Iniciando backup...",
         success: () => {
           fetchData();
@@ -131,6 +135,10 @@ export function BackupExport() {
     console.log("[BackupExport] Saving settings...", settings);
     setSaveStatus('saving');
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers = { Authorization: `Bearer ${token}` };
+
       const dataToSave = {
         auto_enabled: !!settings.auto_enabled,
         interval_value: Number(settings.interval_value || 1),
@@ -139,7 +147,7 @@ export function BackupExport() {
         retention_days: settings.retention_days ? Number(settings.retention_days) : null
       };
 
-      await updateSettingsFn({ data: dataToSave });
+      await updateSettingsFn({ data: dataToSave, headers });
 
       setSaveStatus('saved');
       toast.success("Configurações de backup salvas!");
@@ -155,7 +163,11 @@ export function BackupExport() {
     if (!confirm("Tem certeza que deseja excluir este backup permanentemente?")) return;
 
     try {
-      await toast.promise(deleteFn({ data: { id } }), {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers = { Authorization: `Bearer ${token}` };
+
+      await toast.promise(deleteFn({ data: { id }, headers }), {
         loading: "Excluindo backup...",
         success: () => {
           fetchData();
@@ -167,7 +179,11 @@ export function BackupExport() {
   };
 
   const handleRestore = async (id: string) => {
-    toast.promise(restoreFn({ data: { id } }), {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    const headers = { Authorization: `Bearer ${token}` };
+
+    toast.promise(restoreFn({ data: { id }, headers }), {
       loading: "Restaurando sistema...",
       success: () => {
         setTimeout(() => window.location.reload(), 2000);
@@ -179,7 +195,11 @@ export function BackupExport() {
 
   const handleDownload = async (id: string) => {
     try {
-      const { url } = await getDownloadFn({ data: { id } });
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const { url } = await getDownloadFn({ data: { id }, headers });
       if (url) window.open(url, '_blank');
       else toast.error("URL de download não disponível.");
     } catch (error) {
