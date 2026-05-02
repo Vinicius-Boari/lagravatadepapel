@@ -75,11 +75,15 @@ export function UserManagement() {
 
     const list: UserRow[] = Array.from(byUser.entries())
       .filter(([, role]) => role === "admin" || role === "owner")
-      .map(([id, role]) => ({
-        id,
-        email: profileMap.get(id) ?? "(sem email)",
-        role,
-      }));
+      .map(([id, role]) => {
+        const p = profileMap.get(id);
+        return {
+          id,
+          email: p?.email ?? "(sem email)",
+          full_name: p?.full_name ?? "Administrador",
+          role,
+        };
+      });
 
     setUsers(list);
     setLoading(false);
