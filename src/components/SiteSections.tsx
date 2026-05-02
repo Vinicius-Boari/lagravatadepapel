@@ -180,7 +180,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
           <span className="logo-tagline">Os Originais</span>
         </div>
-        <div className="nav-right">
+        <div className="nav-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <a href="/questionarioevento" className="orcamento-header-btn">
+            <span>ORÇAMENTO</span>
+          </a>
           <button className="menu-btn" onClick={() => { setMenuOpen(true); onMenuClick?.(); }} aria-label="Abrir menu">
             <span>MENU</span>
           </button>
@@ -196,7 +199,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <nav className="menu-nav">
           <a href="#hero" onClick={closeMenu}>Home</a>
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
-          <a href="/questionarioevento" onClick={closeMenu}>Questionário</a>
+          <a href="/questionarioevento" onClick={closeMenu}>Orçamento</a>
           <a href="#videos" onClick={closeMenu}>Vídeos</a>
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
