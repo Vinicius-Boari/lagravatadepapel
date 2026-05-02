@@ -35,7 +35,7 @@ export function DashboardOverview() {
     async function loadStats() {
       try {
         const [adminsRes, logsRes, recentLogsRes] = await Promise.all([
-          supabase.from("admin_users").select("id", { count: "exact", head: true }),
+          supabase.from("user_roles").select("user_id", { count: "exact", head: true }).in("role", ["admin", "owner"]),
           supabase.from("admin_logs").select("id", { count: "exact", head: true }),
           supabase.from("admin_logs").select("*").order("created_at", { ascending: false }).limit(5)
         ]);
