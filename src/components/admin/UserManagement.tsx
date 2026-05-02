@@ -4,87 +4,133 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  Users as UsersIcon, 
-  UserPlus, 
-  Trash2, 
-  Shield, 
-  Mail, 
+import {
+  UserPlus,
+  Shield,
+  Mail,
   Lock,
   UserCheck,
   Save,
-  Loader2
+  Loader2,
+  Info,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { cn } from "@/lib/utils";
 
+interface UserRow {
+  id: string;
+  email: string;
+  role: "owner" | "admin";
+}
+
 export function UserManagement() {
-  const [admins, setAdmins] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newAdmin, setNewAdmin] = useState({
-    username: "",
+    email: "",
     password: "",
     full_name: "",
-    role: "admin"
   });
   const { status, setSaveStatus } = useSaveStatus();
 
-  const fetchAdmins = async () => {
+  const fetchUsers = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("admin_users").select("*");
-    if (error) {
-      toast.error("Erro ao carregar administradores.");
-    } else {
-      setAdmins(data || []);
+    // Junta papéis com profiles para mostrar email + papel
+    const { data: roles, error: rolesError } = await supabase
+      .from("user_roles")
+      .select("user_id, role");
+
+    if (rolesError) {
+      toast.error("Erro ao carregar usuários.");
+      setLoading(false);
+      return;
     }
+
+    const userIds = Array.from(new Set((roles ?? []).map((r) => r.user_id)));
+    if (userIds.length === 0) {
+      setUsers([]);
+      setLoading(false);
+      return;
+    }
+
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, email")
+      .in("id", userIds);
+
+    const profileMap = new Map((profiles ?? []).map((p) => [p.id, p.email]));
+
+    // Resolve papel mais alto por usuário
+    const byUser = new Map<string, "owner" | "admin">();
+    (roles ?? []).forEach((r) => {
+      const current = byUser.get(r.user_id);
+      if (r.role === "owner") byUser.set(r.user_id, "owner");
+      else if (r.role === "admin" && current !== "owner") byUser.set(r.user_id, "admin");
+    });
+
+    const list: UserRow[] = Array.from(byUser.entries())
+      .filter(([, role]) => role === "admin" || role === "owner")
+      .map(([id, role]) => ({
+        id,
+        email: profileMap.get(id) ?? "(sem email)",
+        role,
+      }));
+
+    setUsers(list);
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchAdmins();
+    fetchUsers();
   }, []);
 
   const handleAddAdmin = async () => {
-    if (!newAdmin.username || !newAdmin.password || !newAdmin.full_name) {
-      toast.error("Preencha todos os campos.");
+    if (!newAdmin.email || !newAdmin.password) {
+      toast.error("Preencha email e senha.");
+      return;
+    }
+    if (newAdmin.password.length < 6) {
+      toast.error("A senha precisa ter pelo menos 6 caracteres.");
       return;
     }
 
     setSaveStatus('saving');
-    const { error } = await supabase.from("admin_users").insert({
-      username: newAdmin.username,
-      password_hash: newAdmin.password,
-      full_name: newAdmin.full_name,
-      role: newAdmin.role as "admin" | "owner"
+    // Cria usuário via Supabase Auth (signup público)
+    const { data, error } = await supabase.auth.signUp({
+      email: newAdmin.email.trim(),
+      password: newAdmin.password,
+      options: {
+        data: { full_name: newAdmin.full_name || undefined },
+      },
     });
 
-    if (error) {
+    if (error || !data.user) {
       setSaveStatus('error');
-      toast.error("Erro ao criar usuário.");
-    } else {
-      setSaveStatus('saved');
-      toast.success("Usuário criado com sucesso!");
-      setTimeout(() => {
-        setShowAddForm(false);
-        setNewAdmin({ username: "", password: "", full_name: "", role: "admin" });
-        fetchAdmins();
-      }, 1000);
+      toast.error(error?.message || "Erro ao criar usuário.");
+      return;
     }
-  };
 
-  const handleDeleteAdmin = async (id: string) => {
-    if (!confirm("Tem certeza que deseja remover este administrador?")) return;
+    // Promove para admin (apenas owner consegue, conforme RLS)
+    const { error: roleError } = await supabase
+      .from("user_roles")
+      .insert({ user_id: data.user.id, role: "admin" });
 
-    const { error } = await supabase.from("admin_users").delete().eq("id", id);
-    if (error) {
-      toast.error("Erro ao remover usuário.");
-    } else {
-      toast.success("Usuário removido.");
-      fetchAdmins();
+    if (roleError) {
+      setSaveStatus('error');
+      toast.error(`Usuário criado, mas falhou ao dar permissão: ${roleError.message}`);
+      return;
     }
+
+    setSaveStatus('saved');
+    toast.success("Administrador cadastrado!");
+    setTimeout(() => {
+      setShowAddForm(false);
+      setNewAdmin({ email: "", password: "", full_name: "" });
+      fetchUsers();
+    }, 1000);
   };
 
   if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
@@ -102,54 +148,51 @@ export function UserManagement() {
         </Button>
       </div>
 
+      <div className="flex items-start gap-3 bg-zinc-900/50 border border-zinc-800 rounded-md p-4 text-sm text-zinc-400">
+        <Info className="w-4 h-4 mt-0.5 text-red-500 shrink-0" />
+        <p>
+          Os usuários agora são gerenciados pelo sistema seguro de autenticação. O cadastro envia o usuário via email e senha, e a permissão de administrador é aplicada automaticamente.
+        </p>
+      </div>
+
       {showAddForm && (
         <Card className="bg-zinc-900 border-red-900/50 shadow-xl animate-in slide-in-from-top-4 duration-300">
           <CardHeader>
             <CardTitle className="text-lg text-red-500 flex items-center">
-              <UserCheck className="mr-2 w-5 h-5" /> Cadastrar Novo Usuário
+              <UserCheck className="mr-2 w-5 h-5" /> Cadastrar Novo Administrador
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-red-500">Nome Completo</Label>
-                <Input 
-                  className="bg-zinc-800 border-red-900 text-red-500" 
+                <Label className="text-red-500">Nome Completo (opcional)</Label>
+                <Input
+                  className="bg-zinc-800 border-red-900 text-red-500"
                   value={newAdmin.full_name}
-                  onChange={(e) => setNewAdmin({...newAdmin, full_name: e.target.value})}
+                  onChange={(e) => setNewAdmin({ ...newAdmin, full_name: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-red-500">Nome de Usuário (Login)</Label>
-                <Input 
-                  className="bg-zinc-800 border-red-900 text-red-500" 
-                  value={newAdmin.username}
-                  onChange={(e) => setNewAdmin({...newAdmin, username: e.target.value})}
+                <Label className="text-red-500">Email</Label>
+                <Input
+                  type="email"
+                  className="bg-zinc-800 border-red-900 text-red-500"
+                  value={newAdmin.email}
+                  onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="text-red-500">Senha</Label>
-                <Input 
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-red-500">Senha (mínimo 6 caracteres)</Label>
+                <Input
                   type="password"
-                  className="bg-zinc-800 border-red-900 text-red-500" 
+                  className="bg-zinc-800 border-red-900 text-red-500"
                   value={newAdmin.password}
-                  onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})}
+                  onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
                 />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-red-500">Nível de Acesso</Label>
-                <select 
-                  className="w-full bg-zinc-800 border-red-900 text-red-500 h-10 rounded-md px-3"
-                  value={newAdmin.role}
-                  onChange={(e) => setNewAdmin({...newAdmin, role: e.target.value})}
-                >
-                  <option value="admin">Administrador</option>
-                  <option value="owner">Dono (Owner)</option>
-                </select>
               </div>
             </div>
             <div className="flex justify-end pt-2">
-              <Button 
+              <Button
                 onClick={handleAddAdmin}
                 className={cn("transition-all duration-300 w-48", getSaveButtonStyles(status))}
               >
@@ -162,36 +205,26 @@ export function UserManagement() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {admins.map((admin) => (
-          <Card key={admin.id} className="bg-zinc-900 border-zinc-800 shadow-xl group hover:border-red-900/40 transition-all">
+        {users.map((u) => (
+          <Card key={u.id} className="bg-zinc-900 border-zinc-800 shadow-xl group hover:border-red-900/40 transition-all">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="p-3 bg-red-900/10 rounded-full">
-                  <Shield className={`w-6 h-6 ${admin.role === 'owner' ? 'text-red-500' : 'text-red-500/70'}`} />
+                  <Shield className={`w-6 h-6 ${u.role === 'owner' ? 'text-red-500' : 'text-red-500/70'}`} />
                 </div>
-                <Badge className={admin.role === 'owner' ? 'bg-red-600' : 'bg-zinc-800'}>
-                  {admin.role === 'owner' ? 'Dono' : 'Admin'}
+                <Badge className={u.role === 'owner' ? 'bg-red-600' : 'bg-zinc-800'}>
+                  {u.role === 'owner' ? 'Dono' : 'Admin'}
                 </Badge>
               </div>
-              <h3 className="text-lg font-bold text-red-500 mb-1">{admin.full_name}</h3>
+              <h3 className="text-lg font-bold text-red-500 mb-1 truncate">{u.email}</h3>
               <div className="flex items-center text-sm text-zinc-500 mb-4">
                 <Mail className="w-3.5 h-3.5 mr-2" />
-                {admin.username}
+                {u.email}
               </div>
               <div className="pt-4 border-t border-zinc-800 flex justify-between items-center">
                 <div className="flex items-center text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
                   <Lock className="w-3 h-3 mr-1" /> Acesso Ativo
                 </div>
-                {admin.role !== 'owner' && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-zinc-600 hover:text-red-500"
-                    onClick={() => handleDeleteAdmin(admin.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                )}
               </div>
             </CardContent>
           </Card>
