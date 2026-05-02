@@ -117,7 +117,7 @@ export function QuestionarioForm() {
         <Button 
           variant="outline" 
           className="mt-8 border-zinc-800 text-zinc-400 hover:text-white"
-          onClick={() => window.location.reload()}
+          onClick={() => window.location.href = '/'}
         >
           VOLTAR AO INÍCIO
         </Button>
