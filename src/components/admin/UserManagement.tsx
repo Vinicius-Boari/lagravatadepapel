@@ -88,8 +88,8 @@ export function UserManagement() {
   }, []);
 
   const handleAddAdmin = async () => {
-    if (!newAdmin.email || !newAdmin.password) {
-      toast.error("Preencha email e senha.");
+    if (!newAdmin.email || !newAdmin.password || !newAdmin.full_name) {
+      toast.error("Preencha todos os campos: nome, email e senha.");
       return;
     }
     if (newAdmin.password.length < 6) {
@@ -165,11 +165,12 @@ export function UserManagement() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-red-500">Nome Completo (opcional)</Label>
+                <Label className="text-red-500">Nome Completo</Label>
                 <Input
                   className="bg-zinc-800 border-red-900 text-red-500"
                   value={newAdmin.full_name}
                   onChange={(e) => setNewAdmin({ ...newAdmin, full_name: e.target.value })}
+                  required
                 />
               </div>
               <div className="space-y-2">

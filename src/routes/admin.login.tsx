@@ -46,7 +46,7 @@ function LoginPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const ok = await signup(email, password, fullName || undefined);
+        const ok = await signup(email, password, fullName);
         if (ok) {
           toast.success("Conta criada! Fazendo login...");
           // Tenta fazer login automaticamente após o cadastro
@@ -99,6 +99,7 @@ function LoginPage() {
                   placeholder="Seu nome"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  required
                   className="bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
                 />
               </div>
