@@ -1,75 +1,92 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  runBackup,
-  restoreBackup,
-  deleteBackup,
-  applyRetentionPolicy,
-  getSignedDownloadUrl,
+import { 
+  runBackup, 
+  restoreBackup, 
+  deleteBackup, 
+  applyRetentionPolicy, 
+  getSignedDownloadUrl 
 } from "./backup.server";
 
+// Manual auth check instead of middleware to isolate issues
+async function getAuthenticatedUser() {
+  // In TanStack Start, we get the request to check headers
+  const { getRequest } = await import("@tanstack/react-start/server");
+  const request = getRequest();
+  const authHeader = request?.headers.get("authorization");
+  
+  if (!authHeader?.startsWith("Bearer ")) {
+    console.error("[backup.functions] No bearer token");
+    throw new Error("Unauthorized: No token");
+  }
+  
+  const token = authHeader.split(" ")[1];
+  
+  // Create a temporary client for this request
+  const { createClient } = await import("@supabase/supabase-js");
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_PUBLISHABLE_KEY!
+  );
+  
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) {
+    console.error("[backup.functions] Auth error:", error);
+    throw new Error("Unauthorized: Invalid token");
+  }
+  
+  return data.user.id;
+}
+
 async function assertIsAdmin(userId: string) {
-  console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  console.log("[backup.functions] assertIsAdmin for:", userId);
   const { data, error } = await supabaseAdmin
     .from("user_roles")
     .select("role")
     .eq("user_id", userId)
     .in("role", ["admin", "owner"]);
   
-  if (error) {
-    console.error("[backup.functions] assertIsAdmin database error:", error);
-    throw new Error(`Erro de permissão: ${error.message}`);
-  }
-  
-  if (!data || data.length === 0) {
-    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner`);
-    throw new Error("Apenas administradores podem gerenciar backups");
-  }
-  console.log("[backup.functions] assertIsAdmin: User is authorized");
+  if (error) throw new Error(`Permission error: ${error.message}`);
+  if (!data || data.length === 0) throw new Error("Admin/Owner access required");
 }
 
 export const listBackups = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    console.log("[backup.functions] listBackups handler started");
+  .handler(async () => {
     try {
-      await assertIsAdmin(context.userId);
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
       
       const { data: backups, error } = await supabaseAdmin
         .from("backups")
-        .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
+        .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
 
-      if (error) {
-        console.error("[backup.functions] listBackups DB error:", error);
-        throw new Error(`Erro ao buscar backups: ${error.message}`);
-      }
-
+      if (error) throw new Error(error.message);
       return { backups: backups ?? [] };
     } catch (err: any) {
-      console.error("[backup.functions] listBackups final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      console.error("[backup.functions] listBackups error:", err.message);
+      throw new Error(err.message || "Server Error");
     }
   });
 
 export const getBackupSettings = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .handler(async () => {
     try {
-      await assertIsAdmin(context.userId);
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
+      
       const { data: settings, error } = await supabaseAdmin
         .from("backup_settings")
-        .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
+        .select("*")
         .limit(1)
         .maybeSingle();
+      
       if (error) throw new Error(error.message);
       return { settings };
     } catch (err: any) {
-      console.error("[backup.functions] getBackupSettings final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      throw new Error(err.message || "Server Error");
     }
   });
 
@@ -82,21 +99,21 @@ const settingsSchema = z.object({
 });
 
 export const updateBackupSettings = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => settingsSchema.parse(input))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     try {
-      await assertIsAdmin(context.userId);
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
+      
       const { data: existing } = await supabaseAdmin
         .from("backup_settings")
         .select("id")
-        .limit(1)
         .maybeSingle();
 
       const settingsData = {
         ...data,
         updated_at: new Date().toISOString(),
-        updated_by: context.userId,
+        updated_by: userId,
       };
 
       if (existing) {
@@ -113,79 +130,66 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
       }
       return { success: true };
     } catch (err: any) {
-      console.error("[backup.functions] updateBackupSettings final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      throw new Error(err.message || "Server Error");
     }
   });
 
 export const runBackupNow = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .handler(async () => {
     try {
-      await assertIsAdmin(context.userId);
-      const result = await runBackup({ trigger: "manual", createdBy: context.userId });
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
+      const result = await runBackup({ trigger: "manual", createdBy: userId });
       await applyRetentionPolicy();
       return result;
     } catch (err: any) {
-      console.error("[backup.functions] runBackupNow final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      throw new Error(err.message || "Server Error");
     }
   });
 
 export const restoreBackupFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     try {
-      await assertIsAdmin(context.userId);
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
       await restoreBackup(data.id);
-      await supabaseAdmin.from("admin_logs").insert({
-        action: "backup.restore",
-        user_email: context.userId,
-        user_id: context.userId,
-        entity_type: "backup",
-        entity_id: data.id,
-      });
       return { success: true };
     } catch (err: any) {
-      console.error("[backup.functions] restoreBackupFn final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      throw new Error(err.message || "Server Error");
     }
   });
 
 export const deleteBackupFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     try {
-      await assertIsAdmin(context.userId);
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
       await deleteBackup(data.id);
       return { success: true };
     } catch (err: any) {
-      console.error("[backup.functions] deleteBackupFn final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      throw new Error(err.message || "Server Error");
     }
   });
 
 export const getBackupDownloadUrl = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     try {
-      await assertIsAdmin(context.userId);
+      const userId = await getAuthenticatedUser();
+      await assertIsAdmin(userId);
       const { data: row, error } = await supabaseAdmin
         .from("backups")
         .select("file_path")
         .eq("id", data.id)
         .maybeSingle();
 
-      if (error) throw new Error(`Erro ao buscar arquivo: ${error.message}`);
-      if (!row?.file_path) throw new Error("Arquivo indisponível");
+      if (error) throw new Error(error.message);
+      if (!row?.file_path) throw new Error("Arquivo não encontrado");
       const url = await getSignedDownloadUrl(row.file_path);
-      if (!url) throw new Error("Falha ao gerar URL de download");
       return { url };
     } catch (err: any) {
-      console.error("[backup.functions] getBackupDownloadUrl final catch:", err.message || err);
-      throw new Error(err.message || "Internal Server Error");
+      throw new Error(err.message || "Server Error");
     }
   });
