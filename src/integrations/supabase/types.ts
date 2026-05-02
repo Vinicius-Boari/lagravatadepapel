@@ -50,6 +50,9 @@ export type Database = {
       backup_settings: {
         Row: {
           auto_enabled: boolean
+          backup_path: string | null
+          backup_type: string | null
+          bucket_name: string | null
           id: string
           interval_unit: string
           interval_value: number
@@ -63,6 +66,9 @@ export type Database = {
         }
         Insert: {
           auto_enabled?: boolean
+          backup_path?: string | null
+          backup_type?: string | null
+          bucket_name?: string | null
           id?: string
           interval_unit?: string
           interval_value?: number
@@ -76,6 +82,9 @@ export type Database = {
         }
         Update: {
           auto_enabled?: boolean
+          backup_path?: string | null
+          backup_type?: string | null
+          bucket_name?: string | null
           id?: string
           interval_unit?: string
           interval_value?: number
