@@ -62,22 +62,19 @@ export const getBackupSettings = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     console.log("[backup.functions] getBackupSettings starting for user:", context.userId);
     try {
-      await assertIsAdmin(context.userId);
-      console.log("[backup.functions] getBackupSettings: admin check passed");
-      
-      const { data: settings, error } = await supabaseAdmin
-        .from("backup_settings")
-        .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
-        .limit(1)
-        .maybeSingle();
-      
-      if (error) {
-        console.error("[backup.functions] getBackupSettings database error:", error.message);
-        throw new Error(error.message);
-      }
-      
-      console.log("[backup.functions] getBackupSettings success, data found:", !!settings);
-      return { settings };
+      console.log("[backup.functions] getBackupSettings DUMMY TEST");
+      return { 
+        settings: {
+          id: "dummy",
+          auto_enabled: true,
+          interval_value: 4,
+          interval_unit: "hours",
+          retention_count: 10,
+          retention_days: null,
+          last_run_at: new Date().toISOString(),
+          next_run_at: new Date().toISOString()
+        }
+      };
     } catch (err: any) {
       console.error("[backup.functions] getBackupSettings caught error:", err.message);
       throw new Error(err.message || "Internal Server Error");
