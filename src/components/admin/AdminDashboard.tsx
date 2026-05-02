@@ -238,7 +238,7 @@ export function AdminDashboard() {
 
   const handleLogout = async () => {
     await logout();
-    router.navigate({ to: "/" });
+    window.location.href = "/";
   };
 
   const menuItems = [
