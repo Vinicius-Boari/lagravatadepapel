@@ -55,14 +55,19 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertIsAdmin(context.userId);
-    const { data: settings, error } = await supabaseAdmin
-      .from("backup_settings")
-      .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
-      .limit(1)
-      .maybeSingle();
-    if (error) throw new Error(error.message);
-    return { settings };
+    try {
+      await assertIsAdmin(context.userId);
+      const { data: settings, error } = await supabaseAdmin
+        .from("backup_settings")
+        .select("id, auto_enabled, interval_value, interval_unit, retention_count, retention_days, last_run_at, next_run_at")
+        .limit(1)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return { settings };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      throw new Response(err.message || "Internal Server Error", { status: 500 });
+    }
   });
 
 const settingsSchema = z.object({
