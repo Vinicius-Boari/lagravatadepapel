@@ -334,9 +334,10 @@ export function AdminDashboard() {
             <div className="h-8 w-px bg-zinc-800" />
             <div className="flex items-center space-x-3">
               <div className="text-right hidden sm:block">
-                <div className="text-sm font-semibold text-red-500">{user?.full_name || "Administrador"}</div>
+                <div className="text-sm font-semibold text-red-500">{user?.full_name || "Vinicius Boari Bataglia"}</div>
+                <div className="text-[10px] text-zinc-400 mb-1">{user?.email || "viniciusbataglia500@gmail.com"}</div>
                 <div className={cn(
-                  "text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded",
+                  "text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded inline-block",
                   isOwner ? "bg-red-500/10 text-red-500 border border-red-500/20" : "bg-zinc-500/10 text-zinc-500 border border-zinc-500/20"
                 )}>
                   {isOwner ? "Dono" : role === "admin" ? "Administrador" : "Sem Acesso"}
