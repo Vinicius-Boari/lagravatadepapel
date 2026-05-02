@@ -67,6 +67,7 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    console.log("[backup.functions] getBackupSettings handler started");
     try {
       await assertIsAdmin(context.userId);
       const { data: settings, error } = await supabaseAdmin
@@ -77,8 +78,8 @@ export const getBackupSettings = createServerFn({ method: "POST" })
       if (error) throw new Error(error.message);
       return { settings };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] getBackupSettings final catch:", err.message || err);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -94,6 +95,7 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => settingsSchema.parse(input))
   .handler(async ({ data, context }) => {
+    console.log("[backup.functions] updateBackupSettings handler started");
     try {
       await assertIsAdmin(context.userId);
       const { data: existing } = await supabaseAdmin
@@ -122,22 +124,23 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
       }
       return { success: true };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] updateBackupSettings final catch:", err.message || err);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
 export const runBackupNow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    console.log("[backup.functions] runBackupNow handler started");
     try {
       await assertIsAdmin(context.userId);
       const result = await runBackup({ trigger: "manual", createdBy: context.userId });
       await applyRetentionPolicy();
       return result;
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] runBackupNow final catch:", err.message || err);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -145,6 +148,7 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    console.log("[backup.functions] restoreBackupFn handler started");
     try {
       await assertIsAdmin(context.userId);
       await restoreBackup(data.id);
@@ -157,8 +161,8 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
       });
       return { success: true };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] restoreBackupFn final catch:", err.message || err);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -166,13 +170,14 @@ export const deleteBackupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    console.log("[backup.functions] deleteBackupFn handler started");
     try {
       await assertIsAdmin(context.userId);
       await deleteBackup(data.id);
       return { success: true };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] deleteBackupFn final catch:", err.message || err);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -180,6 +185,7 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    console.log("[backup.functions] getBackupDownloadUrl handler started");
     try {
       await assertIsAdmin(context.userId);
       const { data: row, error } = await supabaseAdmin
@@ -194,7 +200,7 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
       if (!url) throw new Error("Falha ao gerar URL de download");
       return { url };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] getBackupDownloadUrl final catch:", err.message || err);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
