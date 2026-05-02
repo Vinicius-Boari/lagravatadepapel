@@ -532,7 +532,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_admin_action: {
+        Args: {
+          _action: string
+          _details?: Json
+          _entity_id?: string
+          _entity_type?: string
+        }
+        Returns: string
+      }
+      owner_exists: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "owner" | "admin"
