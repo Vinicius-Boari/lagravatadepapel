@@ -109,17 +109,22 @@ const SettingsTab = () => {
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
-        <div>
-          <h2 className="text-2xl font-bold text-red-500">Configurações Gerais</h2>
-          <p className="text-red-500/70">Ajustes globais do painel e do site.</p>
+      <div className="flex justify-between items-center sticky top-0 md:top-16 bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl">
+        <div className="flex items-center gap-4">
+          <div className="bg-red-600/10 p-2 rounded-lg">
+            <Settings className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-red-500 leading-none">Configurações Gerais</h2>
+            <p className="text-[10px] text-red-500/50 uppercase tracking-widest mt-1">Ajustes globais do painel e do site</p>
+          </div>
         </div>
         <Button 
           onClick={handleSave}
-          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+          className={cn("transition-all duration-300 w-40 font-bold h-10 shadow-lg", getSaveButtonStyles(status))}
         >
           {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar Config.'}
         </Button>
       </div>
 
