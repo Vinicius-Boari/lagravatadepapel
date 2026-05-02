@@ -72,9 +72,20 @@ export function BackupExport() {
 
   const fetchData = async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      
+      if (!token) {
+        console.warn("No token found for backup fetch");
+        setIsLoading(false);
+        return;
+      }
+
+      const headers = { Authorization: `Bearer ${token}` };
+
       const [backupsRes, settingsRes] = await Promise.all([
-        listBackupsFn(),
-        getSettingsFn(),
+        listBackupsFn({ headers }),
+        getSettingsFn({ headers }),
       ]);
       setBackups(backupsRes.backups || []);
       setSettings(settingsRes.settings || null);
