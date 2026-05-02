@@ -60,20 +60,45 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       }
     );
 
-    const { data, error } = await supabase.auth.getClaims(token);
-    if (error || !data?.claims) {
-      throw new Response('Unauthorized: Invalid token', { status: 401 });
+    console.log("[auth-middleware] Verifying token...");
+    // getClaims is sometimes available in Lovable's environment, but let's be safe
+    // and use a more standard check if it fails, or at least log it.
+    let userId: string | undefined;
+    let claims: any;
+
+    try {
+      const { data, error } = await (supabase.auth as any).getUser(token);
+      if (error || !data?.user) {
+        console.error("[auth-middleware] getUser error:", error);
+        throw new Response('Unauthorized: Invalid user', { status: 401 });
+      }
+      userId = data.user.id;
+      claims = data.user;
+    } catch (err: any) {
+      console.warn("[auth-middleware] getUser failed, trying getClaims:", err.message);
+      if (typeof (supabase.auth as any).getClaims === 'function') {
+        const { data, error } = await (supabase.auth as any).getClaims(token);
+        if (error || !data?.claims) {
+          throw new Response('Unauthorized: Invalid claims', { status: 401 });
+        }
+        userId = data.claims.sub;
+        claims = data.claims;
+      } else {
+        throw new Response('Unauthorized: Auth method not found', { status: 401 });
+      }
     }
 
-    if (!data.claims.sub) {
-      throw new Response('Unauthorized: No user ID found in token', { status: 401 });
+    if (!userId) {
+      throw new Response('Unauthorized: No user ID found', { status: 401 });
     }
+
+    console.log("[auth-middleware] Auth success for user:", userId);
 
     return next({
       context: {
         supabase,
-        userId: data.claims.sub,
-        claims: data.claims,
+        userId,
+        claims,
       },
     })
   }

@@ -10,27 +10,22 @@ import {
   getSignedDownloadUrl,
 } from "./backup.server";
 
-// Verifica que o usuário autenticado (via JWT do Supabase) tem papel admin/owner.
 async function assertIsAdmin(userId: string) {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .in("role", ["admin", "owner"]);
-    
-    if (error) {
-      console.error("[assertIsAdmin] Database error:", error);
-      throw new Error(`Database error: ${error.message}`);
-    }
-    
-    if (!data || data.length === 0) {
-      console.warn(`[assertIsAdmin] User ${userId} is not an admin/owner`);
-      throw new Error("Apenas administradores podem gerenciar backups");
-    }
-  } catch (err: any) {
-    console.error("[assertIsAdmin] Unexpected error:", err);
-    throw new Response(err.message || "Unauthorized", { status: 403 });
+  console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["admin", "owner"]);
+  
+  if (error) {
+    console.error("[backup.functions] assertIsAdmin database error:", error);
+    throw new Error(`Erro de permissão: ${error.message}`);
+  }
+  
+  if (!data || data.length === 0) {
+    console.warn(`[backup.functions] assertIsAdmin: User ${userId} is not an admin/owner`);
+    throw new Error("Apenas administradores podem gerenciar backups");
   }
 }
 
@@ -44,11 +39,12 @@ export const listBackups = createServerFn({ method: "POST" })
         .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
         .order("created_at", { ascending: false })
         .limit(100);
+
       if (error) throw new Error(error.message);
       return { backups: backups ?? [] };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] listBackups error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -65,8 +61,8 @@ export const getBackupSettings = createServerFn({ method: "POST" })
       if (error) throw new Error(error.message);
       return { settings };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] getBackupSettings error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -110,8 +106,8 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
       }
       return { success: true };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] updateBackupSettings error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -124,8 +120,8 @@ export const runBackupNow = createServerFn({ method: "POST" })
       await applyRetentionPolicy();
       return result;
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] runBackupNow error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -145,8 +141,8 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
       });
       return { success: true };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] restoreBackupFn error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -159,8 +155,8 @@ export const deleteBackupFn = createServerFn({ method: "POST" })
       await deleteBackup(data.id);
       return { success: true };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] deleteBackupFn error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -182,7 +178,7 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
       if (!url) throw new Error("Falha ao gerar URL de download");
       return { url };
     } catch (err: any) {
-      if (err instanceof Response) throw err;
-      throw new Response(err.message || "Internal Server Error", { status: 500 });
+      console.error("[backup.functions] getBackupDownloadUrl error:", err.message);
+      throw new Error(err.message || "Internal Server Error");
     }
   });
