@@ -87,11 +87,24 @@ export function BackupExport() {
         listBackupsFn({ headers }),
         getSettingsFn({ headers }),
       ]);
-      setBackups(backupsRes.backups || []);
-      setSettings(settingsRes.settings || null);
+      setBackups(backupsRes?.backups || []);
+      setSettings(settingsRes?.settings || null);
     } catch (error: any) {
-      console.error("Backup fetch error:", error);
-      toast.error("Erro ao carregar dados de backup.");
+      console.error("Backup fetch error details:", error);
+      
+      let message = "Erro ao carregar dados de backup.";
+      if (error instanceof Response) {
+        try {
+          const body = await error.text();
+          message = `Erro do servidor (${error.status}): ${body || error.statusText}`;
+        } catch (e) {
+          message = `Erro do servidor (${error.status})`;
+        }
+      } else if (error?.message) {
+        message = error.message;
+      }
+      
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

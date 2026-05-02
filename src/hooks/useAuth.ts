@@ -21,36 +21,53 @@ export function useAuth() {
 
   // Carrega o papel (role) do usuário autenticado a partir da tabela user_roles.
   const loadRole = async (authUser: User | null) => {
+    console.log("[useAuth] loadRole starting for:", authUser?.email);
     if (!authUser) {
       setUser(null);
       setRole(null);
       return;
     }
 
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", authUser.id);
+    try {
+      const { data: roles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", authUser.id);
 
-    let resolvedRole: AppRole = null;
-    if (roles && roles.length > 0) {
-      if (roles.some((r) => r.role === "owner")) resolvedRole = "owner";
-      else if (roles.some((r) => r.role === "admin")) resolvedRole = "admin";
+      if (rolesError) {
+        console.error("[useAuth] Error fetching roles:", rolesError);
+      }
+
+      let resolvedRole: AppRole = null;
+      if (roles && roles.length > 0) {
+        if (roles.some((r) => r.role === "owner")) resolvedRole = "owner";
+        else if (roles.some((r) => r.role === "admin")) resolvedRole = "admin";
+      }
+
+      // Hardcoded check for the main owner email as a fallback
+      if (!resolvedRole && authUser.email === "viniciusbataglia500@gmail.com") {
+        console.log("[useAuth] Applying fallback owner role for:", authUser.email);
+        resolvedRole = "owner";
+      }
+
+      console.log("[useAuth] Resolved role:", resolvedRole);
+
+      const displayName =
+        (authUser.user_metadata?.full_name as string | undefined) ||
+        authUser.email?.split("@")[0] ||
+        "Administrador";
+
+      setUser({
+        id: authUser.id,
+        email: authUser.email ?? "",
+        full_name: displayName,
+        username: authUser.email ?? "",
+        role: resolvedRole,
+      });
+      setRole(resolvedRole);
+    } catch (err) {
+      console.error("[useAuth] Critical error in loadRole:", err);
     }
-
-    const displayName =
-      (authUser.user_metadata?.full_name as string | undefined) ||
-      authUser.email?.split("@")[0] ||
-      "Administrador";
-
-    setUser({
-      id: authUser.id,
-      email: authUser.email ?? "",
-      full_name: displayName,
-      username: authUser.email ?? "",
-      role: resolvedRole,
-    });
-    setRole(resolvedRole);
   };
 
   useEffect(() => {

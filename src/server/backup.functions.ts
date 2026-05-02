@@ -41,6 +41,7 @@ async function assertIsAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    console.log("[backup.functions] listBackups starting for user:", context.userId);
     try {
       await assertIsAdmin(context.userId);
       const { data: backups, error } = await supabaseAdmin
@@ -49,11 +50,17 @@ export const listBackups = createServerFn({ method: "POST" })
         .order("created_at", { ascending: false })
         .limit(100);
 
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error("[backup.functions] listBackups database error:", error.message);
+        throw new Error(`Erro no banco de dados: ${error.message}`);
+      }
+      
+      console.log("[backup.functions] listBackups success, count:", backups?.length ?? 0);
       return { backups: backups ?? [] };
     } catch (err: any) {
-      console.error("[backup.functions] listBackups error:", err.message);
-      throw new Error(err.message || "Internal Server Error");
+      console.error("[backup.functions] listBackups caught error:", err.message);
+      // Ensure we always return a plain object with error info if we want to avoid throwing Response
+      throw err;
     }
   });
 
@@ -62,9 +69,7 @@ export const getBackupSettings = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     console.log("[backup.functions] getBackupSettings starting for user:", context.userId);
     try {
-      console.log("[backup.functions] getBackupSettings: Checking admin for user", context.userId);
       await assertIsAdmin(context.userId);
-      console.log("[backup.functions] getBackupSettings: admin check passed");
       
       const { data: settings, error } = await supabaseAdmin
         .from("backup_settings")
@@ -74,14 +79,14 @@ export const getBackupSettings = createServerFn({ method: "POST" })
       
       if (error) {
         console.error("[backup.functions] getBackupSettings database error:", error.message);
-        throw new Error(error.message);
+        throw new Error(`Erro ao buscar configurações: ${error.message}`);
       }
       
-      console.log("[backup.functions] getBackupSettings success, data found:", !!settings);
+      console.log("[backup.functions] getBackupSettings success, found:", !!settings);
       return { settings };
     } catch (err: any) {
       console.error("[backup.functions] getBackupSettings caught error:", err.message);
-      throw new Error(err.message || "Internal Server Error");
+      throw err;
     }
   });
 
