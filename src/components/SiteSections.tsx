@@ -399,7 +399,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           ))}
         </div>
       </section>
-      
+      <section className="contacts-section" id="contatos">
         <div className="section-header reveal text-center">
           <h2 className="mx-auto">Contatos</h2>
         </div>
