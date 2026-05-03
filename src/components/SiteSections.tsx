@@ -335,8 +335,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(about?.paragraphs ?? []).map((p: string, i: number) => (
             <p className="reveal" key={i}>{p}</p>
           ))}
-          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
-            <span>{about.cta_label}</span>
+          <a href={about?.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
+            <span>{about?.cta_label}</span>
             <span>→</span>
           </a>
         </div>
