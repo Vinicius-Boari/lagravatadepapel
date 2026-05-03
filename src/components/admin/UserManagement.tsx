@@ -86,7 +86,7 @@ export function UserManagement() {
 
     setUsers(list);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
