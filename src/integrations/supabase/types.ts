@@ -290,6 +290,7 @@ export type Database = {
           has_screen: string | null
           how_did_you_hear_about_us: string | null
           id: string
+          invasion_type: string | null
           is_assistant_aware: boolean | null
           is_aware_of_card_fees: string | null
           municipality: string
@@ -305,6 +306,7 @@ export type Database = {
           pix_qr_code_url: string | null
           primary_name: string
           secondary_name: string | null
+          selected_coupon: string | null
           social_media_1: string | null
           social_media_2: string | null
           social_media_3: string | null
@@ -329,6 +331,7 @@ export type Database = {
           has_screen?: string | null
           how_did_you_hear_about_us?: string | null
           id?: string
+          invasion_type?: string | null
           is_assistant_aware?: boolean | null
           is_aware_of_card_fees?: string | null
           municipality: string
@@ -344,6 +347,7 @@ export type Database = {
           pix_qr_code_url?: string | null
           primary_name: string
           secondary_name?: string | null
+          selected_coupon?: string | null
           social_media_1?: string | null
           social_media_2?: string | null
           social_media_3?: string | null
@@ -368,6 +372,7 @@ export type Database = {
           has_screen?: string | null
           how_did_you_hear_about_us?: string | null
           id?: string
+          invasion_type?: string | null
           is_assistant_aware?: boolean | null
           is_aware_of_card_fees?: string | null
           municipality?: string
@@ -383,6 +388,7 @@ export type Database = {
           pix_qr_code_url?: string | null
           primary_name?: string
           secondary_name?: string | null
+          selected_coupon?: string | null
           social_media_1?: string | null
           social_media_2?: string | null
           social_media_3?: string | null

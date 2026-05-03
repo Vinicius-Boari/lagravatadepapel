@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -16,6 +17,8 @@ import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   event_date: z.string().min(1, "Data é obrigatória"),
+  invasion_type: z.string().min(1, "Tipo de invasão é obrigatório"),
+  selected_coupon: z.string().optional(),
   event_type: z.string().min(1, "Tipo de evento é obrigatório"),
   primary_name: z.string().min(1, "Nome é obrigatório"),
   secondary_name: z.string().optional(),
@@ -54,6 +57,8 @@ const formSchema = z.object({
 export function QuestionarioForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { content } = useSiteContent();
+  const coupons = content.coupons?.items || [];
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,7 +76,7 @@ export function QuestionarioForm() {
         is_assistant_aware: values.is_assistant_aware === "Sim",
         everyone_informed: values.everyone_informed === "Sim",
         changing_room_informed: values.changing_room_informed === "Sim",
-      });
+      } as any);
 
       if (dbError) throw dbError;
 
@@ -128,6 +133,67 @@ export function QuestionarioForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+        {/* Seção 0: Invasão e Cupom */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="h-8 w-1 bg-primary rounded-full" />
+            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="invasion_type"
+              render={({ field }) => (
+                <FormItem className="space-y-4">
+                  <FormLabel className="text-zinc-400">Escolha a sua invasão*</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white">
+                        <SelectValue placeholder="Selecione o tipo de invasão..." />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <SelectItem value="La gravata de papel">La gravata de papel</SelectItem>
+                      <SelectItem value="Tropa da gravata (BOPE)">Tropa da gravata (BOPE)</SelectItem>
+                      <SelectItem value="Ambas as invasões">Ambas as invasões</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-primary" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="selected_coupon"
+              render={({ field }) => (
+                <FormItem className="space-y-4">
+                  <FormLabel className="text-zinc-400">Cupom de Desconto</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white">
+                        <SelectValue placeholder="Selecione um cupom (opcional)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                      {coupons.map((coupon: any, idx: number) => (
+                        <SelectItem key={idx} value={coupon.code}>
+                          {coupon.title} ({coupon.discount})
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="none">Nenhum cupom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-primary" />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <Separator className="bg-zinc-800/50" />
+
         {/* Seção 1: Informações Básicas */}
         <div className="space-y-6">
           <div className="flex items-center gap-4">
