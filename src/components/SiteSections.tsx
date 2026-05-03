@@ -304,8 +304,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="places-section" id="invasoes">
         <div className="places-header reveal">
-          <h2>{places.heading}<br />{places.heading2}</h2>
-          <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
+          <h2>{places?.heading}<br />{places?.heading2}</h2>
+          <a href={places?.instagram_url} target="_blank" rel="noopener noreferrer">
             Ver no Instagram →
           </a>
         </div>
