@@ -76,7 +76,7 @@ export function QuestionarioForm() {
         is_assistant_aware: values.is_assistant_aware === "Sim",
         everyone_informed: values.everyone_informed === "Sim",
         changing_room_informed: values.changing_room_informed === "Sim",
-      });
+      } as any);
 
       if (dbError) throw dbError;
 
