@@ -99,10 +99,6 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
                   </div>
                 )}
                 <div className="ig3d-card-shine" />
-                <div className="ig3d-card-info">
-                  <span className="ig3d-handle">@{handle}</span>
-                  <p>{post.caption || "—"}</p>
-                </div>
               </button>
             );
           })}
