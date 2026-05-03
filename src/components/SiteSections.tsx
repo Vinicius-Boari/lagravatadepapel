@@ -165,7 +165,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   return (
     <>
       {/* Removido canvas fixo que bloqueava interações */}
-      />
 
       <header className="lg-header" ref={headerRef}>
         <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
