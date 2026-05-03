@@ -236,25 +236,35 @@ export function useSiteContent(useDraft = false) {
   useEffect(() => {
     fetchContent();
 
-    // Configurar Realtime Subscription para atualizações automáticas
-    const channel = supabase
-      .channel('site_content_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'site_content'
-        },
-        (payload) => {
-          console.log('Realtime update received:', payload);
-          fetchContent();
-        }
-      )
-      .subscribe();
+    // Configurar Realtime Subscription para atualizações automáticas com tratamento de erro
+    let channel: any;
+    
+    try {
+      channel = supabase
+        .channel('site_content_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'site_content'
+          },
+          (payload) => {
+            console.log('Realtime update received:', payload);
+            fetchContent();
+          }
+        )
+        .subscribe((status) => {
+          if (status === 'CHANNEL_ERROR') {
+            console.warn('Realtime channel error - falling back to manual refresh');
+          }
+        });
+    } catch (err) {
+      console.error('Error setting up realtime channel:', err);
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [useDraft]);
 
