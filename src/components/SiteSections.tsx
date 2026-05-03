@@ -232,8 +232,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="hero-location">{hero?.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
 
         <div className="hero-cta">
-          <a href={hero.cta_url || "/questionarioevento"}>
-            <span>{hero.cta_label}</span>
+          <a href={hero?.cta_url || "/questionarioevento"}>
+            <span>{hero?.cta_label}</span>
             <span className="cta-dot" />
           </a>
         </div>
