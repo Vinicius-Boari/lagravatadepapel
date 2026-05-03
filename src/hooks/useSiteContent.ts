@@ -100,24 +100,24 @@ export const FALLBACK_CONTENT: SiteContent = {
       {
         title: "Hora da Gravata",
         tag: "Invasão Temática",
-        img: "/images/hero_invasion.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"
       },
       {
         title: "Animação da Balada",
         tag: "Pista de Dança",
-        img: "/images/hero_party.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"
       },
       {
         title: "Plataforma 360°",
         tag: "Vídeo Interativo",
-        img: "/images/service_foto360.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"
       }
     ] 
   },
   about: { 
     heading: "La Gravata", 
     heading_em: "de Papel", 
-    image: "/images/hero_venue.png", 
+    image: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png", 
     paragraphs: [
       "Somos uma empresa especializada em transformar momentos comuns em experiências inesquecíveis. Inspirados em grandes produções e no universo cinematográfico, levamos entretenimento interativo para eventos, criando apresentações envolventes que surpreendem convidados e tornam cada celebração única.",
       "Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiência divertida, interativa e memorável para noivos, convidados e todos os presentes.",
