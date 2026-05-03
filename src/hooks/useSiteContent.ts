@@ -123,7 +123,7 @@ export const FALLBACK_CONTENT: SiteContent = {
     image: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png", 
     paragraphs: [
       "Somos uma empresa especializada em transformar momentos comuns em experiências inesquecíveis. Inspirados em grandes produções e no universo cinematográfico, levamos entretenimento interativo para eventos, criando apresentações envolventes que surpreendem convidados e tornam cada celebração única.",
-      "Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiência divertida, interativa e memorável para noivos, convidados e todos os presentes.",
+      "Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiênci divertida, interativa e memorável para noivos, convidados e todos os presentes.",
       "Se você busca inovação, diversão e um momento realmente marcante, nós somos o plano perfeito para o seu evento."
     ], 
     cta_label: "Fale Conosco", 
@@ -165,6 +165,14 @@ export const FALLBACK_CONTENT: SiteContent = {
     access_token: "",
     app_id: "",
     app_secret: "",
+    items: [
+      { id: "1", type: "IMAGE", media_url: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png", permalink: "https://www.instagram.com/lagravatadepapel" },
+      { id: "2", type: "IMAGE", media_url: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png", permalink: "https://www.instagram.com/lagravatadepapel" },
+      { id: "3", type: "IMAGE", media_url: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png", permalink: "https://www.instagram.com/lagravatadepapel" },
+      { id: "4", type: "IMAGE", media_url: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png", permalink: "https://www.instagram.com/lagravatadepapel" },
+      { id: "5", type: "IMAGE", media_url: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png", permalink: "https://www.instagram.com/lagravatadepapel" },
+      { id: "6", type: "IMAGE", media_url: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png", permalink: "https://www.instagram.com/lagravatadepapel" }
+    ]
   },
   integrations: {
     google_analytics_id: "",
