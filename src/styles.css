@@ -977,7 +977,7 @@ body.lg-body {
 }
 
 .coupon-card {
-  background: #fff;
+  background: var(--color-white-lg);
   border-radius: 12px;
   position: relative;
   padding: 30px;
