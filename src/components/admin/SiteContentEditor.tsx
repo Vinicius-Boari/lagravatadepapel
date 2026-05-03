@@ -159,7 +159,14 @@ export function SiteContentEditor() {
         console.log(`[SaveBtn] Clicked for section: ${section}`, data);
         setStatus('saving');
         try {
-          const result = await handleSave(section, data);
+          // Normalize data for specific sections
+          let dataToSave = data;
+          if (section === 'services' || section === 'videos' || section === 'places' || section === 'coupons' || (section === 'instagram_config' && data.items)) {
+            dataToSave = { ...data };
+            if (!dataToSave.items) dataToSave.items = [];
+          }
+          
+          const result = await handleSave(section, dataToSave);
           if (result) {
             setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
