@@ -424,14 +424,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
-              <a href={footer.instagram_url} target="_blank" rel="noopener noreferrer">Instagram</a>
-              <a href={footer.whatsapp_url} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+              <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://www.facebook.com/lagravatadepapel" target="_blank" rel="noopener noreferrer">Facebook</a>
+              <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer">TikTok</a>
+              <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
             <div className="footer-col">
               <h4>Contato</h4>
-              <a href={footer.phone_url} target="_blank" rel="noopener noreferrer">{footer.phone}</a>
-              <a href="#">{footer.address_line1}</a>
-              <a href="#">{footer.address_line2}</a>
+              <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">(11) 98511-1012</a>
+              <a href="mailto:torontosac@gmail.com" target="_blank" rel="noopener noreferrer">torontosac@gmail.com</a>
+              <a href="https://maps.google.com/?q=Rua+Mesquita,+384,+Vila+Deodoro,+SP" target="_blank" rel="noopener noreferrer">Rua Mesquita, 384<br />Vila Deodoro, SP</a>
             </div>
           </div>
         </div>
