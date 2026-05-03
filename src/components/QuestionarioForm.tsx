@@ -526,7 +526,7 @@ export function QuestionarioForm() {
               <FormItem className="relative z-[80]">
                 <FormLabel className="text-zinc-400">O Local tem telão? Vídeo com áudio sincronizado?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
+                  <FormControl onPointerDown={handlePointerDown}>
                     <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[81]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
@@ -636,7 +636,7 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Quantos personagens contratados?*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
+                    <FormControl onPointerDown={handlePointerDown}>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[71]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
@@ -669,7 +669,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Tempo de permanência na balada*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
+                    <FormControl onPointerDown={handlePointerDown}>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[71]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
@@ -772,7 +772,7 @@ export function QuestionarioForm() {
               <FormItem className="relative z-[60]">
                 <FormLabel className="text-zinc-400">Ciente das taxas da máquina de cartão da La Gravata?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
+                  <FormControl onPointerDown={handlePointerDown}>
                     <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[61]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
@@ -819,7 +819,7 @@ export function QuestionarioForm() {
               <FormItem className="space-y-4 relative z-[50]">
                 <FormLabel className="text-zinc-400">Como nos conheceu?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
+                  <FormControl onPointerDown={handlePointerDown}>
                     <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[51]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
