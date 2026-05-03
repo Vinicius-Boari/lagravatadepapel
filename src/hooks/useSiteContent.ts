@@ -33,22 +33,22 @@ export const FALLBACK_CONTENT: SiteContent = {
       {
         title: "Invasão Temática",
         desc: "Personagens da série invadem sua festa",
-        img: "/images/hero_invasion.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"
       },
       {
         title: "Tequileiros",
         desc: "Animação premium na pista de dança",
-        img: "/images/service_tequileiro.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png"
       },
       {
         title: "Robô de LED",
         desc: "Show de luzes futurístico",
-        img: "/images/service_robo.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"
       },
       {
         title: "Bazuca CO2",
         desc: "Efeitos especiais de fumaça",
-        img: "/images/service_co2.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"
       }
     ] 
   },
