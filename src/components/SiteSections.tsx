@@ -205,7 +205,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
-          <a href="#contato" onClick={closeMenu}>Contato</a>
+          <a href="#contatos" onClick={closeMenu}>Contatos</a>
         </nav>
       </div>
 
@@ -348,8 +348,68 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </a>
         </div>
       </section>
+      
+      <section className="contacts-section" id="contatos">
+        <div className="section-header reveal text-center">
+          <h2 className="mx-auto">Contatos</h2>
+        </div>
+        
+        <div className="contacts-grid scene-3d">
+          {[
+            { 
+              platform: "WhatsApp", 
+              info: "(11) 98511-1012", 
+              link: "https://api.whatsapp.com/send?phone=5511985111012",
+              icon: <MessageCircle className="w-6 h-6" />
+            },
+            { 
+              platform: "Instagram", 
+              info: "@lagravatadepapel", 
+              link: "https://www.instagram.com/lagravatadepapel/",
+              icon: <Instagram className="w-6 h-6" />
+            },
+            { 
+              platform: "Facebook", 
+              info: "La Gravata de Papel", 
+              link: "https://www.facebook.com/lagravatadepapel",
+              icon: <Facebook className="w-6 h-6" />
+            },
+            { 
+              platform: "TikTok", 
+              info: "@lagravatadepapel", 
+              link: "https://www.tiktok.com/@lagravatadepapel",
+              icon: <TikTokIcon className="w-6 h-6" />
+            },
+            { 
+              platform: "E-mail", 
+              info: "torontosac@gmail.com", 
+              link: "mailto:torontosac@gmail.com",
+              icon: <Mail className="w-6 h-6" />
+            }
+          ].map((contact, i) => (
+            <a 
+              key={i}
+              href={contact.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-card tilt-3d scroll-3d reveal group"
+            >
+              <div className="contact-icon-wrapper group-hover:scale-110 transition-transform duration-300">
+                {contact.icon}
+              </div>
+              <div className="contact-info">
+                <span className="contact-platform">{contact.platform}</span>
+                <span className="contact-handle">{contact.info}</span>
+              </div>
+              <div className="contact-arrow">
+                <span>→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
 
-      <footer className="lg-footer" id="contato">
+      <footer className="lg-footer">
         <div className="footer-top">
           <div className="footer-logo">La Gravata<br />de Papel</div>
           <div className="footer-links">
@@ -360,6 +420,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="/questionarioevento">Questionário</a>
             <a href="#invasoes">Invasões</a>
             <a href="#sobre">Sobre</a>
+            <a href="#contatos">Contatos</a>
           </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
