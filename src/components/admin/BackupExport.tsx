@@ -111,6 +111,8 @@ export function BackupExport() {
   }, []);
 
   const handleRunBackup = async () => {
+    if (!confirm("Deseja iniciar um novo backup agora?")) return;
+
     setIsRunningBackup(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
