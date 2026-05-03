@@ -205,7 +205,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Informações do Evento</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-[100]">
             <FormField
               control={form.control}
               name="event_date"
@@ -213,7 +213,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Data do evento*</FormLabel>
                   <FormControl>
-                    <Input type="date" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
+                    <Input type="date" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[101]" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -228,11 +228,11 @@ export function QuestionarioForm() {
                   <FormLabel className="text-zinc-400">Tipo do evento*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[101]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                       <SelectItem value="Casamento">Casamento</SelectItem>
                       <SelectItem value="Debutante">Debutante</SelectItem>
                       <SelectItem value="Empresarial">Empresarial</SelectItem>
@@ -243,10 +243,9 @@ export function QuestionarioForm() {
                     <FormControl>
                       <Input 
                         placeholder="Especifique o tipo de evento" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[101]"
                         onChange={(e) => {
-                          // Aqui poderíamos salvar em um campo separado se quiséssemos manter o "Outros" no select
-                          // mas para simplificar vamos deixar o usuário digitar
+                          // ... existing comment
                         }}
                       />
                     </FormControl>
