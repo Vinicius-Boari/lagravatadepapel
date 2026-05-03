@@ -765,15 +765,15 @@ export function QuestionarioForm() {
             control={form.control}
             name="is_aware_of_card_fees"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="relative z-[60]">
                 <FormLabel className="text-zinc-400">Ciente das taxas da máquina de cartão da La Gravata?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[61]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                     <SelectItem value="Sim, iremos usar maquina da la gravata">Sim, iremos usar máquina da La Gravata</SelectItem>
                     <SelectItem value="Não, usaremos a nossa">Não, usaremos a nossa</SelectItem>
                     <SelectItem value="Não usaremos maquina">Não usaremos máquina</SelectItem>
