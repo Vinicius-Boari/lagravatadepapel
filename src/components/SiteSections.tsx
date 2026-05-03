@@ -514,6 +514,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="/questionarioevento">Questionário</a>
             <a href="#invasoes">Invasões</a>
             <a href="#sobre">Sobre</a>
+            <a href="#tropa-da-gravata">Tropa da Gravata</a>
             <a href="#cupons">Cupons</a>
             <a href="#contatos">Contatos</a>
           </div>
