@@ -624,7 +624,7 @@ export function QuestionarioForm() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-[70]">
             <FormField
               control={form.control}
               name="character_count"
@@ -633,11 +633,11 @@ export function QuestionarioForm() {
                   <FormLabel className="text-zinc-400">Quantos personagens contratados?*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[71]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                       <SelectItem value="2">2</SelectItem>
                       <SelectItem value="3">3</SelectItem>
                       <SelectItem value="4">4</SelectItem>
@@ -650,7 +650,7 @@ export function QuestionarioForm() {
                     <FormControl>
                       <Input 
                         placeholder="Especifique a quantidade" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[71]"
                       />
                     </FormControl>
                   )}
@@ -666,11 +666,11 @@ export function QuestionarioForm() {
                   <FormLabel className="text-zinc-400">Tempo de permanência na balada*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[71]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                       <SelectItem value="20min">20min</SelectItem>
                       <SelectItem value="30min">30min</SelectItem>
                       <SelectItem value="45min">45min</SelectItem>
