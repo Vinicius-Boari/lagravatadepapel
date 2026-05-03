@@ -252,7 +252,7 @@ export function SiteContentEditor() {
             )
           )}
         >
-          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving') 
+          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving' || tropaStatus === 'saving') 
             ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> 
             : <Save className="w-4 h-4 mr-2" />
           }
