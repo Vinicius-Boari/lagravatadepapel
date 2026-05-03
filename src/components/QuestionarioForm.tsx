@@ -60,7 +60,6 @@ export function QuestionarioForm() {
   const { content } = useSiteContent();
   const coupons = content.coupons?.items || [];
 
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
