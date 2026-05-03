@@ -295,7 +295,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Local do Evento</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-[90]">
             <FormField
               control={form.control}
               name="venue_name"
@@ -303,7 +303,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Nome do local do evento*</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome do espaço" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
+                    <Input placeholder="Nome do espaço" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[91]" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -316,7 +316,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Horário da apresentação*</FormLabel>
                   <FormControl>
-                    <Input type="time" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
+                    <Input type="time" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[91]" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
