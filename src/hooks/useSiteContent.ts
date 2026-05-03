@@ -236,25 +236,12 @@ export function useSiteContent(useDraft = false) {
   useEffect(() => {
     fetchContent();
 
-    // Configurar Realtime Subscription para atualizações automáticas
-    const channel = supabase
-      .channel('site_content_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'site_content'
-        },
-        (payload) => {
-          console.log('Realtime update received:', payload);
-          fetchContent();
-        }
-      )
-      .subscribe();
-
+    // O Realtime está causando erros críticos em alguns navegadores (cannot add postgres_changes).
+    // Desativando temporariamente para estabilizar o site enquanto investigamos o limite de canais.
+    console.log('[useSiteContent] Realtime subscription paused for stability');
+    
     return () => {
-      supabase.removeChannel(channel);
+      // Cleanup placeholder
     };
   }, [useDraft]);
 

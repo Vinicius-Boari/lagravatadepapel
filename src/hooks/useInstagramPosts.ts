@@ -38,18 +38,9 @@ export function useInstagramPosts(opts: { all?: boolean } = {}) {
 
     load();
 
-    const channel = supabase
-      .channel("instagram_posts_changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "instagram_posts" },
-        () => load(),
-      )
-      .subscribe();
-
+    // Realtime disabled for stability
     return () => {
       mounted = false;
-      supabase.removeChannel(channel);
     };
   }, [opts.all]);
 
