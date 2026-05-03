@@ -126,6 +126,7 @@ export function SiteContentEditor() {
       setFooter(content.footer || {});
       setCoupons(content.coupons || { items: [] });
       setSeo(content.seo || {});
+      setTropaConfig(content.tropa_config || {});
       setLanguages(content.languages || {});
       setInstagramConfig(content.instagram_config || {});
       isInitialLoad.current = false;
