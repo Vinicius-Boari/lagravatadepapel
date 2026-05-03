@@ -57,6 +57,8 @@ const formSchema = z.object({
 export function QuestionarioForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { content } = useSiteContent();
+  const coupons = content.coupons?.items || [];
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
