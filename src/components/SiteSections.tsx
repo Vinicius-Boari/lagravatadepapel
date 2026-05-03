@@ -310,7 +310,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </a>
         </div>
         <div className="places-grid scene-3d">
-          {(places.items ?? []).map((p: any, i: number) => (
+          {(places?.items ?? []).map((p: any, i: number) => (
             <div className="place-card tilt-3d scroll-3d reveal" key={i}>
               <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
