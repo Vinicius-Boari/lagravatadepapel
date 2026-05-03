@@ -210,7 +210,7 @@ export function useSiteContent(useDraft = false) {
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
           if (v && typeof v === 'object') {
-            merged[row.key] = v;
+            merged[row.key] = { ...(FALLBACK_CONTENT[row.key] || {}), ...v };
           }
         }
         setContent(merged);
