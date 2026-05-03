@@ -355,7 +355,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="section-header reveal text-center">
           <h2 className="mx-auto">{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></h2>
         </div>
-        <div className="coupons-grid max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="coupons-grid max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-4">
           {(coupons?.items || []).map((coupon: any, i: number) => (
             <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
               <div className="coupon-content">

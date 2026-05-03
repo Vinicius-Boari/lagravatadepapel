@@ -586,7 +586,10 @@ export function SiteContentEditor() {
             <div className="space-y-4 pt-4">
               <div className="flex justify-between items-center">
                 <Label className="text-red-500">Lista de Cupons</Label>
-                <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setCoupons({...coupons, items: [...(coupons.items || []), {title: "Novo Cupom", code: "CUPOM10", discount: "10% OFF", description: "", link: ""}]})}>
+                <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => {
+                  const newItems = [...(coupons.items || []), {title: "Novo Cupom", code: `CUPOM${(coupons.items?.length || 0) + 1}`, discount: "10% OFF", description: "", link: "/questionarioevento"}];
+                  setCoupons({...coupons, items: newItems});
+                }}>
                   <Plus className="w-4 h-4 mr-1"/> Adicionar Cupom
                 </Button>
               </div>
