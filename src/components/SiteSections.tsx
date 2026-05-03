@@ -337,7 +337,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         </div>
         <div className="about-text">
-          <h2 className="reveal">{about.heading}<br />de <em>{about.heading_em?.replace(/^de\s+/i, "")}</em></h2>
+          <h2 className="reveal">{about.heading}<br /><em>{about.heading_em?.replace(/^de\s+/i, "")}</em></h2>
           {(about.paragraphs ?? []).map((p: string, i: number) => (
             <p className="reveal" key={i}>{p}</p>
           ))}
