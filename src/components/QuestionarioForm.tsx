@@ -140,7 +140,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-[100]">
             <FormField
               control={form.control}
               name="invasion_type"
@@ -149,14 +149,14 @@ export function QuestionarioForm() {
                   <FormLabel className="text-zinc-400">Escolha a sua invasão*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white">
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[101]">
                         <SelectValue placeholder="Selecione o tipo de invasão..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="La gravata de papel">La gravata de papel</SelectItem>
-                      <SelectItem value="Tropa da gravata (BOPE)">Tropa da gravata (BOPE)</SelectItem>
-                      <SelectItem value="Ambas as invasões">Ambas as invasões</SelectItem>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[99999] pointer-events-auto">
+                      <SelectItem value="La gravata de papel" className="cursor-pointer">La gravata de papel</SelectItem>
+                      <SelectItem value="Tropa da gravata (BOPE)" className="cursor-pointer">Tropa da gravata (BOPE)</SelectItem>
+                      <SelectItem value="Ambas as invasões" className="cursor-pointer">Ambas as invasões</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-primary" />
@@ -172,21 +172,21 @@ export function QuestionarioForm() {
                   <FormLabel className="text-zinc-400">Cupom de Desconto</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white">
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[101]">
                         <SelectValue placeholder="Selecione um cupom (opcional)" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[99999] pointer-events-auto">
                       {coupons.length > 0 ? (
                         coupons.map((coupon: any, idx: number) => (
-                          <SelectItem key={idx} value={coupon.code}>
+                          <SelectItem key={idx} value={coupon.code} className="cursor-pointer">
                             {coupon.title} ({coupon.discount})
                           </SelectItem>
                         ))
                       ) : (
                         <SelectItem value="none" disabled>Carregando cupons...</SelectItem>
                       )}
-                      <SelectItem value="none">Nenhum cupom</SelectItem>
+                      <SelectItem value="none" className="cursor-pointer">Nenhum cupom</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-primary" />
@@ -213,7 +213,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Data do evento*</FormLabel>
                   <FormControl>
-                    <Input type="date" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[101]" {...field} />
+                    <Input type="date" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -243,9 +243,10 @@ export function QuestionarioForm() {
                     <FormControl>
                       <Input 
                         placeholder="Especifique o tipo de evento" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[101]"
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
                         onChange={(e) => {
-                          // ... existing comment
+                          // Aqui poderíamos salvar em um campo separado se quiséssemos manter o "Outros" no select
+                          // mas para simplificar vamos deixar o usuário digitar
                         }}
                       />
                     </FormControl>
@@ -303,7 +304,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Nome do local do evento*</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome do espaço" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[91]" {...field} />
+                    <Input placeholder="Nome do espaço" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -316,7 +317,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Horário da apresentação*</FormLabel>
                   <FormControl>
-                    <Input type="time" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[91]" {...field} />
+                    <Input type="time" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -404,7 +405,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Requisitos e Permissões</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50 relative z-[10]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50">
             <FormField
               control={form.control}
               name="is_assistant_aware"
@@ -527,7 +528,7 @@ export function QuestionarioForm() {
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                     <SelectItem value="Sim">Sim</SelectItem>
                     <SelectItem value="Não">Não</SelectItem>
                     <SelectItem value="Não, apenas som">Não, apenas som</SelectItem>

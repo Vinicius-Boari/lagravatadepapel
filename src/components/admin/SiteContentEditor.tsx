@@ -159,14 +159,7 @@ export function SiteContentEditor() {
         console.log(`[SaveBtn] Clicked for section: ${section}`, data);
         setStatus('saving');
         try {
-          // Normalize data for specific sections
-          let dataToSave = data;
-          if (section === 'services' || section === 'videos' || section === 'places' || section === 'coupons' || (section === 'instagram_config' && data.items)) {
-            dataToSave = { ...data };
-            if (!dataToSave.items) dataToSave.items = [];
-          }
-          
-          const result = await handleSave(section, dataToSave);
+          const result = await handleSave(section, data);
           if (result) {
             setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
@@ -220,14 +213,7 @@ export function SiteContentEditor() {
             if (current) {
               current.set('saving');
               try {
-                const sectionKey = activeSection === 'instagram' ? 'instagram_config' : activeSection;
-                let dataToSave = current.data;
-                if (['services', 'videos', 'places', 'coupons', 'instagram_config'].includes(sectionKey)) {
-                  dataToSave = { ...dataToSave };
-                  if (!dataToSave.items) dataToSave.items = [];
-                }
-                
-                const result = await handleSave(sectionKey, dataToSave);
+                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
                 if (result) {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
@@ -358,7 +344,7 @@ export function SiteContentEditor() {
                  </Button>
                </div>
                
-               {(services.items || []).map((item: any, idx: number) => (
+               {services.items?.map((item: any, idx: number) => (
                  <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
                    <Button 
                      variant="ghost" 
@@ -375,15 +361,24 @@ export function SiteContentEditor() {
                    
                    <div className="space-y-2">
                      <Label className="text-xs text-red-500">Título do Serviço</Label>
-                     <Input value={item.title || ""} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                     <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
                    <div className="space-y-2">
                      <Label className="text-xs text-red-500">Descrição</Label>
-                     <Textarea value={item.desc || ""} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                     <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
-                   <ImageUpload label="Ícone/Imagem" value={item.img || ""} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                   <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                   <div className="flex justify-end pt-4">
+                     <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
+                   </div>
                  </div>
                ))}
+               
+               {(!services.items || services.items.length === 0) && (
+                 <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
+                   Nenhum serviço cadastrado.
+                 </div>
+               )}
             </div>
           </CardContent>
         </Card>
@@ -688,35 +683,6 @@ export function SiteContentEditor() {
                 <Input className="bg-zinc-800 border-red-900 text-red-500" value={instagramConfig.profile_url || ""} onChange={e => setInstagramConfig({...instagramConfig, profile_url: e.target.value})} />
               </div>
             </div>
-            
-            <div className="space-y-4 pt-4 border-t border-red-900/20">
-               <div className="flex justify-between items-center">
-                 <Label className="text-red-500">Fotos Manuais (Carousel 3D)</Label>
-                 <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setInstagramConfig({...instagramConfig, mode: 'manual', items: [...(instagramConfig.items || []), {id: Math.random().toString(), media_url: "", caption: ""}]})}>
-                   <Plus className="w-4 h-4 mr-1"/> Adicionar Foto
-                 </Button>
-               </div>
-               
-               {(instagramConfig.items || []).map((item: any, idx: number) => (
-                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
-                   <Button 
-                     variant="ghost" 
-                     size="icon" 
-                     className="absolute top-2 right-2 text-red-900 hover:text-red-500 hover:bg-red-900/10 h-8 w-8"
-                     onClick={() => {
-                       const newI = [...instagramConfig.items];
-                       newI.splice(idx, 1);
-                       setInstagramConfig({...instagramConfig, items: newI});
-                     }}
-                   >
-                     <Trash2 className="w-4 h-4" />
-                   </Button>
-                   
-                   <ImageUpload label="Foto do Instagram" value={item.media_url} onChange={val => { const newI = [...instagramConfig.items]; newI[idx].media_url = val; setInstagramConfig({...instagramConfig, items: newI}); }} />
-                   <Input placeholder="Legenda (opcional)" value={item.caption} onChange={e => { const newI = [...instagramConfig.items]; newI[idx].caption = e.target.value; setInstagramConfig({...instagramConfig, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
-                 </div>
-               ))}
-            </div>
           </CardContent>
         </Card>
       )}
@@ -753,14 +719,7 @@ export function SiteContentEditor() {
             if (current) {
               current.set('saving');
               try {
-                const sectionKey = activeSection === 'instagram' ? 'instagram_config' : activeSection;
-                let dataToSave = current.data;
-                if (['services', 'videos', 'places', 'coupons', 'instagram_config'].includes(sectionKey)) {
-                  dataToSave = { ...dataToSave };
-                  if (!dataToSave.items) dataToSave.items = [];
-                }
-                
-                const result = await handleSave(sectionKey, dataToSave);
+                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
                 if (result) {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
