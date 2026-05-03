@@ -204,11 +204,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="hero" id="hero">
-        {hero.video_url && (
-          <div className="hero-video-bg">
-            <video src={hero.video_url} autoPlay muted loop playsInline preload="metadata" />
-          </div>
-        )}
+        <div className="hero-video-bg">
+          <video src={hero.video_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/hero_bg.mp4"} autoPlay muted loop playsInline preload="auto" className="w-full h-full object-cover" />
+        </div>
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
             <img src={hero?.image1 || FALLBACK_CONTENT.hero.image1} alt="Hero 1" loading="lazy" />
