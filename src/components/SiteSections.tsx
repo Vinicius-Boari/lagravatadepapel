@@ -352,12 +352,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <section className="dark-section" id="tropa-da-gravata">
-        <div className="dark-content reveal">
-          <h2>A Tropa Invadiu<br /><em>Seu Casamento</em></h2>
-          <div className="space-y-6 text-left max-w-3xl mx-auto mb-10">
+      <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
+        <div className="about-text" style={{ background: 'transparent' }}>
+          <h2 className="reveal">A Tropa Invadiu<br /><em>Seu Casamento</em></h2>
+          <div className="space-y-6 text-left mb-10">
             <p className="text-red-500 font-bold italic mb-4">A hora da gravata nunca mais será a mesma.</p>
-            <p>
+            <p className="opacity-60">
               A hora da gravata é uma das tradições mais antigas dos 
               casamentos brasileiros — surgiu com os imigrantes italianos 
               e espanhóis no início do século XX e virou costume até hoje.
@@ -365,15 +365,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               saem de mesa em mesa com a gravata do noivo, pedem contribuições 
               para a lua de mel e quem colabora leva um pedacinho como lembrança.
             </p>
-            <p>
+            <p className="opacity-60">
               Bonito no papel. Na prática? Sem uma tropa treinada, vira 
               uma bandeja de isopor, uma piada sem graça e o noivo 
               travado sem saber o que fazer.
             </p>
-            <p>
+            <p className="opacity-60">
               Foi aí que a Tropa da Gravata entrou em operação.
             </p>
-            <p>
+            <p className="opacity-60">
               Inspirada nos personagens do BOPE imortalizados no 
               filme Tropa de Elite, nossa equipe invade o salão fardada, 
               disciplinada e com energia de missão cumprida — transformando 
@@ -382,16 +382,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               e criam um momento que todo mundo vai lembrar — 
               inclusive aquele tio que estava tentando escapar.
             </p>
-            <p>
+            <p className="opacity-60">
               O plano é simples: entrar, surpreender e sair com 
               a missão cumprida.
             </p>
           </div>
           
-          <div className="mt-12">
-            <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-sm">Quer essa operação no seu evento?</p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <a href="/questionarioevento" className="btn-outline w-full sm:w-auto">
+          <div className="mt-8">
+            <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <a href="/questionarioevento" className="btn-outline">
                 <span>Contrate Agora</span>
                 <span>→</span>
               </a>
@@ -399,12 +399,17 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                 href="https://www.instagram.com/tropadagravata/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-xs font-bold border-b border-red-500/30 pb-1"
+                className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
               >
                 <Instagram className="w-4 h-4" />
                 <span>Ver no Instagram →</span>
               </a>
             </div>
+          </div>
+        </div>
+        <div className="about-image scene-3d">
+          <div className="scroll-3d tilt-3d">
+            <img src="/images/tropa_gravata.png" alt="Tropa da Gravata" />
           </div>
         </div>
       </section>
