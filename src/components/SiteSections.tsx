@@ -9,7 +9,7 @@ const tickerItems = [
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
 ];
 
-export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
+export function SiteSections({ content }: { content: SiteContent }) {
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
@@ -151,7 +151,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       });
       obs.disconnect();
     };
-  }, [content]);
+  }, []);
 
   const closeMenu = () => setMenuOpen(false);
   const hero = content?.hero || FALLBACK_CONTENT.hero;
@@ -178,7 +178,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="/questionarioevento" className="orcamento-header-btn">
             <span>ORÇAMENTO</span>
           </a>
-          <button className="menu-btn" onClick={() => { setMenuOpen(true); onMenuClick?.(); }} aria-label="Abrir menu">
+          <button className="menu-btn" onClick={() => { setMenuOpen(true); }} aria-label="Abrir menu">
             <span>MENU</span>
           </button>
         </div>
