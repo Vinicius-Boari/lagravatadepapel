@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon } from "lucide-react";
+import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
@@ -206,6 +206,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
           <a href="#contatos" onClick={closeMenu}>Contatos</a>
+          <a href="#cupons" onClick={closeMenu}>Cupons</a>
         </nav>
       </div>
 
@@ -349,6 +350,55 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
       
+      <section className="coupons-section" id="cupons">
+        <div className="section-header reveal text-center">
+          <h2 className="mx-auto">Cupons <em>Especiais</em></h2>
+        </div>
+        <div className="coupons-grid max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            {
+              title: "Primeira Invasão",
+              code: "GRAVATA10",
+              discount: "10% OFF",
+              description: "Válido para o seu primeiro contrato de animação teatral.",
+              link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20GRAVATA10"
+            },
+            {
+              title: "Combo Casamento",
+              code: "VIVAOSNOIVOS",
+              discount: "Bônus Plataforma 360",
+              description: "Feche o pacote completo e ganhe 1 hora extra de plataforma 360.",
+              link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20VIVAOSNOIVOS"
+            },
+            {
+              title: "Aniversário La Gravata",
+              code: "FESTA20",
+              discount: "R$ 200 de desconto",
+              description: "Desconto especial para eventos realizados de segunda a quinta.",
+              link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20FESTA20"
+            }
+          ].map((coupon, i) => (
+            <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
+              <div className="coupon-content">
+                <div className="coupon-header">
+                  <Ticket className="w-8 h-8 text-red-600 mb-2" />
+                  <span className="coupon-discount">{coupon.discount}</span>
+                </div>
+                <h3 className="coupon-title">{coupon.title}</h3>
+                <p className="coupon-description">{coupon.description}</p>
+                <div className="coupon-code-wrapper">
+                  <span className="coupon-code">{coupon.code}</span>
+                  <a href={coupon.link} target="_blank" rel="noopener noreferrer" className="coupon-btn">
+                    RESGATAR
+                  </a>
+                </div>
+              </div>
+              <div className="coupon-border-left"></div>
+              <div className="coupon-border-right"></div>
+            </div>
+          ))}
+        </div>
+      </section>
       <section className="contacts-section" id="contatos">
         <div className="section-header reveal text-center">
           <h2 className="mx-auto">Contatos</h2>
@@ -421,6 +471,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="#invasoes">Invasões</a>
             <a href="#sobre">Sobre</a>
             <a href="#contatos">Contatos</a>
+            <a href="#cupons">Cupons</a>
           </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
