@@ -302,7 +302,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <section className="places-section bg-cream" id="invasoes">
+      <section className="places-section" id="invasoes">
         <div className="places-header reveal">
           <h2>{places.heading}<br />{places.heading2}</h2>
           <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
