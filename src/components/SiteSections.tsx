@@ -152,20 +152,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     };
   }, [content]);
 
-  const closeMenu = () => setMenuOpen(false);
-  const hero = content.hero;
-  const services = content.services;
-  const videos = content.videos;
-  const plan = content.plan;
-  const places = content.places;
-  const about = content.about;
-  const footer = content.footer;
-  const coupons = content.coupons;
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const { hero, services, videos, plan, places, about, coupons, tropa_config, instagram_config } = content;
 
   return (
     <>
       <canvas
         ref={canvasRef}
+        aria-hidden="true"
         style={{
           position: "fixed",
           inset: 0,
@@ -338,7 +332,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <InstagramCarousel3D config={content.instagram_config ?? {}} />
+      <InstagramCarousel3D config={instagram_config ?? {}} />
 
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
@@ -360,10 +354,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
-          <h2 className="reveal">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
+          <h2 className="reveal">{(tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(tropa_config?.heading_em || "Seu Casamento")}</em></h2>
           <div className="space-y-6 text-left mb-10">
-            <p className="text-red-500 font-bold italic mb-4">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
-            {(content.tropa_config?.paragraphs || []).map((p: string, i: number) => (
+            <p className="text-red-500 font-bold italic mb-4">{(tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
+            {(tropa_config?.paragraphs || []).map((p: string, i: number) => (
               <p key={i} className="opacity-60">{p}</p>
             ))}
           </div>
@@ -372,24 +366,24 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <a href="/questionarioevento" className="btn-outline">
-                <span>{(content.tropa_config?.cta_label || "Contrate Agora")}</span>
+                <span>{(tropa_config?.cta_label || "Contrate Agora")}</span>
                 <span>→</span>
               </a>
               <a 
-                href={content.tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
+                href={tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
               >
                 <Instagram className="w-4 h-4" />
-                <span>{(content.tropa_config?.instagram_label || "Ver no Instagram")} →</span>
+                <span>{(tropa_config?.instagram_label || "Ver no Instagram")} →</span>
               </a>
             </div>
           </div>
         </div>
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
+            <img src={tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" loading="lazy" />
           </div>
         </div>
       </section>
