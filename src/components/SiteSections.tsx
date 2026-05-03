@@ -222,14 +222,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
         <div className="hero-content">
           <h1 className="hero-title">
-            {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
+            {(hero?.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
             )}
           </h1>
-          <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
+          <p className="hero-subtitle">{hero?.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
         </div>
 
-        <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
+        <div className="hero-location">{hero?.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
 
         <div className="hero-cta">
           <a href={hero.cta_url || "/questionarioevento"}>
