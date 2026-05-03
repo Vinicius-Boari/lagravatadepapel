@@ -123,7 +123,7 @@ export function PostsManager() {
 
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `post-media/${fileName}`;
 
@@ -256,7 +256,7 @@ export function PostsManager() {
                       onChange={(e) => setMidiaUrl(e.target.value)}
                       className="bg-zinc-800 border-zinc-700 text-red-500 flex-1"
                     />
-                    <input type="file" id="post-upload" className="hidden" onChange={handleUpload} />
+                    <input type="file" id="post-upload" className="hidden" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif,image/svg+xml,video/mp4,video/webm,video/quicktime" onChange={handleUpload} />
                     <Button onClick={() => document.getElementById('post-upload')?.click()} variant="outline" className="border-red-900 text-red-500">
                       {uploading ? <Loader2 className="animate-spin h-4 w-4" /> : <Upload className="h-4 w-4" />}
                     </Button>

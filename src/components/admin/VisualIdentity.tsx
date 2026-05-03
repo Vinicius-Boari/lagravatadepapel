@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,9 @@ const showToast = (message: string, type: 'success' | 'error') => {
 export function VisualIdentity() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const faviconInputRef = useRef<HTMLInputElement>(null);
   const visual = content.visual || {};
   
   const [formData, setFormData] = useState({
@@ -31,6 +35,36 @@ export function VisualIdentity() {
     logo_url: visual.logo_url || "",
     favicon_url: visual.favicon_url || "",
   });
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'logo_url' | 'favicon_url') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(field);
+    try {
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const fileName = `${field}-${Date.now()}.${fileExt}`;
+      const filePath = `visual_identity/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('site-media')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('site-media')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, [field]: publicUrl }));
+      toast.success("Upload realizado!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro no upload");
+    } finally {
+      setUploading(null);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -150,7 +184,10 @@ export function VisualIdentity() {
                 <Label className="flex items-center text-red-500"><Upload className="mr-2 w-4 h-4" /> URL da Logo (PNG/SVG)</Label>
                 <div className="flex space-x-2">
                   <Input name="logo_url" value={formData.logo_url} onChange={handleChange} className="bg-zinc-800 border-red-900 text-red-500 placeholder:text-red-900" placeholder="https://..." />
-                  <Button variant="outline" className="border-red-900 text-red-500"><Upload className="w-4 h-4" /></Button>
+                  <input type="file" ref={logoInputRef} className="hidden" accept="image/png,image/jpeg,image/jpg,image/svg+xml" onChange={(e) => handleUpload(e, 'logo_url')} />
+                  <Button variant="outline" className="border-red-900 text-red-500" onClick={() => logoInputRef.current?.click()} disabled={uploading === 'logo_url'}>
+                    {uploading === 'logo_url' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  </Button>
                 </div>
                 <p className="text-[10px] text-red-500/50">Recomendação: PNG Transparente ou SVG, altura máx. 60px.</p>
               </div>
@@ -159,7 +196,10 @@ export function VisualIdentity() {
                 <Label className="flex items-center text-red-500"><Upload className="mr-2 w-4 h-4" /> URL do Favicon (ICO/PNG)</Label>
                 <div className="flex space-x-2">
                   <Input name="favicon_url" value={formData.favicon_url} onChange={handleChange} className="bg-zinc-800 border-red-900 text-red-500 placeholder:text-red-900" placeholder="https://..." />
-                  <Button variant="outline" className="border-red-900 text-red-500"><Upload className="w-4 h-4" /></Button>
+                  <input type="file" ref={faviconInputRef} className="hidden" accept="image/png,image/x-icon,image/vnd.microsoft.icon" onChange={(e) => handleUpload(e, 'favicon_url')} />
+                  <Button variant="outline" className="border-red-900 text-red-500" onClick={() => faviconInputRef.current?.click()} disabled={uploading === 'favicon_url'}>
+                    {uploading === 'favicon_url' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  </Button>
                 </div>
                 <p className="text-[10px] text-red-500/50">Recomendação: 32x32px ou 48x48px.</p>
               </div>
