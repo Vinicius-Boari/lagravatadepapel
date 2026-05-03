@@ -61,9 +61,6 @@ export const FALLBACK_CONTENT: SiteContent = {
     title: "Siga no Instagram",
     subtitle: "Os bastidores das nossas invasões.",
     mode: "manual",
-    access_token: "",
-    app_id: "",
-    app_secret: "",
   },
   integrations: {
     google_analytics_id: "",
