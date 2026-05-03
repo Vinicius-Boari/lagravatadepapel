@@ -178,7 +178,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <header className="lg-header" ref={headerRef}>
         <div 
           className="logo cursor-pointer" 
-          style={{ color: 'var(--color-black-lg)' }}
+          style={{ color: '#000000' }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           role="button"
           aria-label="Voltar ao topo"
