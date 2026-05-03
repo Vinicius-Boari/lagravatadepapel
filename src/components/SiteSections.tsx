@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { FALLBACK_CONTENT } from "@/hooks/useSiteContent";
@@ -9,7 +9,7 @@ const tickerItems = [
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
 ];
 
-export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
+export function SiteSections({ content }: { content: SiteContent }) {
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
@@ -151,17 +151,18 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       });
       obs.disconnect();
     };
-  }, [content]);
+  }, []);
 
   const closeMenu = () => setMenuOpen(false);
-  const hero = content?.hero || FALLBACK_CONTENT.hero;
-  const services = content?.services || FALLBACK_CONTENT.services;
-  const videos = content?.videos || FALLBACK_CONTENT.videos;
-  const plan = content?.plan || FALLBACK_CONTENT.plan;
-  const places = content?.places || FALLBACK_CONTENT.places;
-  const about = content?.about || FALLBACK_CONTENT.about;
-  const footer = content?.footer || FALLBACK_CONTENT.footer;
-  const coupons = content?.coupons || FALLBACK_CONTENT.coupons;
+  
+  const hero = useMemo(() => content?.hero || FALLBACK_CONTENT.hero, [content]);
+  const services = useMemo(() => content?.services || FALLBACK_CONTENT.services, [content]);
+  const videos = useMemo(() => content?.videos || FALLBACK_CONTENT.videos, [content]);
+  const plan = useMemo(() => content?.plan || FALLBACK_CONTENT.plan, [content]);
+  const places = useMemo(() => content?.places || FALLBACK_CONTENT.places, [content]);
+  const about = useMemo(() => content?.about || FALLBACK_CONTENT.about, [content]);
+  const footer = useMemo(() => content?.footer || FALLBACK_CONTENT.footer, [content]);
+  const coupons = useMemo(() => content?.coupons || FALLBACK_CONTENT.coupons, [content]);
 
   return (
     <>
@@ -170,15 +171,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <header className="lg-header" ref={headerRef}>
         <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div>
-            <div className="logo-text">{hero?.logo_line1 || "La Gravata"}<br />{hero?.logo_line2 || "de Papel"}</div>
+            <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
-          <span className="logo-tagline">{hero?.logo_tagline || "Os Originais"}</span>
+          <span className="logo-tagline">Os Originais</span>
         </div>
         <div className="nav-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <a href="/questionarioevento" className="orcamento-header-btn">
             <span>ORÇAMENTO</span>
           </a>
-          <button className="menu-btn" onClick={() => { setMenuOpen(true); onMenuClick?.(); }} aria-label="Abrir menu">
+          <button className="menu-btn" onClick={() => { setMenuOpen(true); }} aria-label="Abrir menu">
             <span>MENU</span>
           </button>
         </div>
@@ -204,11 +205,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="hero" id="hero">
-        {hero.video_url && (
-          <div className="hero-video-bg">
-            <video src={hero.video_url} autoPlay muted loop playsInline preload="metadata" />
-          </div>
-        )}
+        <div className="hero-video-bg">
+          <video src={hero.video_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/hero_bg.mp4"} autoPlay muted loop playsInline preload="auto" className="w-full h-full object-cover" />
+        </div>
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
             <img src={hero?.image1 || FALLBACK_CONTENT.hero.image1} alt="Hero 1" loading="lazy" />

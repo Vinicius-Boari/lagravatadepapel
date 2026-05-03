@@ -149,8 +149,8 @@
   --color-warm: #8b1a1a;
   --color-dark-lg: #1a1a1a;
   --color-black-lg: #0a0a0a;
-  --color-white-lg: #fafaf8;
-  --color-muted-lg: #8a8578;
+  --color-white-lg: #ffffff;
+  --color-muted-lg: #4a4a4a;
   --color-accent-lg: #c0392b;
   --color-red-lg: #c0392b;
   --color-gold-lg: #d4a853;
@@ -328,14 +328,14 @@ body.lg-body {
 /* SERVICES */
 .services-section { background: var(--color-cream); padding: 80px 0 120px; }
 .section-header { text-align: center; margin-bottom: 60px; }
-.section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--color-dark-lg); opacity: 0.7; }
-.section-header h2 span { display: block; font-style: italic; }
+.section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--color-dark-lg); }
+.section-header h2 span { display: block; font-style: italic; color: var(--color-red-lg); }
 .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 8px; }
 .service-card { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; cursor: pointer; }
 .service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), filter 0.6s; }
 .service-card:hover img { transform: scale(1.08); filter: brightness(0.85); }
-.service-card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s; }
-.service-card:hover .service-card-overlay { opacity: 1; }
+.service-card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%); opacity: 1; transition: opacity 0.4s; }
+.service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(192,57,43,0.9) 0%, transparent 80%); }
 .service-card-overlay h3 { font-family: var(--font-serif); font-size: 1.2rem; color: white; font-weight: 400; }
 .service-card-overlay p { font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 4px; }
 
@@ -359,7 +359,7 @@ body.lg-body {
 .place-card { position: relative; aspect-ratio: 4/5; border-radius: 8px; overflow: hidden; cursor: pointer; }
 .place-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(0.4,0,0.2,1); }
 .place-card:hover img { transform: scale(1.06); }
-.place-card-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 32px 24px; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%); }
+.place-card-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 32px 24px; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%); opacity: 1; }
 .place-card-overlay h3 { font-family: var(--font-serif); font-size: 1.4rem; color: white; font-weight: 400; margin-bottom: 4px; }
 .place-card-overlay span { font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
 
@@ -977,7 +977,7 @@ body.lg-body {
 }
 
 .coupon-card {
-  background: #fff;
+  background: var(--color-white-lg);
   border-radius: 12px;
   position: relative;
   padding: 30px;
@@ -1015,14 +1015,14 @@ body.lg-body {
 .coupon-title {
   font-family: var(--font-serif);
   font-size: 1.5rem;
-  color: var(--color-dark-lg);
+  color: #1a1a1a;
   margin-bottom: 10px;
 }
 
 .coupon-description {
   font-family: var(--font-sans-lg);
   font-size: 0.9rem;
-  color: var(--color-muted-lg);
+  color: #4a4a4a;
   line-height: 1.5;
   margin-bottom: 25px;
 }
@@ -1043,13 +1043,13 @@ body.lg-body {
   font-family: monospace;
   font-weight: 700;
   font-size: 1.1rem;
-  color: var(--color-dark-lg);
+  color: #1a1a1a;
   letter-spacing: 0.1em;
   padding: 10px;
 }
 
 .coupon-btn {
-  background: var(--color-dark-lg);
+  background: #1a1a1a;
   color: #fff;
   text-decoration: none;
   padding: 10px 20px;
