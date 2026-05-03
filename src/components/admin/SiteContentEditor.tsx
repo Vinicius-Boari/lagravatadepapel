@@ -774,12 +774,16 @@ export function SiteContentEditor() {
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
               instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
+              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
             };
             const current = btnMap[activeSection];
             if (current) {
               current.set('saving');
               try {
-                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                               activeSection === 'tropa' ? 'tropa_config' : 
+                               activeSection;
+                const result = await handleSave(saveKey, current.data);
                 if (result) {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
