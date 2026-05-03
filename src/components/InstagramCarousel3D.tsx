@@ -91,11 +91,11 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
                   <img src={post.image_url} alt={post.caption} loading="lazy" />
                 ) : (
                   <div className="ig3d-empty">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="3" y="3" width="18" height="18" rx="5" />
-                      <circle cx="12" cy="12" r="4" />
-                      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-                    </svg>
+                    <img 
+                      src="/images/hero_invasion.png" 
+                      alt="La Gravata de Papel" 
+                      className="w-full h-full object-cover opacity-40 grayscale" 
+                    />
                   </div>
                 )}
                 <div className="ig3d-card-shine" />
