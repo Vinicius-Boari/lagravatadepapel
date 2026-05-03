@@ -28,6 +28,33 @@ export const FALLBACK_CONTENT: SiteContent = {
   plan: { heading: "O Plano É", heading_em: "Surpreender", text: "", cta_label: "Contrate Agora", cta_url: "#" },
   places: { heading: "Nossas", heading2: "Invasões", instagram_url: "#", items: [] },
   about: { heading: "La Gravata", heading_em: "de Papel", image: "", paragraphs: [], cta_label: "Fale Conosco", cta_url: "#" },
+  coupons: {
+    heading: "Cupons",
+    heading_em: "Especiais",
+    items: [
+      {
+        title: "Primeira Invasão",
+        code: "GRAVATA10",
+        discount: "10% OFF",
+        description: "Válido para o seu primeiro contrato de animação teatral.",
+        link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20GRAVATA10"
+      },
+      {
+        title: "Combo Casamento",
+        code: "VIVAOSNOIVOS",
+        discount: "Bônus Plataforma 360",
+        description: "Feche o pacote completo e ganhe 1 hora extra de plataforma 360.",
+        link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20VIVAOSNOIVOS"
+      },
+      {
+        title: "Aniversário La Gravata",
+        code: "FESTA20",
+        discount: "R$ 200 de desconto",
+        description: "Desconto especial para eventos realizados de segunda a quinta.",
+        link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20FESTA20"
+      }
+    ]
+  },
   instagram_config: {
     handle: "lagravatadepapel",
     profile_url: "https://www.instagram.com/lagravatadepapel",
