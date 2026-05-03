@@ -210,30 +210,30 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero.image1 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero?.image1 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"} alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero.image2 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero?.image2 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"} alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero.image3 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero?.image3 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"} alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
         <div className="hero-content">
           <h1 className="hero-title">
-            {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
+            {(hero?.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
             )}
           </h1>
-          <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
+          <p className="hero-subtitle">{hero?.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
         </div>
 
-        <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
+        <div className="hero-location">{hero?.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
 
         <div className="hero-cta">
-          <a href={hero.cta_url || "/questionarioevento"}>
-            <span>{hero.cta_label}</span>
+          <a href={hero?.cta_url || "/questionarioevento"}>
+            <span>{hero?.cta_label}</span>
             <span className="cta-dot" />
           </a>
         </div>
@@ -249,7 +249,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="services-section" id="servicos">
         <div className="section-header reveal">
-          <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
+          <h2>{services?.heading || services?.heading_line1}<br /><span>{services?.heading_em || services?.heading_line2}</span></h2>
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
@@ -266,10 +266,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="video-section" id="videos">
         <div className="video-section-header reveal">
-          <h2>{videos.heading}</h2>
+          <h2>{videos?.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
-          {(videos.items ?? []).map((v: any, i: number) => (
+          {(videos?.items ?? []).map((v: any, i: number) => (
             <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={i}>
               {v.src ? (
                 <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
@@ -293,24 +293,24 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="dark-section">
         <div className="dark-content reveal">
-          <h2>{plan.heading}<br /><em>{plan.heading_em}</em></h2>
-          <p>{plan.text}</p>
-          <a href="/questionarioevento" className="btn-outline">
-            <span>{plan.cta_label}</span>
+          <h2>{plan?.heading}<br /><em>{plan?.heading_em}</em></h2>
+          <p>{plan?.text}</p>
+          <a href={plan?.cta_url || "/questionarioevento"} className="btn-outline">
+            <span>{plan?.cta_label}</span>
             <span>→</span>
           </a>
         </div>
       </section>
 
-      <section className="places-section bg-cream" id="invasoes">
+      <section className="places-section" id="invasoes">
         <div className="places-header reveal">
-          <h2>{places.heading}<br />{places.heading2}</h2>
-          <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
+          <h2>{places?.heading}<br />{places?.heading2}</h2>
+          <a href={places?.instagram_url} target="_blank" rel="noopener noreferrer">
             Ver no Instagram →
           </a>
         </div>
         <div className="places-grid scene-3d">
-          {(places.items ?? []).map((p: any, i: number) => (
+          {(places?.items ?? []).map((p: any, i: number) => (
             <div className="place-card tilt-3d scroll-3d reveal" key={i}>
               <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
@@ -331,12 +331,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         </div>
         <div className="about-text">
-          <h2 className="reveal">{about.heading}<br /><em>{about.heading_em?.replace(/^de\s+/i, "")}</em></h2>
-          {(about.paragraphs ?? []).map((p: string, i: number) => (
+          <h2 className="reveal">{about?.heading}<br /><em>{about?.heading_em?.replace(/^de\s+/i, "")}</em></h2>
+          {(about?.paragraphs ?? []).map((p: string, i: number) => (
             <p className="reveal" key={i}>{p}</p>
           ))}
-          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
-            <span>{about.cta_label}</span>
+          <a href={about?.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
+            <span>{about?.cta_label}</span>
             <span>→</span>
           </a>
         </div>
