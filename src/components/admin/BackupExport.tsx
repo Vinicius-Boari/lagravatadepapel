@@ -111,6 +111,8 @@ export function BackupExport() {
   }, []);
 
   const handleRunBackup = async () => {
+    if (!confirm("Deseja iniciar um novo backup agora?")) return;
+
     setIsRunningBackup(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -208,14 +210,25 @@ export function BackupExport() {
   };
 
   const handleDownload = async (id: string) => {
+    if (!confirm("Deseja baixar este backup para o seu dispositivo?")) return;
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
       const { url } = await getDownloadFn({ data: { id }, headers });
-      if (url) window.open(url, '_blank');
-      else toast.error("URL de download não disponível.");
+      if (url) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `backup-${id}.zip`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("Download iniciado!");
+      } else {
+        toast.error("URL de download não disponível.");
+      }
     } catch (error) {
       toast.error("Erro ao gerar link de download.");
     }
