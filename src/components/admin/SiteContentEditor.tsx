@@ -637,6 +637,8 @@ export function SiteContentEditor() {
               ))}
             </div>
           </CardContent>
+        </Card>
+      )}
 
       {activeSection === "seo" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
