@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,6 +59,10 @@ export function QuestionarioForm() {
   const [submitted, setSubmitted] = useState(false);
   const { content } = useSiteContent();
   const coupons = content.coupons?.items || [];
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    e.stopPropagation();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -148,7 +152,7 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Escolha a sua invasão*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
+                    <FormControl onPointerDown={handlePointerDown}>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[1001] pointer-events-auto">
                         <SelectValue placeholder="Selecione o tipo de invasão..." />
                       </SelectTrigger>
@@ -171,7 +175,7 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Cupom de Desconto</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
+                    <FormControl onPointerDown={handlePointerDown}>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[1001] pointer-events-auto">
                         <SelectValue placeholder="Selecione um cupom (opcional)" />
                       </SelectTrigger>
@@ -227,7 +231,7 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Tipo do evento*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
+                    <FormControl onPointerDown={handlePointerDown}>
                       <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[101]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
