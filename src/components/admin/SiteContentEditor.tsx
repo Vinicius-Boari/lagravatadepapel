@@ -688,6 +688,35 @@ export function SiteContentEditor() {
                 <Input className="bg-zinc-800 border-red-900 text-red-500" value={instagramConfig.profile_url || ""} onChange={e => setInstagramConfig({...instagramConfig, profile_url: e.target.value})} />
               </div>
             </div>
+            
+            <div className="space-y-4 pt-4 border-t border-red-900/20">
+               <div className="flex justify-between items-center">
+                 <Label className="text-red-500">Fotos Manuais (Carousel 3D)</Label>
+                 <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setInstagramConfig({...instagramConfig, mode: 'manual', items: [...(instagramConfig.items || []), {id: Math.random().toString(), media_url: "", caption: ""}]})}>
+                   <Plus className="w-4 h-4 mr-1"/> Adicionar Foto
+                 </Button>
+               </div>
+               
+               {(instagramConfig.items || []).map((item: any, idx: number) => (
+                 <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
+                   <Button 
+                     variant="ghost" 
+                     size="icon" 
+                     className="absolute top-2 right-2 text-red-900 hover:text-red-500 hover:bg-red-900/10 h-8 w-8"
+                     onClick={() => {
+                       const newI = [...instagramConfig.items];
+                       newI.splice(idx, 1);
+                       setInstagramConfig({...instagramConfig, items: newI});
+                     }}
+                   >
+                     <Trash2 className="w-4 h-4" />
+                   </Button>
+                   
+                   <ImageUpload label="Foto do Instagram" value={item.media_url} onChange={val => { const newI = [...instagramConfig.items]; newI[idx].media_url = val; setInstagramConfig({...instagramConfig, items: newI}); }} />
+                   <Input placeholder="Legenda (opcional)" value={item.caption} onChange={e => { const newI = [...instagramConfig.items]; newI[idx].caption = e.target.value; setInstagramConfig({...instagramConfig, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                 </div>
+               ))}
+            </div>
           </CardContent>
         </Card>
       )}
