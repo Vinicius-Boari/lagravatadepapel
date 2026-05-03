@@ -14,11 +14,29 @@ type Config = {
  * Hover any card to pause and inspect; click to open in Instagram.
  */
 export function InstagramCarousel3D({ config }: { config: Config }) {
-  const { posts, loading } = useInstagramPosts();
+  const { content } = useSiteContent();
+  const instagramConfig = content?.instagram_config || {};
   const stageRef = useRef<HTMLDivElement>(null);
   const angleRef = useRef(0);
+  
+  // Use posts from config.items if manual, or from useInstagramPosts hook
+  const { posts, loading } = useInstagramPosts();
+  
+  const displayPosts = (instagramConfig.mode === "manual" && instagramConfig.items && instagramConfig.items.length > 0)
+    ? instagramConfig.items.map((item: any) => ({
+        id: item.id || Math.random().toString(),
+        image_url: item.media_url || item.image_url,
+        caption: item.caption || "Siga-nos no instagram",
+        permalink: item.permalink || instagramConfig.profile_url || `https://www.instagram.com/${instagramConfig.handle || "lagravatadepapel"}`,
+        position: item.position || 0,
+        is_published: true,
+        source: "manual",
+        posted_at: new Date().toISOString()
+      }))
+    : posts;
+
   // Speed: each card stays in front for ~2.5s. degrees/frame = (360/count) / (2.5 * 60fps)
-  const computedSpeed = (360 / (posts.length > 0 ? posts.length : 8)) / (2.5 * 60);
+  const computedSpeed = (360 / (displayPosts.length > 0 ? displayPosts.length : 8)) / (2.5 * 60);
   const targetSpeedRef = useRef(computedSpeed);
   const speedRef = useRef(computedSpeed);
   const rafRef = useRef<number>(0);
@@ -28,7 +46,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
   const handle = config.handle ?? "lagravatadepapel";
 
   // List used for rendering — fall back to placeholders if empty
-  const list: InstagramPost[] = posts.length > 0 ? posts : Array.from({ length: 8 }).map((_, i) => ({
+  const list: InstagramPost[] = displayPosts.length > 0 ? displayPosts : Array.from({ length: 8 }).map((_, i) => ({
     id: `placeholder-${i}`,
     image_url: "",
     caption: "Siga-nos no instagram",
