@@ -374,21 +374,6 @@ export function SiteContentEditor() {
           </CardContent>
         </Card>
       )}
-                   <div className="flex justify-end pt-4">
-                     <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
-                   </div>
-                 </div>
-               ))}
-               
-               {(!services.items || services.items.length === 0) && (
-                 <div className="text-center py-8 border-2 border-dashed border-red-900/20 rounded-lg text-red-900/50">
-                   Nenhum serviço cadastrado.
-                 </div>
-               )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {activeSection === "videos" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
