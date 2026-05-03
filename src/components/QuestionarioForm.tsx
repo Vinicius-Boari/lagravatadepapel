@@ -140,25 +140,25 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-[100]">
             <FormField
               control={form.control}
               name="invasion_type"
               render={({ field }) => (
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Escolha a sua invasão*</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white">
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[101]">
                         <SelectValue placeholder="Selecione o tipo de invasão..." />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[9999]">
-                        <SelectItem value="La gravata de papel">La gravata de papel</SelectItem>
-                        <SelectItem value="Tropa da gravata (BOPE)">Tropa da gravata (BOPE)</SelectItem>
-                        <SelectItem value="Ambas as invasões">Ambas as invasões</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+                    </FormControl>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[99999] pointer-events-auto">
+                      <SelectItem value="La gravata de papel" className="cursor-pointer">La gravata de papel</SelectItem>
+                      <SelectItem value="Tropa da gravata (BOPE)" className="cursor-pointer">Tropa da gravata (BOPE)</SelectItem>
+                      <SelectItem value="Ambas as invasões" className="cursor-pointer">Ambas as invasões</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
@@ -170,21 +170,25 @@ export function QuestionarioForm() {
               render={({ field }) => (
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Cupom de Desconto</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white">
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[101]">
                         <SelectValue placeholder="Selecione um cupom (opcional)" />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[9999]">
-                        {coupons.map((coupon: any, idx: number) => (
-                          <SelectItem key={idx} value={coupon.code}>
+                    </FormControl>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[99999] pointer-events-auto">
+                      {coupons.length > 0 ? (
+                        coupons.map((coupon: any, idx: number) => (
+                          <SelectItem key={idx} value={coupon.code} className="cursor-pointer">
                             {coupon.title} ({coupon.discount})
                           </SelectItem>
-                        ))}
-                        <SelectItem value="none">Nenhum cupom</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+                        ))
+                      ) : (
+                        <SelectItem value="none" disabled>Carregando cupons...</SelectItem>
+                      )}
+                      <SelectItem value="none" className="cursor-pointer">Nenhum cupom</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
