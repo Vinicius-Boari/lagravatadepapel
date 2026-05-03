@@ -651,7 +651,7 @@ export function QuestionarioForm() {
                     <FormControl>
                       <Input 
                         placeholder="Especifique a quantidade" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[71]"
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
                       />
                     </FormControl>
                   )}
@@ -834,7 +834,7 @@ export function QuestionarioForm() {
                   <FormControl>
                     <Input 
                       placeholder="Especifique como nos conheceu" 
-                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[51]"
+                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
                     />
                   </FormControl>
                 )}
