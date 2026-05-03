@@ -245,7 +245,7 @@ export function AdminDashboard() {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "visual", label: "Identidade Visual", icon: Palette },
     { id: "content", label: "Conteúdo do Site", icon: FileText },
-    
+    { id: "posts", label: "Gestão de Posts / Feed", icon: PenTool },
     { id: "media", label: "Mídia / Fotos e Vídeos", icon: ImageIcon },
     { id: "integrations", label: "Integrações e APIs", icon: Instagram },
     { id: "pages", label: "Páginas e Rotas", icon: LinkIcon },
@@ -260,7 +260,7 @@ export function AdminDashboard() {
       case "dashboard": return <DashboardOverview />;
       case "visual": return <VisualIdentity />;
       case "content": return <SiteContentEditor />;
-      
+      case "posts": return <PostsManager />;
       case "media": return <MediaLibrary />;
       case "integrations": return <IntegrationsManager />;
       case "pages": return <PagesRoutes />;
