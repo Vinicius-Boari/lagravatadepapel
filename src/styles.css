@@ -1061,20 +1061,22 @@ body.lg-body {
 }
 
 .coupon-btn {
-  background: var(--color-dark-lg);
-  color: #fff;
+  background: transparent;
+  color: var(--color-red-lg);
   text-decoration: none;
   padding: 10px 20px;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  border: 1px solid var(--color-red-lg);
 }
 
 .coupon-btn:hover {
   background: var(--color-red-lg);
+  color: #fff;
 }
 
 /* Ticket "punched" effect */
