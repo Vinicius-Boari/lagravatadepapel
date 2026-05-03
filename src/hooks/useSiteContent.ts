@@ -59,28 +59,28 @@ export const FALLBACK_CONTENT: SiteContent = {
         title: "Invasão ao Vivo",
         tag: "Reels Instagram",
         src: "",
-        poster: "/images/hero_invasion.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png",
         tall: false
       },
       {
         title: "Tequileiros em Ação",
         tag: "Pista de Dança",
         src: "",
-        poster: "/images/service_tequileiro.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png",
         tall: true
       },
       {
         title: "Robô de LED",
         tag: "Show de Luzes",
         src: "",
-        poster: "/images/service_robo.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png",
         tall: true
       },
       {
         title: "Bazuca CO2",
         tag: "Efeito Especial",
         src: "",
-        poster: "/images/service_co2.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png",
         tall: false
       }
     ] 
