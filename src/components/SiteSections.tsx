@@ -301,7 +301,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="dark-content reveal">
           <h2>{plan.heading}<br /><em>{plan.heading_em}</em></h2>
           <p>{plan.text}</p>
-          <a href="/questionarioevento" className="btn-outline">
+          <a href={plan.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline">
             <span>{plan.cta_label}</span>
             <span>→</span>
           </a>
