@@ -207,16 +207,20 @@ body.lg-body {
 
 
 .orcamento-header-btn {
-  background: rgba(255,255,255,0.12); backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.15); color: var(--color-white-lg);
+  background: transparent;
+  border: 2px solid var(--color-red-lg);
+  color: var(--color-red-lg);
   padding: 8px 24px; border-radius: 50px; cursor: pointer;
   font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em;
   text-transform: uppercase; display: flex; align-items: center; justify-content: center;
-  transition: background 0.3s; min-width: 120px;
+  transition: all 0.3s; min-width: 120px;
   text-decoration: none;
+  font-weight: 700;
 }
 .orcamento-header-btn:hover { 
-  background: rgba(255,255,255,0.2); 
+  background: var(--color-red-lg);
+  color: white;
+  transform: translateY(-2px);
 }
 
 @media (max-width: 640px) {
