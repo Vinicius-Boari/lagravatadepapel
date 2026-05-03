@@ -153,14 +153,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   }, [content]);
 
   const closeMenu = () => setMenuOpen(false);
-  const hero = content.hero || {};
-  const services = content.services || {};
-  const videos = content.videos || {};
-  const plan = content.plan || {};
-  const places = content.places || {};
-  const about = content.about || {};
-  const footer = content.footer || {};
-  const coupons = content.coupons || {};
+  const hero = content?.hero || FALLBACK_CONTENT.hero;
+  const services = content?.services || FALLBACK_CONTENT.services;
+  const videos = content?.videos || FALLBACK_CONTENT.videos;
+  const plan = content?.plan || FALLBACK_CONTENT.plan;
+  const places = content?.places || FALLBACK_CONTENT.places;
+  const about = content?.about || FALLBACK_CONTENT.about;
+  const footer = content?.footer || FALLBACK_CONTENT.footer;
+  const coupons = content?.coupons || FALLBACK_CONTENT.coupons;
 
   return (
     <>
