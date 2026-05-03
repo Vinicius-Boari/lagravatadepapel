@@ -409,7 +409,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <img src="/images/tropa_gravata.png" alt="Tropa da Gravata" />
+            <img src="https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg" alt="Tropa da Gravata" />
           </div>
         </div>
       </section>
