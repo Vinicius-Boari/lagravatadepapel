@@ -331,10 +331,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         </div>
         <div className="about-text">
-          <h2 className="reveal">{about?.heading}<br /><em>{about?.heading_em?.replace(/^de\s+/i, "")}</em></h2>
-          {(about?.paragraphs ?? []).map((p: string, i: number) => (
+          <h2 className="reveal">{about?.heading || "La Gravata"}<br /><em>{about?.heading_em?.replace(/^de\s+/i, "") || "de Papel"}</em></h2>
+          {(about?.paragraphs || []).length > 0 ? about.paragraphs.map((p: string, i: number) => (
             <p className="reveal" key={i}>{p}</p>
-          ))}
+          )) : (
+            <>
+              <p className="reveal">Somos uma empresa especializada em transformar momentos comuns em experiências inesquecíveis. Inspirados em grandes produções e no universo cinematográfico, levamos entretenimento interativo para eventos, criando apresentações envolventes que surpreendem convidados e tornam cada celebração única.</p>
+              <p className="reveal">Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiência divertida, interativa e memorável para noivos, convidados e todos os presentes.</p>
+              <p className="reveal">Se você busca inovação, diversão e um momento realmente marcante, nós somos o plano perfeito para o seu evento.</p>
+            </>
+          )}
           <a href={about?.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
             <span>{about?.cta_label}</span>
             <span>→</span>
