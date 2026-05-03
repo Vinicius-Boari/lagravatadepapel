@@ -246,6 +246,7 @@ export function SiteContentEditor() {
               activeSection === "footer" ? footerStatus :
               activeSection === "coupons" ? couponsStatus :
               activeSection === "seo" ? seoStatus :
+              activeSection === "tropa" ? tropaStatus :
               activeSection === "instagram" ? instagramStatus :
               langStatus
             )
