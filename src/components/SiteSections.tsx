@@ -176,7 +176,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       />
 
       <header className="lg-header" ref={headerRef}>
-        <div className="logo opacity-0 pointer-events-none">
+        <div className="logo">
           <div>
             <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
