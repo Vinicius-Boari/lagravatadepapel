@@ -399,7 +399,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           ))}
         </div>
         <div className="flex justify-center mt-12 reveal">
-          <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="btn-outline border-dark-lg text-dark-lg hover:bg-dark-lg hover:text-white">
+          <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="btn-outline">
             <span>QUERO MEU CUPOM</span>
             <span>→</span>
           </a>
