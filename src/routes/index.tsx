@@ -11,5 +11,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { content } = useSiteContent(false);
-  return <SiteSections content={content} />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream" />}>
+      <SiteSections content={content} />
+    </Suspense>
+  );
 }
