@@ -354,62 +354,36 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
-          <h2 className="reveal">A Tropa Invadiu<br /><em>Seu Casamento</em></h2>
+          <h2 className="reveal">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
           <div className="space-y-6 text-left mb-10">
-            <p className="text-red-500 font-bold italic mb-4">A hora da gravata nunca mais será a mesma.</p>
-            <p className="opacity-60">
-              A hora da gravata é uma das tradições mais antigas dos 
-              casamentos brasileiros — surgiu com os imigrantes italianos 
-              e espanhóis no início do século XX e virou costume até hoje.
-              O ritual é simples: logo após a sobremesa, padrinhos e amigos 
-              saem de mesa em mesa com a gravata do noivo, pedem contribuições 
-              para a lua de mel e quem colabora leva um pedacinho como lembrança.
-            </p>
-            <p className="opacity-60">
-              Bonito no papel. Na prática? Sem uma tropa treinada, vira 
-              uma bandeja de isopor, uma piada sem graça e o noivo 
-              travado sem saber o que fazer.
-            </p>
-            <p className="opacity-60">
-              Foi aí que a Tropa da Gravata entrou em operação.
-            </p>
-            <p className="opacity-60">
-              Inspirada nos personagens do BOPE imortalizados no 
-              filme Tropa de Elite, nossa equipe invade o salão fardada, 
-              disciplinada e com energia de missão cumprida — transformando 
-              a hora da gravata em um espetáculo à parte. Os agentes 
-              dominam o ambiente, envolvem os convidados com humor afiado 
-              e criam um momento que todo mundo vai lembrar — 
-              inclusive aquele tio que estava tentando escapar.
-            </p>
-            <p className="opacity-60">
-              O plano é simples: entrar, surpreender e sair com 
-              a missão cumprida.
-            </p>
+            <p className="text-red-500 font-bold italic mb-4">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
+            {(content.tropa_config?.paragraphs || []).map((p: string, i: number) => (
+              <p key={i} className="opacity-60">{p}</p>
+            ))}
           </div>
           
           <div className="mt-8">
             <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <a href="/questionarioevento" className="btn-outline">
-                <span>Contrate Agora</span>
+                <span>{(content.tropa_config?.cta_label || "Contrate Agora")}</span>
                 <span>→</span>
               </a>
               <a 
-                href="https://www.instagram.com/tropadagravata/" 
+                href={content.tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
               >
                 <Instagram className="w-4 h-4" />
-                <span>Ver no Instagram →</span>
+                <span>{(content.tropa_config?.instagram_label || "Ver no Instagram")} →</span>
               </a>
             </div>
           </div>
         </div>
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <img src="https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg" alt="Tropa da Gravata" />
+            <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
           </div>
         </div>
       </section>

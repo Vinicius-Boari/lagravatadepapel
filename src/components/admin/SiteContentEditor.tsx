@@ -107,10 +107,12 @@ export function SiteContentEditor() {
   const [footer, setFooter] = useState<any>({});
   const [coupons, setCoupons] = useState<any>({ items: [] });
   const [seo, setSeo] = useState<any>({});
+  const [tropaConfig, setTropaConfig] = useState<any>({});
   const [languages, setLanguages] = useState<any>({});
   const [instagramConfig, setInstagramConfig] = useState<any>({});
   const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
   const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
+  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
@@ -124,6 +126,7 @@ export function SiteContentEditor() {
       setFooter(content.footer || {});
       setCoupons(content.coupons || { items: [] });
       setSeo(content.seo || {});
+      setTropaConfig(content.tropa_config || {});
       setLanguages(content.languages || {});
       setInstagramConfig(content.instagram_config || {});
       isInitialLoad.current = false;
@@ -206,6 +209,7 @@ export function SiteContentEditor() {
               footer: { data: footer, status: footerStatus, set: setFooterStatus },
               coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
               instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
             };
@@ -213,7 +217,10 @@ export function SiteContentEditor() {
             if (current) {
               current.set('saving');
               try {
-                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                               activeSection === 'tropa' ? 'tropa_config' : 
+                               activeSection;
+                const result = await handleSave(saveKey, current.data);
                 if (result) {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
@@ -239,12 +246,13 @@ export function SiteContentEditor() {
               activeSection === "footer" ? footerStatus :
               activeSection === "coupons" ? couponsStatus :
               activeSection === "seo" ? seoStatus :
+              activeSection === "tropa" ? tropaStatus :
               activeSection === "instagram" ? instagramStatus :
               langStatus
             )
           )}
         >
-          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving') 
+          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving' || tropaStatus === 'saving') 
             ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> 
             : <Save className="w-4 h-4 mr-2" />
           }
@@ -260,6 +268,7 @@ export function SiteContentEditor() {
           { id: "places", label: "Nossas Invasões" },
           { id: "plan", label: "O Plano" },
           { id: "about", label: "Sobre" },
+          { id: "tropa", label: "Tropa da Gravata" },
           { id: "footer", label: "Rodapé" },
           { id: "coupons", label: "Cupons", icon: <Ticket className="w-4 h-4" /> },
           { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
@@ -643,6 +652,54 @@ export function SiteContentEditor() {
         </Card>
       )}
 
+      {activeSection === "tropa" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Tropa da Gravata</CardTitle>
+              <CardDescription className="text-red-500/60">Configure a seção Tropa da Gravata.</CardDescription>
+            </div>
+            <SaveBtn section="tropa_config" data={tropaConfig} status={tropaStatus} setStatus={setTropaStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Título</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.heading || ""} onChange={e => setTropaConfig({...tropaConfig, heading: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Título Ênfase (Itálico)</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.heading_em || ""} onChange={e => setTropaConfig({...tropaConfig, heading_em: e.target.value})} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-red-500">Subtítulo (Destaque Vermelho)</Label>
+              <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.subheading || ""} onChange={e => setTropaConfig({...tropaConfig, subheading: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-red-500">Parágrafos (um por linha)</Label>
+              <Textarea 
+                rows={8}
+                className="bg-zinc-800 border-red-900 text-red-500" 
+                value={tropaConfig.paragraphs?.join("\n") || ""} 
+                onChange={e => setTropaConfig({...tropaConfig, paragraphs: e.target.value.split("\n")})} 
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Texto do Botão CTA</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.cta_label || ""} onChange={e => setTropaConfig({...tropaConfig, cta_label: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Link do Instagram</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.instagram_url || ""} onChange={e => setTropaConfig({...tropaConfig, instagram_url: e.target.value})} />
+              </div>
+            </div>
+            <ImageUpload label="Imagem da Seção" value={tropaConfig.image_url || ""} onChange={val => setTropaConfig({...tropaConfig, image_url: val})} />
+          </CardContent>
+        </Card>
+      )}
+
       {activeSection === "seo" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -717,12 +774,16 @@ export function SiteContentEditor() {
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
               instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
+              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
             };
             const current = btnMap[activeSection];
             if (current) {
               current.set('saving');
               try {
-                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                               activeSection === 'tropa' ? 'tropa_config' : 
+                               activeSection;
+                const result = await handleSave(saveKey, current.data);
                 if (result) {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
