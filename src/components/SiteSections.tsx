@@ -205,7 +205,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
-          <a href="#contato" onClick={closeMenu}>Contato</a>
+          <a href="#contatos" onClick={closeMenu}>Contatos</a>
         </nav>
       </div>
 
