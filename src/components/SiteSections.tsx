@@ -160,6 +160,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const places = content.places;
   const about = content.about;
   const footer = content.footer;
+  const coupons = content.coupons;
 
   return (
     <>
@@ -352,32 +353,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       
       <section className="coupons-section" id="cupons">
         <div className="section-header reveal text-center">
-          <h2 className="mx-auto">Cupons <em>Especiais</em></h2>
+          <h2 className="mx-auto">{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></h2>
         </div>
         <div className="coupons-grid max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            {
-              title: "Primeira Invasão",
-              code: "GRAVATA10",
-              discount: "10% OFF",
-              description: "Válido para o seu primeiro contrato de animação teatral.",
-              link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20GRAVATA10"
-            },
-            {
-              title: "Combo Casamento",
-              code: "VIVAOSNOIVOS",
-              discount: "Bônus Plataforma 360",
-              description: "Feche o pacote completo e ganhe 1 hora extra de plataforma 360.",
-              link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20VIVAOSNOIVOS"
-            },
-            {
-              title: "Aniversário La Gravata",
-              code: "FESTA20",
-              discount: "R$ 200 de desconto",
-              description: "Desconto especial para eventos realizados de segunda a quinta.",
-              link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20FESTA20"
-            }
-          ].map((coupon, i) => (
+          {(coupons?.items || []).map((coupon: any, i: number) => (
             <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
               <div className="coupon-content">
                 <div className="coupon-header">

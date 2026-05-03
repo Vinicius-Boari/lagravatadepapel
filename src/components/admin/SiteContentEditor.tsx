@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin } from "lucide-react";
+import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
@@ -105,10 +105,12 @@ export function SiteContentEditor() {
   const [videos, setVideos] = useState<any>({ items: [] });
   const [places, setPlaces] = useState<any>({ items: [] });
   const [footer, setFooter] = useState<any>({});
+  const [coupons, setCoupons] = useState<any>({ items: [] });
   const [seo, setSeo] = useState<any>({});
   const [languages, setLanguages] = useState<any>({});
   const [instagramConfig, setInstagramConfig] = useState<any>({});
   const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
+  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
@@ -120,6 +122,7 @@ export function SiteContentEditor() {
       setVideos(content.videos || { items: [] });
       setPlaces(content.places || { items: [] });
       setFooter(content.footer || {});
+      setCoupons(content.coupons || { items: [] });
       setSeo(content.seo || {});
       setLanguages(content.languages || {});
       setInstagramConfig(content.instagram_config || {});
@@ -201,6 +204,7 @@ export function SiteContentEditor() {
               plan: { data: plan, status: planStatus, set: setPlanStatus },
               about: { data: about, status: aboutStatus, set: setAboutStatus },
               footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
               instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
@@ -233,13 +237,14 @@ export function SiteContentEditor() {
               activeSection === "plan" ? planStatus :
               activeSection === "about" ? aboutStatus :
               activeSection === "footer" ? footerStatus :
+              activeSection === "coupons" ? couponsStatus :
               activeSection === "seo" ? seoStatus :
               activeSection === "instagram" ? instagramStatus :
               langStatus
             )
           )}
         >
-          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving') 
+          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving') 
             ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> 
             : <Save className="w-4 h-4 mr-2" />
           }
@@ -256,6 +261,7 @@ export function SiteContentEditor() {
           { id: "plan", label: "O Plano" },
           { id: "about", label: "Sobre" },
           { id: "footer", label: "Rodapé" },
+          { id: "coupons", label: "Cupons", icon: <Ticket className="w-4 h-4" /> },
           { id: "seo", label: "SEO", icon: <Search className="w-4 h-4" /> },
           { id: "languages", label: "Idiomas", icon: <Globe className="w-4 h-4" /> },
           { id: "instagram", label: "Instagram", icon: <Instagram className="w-4 h-4" /> }
@@ -556,6 +562,84 @@ export function SiteContentEditor() {
         </Card>
       )}
 
+      {activeSection === "coupons" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Cupons Especiais</CardTitle>
+              <CardDescription className="text-red-500/60">Gerencie os cupons exibidos no site.</CardDescription>
+            </div>
+            <SaveBtn section="coupons" data={coupons} status={couponsStatus} setStatus={setCouponsStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-red-500">Título da Seção</Label>
+                <Input value={coupons.heading || ""} onChange={e => setCoupons({...coupons, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Destaque (Itálico)</Label>
+                <Input value={coupons.heading_em || ""} onChange={e => setCoupons({...coupons, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+              </div>
+            </div>
+            
+            <div className="space-y-4 pt-4">
+              <div className="flex justify-between items-center">
+                <Label className="text-red-500">Lista de Cupons</Label>
+                <Button size="sm" variant="outline" className="border-red-900 text-red-500" onClick={() => setCoupons({...coupons, items: [...(coupons.items || []), {title: "Novo Cupom", code: "CUPOM10", discount: "10% OFF", description: "", link: ""}]})}>
+                  <Plus className="w-4 h-4 mr-1"/> Adicionar Cupom
+                </Button>
+              </div>
+              
+              {coupons.items?.map((coupon: any, idx: number) => (
+                <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute top-2 right-2 text-red-900 hover:text-red-500 hover:bg-red-900/10 h-8 w-8"
+                    onClick={() => {
+                      const newItems = [...coupons.items];
+                      newItems.splice(idx, 1);
+                      setCoupons({...coupons, items: newItems});
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs text-red-500">Título do Cupom</Label>
+                      <Input value={coupon.title} onChange={e => { const newItems = [...coupons.items]; newItems[idx].title = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs text-red-500">Código</Label>
+                      <Input value={coupon.code} onChange={e => { const newItems = [...coupons.items]; newItems[idx].code = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs text-red-500">Valor/Desconto</Label>
+                      <Input value={coupon.discount} onChange={e => { const newItems = [...coupons.items]; newItems[idx].discount = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs text-red-500">Link de Resgate</Label>
+                      <Input value={coupon.link} onChange={e => { const newItems = [...coupons.items]; newItems[idx].link = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-red-500">Descrição</Label>
+                    <Textarea value={coupon.description} onChange={e => { const newItems = [...coupons.items]; newItems[idx].description = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                  </div>
+                  <div className="flex justify-end pt-2">
+                    <SaveBtn section="coupons" data={coupons} status={couponsStatus} setStatus={setCouponsStatus} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {activeSection === "seo" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -626,6 +710,7 @@ export function SiteContentEditor() {
               plan: { data: plan, status: planStatus, set: setPlanStatus },
               about: { data: about, status: aboutStatus, set: setAboutStatus },
               footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
               instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
@@ -658,6 +743,7 @@ export function SiteContentEditor() {
               activeSection === "plan" ? planStatus :
               activeSection === "about" ? aboutStatus :
               activeSection === "footer" ? footerStatus :
+              activeSection === "coupons" ? couponsStatus :
               activeSection === "seo" ? seoStatus :
               activeSection === "instagram" ? instagramStatus :
               langStatus
