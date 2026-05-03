@@ -220,7 +220,14 @@ export function SiteContentEditor() {
             if (current) {
               current.set('saving');
               try {
-                const result = await handleSave(activeSection === 'instagram' ? 'instagram_config' : activeSection, current.data);
+                const sectionKey = activeSection === 'instagram' ? 'instagram_config' : activeSection;
+                let dataToSave = current.data;
+                if (['services', 'videos', 'places', 'coupons', 'instagram_config'].includes(sectionKey)) {
+                  dataToSave = { ...dataToSave };
+                  if (!dataToSave.items) dataToSave.items = [];
+                }
+                
+                const result = await handleSave(sectionKey, dataToSave);
                 if (result) {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
