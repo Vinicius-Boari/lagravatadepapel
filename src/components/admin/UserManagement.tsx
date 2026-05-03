@@ -103,29 +103,20 @@ export function UserManagement() {
     }
 
     setSaveStatus('saving');
-    // Cria usuário via Supabase Auth (signup público)
-    const { data, error } = await supabase.auth.signUp({
-      email: newAdmin.email.trim(),
-      password: newAdmin.password,
-      options: {
-        data: { full_name: newAdmin.full_name || undefined },
+
+    const { data, error } = await supabase.functions.invoke("create-admin", {
+      body: {
+        email: newAdmin.email.trim(),
+        password: newAdmin.password,
+        full_name: newAdmin.full_name,
+        role: newAdmin.role,
       },
     });
 
-    if (error || !data.user) {
+    if (error || (data && (data as any).error)) {
       setSaveStatus('error');
-      toast.error(error?.message || "Erro ao criar usuário.");
-      return;
-    }
-
-    // Promove para o papel selecionado (apenas owner consegue, conforme RLS)
-    const { error: roleError } = await supabase
-      .from("user_roles")
-      .insert({ user_id: data.user.id, role: newAdmin.role });
-
-    if (roleError) {
-      setSaveStatus('error');
-      toast.error(`Usuário criado, mas falhou ao dar permissão: ${roleError.message}`);
+      if (import.meta.env.DEV) console.error("create-admin error:", error || (data as any)?.error);
+      toast.error("Não foi possível cadastrar o administrador. Verifique os dados e tente novamente.");
       return;
     }
 
