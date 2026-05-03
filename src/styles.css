@@ -982,7 +982,7 @@ body.lg-body {
 }
 
 .coupons-section .section-header h2 em {
-  font-style: italic;
+  font-style: normal;
   color: var(--color-red-lg);
 }
 
