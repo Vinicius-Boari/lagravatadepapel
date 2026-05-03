@@ -535,6 +535,10 @@ export function SiteContentEditor() {
               <Input value={about.heading_em || ""} onChange={e => setAbout({...about, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
             </div>
             <ImageUpload label="Imagem" value={about.image || ""} onChange={val => setAbout({...about, image: val})} />
+            <div className="space-y-2">
+              <Label className="text-red-500">Link do Botão (WhatsApp)</Label>
+              <Input value={about.cta_url || ""} onChange={e => setAbout({...about, cta_url: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="https://api.whatsapp.com/send?phone=..." />
+            </div>
           </CardContent>
         </Card>
       )}
