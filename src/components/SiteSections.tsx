@@ -266,10 +266,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="video-section" id="videos">
         <div className="video-section-header reveal">
-          <h2>{videos.heading}</h2>
+          <h2>{videos?.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
-          {(videos.items ?? []).map((v: any, i: number) => (
+          {(videos?.items ?? []).map((v: any, i: number) => (
             <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={i}>
               {v.src ? (
                 <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
