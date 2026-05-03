@@ -153,25 +153,25 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   }, [content]);
 
   const closeMenu = () => setMenuOpen(false);
-  const hero = content.hero;
-  const services = content.services;
-  const videos = content.videos;
-  const plan = content.plan;
-  const places = content.places;
-  const about = content.about;
-  const footer = content.footer;
-  const coupons = content.coupons;
+  const hero = content.hero || {};
+  const services = content.services || {};
+  const videos = content.videos || {};
+  const plan = content.plan || {};
+  const places = content.places || {};
+  const about = content.about || {};
+  const footer = content.footer || {};
+  const coupons = content.coupons || {};
 
   return (
     <>
       {/* Removido canvas fixo que bloqueava interações */}
 
       <header className="lg-header" ref={headerRef}>
-        <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div>
-            <div className="logo-text">La Gravata<br />de Papel</div>
+            <div className="logo-text">{content?.logo?.line1 || "La Gravata"}<br />{content?.logo?.line2 || "de Papel"}</div>
           </div>
-          <span className="logo-tagline">Os Originais</span>
+          <span className="logo-tagline">{content?.logo?.tagline || "Os Originais"}</span>
         </div>
         <div className="nav-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <a href="/questionarioevento" className="orcamento-header-btn">
@@ -210,13 +210,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero?.image1 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero?.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero?.image2 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero?.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero?.image3 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero?.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
@@ -327,16 +327,22 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png"} alt="Sobre La Gravata de Papel" />}
+            {about?.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
           </div>
         </div>
         <div className="about-text">
-          <h2 className="reveal">{about?.heading}<br /><em>{about?.heading_em?.replace(/^de\s+/i, "")}</em></h2>
-          {(about?.paragraphs ?? []).map((p: string, i: number) => (
+          <h2 className="reveal">{about?.heading || "La Gravata"}<br /><em>{about?.heading_em?.replace(/^de\s+/i, "") || "de Papel"}</em></h2>
+          {(about?.paragraphs || []).length > 0 ? about.paragraphs.map((p: string, i: number) => (
             <p className="reveal" key={i}>{p}</p>
-          ))}
+          )) : (
+            <>
+              <p className="reveal">Somos uma empresa especializada em transformar momentos comuns em experiências inesquecíveis. Inspirados em grandes produções e no universo cinematográfico, levamos entretenimento interativo para eventos, criando apresentações envolventes que surpreendem convidados e tornam cada celebração única.</p>
+              <p className="reveal">Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiência divertida, interativa e memorável para noivos, convidados e todos os presentes.</p>
+              <p className="reveal">Se você busca inovação, diversão e um momento realmente marcante, nós somos o plano perfeito para o seu evento.</p>
+            </>
+          )}
           <a href={about?.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
-            <span>{about?.cta_label}</span>
+            <span>{about?.cta_label || "Fale Conosco"}</span>
             <span>→</span>
           </a>
         </div>
@@ -378,7 +384,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="contacts-section" id="contatos">
         <div className="section-header reveal text-center">
-          <h2 className="mx-auto !text-red-600 font-bold italic">Contatos</h2>
+          <h2 className="mx-auto !text-red-600 font-bold italic">{content?.contacts_heading || "Contatos"}</h2>
         </div>
         
         <div className="contacts-grid scene-3d">
