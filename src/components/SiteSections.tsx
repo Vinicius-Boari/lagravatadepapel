@@ -164,16 +164,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
   return (
     <>
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "fixed",
-          inset: 0,
-          pointerEvents: "none",
-          zIndex: 10000,
-          mixBlendMode: "difference",
-        }}
-      />
+      {/* Removido canvas fixo que bloqueava interações */}
 
       <header className="lg-header" ref={headerRef}>
         <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>

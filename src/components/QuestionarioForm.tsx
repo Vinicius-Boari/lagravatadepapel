@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,6 +59,10 @@ export function QuestionarioForm() {
   const [submitted, setSubmitted] = useState(false);
   const { content } = useSiteContent();
   const coupons = content.coupons?.items || [];
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    e.stopPropagation();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -140,7 +144,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-[100]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-[1000]">
             <FormField
               control={form.control}
               name="invasion_type"
@@ -148,12 +152,12 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Escolha a sua invasão*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[101]">
+                    <FormControl onPointerDown={handlePointerDown}>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[1001] pointer-events-auto">
                         <SelectValue placeholder="Selecione o tipo de invasão..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[99999] pointer-events-auto">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999] pointer-events-auto">
                       <SelectItem value="La gravata de papel" className="cursor-pointer">La gravata de papel</SelectItem>
                       <SelectItem value="Tropa da gravata (BOPE)" className="cursor-pointer">Tropa da gravata (BOPE)</SelectItem>
                       <SelectItem value="Ambas as invasões" className="cursor-pointer">Ambas as invasões</SelectItem>
@@ -171,12 +175,12 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Cupom de Desconto</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[101]">
+                    <FormControl onPointerDown={handlePointerDown}>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 text-white relative z-[1001] pointer-events-auto">
                         <SelectValue placeholder="Selecione um cupom (opcional)" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[99999] pointer-events-auto">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999] pointer-events-auto">
                       {coupons.length > 0 ? (
                         coupons.map((coupon: any, idx: number) => (
                           <SelectItem key={idx} value={coupon.code} className="cursor-pointer">
@@ -205,7 +209,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Informações do Evento</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-[100]">
             <FormField
               control={form.control}
               name="event_date"
@@ -213,7 +217,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Data do evento*</FormLabel>
                   <FormControl>
-                    <Input type="date" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
+                    <Input type="date" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[101]" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -227,12 +231,12 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Tipo do evento*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                    <FormControl onPointerDown={handlePointerDown}>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[101]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                       <SelectItem value="Casamento">Casamento</SelectItem>
                       <SelectItem value="Debutante">Debutante</SelectItem>
                       <SelectItem value="Empresarial">Empresarial</SelectItem>
@@ -243,10 +247,9 @@ export function QuestionarioForm() {
                     <FormControl>
                       <Input 
                         placeholder="Especifique o tipo de evento" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[101]"
                         onChange={(e) => {
-                          // Aqui poderíamos salvar em um campo separado se quiséssemos manter o "Outros" no select
-                          // mas para simplificar vamos deixar o usuário digitar
+                          // ... existing comment
                         }}
                       />
                     </FormControl>
@@ -296,7 +299,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Local do Evento</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-[90]">
             <FormField
               control={form.control}
               name="venue_name"
@@ -304,7 +307,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Nome do local do evento*</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome do espaço" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
+                    <Input placeholder="Nome do espaço" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[91]" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -317,7 +320,7 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Horário da apresentação*</FormLabel>
                   <FormControl>
-                    <Input type="time" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
+                    <Input type="time" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[91]" {...field} />
                   </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
@@ -405,7 +408,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Requisitos e Permissões</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50 relative z-[10]">
             <FormField
               control={form.control}
               name="is_assistant_aware"
@@ -520,15 +523,15 @@ export function QuestionarioForm() {
             control={form.control}
             name="has_screen"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="relative z-[80]">
                 <FormLabel className="text-zinc-400">O Local tem telão? Vídeo com áudio sincronizado?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                  <FormControl onPointerDown={handlePointerDown}>
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[81]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                     <SelectItem value="Sim">Sim</SelectItem>
                     <SelectItem value="Não">Não</SelectItem>
                     <SelectItem value="Não, apenas som">Não, apenas som</SelectItem>
@@ -625,7 +628,7 @@ export function QuestionarioForm() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-[70]">
             <FormField
               control={form.control}
               name="character_count"
@@ -633,12 +636,12 @@ export function QuestionarioForm() {
                 <FormItem className="space-y-4">
                   <FormLabel className="text-zinc-400">Quantos personagens contratados?*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                    <FormControl onPointerDown={handlePointerDown}>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[71]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                       <SelectItem value="2">2</SelectItem>
                       <SelectItem value="3">3</SelectItem>
                       <SelectItem value="4">4</SelectItem>
@@ -651,7 +654,7 @@ export function QuestionarioForm() {
                     <FormControl>
                       <Input 
                         placeholder="Especifique a quantidade" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[71]"
                       />
                     </FormControl>
                   )}
@@ -666,12 +669,12 @@ export function QuestionarioForm() {
                 <FormItem>
                   <FormLabel className="text-zinc-400">Tempo de permanência na balada*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                    <FormControl onPointerDown={handlePointerDown}>
+                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[71]">
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                       <SelectItem value="20min">20min</SelectItem>
                       <SelectItem value="30min">30min</SelectItem>
                       <SelectItem value="45min">45min</SelectItem>
@@ -766,15 +769,15 @@ export function QuestionarioForm() {
             control={form.control}
             name="is_aware_of_card_fees"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="relative z-[60]">
                 <FormLabel className="text-zinc-400">Ciente das taxas da máquina de cartão da La Gravata?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                  <FormControl onPointerDown={handlePointerDown}>
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[61]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                     <SelectItem value="Sim, iremos usar maquina da la gravata">Sim, iremos usar máquina da La Gravata</SelectItem>
                     <SelectItem value="Não, usaremos a nossa">Não, usaremos a nossa</SelectItem>
                     <SelectItem value="Não usaremos maquina">Não usaremos máquina</SelectItem>
@@ -813,15 +816,15 @@ export function QuestionarioForm() {
             control={form.control}
             name="how_did_you_hear_about_us"
             render={({ field }) => (
-              <FormItem className="space-y-4">
+              <FormItem className="space-y-4 relative z-[50]">
                 <FormLabel className="text-zinc-400">Como nos conheceu?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                  <FormControl onPointerDown={handlePointerDown}>
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[51]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                     <SelectItem value="Instagram">Instagram</SelectItem>
                     <SelectItem value="TikTok">TikTok</SelectItem>
                     <SelectItem value="Google">Google</SelectItem>
@@ -834,7 +837,7 @@ export function QuestionarioForm() {
                   <FormControl>
                     <Input 
                       placeholder="Especifique como nos conheceu" 
-                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[51]"
                     />
                   </FormControl>
                 )}
