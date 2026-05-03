@@ -210,13 +210,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero.image1 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"} alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero.image2 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"} alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero.image3 || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"} alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
@@ -327,7 +327,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+            {about.image && <img src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png"} alt="Sobre La Gravata de Papel" />}
           </div>
         </div>
         <div className="about-text">
