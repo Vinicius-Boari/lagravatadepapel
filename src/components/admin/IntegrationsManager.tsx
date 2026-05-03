@@ -49,12 +49,11 @@ export function IntegrationsManager() {
         whatsapp_message: formData.whatsapp_message,
       };
 
+      // Strip any sensitive credentials previously stored in this public table
+      const { app_id: _ignoredAppId, app_secret: _ignoredAppSecret, access_token: _ignoredAccessToken, ...safeInstagram } = instagram as Record<string, unknown>;
       const instagramData = {
-        ...instagram,
+        ...safeInstagram,
         handle: formData.instagram_handle,
-        app_id: formData.instagram_app_id,
-        app_secret: formData.instagram_app_secret,
-        access_token: formData.instagram_access_token,
         mode: formData.instagram_mode,
       };
 
