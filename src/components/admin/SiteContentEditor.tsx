@@ -107,10 +107,12 @@ export function SiteContentEditor() {
   const [footer, setFooter] = useState<any>({});
   const [coupons, setCoupons] = useState<any>({ items: [] });
   const [seo, setSeo] = useState<any>({});
+  const [tropaConfig, setTropaConfig] = useState<any>({});
   const [languages, setLanguages] = useState<any>({});
   const [instagramConfig, setInstagramConfig] = useState<any>({});
   const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
   const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
+  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
