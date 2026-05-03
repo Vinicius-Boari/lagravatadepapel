@@ -209,6 +209,7 @@ export function SiteContentEditor() {
               footer: { data: footer, status: footerStatus, set: setFooterStatus },
               coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
               seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
               languages: { data: languages, status: langStatus, set: setLangStatus },
               instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
             };
