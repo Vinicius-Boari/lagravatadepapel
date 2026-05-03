@@ -153,7 +153,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   }, [content]);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
-  const { hero, services, videos, plan, places, about, coupons, tropa_config, instagram_config } = content;
+  const { hero, services, videos, plan, places, about, coupons, tropa_config, instagram_config, footer } = content;
 
   return (
     <>
