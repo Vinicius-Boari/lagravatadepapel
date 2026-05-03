@@ -64,7 +64,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
         </div>
         <h2>
           {config.title ?? "Siga no Instagram"}
-          <em>@{handle}</em>
+          <span className="not-italic">@{handle}</span>
         </h2>
         <p className="ig3d-sub">{config.subtitle ?? "Os bastidores das nossas invasões — atualizados em tempo real."}</p>
       </div>
