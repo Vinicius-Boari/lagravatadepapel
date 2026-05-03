@@ -136,36 +136,10 @@ export function IntegrationsManager() {
                   onChange={(e) => setFormData({...formData, instagram_handle: e.target.value})} 
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-400">Instagram App ID</Label>
-                <Input 
-                  className="bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-red-500/50" 
-                  type="password" 
-                  value={formData.instagram_app_id} 
-                  onChange={(e) => setFormData({...formData, instagram_app_id: e.target.value})} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-400">Instagram App Secret</Label>
-                <Input 
-                  className="bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-red-500/50" 
-                  type="password" 
-                  value={formData.instagram_app_secret} 
-                  onChange={(e) => setFormData({...formData, instagram_app_secret: e.target.value})} 
-                />
-              </div>
-              <div className="md:col-span-3 space-y-2">
-                <Label className="text-zinc-400">Access Token (Long-lived)</Label>
-                <div className="flex space-x-2">
-                  <Input 
-                    className="bg-zinc-800 border-zinc-700 font-mono text-zinc-100 focus:border-red-500/50" 
-                    type="password" 
-                    value={formData.instagram_access_token} 
-                    onChange={(e) => setFormData({...formData, instagram_access_token: e.target.value})} 
-                  />
-                  <Button variant="outline" className="border-zinc-700 shrink-0 text-zinc-300 hover:text-red-500 hover:border-red-500/30">Gerar Token</Button>
-                </div>
-                <p className="text-[10px] text-zinc-500 italic">Necessário para carregar posts e vídeos automaticamente sem expiração constante.</p>
+              <div className="md:col-span-2 space-y-2">
+                <p className="text-xs text-zinc-500 italic">
+                  Por segurança, credenciais sensíveis (App ID, App Secret e Access Token) devem ser armazenadas apenas como segredos do servidor (Edge Function secrets), nunca neste painel público. Configure-as em Lovable Cloud → Secrets.
+                </p>
               </div>
             </div>
           </CardContent>
