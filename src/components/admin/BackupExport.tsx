@@ -218,19 +218,34 @@ export function BackupExport() {
       const headers = { Authorization: `Bearer ${token}` };
 
       const { url } = await getDownloadFn({ data: { id }, headers });
+      
       if (url) {
+        // Fetch the file as a blob to trigger a direct download instead of just opening a tab
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        
         const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `backup-${id}.zip`);
+        link.href = blobUrl;
+        
+        // Extract filename from URL or use a default
+        const fileName = url.split('/').pop()?.split('?')[0] || `backup-${id}.zip`;
+        link.setAttribute('download', fileName);
+        
         document.body.appendChild(link);
         link.click();
+        
+        // Cleanup
         document.body.removeChild(link);
-        toast.success("Download iniciado!");
+        window.URL.revokeObjectURL(blobUrl);
+        
+        toast.success("Download iniciado com sucesso!");
       } else {
         toast.error("URL de download não disponível.");
       }
     } catch (error) {
-      toast.error("Erro ao gerar link de download.");
+      console.error("Download error:", error);
+      toast.error("Erro ao realizar o download do arquivo.");
     }
   };
 
