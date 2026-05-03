@@ -288,26 +288,26 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
-      
+      if (import.meta.env.DEV) console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
+
       const { data, error } = await supabase
         .from("site_content")
-        .upsert({ 
-          key, 
-          value: newValue, 
-          draft_value: newValue, 
-          updated_at: new Date().toISOString() 
+        .upsert({
+          key,
+          value: newValue,
+          draft_value: newValue,
+          updated_at: new Date().toISOString()
         }, { onConflict: 'key' })
         .select();
 
       if (error) {
-        console.error(`[useSiteContent] Supabase error for ${key}:`, error);
-        toast.error(`Erro no Supabase: ${error.message}`);
+        if (import.meta.env.DEV) console.error(`[useSiteContent] Supabase error for ${key}:`, error);
+        toast.error("Erro ao salvar. Tente novamente.");
         throw error;
       }
-      
-      console.log(`[useSiteContent] Update successful for ${key}:`, data);
-      
+
+      if (import.meta.env.DEV) console.log(`[useSiteContent] Update successful for ${key}:`, data);
+
       setContent(prev => ({
         ...prev,
         [key]: newValue
@@ -315,8 +315,8 @@ export function useSiteContent(useDraft = false) {
 
       return true;
     } catch (err: any) {
-      console.error(`[useSiteContent] Catch block for ${key}:`, err);
-      toast.error(`Erro crítico ao salvar: ${err.message || 'Verifique sua conexão'}`);
+      if (import.meta.env.DEV) console.error(`[useSiteContent] Catch block for ${key}:`, err);
+      toast.error("Erro ao salvar. Verifique sua conexão e tente novamente.");
       throw err;
     }
   };
