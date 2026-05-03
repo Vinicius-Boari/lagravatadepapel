@@ -206,6 +206,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#invasoes" onClick={closeMenu}>Invasões</a>
           <a href="#instagram" onClick={closeMenu}>Instagram</a>
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
+          <a href="#tropa-da-gravata" onClick={closeMenu}>Tropa da Gravata</a>
           <a href="#cupons" onClick={closeMenu}>Cupons</a>
           <a href="#contatos" onClick={closeMenu}>Contatos</a>
         </nav>
@@ -350,6 +351,63 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </a>
         </div>
       </section>
+
+      <section className="dark-section" id="tropa-da-gravata">
+        <div className="dark-content reveal">
+          <h2>A Tropa Invadiu<br /><em>Seu Casamento</em></h2>
+          <div className="space-y-6 text-left max-w-3xl mx-auto mb-10">
+            <p className="text-red-500 font-bold italic mb-4">A hora da gravata nunca mais será a mesma.</p>
+            <p>
+              A hora da gravata é uma das tradições mais antigas dos 
+              casamentos brasileiros — surgiu com os imigrantes italianos 
+              e espanhóis no início do século XX e virou costume até hoje.
+              O ritual é simples: logo após a sobremesa, padrinhos e amigos 
+              saem de mesa em mesa com a gravata do noivo, pedem contribuições 
+              para a lua de mel e quem colabora leva um pedacinho como lembrança.
+            </p>
+            <p>
+              Bonito no papel. Na prática? Sem uma tropa treinada, vira 
+              uma bandeja de isopor, uma piada sem graça e o noivo 
+              travado sem saber o que fazer.
+            </p>
+            <p>
+              Foi aí que a Tropa da Gravata entrou em operação.
+            </p>
+            <p>
+              Inspirada nos personagens do BOPE imortalizados no 
+              filme Tropa de Elite, nossa equipe invade o salão fardada, 
+              disciplinada e com energia de missão cumprida — transformando 
+              a hora da gravata em um espetáculo à parte. Os agentes 
+              dominam o ambiente, envolvem os convidados com humor afiado 
+              e criam um momento que todo mundo vai lembrar — 
+              inclusive aquele tio que estava tentando escapar.
+            </p>
+            <p>
+              O plano é simples: entrar, surpreender e sair com 
+              a missão cumprida.
+            </p>
+          </div>
+          
+          <div className="mt-12">
+            <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-sm">Quer essa operação no seu evento?</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <a href="/questionarioevento" className="btn-outline w-full sm:w-auto">
+                <span>Contrate Agora</span>
+                <span>→</span>
+              </a>
+              <a 
+                href="https://www.instagram.com/tropadagravata/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-xs font-bold border-b border-red-500/30 pb-1"
+              >
+                <Instagram className="w-4 h-4" />
+                <span>Ver no Instagram →</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
       
       <section className="coupons-section" id="cupons">
         <div className="section-header reveal text-center">
@@ -456,6 +514,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="/questionarioevento">Questionário</a>
             <a href="#invasoes">Invasões</a>
             <a href="#sobre">Sobre</a>
+            <a href="#tropa-da-gravata">Tropa da Gravata</a>
             <a href="#cupons">Cupons</a>
             <a href="#contatos">Contatos</a>
           </div>
