@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -239,7 +239,7 @@ export function useSiteContent(useDraft = false) {
   const [content, setContent] = useState<SiteContent>(FALLBACK_CONTENT);
   const [loading, setLoading] = useState(true);
 
-  const fetchContent = async () => {
+  const fetchContent = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("site_content")
@@ -261,23 +261,21 @@ export function useSiteContent(useDraft = false) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [useDraft]);
 
   useEffect(() => {
     fetchContent();
 
-    // Configurar Realtime Subscription para atualizações automáticas
     const channel = supabase
       .channel('site_content_changes')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'UPDATE',
           schema: 'public',
           table: 'site_content'
         },
-        (payload) => {
-          console.log('Realtime update received:', payload);
+        () => {
           fetchContent();
         }
       )
@@ -286,7 +284,7 @@ export function useSiteContent(useDraft = false) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [useDraft]);
+  }, [fetchContent]);
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
