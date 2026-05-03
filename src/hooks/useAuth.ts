@@ -44,11 +44,8 @@ export function useAuth() {
         else if (roles.some((r) => r.role === "admin")) resolvedRole = "admin";
       }
 
-      // Hardcoded check for the main owner email as a fallback
-      if (!resolvedRole && authUser.email === "viniciusbataglia500@gmail.com") {
-        console.log("[useAuth] Applying fallback owner role for:", authUser.email);
-        resolvedRole = "owner";
-      }
+      // Role is determined exclusively from the user_roles table (server-side, RLS-protected).
+      // No client-side hardcoded fallbacks — use the bootstrap-owner edge function to seed an owner.
 
       console.log("[useAuth] Resolved role:", resolvedRole);
 
