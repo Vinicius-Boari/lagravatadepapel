@@ -11,6 +11,9 @@ export const FALLBACK_CONTENT: SiteContent = {
     location: "São Paulo\nCapital",
     cta_label: "EXECUTAR O PLANO",
     cta_url: "https://api.whatsapp.com/send?phone=5511985111012",
+    image1: "/images/hero_invasion.png",
+    image2: "/images/hero_venue.png",
+    image3: "/images/hero_party.png",
     images: [],
     video_url: "",
   },
@@ -23,11 +26,106 @@ export const FALLBACK_CONTENT: SiteContent = {
     logo_url: "",
     favicon_url: "",
   },
-  services: { heading: "Nossos", heading_em: "Serviços", items: [] },
-  videos: { heading: "Em", heading_em: "Movimento", items: [] },
-  plan: { heading: "O Plano É", heading_em: "Surpreender", text: "", cta_label: "Contrate Agora", cta_url: "#" },
-  places: { heading: "Nossas", heading2: "Invasões", instagram_url: "#", items: [] },
-  about: { heading: "La Gravata", heading_em: "de Papel", image: "", paragraphs: [], cta_label: "Fale Conosco", cta_url: "#" },
+  services: { 
+    heading: "Nossos", 
+    heading_em: "Serviços", 
+    items: [
+      {
+        title: "Invasão Temática",
+        desc: "Personagens da série invadem sua festa",
+        img: "/images/hero_invasion.png"
+      },
+      {
+        title: "Tequileiros",
+        desc: "Animação premium na pista de dança",
+        img: "/images/service_tequileiro.png"
+      },
+      {
+        title: "Robô de LED",
+        desc: "Show de luzes futurístico",
+        img: "/images/service_robo.png"
+      },
+      {
+        title: "Bazuca CO2",
+        desc: "Efeitos especiais de fumaça",
+        img: "/images/service_co2.png"
+      }
+    ] 
+  },
+  videos: { 
+    heading: "Em Movimento", 
+    items: [
+      {
+        title: "Invasão ao Vivo",
+        tag: "Reels Instagram",
+        src: "",
+        poster: "/images/hero_invasion.png",
+        tall: false
+      },
+      {
+        title: "Tequileiros em Ação",
+        tag: "Pista de Dança",
+        src: "",
+        poster: "/images/service_tequileiro.png",
+        tall: true
+      },
+      {
+        title: "Robô de LED",
+        tag: "Show de Luzes",
+        src: "",
+        poster: "/images/service_robo.png",
+        tall: true
+      },
+      {
+        title: "Bazuca CO2",
+        tag: "Efeito Especial",
+        src: "",
+        poster: "/images/service_co2.png",
+        tall: false
+      }
+    ] 
+  },
+  plan: { 
+    heading: "O Plano É", 
+    heading_em: "Surpreender", 
+    text: "Vamos invadir seu casamento com personagens caracterizados como os da série 'La Casa de Papel', munidos com efeitos especiais de áudio e vídeo, além de surpresas e atuação teatral que ficará na memória dos noivos e de cada convidado. Nós somos La Gravata de Papel — os originais.", 
+    cta_label: "Contrate Agora", 
+    cta_url: "/questionarioevento" 
+  },
+  places: { 
+    heading: "Nossas", 
+    heading2: "Invasões", 
+    instagram_url: "https://www.instagram.com/lagravatadepapel", 
+    items: [
+      {
+        title: "Hora da Gravata",
+        tag: "Invasão Temática",
+        img: "/images/hero_invasion.png"
+      },
+      {
+        title: "Animação da Balada",
+        tag: "Pista de Dança",
+        img: "/images/hero_party.png"
+      },
+      {
+        title: "Plataforma 360°",
+        tag: "Vídeo Interativo",
+        img: "/images/service_foto360.png"
+      }
+    ] 
+  },
+  about: { 
+    heading: "La Gravata", 
+    heading_em: "de Papel", 
+    image: "/images/hero_venue.png", 
+    paragraphs: [
+      "Somos uma empresa especializada em transformar momentos comuns em experiências inesquecíveis. Inspirados em grandes produções e no universo cinematográfico, levamos entretenimento interativo para eventos, criando apresentações envolventes que surpreendem convidados e tornam cada celebração única.",
+      "Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiência divertida, interativa e memorável para noivos, convidados e todos os presentes.",
+      "Se você busca inovação, diversão e um momento realmente marcante, nós somos o plano perfeito para o seu evento."
+    ], 
+    cta_label: "Fale Conosco", 
+    cta_url: "https://api.whatsapp.com/send?phone=5511985111012" 
+  },
   coupons: {
     heading: "Cupons",
     heading_em: "Especiais",
@@ -73,13 +171,17 @@ export const FALLBACK_CONTENT: SiteContent = {
     whatsapp_message: "Olá, gostaria de saber mais sobre a La Gravata de Papel.",
   },
   footer: {
-    phone: "", phone_url: "#", address_line1: "", address_line2: "",
-    instagram_url: "#", whatsapp_url: "#",
+    phone: "5511985111012", 
+    phone_url: "https://api.whatsapp.com/send?phone=5511985111012", 
+    address_line1: "São Paulo, SP", 
+    address_line2: "",
+    instagram_url: "https://www.instagram.com/lagravatadepapel", 
+    whatsapp_url: "https://api.whatsapp.com/send?phone=5511985111012",
     copyright: "© La Gravata de Papel", hashtag: "#LAGRAVATADEPAPEL",
   },
   seo: {
-    title: "La Gravata de Papel",
-    description: "A hora da gravata nunca mais será a mesma.",
+    title: "La Gravata de Papel — Vamos Invadir Seu Evento",
+    description: "La Gravata de Papel — Vamos invadir seu casamento com personagens da série La Casa de Papel. Animação teatral, tequileiros, robô de LED, bazuca CO2 e muito mais.",
     keywords: "gravata, casamento, festa, animação, invasão",
   },
   languages: {
@@ -107,7 +209,9 @@ export function useSiteContent(useDraft = false) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
+          if (v && typeof v === 'object') {
+            merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...v };
+          }
         }
         setContent(merged);
       }
