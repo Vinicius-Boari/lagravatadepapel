@@ -344,7 +344,7 @@ export function SiteContentEditor() {
                  </Button>
                </div>
                
-               {services.items?.map((item: any, idx: number) => (
+               {(services.items || []).map((item: any, idx: number) => (
                  <div key={idx} className="p-4 bg-zinc-800/50 rounded-lg border border-red-900/30 space-y-4 relative group">
                    <Button 
                      variant="ghost" 
@@ -361,13 +361,19 @@ export function SiteContentEditor() {
                    
                    <div className="space-y-2">
                      <Label className="text-xs text-red-500">Título do Serviço</Label>
-                     <Input value={item.title} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                     <Input value={item.title || ""} onChange={e => { const newI = [...services.items]; newI[idx].title = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
                    <div className="space-y-2">
                      <Label className="text-xs text-red-500">Descrição</Label>
-                     <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
+                     <Textarea value={item.desc || ""} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
-                   <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                   <ImageUpload label="Ícone/Imagem" value={item.img || ""} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                 </div>
+               ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
                    <div className="flex justify-end pt-4">
                      <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
                    </div>
