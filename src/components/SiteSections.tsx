@@ -176,7 +176,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       />
 
       <header className="lg-header" ref={headerRef}>
-        <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="logo opacity-0 pointer-events-none">
           <div>
             <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
@@ -229,7 +229,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         </div>
 
-        <div className="hero-content hidden md:block">
+        <div className="hero-content">
           <h1 className="hero-title">
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
