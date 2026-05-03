@@ -367,7 +367,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                 <p className="coupon-description">{coupon.description}</p>
                 <div className="coupon-code-wrapper">
                   <span className="coupon-code">{coupon.code}</span>
-                  <a href={coupon.link} target="_blank" rel="noopener noreferrer" className="coupon-btn">
+                  <a href={coupon.link} className="coupon-btn">
                     RESGATAR
                   </a>
                 </div>
@@ -378,7 +378,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           ))}
         </div>
         <div className="flex justify-center mt-12 reveal">
-          <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="btn-outline">
+          <a href="/questionarioevento" className="btn-outline">
             <span>QUERO MEU CUPOM</span>
             <span>→</span>
           </a>
