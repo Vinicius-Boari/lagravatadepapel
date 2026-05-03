@@ -33,9 +33,6 @@ export function IntegrationsManager() {
     whatsapp_number: integrations.whatsapp_number || "",
     whatsapp_message: integrations.whatsapp_message || "",
     instagram_handle: instagram.handle || "",
-    instagram_app_id: instagram.app_id || "",
-    instagram_app_secret: instagram.app_secret || "",
-    instagram_access_token: instagram.access_token || "",
     instagram_mode: instagram.mode || "manual",
   });
 
