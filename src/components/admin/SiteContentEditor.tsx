@@ -506,8 +506,18 @@ export function SiteContentEditor() {
             <SaveBtn section="plan" data={plan} status={planStatus} setStatus={setPlanStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input value={plan.heading || ""} onChange={e => setPlan({...plan, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
-            <Textarea value={plan.text || ""} onChange={e => setPlan({...plan, text: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            <div className="space-y-2">
+              <Label className="text-red-500">Título</Label>
+              <Input value={plan.heading || ""} onChange={e => setPlan({...plan, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-red-500">Texto</Label>
+              <Textarea value={plan.text || ""} onChange={e => setPlan({...plan, text: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-red-500">Link do Botão (WhatsApp)</Label>
+              <Input value={plan.cta_url || ""} onChange={e => setPlan({...plan, cta_url: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="https://api.whatsapp.com/send?phone=..." />
+            </div>
           </CardContent>
         </Card>
       )}
@@ -525,6 +535,10 @@ export function SiteContentEditor() {
               <Input value={about.heading_em || ""} onChange={e => setAbout({...about, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
             </div>
             <ImageUpload label="Imagem" value={about.image || ""} onChange={val => setAbout({...about, image: val})} />
+            <div className="space-y-2">
+              <Label className="text-red-500">Link do Botão (WhatsApp)</Label>
+              <Input value={about.cta_url || ""} onChange={e => setAbout({...about, cta_url: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="https://api.whatsapp.com/send?phone=..." />
+            </div>
           </CardContent>
         </Card>
       )}
