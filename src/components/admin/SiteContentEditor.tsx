@@ -30,17 +30,17 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
 
       setUploading(true);
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `site_content/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('media')
+        .from('site-media')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('media')
+        .from('site-media')
         .getPublicUrl(filePath);
 
       onChange(publicUrl);
@@ -67,7 +67,7 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
           type="file" 
           ref={fileInputRef} 
           className="hidden" 
-          accept="image/*,video/*"
+          accept="image/png,image/jpeg,image/jpg,image/webp,image/gif,image/svg+xml,video/mp4,video/webm,video/quicktime"
           onChange={handleUpload}
         />
         <Button 
