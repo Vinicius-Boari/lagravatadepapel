@@ -387,7 +387,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="contacts-section" id="contatos">
         <div className="section-header reveal text-center">
-          <h2 className="mx-auto !text-red-600 font-bold italic">Contatos</h2>
+          <h2 className="mx-auto !text-red-600 font-bold">Contatos</h2>
         </div>
         
         <div className="contacts-grid scene-3d">
