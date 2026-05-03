@@ -260,7 +260,7 @@ export function AdminDashboard() {
       case "dashboard": return <DashboardOverview />;
       case "visual": return <VisualIdentity />;
       case "content": return <SiteContentEditor />;
-      
+      case "posts": return <PostsManager />;
       case "media": return <MediaLibrary />;
       case "integrations": return <IntegrationsManager />;
       case "pages": return <PagesRoutes />;
