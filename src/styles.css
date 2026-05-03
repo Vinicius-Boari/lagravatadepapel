@@ -149,8 +149,8 @@
   --color-warm: #8b1a1a;
   --color-dark-lg: #1a1a1a;
   --color-black-lg: #0a0a0a;
-  --color-white-lg: #fafaf8;
-  --color-muted-lg: #8a8578;
+  --color-white-lg: #ffffff;
+  --color-muted-lg: #4a4a4a;
   --color-accent-lg: #c0392b;
   --color-red-lg: #c0392b;
   --color-gold-lg: #d4a853;
@@ -1015,14 +1015,14 @@ body.lg-body {
 .coupon-title {
   font-family: var(--font-serif);
   font-size: 1.5rem;
-  color: var(--color-dark-lg);
+  color: #1a1a1a;
   margin-bottom: 10px;
 }
 
 .coupon-description {
   font-family: var(--font-sans-lg);
   font-size: 0.9rem;
-  color: var(--color-muted-lg);
+  color: #4a4a4a;
   line-height: 1.5;
   margin-bottom: 25px;
 }
@@ -1043,13 +1043,13 @@ body.lg-body {
   font-family: monospace;
   font-weight: 700;
   font-size: 1.1rem;
-  color: var(--color-dark-lg);
+  color: #1a1a1a;
   letter-spacing: 0.1em;
   padding: 10px;
 }
 
 .coupon-btn {
-  background: var(--color-dark-lg);
+  background: #1a1a1a;
   color: #fff;
   text-decoration: none;
   padding: 10px 20px;
