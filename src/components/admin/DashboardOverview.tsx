@@ -143,6 +143,4 @@ export function DashboardOverview() {
   );
 }
 
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
+// Import removed, using standard cn from @/lib/utils
