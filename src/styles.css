@@ -945,9 +945,10 @@ body.lg-body {
   color: var(--color-white-lg);
 }
 .contact-arrow {
-  font-size: 1.2rem;
-  color: var(--color-muted-lg);
+  font-size: 1.5rem;
+  color: var(--color-red-lg);
   transition: transform 0.3s, color 0.3s;
+  margin-left: 10px;
 }
 .contact-card:hover .contact-arrow {
   transform: translateX(5px);
