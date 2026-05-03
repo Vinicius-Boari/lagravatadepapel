@@ -327,7 +327,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+            {about.image && <img src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png"} alt="Sobre La Gravata de Papel" />}
           </div>
         </div>
         <div className="about-text">
