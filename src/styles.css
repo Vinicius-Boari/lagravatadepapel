@@ -918,10 +918,13 @@ body.lg-body {
   color: var(--color-red-lg);
   width: 56px;
   height: 56px;
+  min-width: 56px;
+  min-height: 56px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .contact-info {
   flex: 1;
