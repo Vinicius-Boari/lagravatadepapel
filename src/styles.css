@@ -881,7 +881,7 @@ body.lg-body {
 
 /* CONTACTS SECTION */
 .contacts-section { 
-  background: var(--color-cream); 
+  background: var(--color-black-lg); 
   padding: 120px 20px; 
 }
 .contacts-grid { 
@@ -892,7 +892,7 @@ body.lg-body {
   margin: 0 auto;
 }
 .contact-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
   padding: 32px;
   border-radius: 8px;
   display: flex;
@@ -900,8 +900,8 @@ body.lg-body {
   gap: 20px;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -911,7 +911,7 @@ body.lg-body {
   border-color: var(--color-red-lg);
 }
 .contact-icon-wrapper {
-  background: var(--color-cream);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--color-red-lg);
   width: 56px;
   height: 56px;
@@ -936,7 +936,7 @@ body.lg-body {
 .contact-handle {
   font-family: var(--font-serif);
   font-size: 1.1rem;
-  color: var(--color-dark-lg);
+  color: var(--color-white-lg);
 }
 .contact-arrow {
   font-size: 1.2rem;
