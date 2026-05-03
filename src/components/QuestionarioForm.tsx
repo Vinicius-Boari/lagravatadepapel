@@ -140,7 +140,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-50">
             <FormField
               control={form.control}
               name="invasion_type"
