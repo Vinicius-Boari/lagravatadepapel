@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useInstagramPosts, type InstagramPost } from "@/hooks/useInstagramPosts";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 type Config = {
   handle?: string;
