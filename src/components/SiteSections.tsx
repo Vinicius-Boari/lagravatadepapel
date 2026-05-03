@@ -232,7 +232,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
 
         <div className="hero-cta">
-          <a href="/questionarioevento">
+          <a href={hero.cta_url || "/questionarioevento"}>
             <span>{hero.cta_label}</span>
             <span className="cta-dot" />
           </a>
@@ -302,7 +302,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <section className="places-section" id="invasoes">
+      <section className="places-section bg-cream" id="invasoes">
         <div className="places-header reveal">
           <h2>{places.heading}<br />{places.heading2}</h2>
           <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
