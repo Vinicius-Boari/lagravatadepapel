@@ -176,7 +176,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       />
 
       <header className="lg-header" ref={headerRef}>
-        <div className="logo">
+        <div 
+          className="logo cursor-pointer" 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          role="button"
+          aria-label="Voltar ao topo"
+        >
           <div>
             <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
