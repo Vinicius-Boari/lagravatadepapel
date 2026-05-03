@@ -35,6 +35,7 @@ export const Route = createRootRoute({
         content:
           "La Gravata de Papel — Vamos invadir seu casamento com personagens da série La Casa de Papel. Animação teatral, tequileiros, robô de LED, bazuca CO2 e muito mais.",
       },
+      { name: "keywords", content: "gravata, casamento, festa, animação, invasão, tequileiros, robô de led, bazuca co2" },
       { name: "author", content: "La Gravata de Papel" },
       { property: "og:title", content: "La Gravata de Papel — Vamos Invadir Seu Evento" },
       {
@@ -43,11 +44,10 @@ export const Route = createRootRoute({
           "Animação teatral inspirada em La Casa de Papel para casamentos e festas em São Paulo.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://lagravatadepapel.com.br" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "La Gravata de Papel — Vamos Invadir Seu Evento" },
-      { name: "description", content: "Lagravatadepapel" },
-      { property: "og:description", content: "Lagravatadepapel" },
-      { name: "twitter:description", content: "Lagravatadepapel" },
+      { name: "twitter:description", content: "Animação teatral para casamentos e festas em São Paulo." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
     ],
