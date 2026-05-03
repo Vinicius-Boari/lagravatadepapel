@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
+import { FALLBACK_CONTENT } from "@/hooks/useSiteContent";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
 const tickerItems = [
@@ -153,14 +154,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   }, [content]);
 
   const closeMenu = () => setMenuOpen(false);
-  const hero = content.hero || {};
-  const services = content.services || {};
-  const videos = content.videos || {};
-  const plan = content.plan || {};
-  const places = content.places || {};
-  const about = content.about || {};
-  const footer = content.footer || {};
-  const coupons = content.coupons || {};
+  const hero = content?.hero || FALLBACK_CONTENT.hero;
+  const services = content?.services || FALLBACK_CONTENT.services;
+  const videos = content?.videos || FALLBACK_CONTENT.videos;
+  const plan = content?.plan || FALLBACK_CONTENT.plan;
+  const places = content?.places || FALLBACK_CONTENT.places;
+  const about = content?.about || FALLBACK_CONTENT.about;
+  const footer = content?.footer || FALLBACK_CONTENT.footer;
+  const coupons = content?.coupons || FALLBACK_CONTENT.coupons;
 
   return (
     <>
@@ -169,9 +170,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <header className="lg-header" ref={headerRef}>
         <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div>
-            <div className="logo-text">{content?.logo?.line1 || "La Gravata"}<br />{content?.logo?.line2 || "de Papel"}</div>
+            <div className="logo-text">{hero?.logo_line1 || "La Gravata"}<br />{hero?.logo_line2 || "de Papel"}</div>
           </div>
-          <span className="logo-tagline">{content?.logo?.tagline || "Os Originais"}</span>
+          <span className="logo-tagline">{hero?.logo_tagline || "Os Originais"}</span>
         </div>
         <div className="nav-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <a href="/questionarioevento" className="orcamento-header-btn">
@@ -210,13 +211,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero?.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero?.image1 || FALLBACK_CONTENT.hero.image1} alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero?.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero?.image2 || FALLBACK_CONTENT.hero.image2} alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero?.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero?.image3 || FALLBACK_CONTENT.hero.image3} alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
@@ -327,7 +328,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            {about?.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+            {about?.image && <img src={about.image || FALLBACK_CONTENT.about.image} alt="Sobre La Gravata de Papel" />}
           </div>
         </div>
         <div className="about-text">

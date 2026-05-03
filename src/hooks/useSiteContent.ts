@@ -9,11 +9,14 @@ export const FALLBACK_CONTENT: SiteContent = {
     title_lines: ["Vamos", "Invadir", "Seu Evento"],
     subtitle: "A hora da gravata\nnunca mais será\na mesma /",
     location: "São Paulo\nCapital",
+    logo_line1: "La Gravata",
+    logo_line2: "de Papel",
+    logo_tagline: "Os Originais",
     cta_label: "EXECUTAR O PLANO",
     cta_url: "https://api.whatsapp.com/send?phone=5511985111012",
-    image1: "/images/hero_invasion.png",
-    image2: "/images/hero_venue.png",
-    image3: "/images/hero_party.png",
+    image1: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png",
+    image2: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png",
+    image3: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png",
     images: [],
     video_url: "",
   },
@@ -33,22 +36,22 @@ export const FALLBACK_CONTENT: SiteContent = {
       {
         title: "Invasão Temática",
         desc: "Personagens da série invadem sua festa",
-        img: "/images/hero_invasion.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"
       },
       {
         title: "Tequileiros",
         desc: "Animação premium na pista de dança",
-        img: "/images/service_tequileiro.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png"
       },
       {
         title: "Robô de LED",
         desc: "Show de luzes futurístico",
-        img: "/images/service_robo.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"
       },
       {
         title: "Bazuca CO2",
         desc: "Efeitos especiais de fumaça",
-        img: "/images/service_co2.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"
       }
     ] 
   },
@@ -59,28 +62,28 @@ export const FALLBACK_CONTENT: SiteContent = {
         title: "Invasão ao Vivo",
         tag: "Reels Instagram",
         src: "",
-        poster: "/images/hero_invasion.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png",
         tall: false
       },
       {
         title: "Tequileiros em Ação",
         tag: "Pista de Dança",
         src: "",
-        poster: "/images/service_tequileiro.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png",
         tall: true
       },
       {
         title: "Robô de LED",
         tag: "Show de Luzes",
         src: "",
-        poster: "/images/service_robo.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png",
         tall: true
       },
       {
         title: "Bazuca CO2",
         tag: "Efeito Especial",
         src: "",
-        poster: "/images/service_co2.png",
+        poster: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png",
         tall: false
       }
     ] 
@@ -100,24 +103,24 @@ export const FALLBACK_CONTENT: SiteContent = {
       {
         title: "Hora da Gravata",
         tag: "Invasão Temática",
-        img: "/images/hero_invasion.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.5186595562725807.png"
       },
       {
         title: "Animação da Balada",
         tag: "Pista de Dança",
-        img: "/images/hero_party.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.7844070081079361.png"
       },
       {
         title: "Plataforma 360°",
         tag: "Vídeo Interativo",
-        img: "/images/service_foto360.png"
+        img: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.17764126909249536.png"
       }
     ] 
   },
   about: { 
     heading: "La Gravata", 
     heading_em: "de Papel", 
-    image: "/images/hero_venue.png", 
+    image: "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/media/site_content/0.05445258522774136.png", 
     paragraphs: [
       "Somos uma empresa especializada em transformar momentos comuns em experiências inesquecíveis. Inspirados em grandes produções e no universo cinematográfico, levamos entretenimento interativo para eventos, criando apresentações envolventes que surpreendem convidados e tornam cada celebração única.",
       "Nosso principal objetivo é reinventar a tradicional “hora da gravata”, trazendo uma abordagem criativa, dinâmica e cheia de energia. Com personagens caracterizados, efeitos especiais e uma atuação imersiva, proporcionamos uma experiência divertida, interativa e memorável para noivos, convidados e todos os presentes.",
