@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -38,9 +38,8 @@ export function UserManagement() {
   });
   const { status, setSaveStatus } = useSaveStatus();
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
-    // Junta papéis com profiles para mostrar email + papel
     const { data: roles, error: rolesError } = await supabase
       .from("user_roles")
       .select("user_id, role");
