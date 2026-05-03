@@ -523,8 +523,8 @@ export function QuestionarioForm() {
               <FormItem>
                 <FormLabel className="text-zinc-400">O Local tem telão? Vídeo com áudio sincronizado?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl onPointerDown={handlePointerDown}>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[81]">
+                  <FormControl>
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
