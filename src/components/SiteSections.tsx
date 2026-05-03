@@ -398,6 +398,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             </div>
           ))}
         </div>
+        <div className="flex justify-center mt-12 reveal">
+          <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="btn-outline">
+            <span>QUERO MEU CUPOM</span>
+            <span>→</span>
+          </a>
+        </div>
       </section>
 
       <section className="contacts-section" id="contatos">
