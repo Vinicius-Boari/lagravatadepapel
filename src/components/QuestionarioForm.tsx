@@ -17,6 +17,8 @@ import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   event_date: z.string().min(1, "Data é obrigatória"),
+  invasion_type: z.string().min(1, "Tipo de invasão é obrigatório"),
+  selected_coupon: z.string().optional(),
   event_type: z.string().min(1, "Tipo de evento é obrigatório"),
   primary_name: z.string().min(1, "Nome é obrigatório"),
   secondary_name: z.string().optional(),
