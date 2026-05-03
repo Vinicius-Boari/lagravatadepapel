@@ -171,7 +171,7 @@ body.lg-body {
 [data-radix-scroll-lock] {
   padding-right: 0px !important;
   margin-right: 0px !important;
-  overflow: hidden !important;
+  overflow: initial !important;
 }
 
 /* CURSOR EFFECTS */

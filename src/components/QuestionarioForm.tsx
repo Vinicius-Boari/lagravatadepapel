@@ -153,10 +153,10 @@ export function QuestionarioForm() {
                         <SelectValue placeholder="Selecione o tipo de invasão..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                      <SelectItem value="La gravata de papel" className="cursor-pointer">La gravata de papel</SelectItem>
-                      <SelectItem value="Tropa da gravata (BOPE)" className="cursor-pointer">Tropa da gravata (BOPE)</SelectItem>
-                      <SelectItem value="Ambas as invasões" className="cursor-pointer">Ambas as invasões</SelectItem>
+                    <SelectContent>
+                      <SelectItem value="La gravata de papel">La gravata de papel</SelectItem>
+                      <SelectItem value="Tropa da gravata (BOPE)">Tropa da gravata (BOPE)</SelectItem>
+                      <SelectItem value="Ambas as invasões">Ambas as invasões</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-primary" />
@@ -176,17 +176,17 @@ export function QuestionarioForm() {
                         <SelectValue placeholder="Selecione um cupom (opcional)" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectContent>
                       {coupons.length > 0 ? (
                         coupons.map((coupon: any, idx: number) => (
-                          <SelectItem key={idx} value={coupon.code} className="cursor-pointer">
+                          <SelectItem key={idx} value={coupon.code}>
                             {coupon.title} ({coupon.discount})
                           </SelectItem>
                         ))
                       ) : (
                         <SelectItem value="none" disabled>Carregando cupons...</SelectItem>
                       )}
-                      <SelectItem value="none" className="cursor-pointer">Nenhum cupom</SelectItem>
+                      <SelectItem value="none">Nenhum cupom</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-primary" />
