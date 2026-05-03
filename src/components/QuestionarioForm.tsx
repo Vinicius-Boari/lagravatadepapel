@@ -404,7 +404,7 @@ export function QuestionarioForm() {
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Requisitos e Permissões</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50 relative z-[10]">
             <FormField
               control={form.control}
               name="is_assistant_aware"
