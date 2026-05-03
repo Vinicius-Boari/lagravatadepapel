@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
