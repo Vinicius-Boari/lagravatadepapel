@@ -58,6 +58,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "");
+    const fullName = String(body.full_name ?? "").trim().slice(0, 200);
+    const role = body.role === "owner" ? "owner" : "admin";
 
     if (!email || !email.includes("@") || email.length > 255) {
       return new Response(JSON.stringify({ error: "Email inválido" }), {
@@ -76,16 +78,31 @@ Deno.serve(async (req) => {
       email,
       password,
       email_confirm: true,
+      user_metadata: fullName ? { full_name: fullName } : undefined,
     });
     if (createErr) {
-      return new Response(JSON.stringify({ error: createErr.message }), {
+      console.error("create-admin createUser error:", createErr);
+      return new Response(JSON.stringify({ error: "Não foi possível criar o usuário." }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    const newUserId = created.user!.id;
+
+    const { error: roleErr } = await admin
+      .from("user_roles")
+      .insert({ user_id: newUserId, role });
+    if (roleErr) {
+      console.error("create-admin role assign error:", roleErr);
+      return new Response(JSON.stringify({ error: "Usuário criado, mas falhou ao atribuir permissão." }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(
-      JSON.stringify({ status: "ok", user_id: created.user!.id }),
+      JSON.stringify({ status: "ok", user_id: newUserId }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
