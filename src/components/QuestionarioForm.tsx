@@ -812,15 +812,15 @@ export function QuestionarioForm() {
             control={form.control}
             name="how_did_you_hear_about_us"
             render={({ field }) => (
-              <FormItem className="space-y-4">
+              <FormItem className="space-y-4 relative z-[50]">
                 <FormLabel className="text-zinc-400">Como nos conheceu?*</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 relative z-[51]">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white z-[999999]">
                     <SelectItem value="Instagram">Instagram</SelectItem>
                     <SelectItem value="TikTok">TikTok</SelectItem>
                     <SelectItem value="Google">Google</SelectItem>
@@ -833,7 +833,7 @@ export function QuestionarioForm() {
                   <FormControl>
                     <Input 
                       placeholder="Especifique como nos conheceu" 
-                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
+                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1 relative z-[51]"
                     />
                   </FormControl>
                 )}
