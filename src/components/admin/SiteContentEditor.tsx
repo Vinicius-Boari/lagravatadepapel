@@ -182,7 +182,7 @@ export function SiteContentEditor() {
     </Button>
   );
 
-  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (contentLoading) return <div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense, useCallback } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,30 +18,34 @@ import {
   ChevronRight,
   User,
   Monitor,
-  PenTool
+  Save, 
+  Loader2, 
+  Globe, 
+  Shield, 
+  Bell, 
+  Moon, 
+  Languages
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { DashboardOverview } from "./DashboardOverview";
-import { VisualIdentity } from "./VisualIdentity";
-import { SiteContentEditor } from "./SiteContentEditor";
-import { IntegrationsManager } from "./IntegrationsManager";
-import { MediaLibrary } from "./MediaLibrary";
-import { PagesRoutes } from "./PagesRoutes";
-import { UserManagement } from "./UserManagement";
-import { ActivityLogs } from "./ActivityLogs";
-import { BackupExport } from "./BackupExport";
-import { PostsManager } from "./PostsManager";
-
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { toast } from "sonner";
-import { Save, Loader2, Globe, Shield, Bell, Moon, Languages } from "lucide-react";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
+const DashboardOverview = lazy(() => import("./DashboardOverview").then(m => ({ default: m.DashboardOverview })));
+const VisualIdentity = lazy(() => import("./VisualIdentity").then(m => ({ default: m.VisualIdentity })));
+const SiteContentEditor = lazy(() => import("./SiteContentEditor").then(m => ({ default: m.SiteContentEditor })));
+const IntegrationsManager = lazy(() => import("./IntegrationsManager").then(m => ({ default: m.IntegrationsManager })));
+const MediaLibrary = lazy(() => import("./MediaLibrary").then(m => ({ default: m.MediaLibrary })));
+const PagesRoutes = lazy(() => import("./PagesRoutes").then(m => ({ default: m.PagesRoutes })));
+const UserManagement = lazy(() => import("./UserManagement").then(m => ({ default: m.UserManagement })));
+const ActivityLogs = lazy(() => import("./ActivityLogs").then(m => ({ default: m.ActivityLogs })));
+const BackupExport = lazy(() => import("./BackupExport").then(m => ({ default: m.BackupExport })));
+const PostsManager = lazy(() => import("./PostsManager").then(m => ({ default: m.PostsManager })));
 
 const AutoBackupTrigger = () => {
   useEffect(() => {
@@ -107,7 +111,7 @@ const SettingsTab = () => {
     }
   };
 
-  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (contentLoading) return <div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
@@ -256,20 +260,25 @@ export function AdminDashboard() {
   ];
 
   const renderContent = () => {
-    switch (activeTab) {
-      case "dashboard": return <DashboardOverview />;
-      case "visual": return <VisualIdentity />;
-      case "content": return <SiteContentEditor />;
-      
-      case "media": return <MediaLibrary />;
-      case "integrations": return <IntegrationsManager />;
-      case "pages": return <PagesRoutes />;
-      case "settings": return <SettingsTab />;
-      case "users": return isOwner ? <UserManagement /> : <div className="p-8 text-red-500">Apenas o Dono pode acessar esta seção.</div>;
-      case "logs": return <ActivityLogs />;
-      case "backup": return <BackupExport />;
-      default: return <DashboardOverview />;
-    }
+    return (
+      <Suspense fallback={<div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando seção...</div>}>
+        {(() => {
+          switch (activeTab) {
+            case "dashboard": return <DashboardOverview />;
+            case "visual": return <VisualIdentity />;
+            case "content": return <SiteContentEditor />;
+            case "media": return <MediaLibrary />;
+            case "integrations": return <IntegrationsManager />;
+            case "pages": return <PagesRoutes />;
+            case "settings": return <SettingsTab />;
+            case "users": return isOwner ? <UserManagement /> : <div className="p-8 text-red-500">Apenas o Dono pode acessar esta seção.</div>;
+            case "logs": return <ActivityLogs />;
+            case "backup": return <BackupExport />;
+            default: return <DashboardOverview />;
+          }
+        })()}
+      </Suspense>
+    );
   };
 
   return (

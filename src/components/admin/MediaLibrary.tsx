@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Video, ImageIcon, Search, Filter } from "lucide-react";
+import { Plus, Trash2, Video, ImageIcon, Search, Filter, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export function MediaLibrary() {
@@ -51,7 +51,7 @@ export function MediaLibrary() {
     return matchesFilter && matchesSearch;
   });
 
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (loading) return <div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
