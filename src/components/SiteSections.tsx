@@ -21,7 +21,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     };
   }, []);
 
-  useEffect(() => {
+  const initEffects = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -30,7 +30,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     let mx = 0, my = 0;
     let trailX = 0, trailY = 0;
     const points: { x: number; y: number }[] = [];
-    const maxPoints = 30; // Reduced for a more minimal trail
+    const maxPoints = 30;
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
@@ -57,9 +57,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           const p1 = points[i - 1];
           const p2 = points[i];
           
-          const progress = i / points.length; // 0 at tail, 1 at head
+          const progress = i / points.length;
           const opacity = progress * 0.5;
-          const width = progress * 2.5; // Starts thick at head (index length) and thins to tail
+          const width = progress * 2.5;
           
           ctx.beginPath();
           ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
@@ -150,7 +150,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       });
       obs.disconnect();
     };
-  }, [content]);
+  }, []);
+
+  useEffect(() => {
+    return initEffects();
+  }, [initEffects]);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
   const { hero, services, videos, plan, places, about, coupons, tropa_config, instagram_config, footer } = content;
