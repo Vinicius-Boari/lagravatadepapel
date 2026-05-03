@@ -211,13 +211,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero?.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero?.image1 || FALLBACK_CONTENT.hero.image1} alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero?.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero?.image2 || FALLBACK_CONTENT.hero.image2} alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero?.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero?.image3 || FALLBACK_CONTENT.hero.image3} alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
