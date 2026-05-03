@@ -652,6 +652,54 @@ export function SiteContentEditor() {
         </Card>
       )}
 
+      {activeSection === "tropa" && (
+        <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-red-500">Tropa da Gravata</CardTitle>
+              <CardDescription className="text-red-500/60">Configure a seção Tropa da Gravata.</CardDescription>
+            </div>
+            <SaveBtn section="tropa_config" data={tropaConfig} status={tropaStatus} setStatus={setTropaStatus} />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Título</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.heading || ""} onChange={e => setTropaConfig({...tropaConfig, heading: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Título Ênfase (Itálico)</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.heading_em || ""} onChange={e => setTropaConfig({...tropaConfig, heading_em: e.target.value})} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-red-500">Subtítulo (Destaque Vermelho)</Label>
+              <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.subheading || ""} onChange={e => setTropaConfig({...tropaConfig, subheading: e.target.value})} />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-red-500">Parágrafos (um por linha)</Label>
+              <Textarea 
+                rows={8}
+                className="bg-zinc-800 border-red-900 text-red-500" 
+                value={tropaConfig.paragraphs?.join("\n") || ""} 
+                onChange={e => setTropaConfig({...tropaConfig, paragraphs: e.target.value.split("\n")})} 
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-red-500">Texto do Botão CTA</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.cta_label || ""} onChange={e => setTropaConfig({...tropaConfig, cta_label: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-red-500">Link do Instagram</Label>
+                <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.instagram_url || ""} onChange={e => setTropaConfig({...tropaConfig, instagram_url: e.target.value})} />
+              </div>
+            </div>
+            <ImageUpload label="Imagem da Seção" value={tropaConfig.image_url || ""} onChange={val => setTropaConfig({...tropaConfig, image_url: val})} />
+          </CardContent>
+        </Card>
+      )}
+
       {activeSection === "seo" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
