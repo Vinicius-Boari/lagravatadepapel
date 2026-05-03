@@ -229,7 +229,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         </div>
 
-        <div className="hero-content">
+        <div className="hero-content hidden md:block">
           <h1 className="hero-title">
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
