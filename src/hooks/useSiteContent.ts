@@ -37,21 +37,21 @@ export const FALLBACK_CONTENT: SiteContent = {
         code: "GRAVATA10",
         discount: "10% OFF",
         description: "Válido para o seu primeiro contrato de animação teatral.",
-        link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20GRAVATA10"
+        link: "/questionarioevento"
       },
       {
         title: "Combo Casamento",
         code: "VIVAOSNOIVOS",
         discount: "Bônus Plataforma 360",
         description: "Feche o pacote completo e ganhe 1 hora extra de plataforma 360.",
-        link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20VIVAOSNOIVOS"
+        link: "/questionarioevento"
       },
       {
         title: "Aniversário La Gravata",
         code: "FESTA20",
         discount: "R$ 200 de desconto",
         description: "Desconto especial para eventos realizados de segunda a quinta.",
-        link: "https://api.whatsapp.com/send?phone=5511985111012&text=Quero%20usar%20o%20cupom%20FESTA20"
+        link: "/questionarioevento"
       }
     ]
   },
