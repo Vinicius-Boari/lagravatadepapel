@@ -249,7 +249,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="services-section" id="servicos">
         <div className="section-header reveal">
-          <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
+          <h2>{services?.heading || services?.heading_line1}<br /><span>{services?.heading_em || services?.heading_line2}</span></h2>
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
