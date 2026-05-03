@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { FALLBACK_CONTENT } from "@/hooks/useSiteContent";
@@ -154,14 +154,15 @@ export function SiteSections({ content }: { content: SiteContent }) {
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
-  const hero = content?.hero || FALLBACK_CONTENT.hero;
-  const services = content?.services || FALLBACK_CONTENT.services;
-  const videos = content?.videos || FALLBACK_CONTENT.videos;
-  const plan = content?.plan || FALLBACK_CONTENT.plan;
-  const places = content?.places || FALLBACK_CONTENT.places;
-  const about = content?.about || FALLBACK_CONTENT.about;
-  const footer = content?.footer || FALLBACK_CONTENT.footer;
-  const coupons = content?.coupons || FALLBACK_CONTENT.coupons;
+  
+  const hero = useMemo(() => content?.hero || FALLBACK_CONTENT.hero, [content]);
+  const services = useMemo(() => content?.services || FALLBACK_CONTENT.services, [content]);
+  const videos = useMemo(() => content?.videos || FALLBACK_CONTENT.videos, [content]);
+  const plan = useMemo(() => content?.plan || FALLBACK_CONTENT.plan, [content]);
+  const places = useMemo(() => content?.places || FALLBACK_CONTENT.places, [content]);
+  const about = useMemo(() => content?.about || FALLBACK_CONTENT.about, [content]);
+  const footer = useMemo(() => content?.footer || FALLBACK_CONTENT.footer, [content]);
+  const coupons = useMemo(() => content?.coupons || FALLBACK_CONTENT.coupons, [content]);
 
   return (
     <>
