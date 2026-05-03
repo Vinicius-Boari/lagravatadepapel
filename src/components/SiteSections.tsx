@@ -167,11 +167,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       {/* Removido canvas fixo que bloqueava interações */}
 
       <header className="lg-header" ref={headerRef}>
-        <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="logo cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div>
-            <div className="logo-text">La Gravata<br />de Papel</div>
+            <div className="logo-text">{content?.logo?.line1 || "La Gravata"}<br />{content?.logo?.line2 || "de Papel"}</div>
           </div>
-          <span className="logo-tagline">Os Originais</span>
+          <span className="logo-tagline">{content?.logo?.tagline || "Os Originais"}</span>
         </div>
         <div className="nav-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <a href="/questionarioevento" className="orcamento-header-btn">
