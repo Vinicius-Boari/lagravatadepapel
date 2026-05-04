@@ -347,7 +347,7 @@ body.lg-body {
 .btn-outline { 
   display: inline-flex; align-items: center; gap: 12px; padding: 16px 40px; 
   border: 2px solid var(--color-red-lg); 
-  border-radius: 50px; color: #c0392b; 
+  border-radius: 50px; color: #c0392b !important; 
   text-decoration: none; font-family: var(--font-sans-lg); 
   font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; 
   transition: all 0.4s; background: transparent; cursor: pointer;
