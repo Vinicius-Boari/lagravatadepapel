@@ -342,7 +342,7 @@ body.lg-body {
 .dark-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(192,57,43,0.1) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, rgba(212,168,83,0.06) 0%, transparent 50%); }
 .dark-content { position: relative; z-index: 2; max-width: 900px; text-align: center; }
 .dark-content h2 { font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 400; line-height: 1.15; margin-bottom: 32px; }
-.dark-content h2 em { font-style: normal; color: var(--color-red-lg); }
+.dark-content h2 em { font-style: normal; color: #c0392b; }
 .dark-content p { font-family: var(--font-sans-lg); font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto 48px; }
 .btn-outline { 
   display: inline-flex; align-items: center; gap: 12px; padding: 16px 40px; 
