@@ -32,7 +32,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    if (isMobile && e.currentTarget.currentTime >= 8) {
+      e.currentTarget.currentTime = 0;
+    }
+  };
+
   useEffect(() => {
+
     document.body.classList.add("lg-body");
     return () => {
       document.body.classList.remove("lg-body");
@@ -239,7 +246,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="hero" id="hero">
         {hero.video_url && (
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
-            <video src={getLimitedVideoUrl(hero.video_url)} autoPlay muted loop playsInline preload="metadata" />
+            <video 
+              src={getLimitedVideoUrl(hero.video_url)} 
+              onTimeUpdate={handleTimeUpdate}
+              autoPlay 
+              muted 
+              loop 
+              playsInline 
+              preload="metadata" 
+            />
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
@@ -306,7 +321,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(videos.items ?? []).map((v: any, i: number) => (
             <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
               {v.src ? (
-                <video src={getLimitedVideoUrl(v.src)} poster={v.poster} autoPlay muted loop playsInline />
+                <video 
+                  src={getLimitedVideoUrl(v.src)} 
+                  onTimeUpdate={handleTimeUpdate}
+                  poster={v.poster} 
+                  autoPlay 
+                  muted 
+                  loop 
+                  playsInline 
+                />
               ) : (
                 <>
                   {v.poster && <img src={v.poster} alt={v.title} />}
