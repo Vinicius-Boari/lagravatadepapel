@@ -13,6 +13,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     document.body.classList.add("lg-body");
@@ -217,7 +226,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="hero" id="hero">
-        {hero.video_url && (
+        {hero.video_url && isDesktop && (
           <div className="hero-video-bg">
             <video src={hero.video_url} autoPlay muted loop playsInline preload="metadata" />
           </div>
