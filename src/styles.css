@@ -310,7 +310,7 @@ body.lg-body {
   border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
   font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
   transition: all 0.3s;
-  min-width: 340px; justify-content: space-between;
+  min-width: 340px; justify-content: center;
   font-weight: 700;
 }
 .hero-cta a:hover { background: #c0392b; color: white; }
