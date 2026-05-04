@@ -267,7 +267,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               loop 
               playsInline 
               webkit-playsinline="true"
-              preload="metadata" 
+              preload="auto" 
+              className="will-change-transform"
             />
           </div>
         )}
