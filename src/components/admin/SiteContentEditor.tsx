@@ -20,7 +20,19 @@ const showToast = (message: string, type: 'success' | 'error') => {
   }
 };
 
-const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val: string) => void, label: string }) => {
+const ImageUpload = ({ 
+  value, 
+  onChange, 
+  label, 
+  showOnMobile = true, 
+  onMobileToggle 
+}: { 
+  value: string, 
+  onChange: (val: string) => void, 
+  label: string,
+  showOnMobile?: boolean,
+  onMobileToggle?: (val: boolean) => void
+}) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,8 +67,20 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
   };
 
   return (
-    <div className="space-y-2">
-      <Label className="text-xs text-red-500">{label}</Label>
+    <div className="space-y-2 flex-1">
+      <div className="flex items-center justify-between">
+        <Label className="text-xs text-red-500">{label}</Label>
+        {onMobileToggle && (
+          <div className="flex items-center gap-2">
+            <Label className="text-[9px] text-zinc-500 uppercase tracking-tighter">Mobile</Label>
+            <Switch 
+              checked={showOnMobile}
+              onCheckedChange={onMobileToggle}
+              className="h-4 w-7 data-[state=checked]:bg-red-600 scale-75"
+            />
+          </div>
+        )}
+      </div>
       <div className="flex gap-2">
         <Input 
           className="bg-zinc-800 border-red-900 text-red-500 flex-1" 
@@ -321,21 +345,37 @@ export function SiteContentEditor() {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4 pt-2">
-              <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
-              <div className="flex flex-col items-center justify-center space-y-2 pt-6">
-                <Label className="text-[10px] text-red-500/50 uppercase tracking-widest text-center">Vídeo no Mobile</Label>
-                <Switch 
-                  checked={hero.show_video_mobile !== false}
-                  onCheckedChange={(checked) => setHero({...hero, show_video_mobile: checked})}
-                  className="data-[state=checked]:bg-red-600"
-                />
-              </div>
+            <div className="pt-2">
+              <ImageUpload 
+                label="URL do Vídeo de Fundo" 
+                value={hero.video_url || ""} 
+                onChange={val => setHero({...hero, video_url: val})}
+                showOnMobile={hero.show_video_mobile !== false}
+                onMobileToggle={checked => setHero({...hero, show_video_mobile: checked})}
+              />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <ImageUpload label="Imagem Card 1" value={hero.image1 || ""} onChange={val => setHero({...hero, image1: val})} />
-              <ImageUpload label="Imagem Card 2" value={hero.image2 || ""} onChange={val => setHero({...hero, image2: val})} />
-              <ImageUpload label="Imagem Card 3" value={hero.image3 || ""} onChange={val => setHero({...hero, image3: val})} />
+              <ImageUpload 
+                label="Imagem Card 1" 
+                value={hero.image1 || ""} 
+                onChange={val => setHero({...hero, image1: val})} 
+                showOnMobile={hero.image1_show_mobile !== false}
+                onMobileToggle={checked => setHero({...hero, image1_show_mobile: checked})}
+              />
+              <ImageUpload 
+                label="Imagem Card 2" 
+                value={hero.image2 || ""} 
+                onChange={val => setHero({...hero, image2: val})} 
+                showOnMobile={hero.image2_show_mobile !== false}
+                onMobileToggle={checked => setHero({...hero, image2_show_mobile: checked})}
+              />
+              <ImageUpload 
+                label="Imagem Card 3" 
+                value={hero.image3 || ""} 
+                onChange={val => setHero({...hero, image3: val})} 
+                showOnMobile={hero.image3_show_mobile !== false}
+                onMobileToggle={checked => setHero({...hero, image3_show_mobile: checked})}
+              />
             </div>
           </CardContent>
         </Card>
@@ -387,7 +427,13 @@ export function SiteContentEditor() {
                      <Label className="text-xs text-red-500">Descrição</Label>
                      <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
-                   <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                    <ImageUpload 
+                      label="Ícone/Imagem" 
+                      value={item.img} 
+                      onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }}
+                      showOnMobile={item.show_mobile !== false}
+                      onMobileToggle={checked => { const newI = [...services.items]; newI[idx].show_mobile = checked; setServices({...services, items: newI}); }}
+                    />
                    <div className="flex justify-end pt-4">
                      <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
                    </div>
@@ -443,7 +489,13 @@ export function SiteContentEditor() {
                     <Label className="text-xs text-red-500">Título do Vídeo</Label>
                     <Input value={v.title} onChange={e => { const newV = [...videos.items]; newV[idx].title = e.target.value; setVideos({...videos, items: newV}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                   </div>
-                  <ImageUpload label="URL ou Upload do Vídeo" value={v.src} onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }} />
+                  <ImageUpload 
+                    label="URL ou Upload do Vídeo" 
+                    value={v.src} 
+                    onChange={val => { const newV = [...videos.items]; newV[idx].src = val; setVideos({...videos, items: newV}); }}
+                    showOnMobile={v.show_mobile !== false}
+                    onMobileToggle={checked => { const newV = [...videos.items]; newV[idx].show_mobile = checked; setVideos({...videos, items: newV}); }}
+                  />
                   <div className="flex justify-end pt-2">
                     <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
                   </div>
@@ -508,7 +560,13 @@ export function SiteContentEditor() {
                        <Input value={item.location} onChange={e => { const newI = [...places.items]; newI[idx].location = e.target.value; setPlaces({...places, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                      </div>
                     </div>
-                    <ImageUpload label="Imagem do Local" value={item.img} onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }} />
+                    <ImageUpload 
+                      label="Imagem do Local" 
+                      value={item.img} 
+                      onChange={val => { const newI = [...places.items]; newI[idx].img = val; setPlaces({...places, items: newI}); }}
+                      showOnMobile={item.show_mobile !== false}
+                      onMobileToggle={checked => { const newI = [...places.items]; newI[idx].show_mobile = checked; setPlaces({...places, items: newI}); }}
+                    />
                     <div className="flex justify-end pt-2">
                       <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
                     </div>
@@ -560,7 +618,13 @@ export function SiteContentEditor() {
               <Label className="text-red-500">Destaque (Ex: Sobre nós)</Label>
               <Input value={about.heading_em || ""} onChange={e => setAbout({...about, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
             </div>
-            <ImageUpload label="Imagem" value={about.image || ""} onChange={val => setAbout({...about, image: val})} />
+            <ImageUpload 
+              label="Imagem" 
+              value={about.image || ""} 
+              onChange={val => setAbout({...about, image: val})}
+              showOnMobile={about.show_mobile !== false}
+              onMobileToggle={checked => setAbout({...about, show_mobile: checked})}
+            />
             <div className="space-y-2">
               <Label className="text-red-500">Link do Botão (WhatsApp)</Label>
               <Input value={about.cta_url || ""} onChange={e => setAbout({...about, cta_url: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="https://api.whatsapp.com/send?phone=..." />
@@ -706,7 +770,13 @@ export function SiteContentEditor() {
                 <Input className="bg-zinc-800 border-red-900 text-red-500" value={tropaConfig.instagram_url || ""} onChange={e => setTropaConfig({...tropaConfig, instagram_url: e.target.value})} />
               </div>
             </div>
-            <ImageUpload label="Imagem da Seção" value={tropaConfig.image_url || ""} onChange={val => setTropaConfig({...tropaConfig, image_url: val})} />
+            <ImageUpload 
+              label="Imagem da Seção" 
+              value={tropaConfig.image_url || ""} 
+              onChange={val => setTropaConfig({...tropaConfig, image_url: val})}
+              showOnMobile={tropaConfig.show_mobile !== false}
+              onMobileToggle={checked => setTropaConfig({...tropaConfig, show_mobile: checked})}
+            />
           </CardContent>
         </Card>
       )}
