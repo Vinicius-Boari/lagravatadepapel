@@ -311,8 +311,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
         <div className="hero-cta">
           <a href="/questionarioevento">
-            <span>{hero.cta_label}</span>
-            <span className="cta-dot" />
+            <span className="text-red-500">{hero.cta_label}</span>
+            <span className="cta-dot bg-red-500" />
           </a>
         </div>
       </section>
