@@ -298,7 +298,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className="service-card tilt-3d scroll-3d reveal" key={i}>
-              <ImgWithFallback src={s.img} fallback="/images/hero_invasion.png" alt={s.title} loading="lazy" />
+              <ImgWithFallback src={s.img} fallback={`/images/service_${['foto360', 'robo', 'tequileiro', 'co2'][i] || 'robo'}.png`} alt={s.title} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
@@ -356,7 +356,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
             <div className="place-card tilt-3d scroll-3d reveal" key={i}>
-              <ImgWithFallback src={p.img} fallback="/images/hero_invasion.png" alt={p.title} />
+              <ImgWithFallback src={p.img} fallback={`/images/hero_${['invasion', 'party', 'venue'][i] || 'invasion'}.png`} alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>
