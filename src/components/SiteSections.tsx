@@ -219,8 +219,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="hero" id="hero">
-        {hero.video_url && hero.show_video !== false && (
-          <div className="hero-video-bg">
+        {hero.video_url && (
+          <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video src={hero.video_url} autoPlay muted loop playsInline preload="metadata" />
           </div>
         )}
