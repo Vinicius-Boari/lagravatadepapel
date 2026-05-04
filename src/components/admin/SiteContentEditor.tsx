@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -320,7 +321,17 @@ export function SiteContentEditor() {
                 />
               </div>
             </div>
-            <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
+            <div className="flex items-center justify-between gap-4 pt-2">
+              <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
+              <div className="flex flex-col items-center justify-center space-y-2 pt-6">
+                <Label className="text-[10px] text-red-500/50 uppercase tracking-widest">Exibir Vídeo</Label>
+                <Switch 
+                  checked={hero.show_video !== false}
+                  onCheckedChange={(checked) => setHero({...hero, show_video: checked})}
+                  className="data-[state=checked]:bg-red-600"
+                />
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
               <ImageUpload label="Imagem Card 1" value={hero.image1 || ""} onChange={val => setHero({...hero, image1: val})} />
               <ImageUpload label="Imagem Card 2" value={hero.image2 || ""} onChange={val => setHero({...hero, image2: val})} />
