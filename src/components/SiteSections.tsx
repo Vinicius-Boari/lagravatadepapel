@@ -266,6 +266,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               muted 
               loop 
               playsInline 
+              webkit-playsinline="true"
               preload="metadata" 
             />
           </div>
@@ -346,6 +347,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       muted 
                       loop 
                       playsInline 
+                      webkit-playsinline="true"
                     />
                   </div>
                 ) : (
