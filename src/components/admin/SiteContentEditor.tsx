@@ -324,10 +324,10 @@ export function SiteContentEditor() {
             <div className="flex items-center justify-between gap-4 pt-2">
               <ImageUpload label="URL do Vídeo de Fundo" value={hero.video_url || ""} onChange={val => setHero({...hero, video_url: val})} />
               <div className="flex flex-col items-center justify-center space-y-2 pt-6">
-                <Label className="text-[10px] text-red-500/50 uppercase tracking-widest">Exibir Vídeo</Label>
+                <Label className="text-[10px] text-red-500/50 uppercase tracking-widest text-center">Vídeo no Mobile</Label>
                 <Switch 
-                  checked={hero.show_video !== false}
-                  onCheckedChange={(checked) => setHero({...hero, show_video: checked})}
+                  checked={hero.show_video_mobile !== false}
+                  onCheckedChange={(checked) => setHero({...hero, show_video_mobile: checked})}
                   className="data-[state=checked]:bg-red-600"
                 />
               </div>
