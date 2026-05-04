@@ -298,7 +298,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className="service-card tilt-3d scroll-3d reveal" key={i}>
-              <img src={s.img} alt={s.title} loading="lazy" />
+              <ImgWithFallback src={s.img} fallback="/images/hero_invasion.png" alt={s.title} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
