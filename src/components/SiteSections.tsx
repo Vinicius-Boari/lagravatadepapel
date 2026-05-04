@@ -262,28 +262,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               id="hero-video"
               src={getLimitedVideoUrl(hero.video_url)} 
               onTimeUpdate={handleTimeUpdate}
-              autoPlay={!isMobile}
+              autoPlay
               muted 
               loop 
               playsInline 
               preload="metadata" 
             />
-            {isMobile && !playingVideos['hero'] && (
-              <button 
-                className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 transition-opacity"
-                onClick={() => toggleVideo('hero', document.getElementById('hero-video') as HTMLVideoElement)}
-              >
-                <div className="bg-red-600 p-4 rounded-full shadow-lg shadow-red-900/50">
-                  <Play className="w-8 h-8 text-white fill-white" />
-                </div>
-              </button>
-            )}
-            {isMobile && playingVideos['hero'] && (
-              <button 
-                className="absolute inset-0 z-10 opacity-0 hover:opacity-100 flex items-center justify-center bg-black/20"
-                onClick={() => toggleVideo('hero', document.getElementById('hero-video') as HTMLVideoElement)}
-              />
-            )}
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
@@ -358,27 +342,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       src={getLimitedVideoUrl(v.src)} 
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
-                      autoPlay={!isMobile}
+                      autoPlay
                       muted 
                       loop 
                       playsInline 
                     />
-                    {isMobile && !playingVideos[videoId] && (
-                      <button 
-                        className="absolute inset-0 z-10 flex items-center justify-center bg-black/30"
-                        onClick={() => toggleVideo(videoId, document.getElementById(videoId) as HTMLVideoElement)}
-                      >
-                        <div className="bg-red-600 p-3 rounded-full shadow-lg">
-                          <Play className="w-6 h-6 text-white fill-white" />
-                        </div>
-                      </button>
-                    )}
-                    {isMobile && playingVideos[videoId] && (
-                      <button 
-                        className="absolute inset-0 z-10 opacity-0 flex items-center justify-center"
-                        onClick={() => toggleVideo(videoId, document.getElementById(videoId) as HTMLVideoElement)}
-                      />
-                    )}
                   </div>
                 ) : (
                   <>
