@@ -94,7 +94,9 @@ export default function InstagramCarousel3D({ config }: { config: Config }) {
                     loading="lazy" 
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = "/images/hero_invasion.png"; // Generic fallback for IG posts
+                      if (!target.src.endsWith('/images/hero_invasion.png')) {
+                        target.src = "/images/hero_invasion.png";
+                      }
                     }}
                   />
                 ) : (
