@@ -371,7 +371,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+            <ImgWithFallback src={about.image} fallback="/images/hero_invasion.png" alt="Sobre La Gravata de Papel" />
           </div>
         </div>
         <div className="about-text">
