@@ -427,7 +427,13 @@ export function SiteContentEditor() {
                      <Label className="text-xs text-red-500">Descrição</Label>
                      <Textarea value={item.desc} onChange={e => { const newI = [...services.items]; newI[idx].desc = e.target.value; setServices({...services, items: newI}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                    </div>
-                   <ImageUpload label="Ícone/Imagem" value={item.img} onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }} />
+                    <ImageUpload 
+                      label="Ícone/Imagem" 
+                      value={item.img} 
+                      onChange={val => { const newI = [...services.items]; newI[idx].img = val; setServices({...services, items: newI}); }}
+                      showOnMobile={item.show_mobile !== false}
+                      onMobileToggle={checked => { const newI = [...services.items]; newI[idx].show_mobile = checked; setServices({...services, items: newI}); }}
+                    />
                    <div className="flex justify-end pt-4">
                      <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
                    </div>
