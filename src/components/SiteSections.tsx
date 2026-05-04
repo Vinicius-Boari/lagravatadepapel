@@ -254,13 +254,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <ImgWithFallback src={hero.image1} fallback="/images/hero_invasion.png" alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <ImgWithFallback src={hero.image2} fallback="/images/hero_venue.png" alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <ImgWithFallback src={hero.image3} fallback="/images/hero_party.png" alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
