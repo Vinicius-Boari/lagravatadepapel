@@ -255,7 +255,7 @@ body.lg-body {
 }
 .menu-nav a:nth-child(odd) { transform: translateX(-40px); }
 .menu-nav a:nth-child(even) { transform: translateX(40px); }
-.menu-nav a:hover { opacity: 1; transform: translateX(0) scale(1.05); color: var(--color-red-lg); }
+.menu-nav a:hover { opacity: 1; transform: translateX(0) scale(1.05); color: #c0392b; }
 
 /* HERO */
 .hero {
@@ -313,7 +313,7 @@ body.lg-body {
   min-width: 340px; justify-content: space-between;
   font-weight: 700;
 }
-.hero-cta a:hover { background: var(--color-red-lg); color: white; }
+.hero-cta a:hover { background: #c0392b; color: white; }
 .cta-dot { width: 6px; height: 6px; border-radius: 50%; background: #c0392b; transition: background 0.3s; }
 .hero-cta a:hover .cta-dot { background: white; }
 
@@ -353,7 +353,7 @@ body.lg-body {
   transition: all 0.4s; background: transparent; cursor: pointer;
   font-weight: 700;
 }
-.btn-outline:hover { background: var(--color-red-lg); color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(192,57,43,0.2); }
+.btn-outline:hover { background: #c0392b; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(192,57,43,0.2); }
 
 /* PLACES */
 .places-section { background: var(--color-cream); padding: 120px 40px; }
