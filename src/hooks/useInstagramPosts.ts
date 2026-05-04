@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 
 export type InstagramPost = {
   id: string;
@@ -12,46 +11,72 @@ export type InstagramPost = {
   posted_at: string;
 };
 
-/**
- * Loads published Instagram posts for the public site.
- * Subscribes to realtime changes so the admin panel updates the site instantly.
- */
-export function useInstagramPosts(opts: { all?: boolean } = {}) {
-  const [posts, setPosts] = useState<InstagramPost[]>([]);
-  const [loading, setLoading] = useState(true);
+const STATIC_POSTS: InstagramPost[] = [
+  {
+    id: "static-1",
+    image_url: "/images/hero_invasion.png",
+    caption: "Invasão La Gravata de Papel",
+    permalink: "https://www.instagram.com/lagravatadepapel",
+    position: 0,
+    is_published: true,
+    source: "static",
+    posted_at: new Date().toISOString(),
+  },
+  {
+    id: "static-2",
+    image_url: "/images/hero_party.png",
+    caption: "Animação da Balada",
+    permalink: "https://www.instagram.com/lagravatadepapel",
+    position: 1,
+    is_published: true,
+    source: "static",
+    posted_at: new Date().toISOString(),
+  },
+  {
+    id: "static-3",
+    image_url: "/images/hero_venue.png",
+    caption: "Momento da Gravata",
+    permalink: "https://www.instagram.com/lagravatadepapel",
+    position: 2,
+    is_published: true,
+    source: "static",
+    posted_at: new Date().toISOString(),
+  },
+  {
+    id: "static-4",
+    image_url: "/images/service_robo.png",
+    caption: "Robô de LED",
+    permalink: "https://www.instagram.com/lagravatadepapel",
+    position: 3,
+    is_published: true,
+    source: "static",
+    posted_at: new Date().toISOString(),
+  },
+  {
+    id: "static-5",
+    image_url: "/images/service_tequileiro.png",
+    caption: "Tequileiros",
+    permalink: "https://www.instagram.com/lagravatadepapel",
+    position: 4,
+    is_published: true,
+    source: "static",
+    posted_at: new Date().toISOString(),
+  },
+  {
+    id: "static-6",
+    image_url: "/images/service_co2.png",
+    caption: "Bazuca CO2",
+    permalink: "https://www.instagram.com/lagravatadepapel",
+    position: 5,
+    is_published: true,
+    source: "static",
+    posted_at: new Date().toISOString(),
+  },
+];
 
-  useEffect(() => {
-    let mounted = true;
+export function useInstagramPosts() {
+  const [posts, setPosts] = useState<InstagramPost[]>(STATIC_POSTS);
+  const [loading, setLoading] = useState(false);
 
-    const load = async () => {
-      let q = supabase
-        .from("instagram_posts")
-        .select("*")
-        .order("position", { ascending: true })
-        .order("posted_at", { ascending: false });
-      if (!opts.all) q = q.eq("is_published", true);
-      const { data } = await q;
-      if (!mounted) return;
-      setPosts((data ?? []) as InstagramPost[]);
-      setLoading(false);
-    };
-
-    load();
-
-    const channel = supabase
-      .channel("instagram_posts_changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "instagram_posts" },
-        () => load(),
-      )
-      .subscribe();
-
-    return () => {
-      mounted = false;
-      supabase.removeChannel(channel);
-    };
-  }, [opts.all]);
-
-  return { posts, loading, reload: () => setLoading(true) };
+  return { posts, loading, reload: () => {} };
 }
