@@ -314,7 +314,7 @@ body.lg-body {
   font-weight: 700;
 }
 .hero-cta a:hover { background: var(--color-red-lg); color: white; }
-.cta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-red-lg); transition: background 0.3s; }
+.cta-dot { width: 6px; height: 6px; border-radius: 50%; background: #c0392b; transition: background 0.3s; }
 .hero-cta a:hover .cta-dot { background: white; }
 
 /* TICKER */
