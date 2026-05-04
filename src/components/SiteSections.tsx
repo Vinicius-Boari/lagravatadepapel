@@ -9,10 +9,17 @@ const tickerItems = [
 ];
 
 function ImgWithFallback({ src, fallback, alt, ...props }: { src?: string; fallback: string; alt?: string; [key: string]: any }) {
-  const [imgSrc, setImgSrc] = useState(src || fallback);
+  const [imgSrc, setImgSrc] = useState<string>(() => {
+    if (!src || src === "" || src === "null" || src === "undefined") return fallback;
+    return src;
+  });
   
   useEffect(() => {
-    setImgSrc(src || fallback);
+    if (!src || src === "" || src === "null" || src === "undefined") {
+      setImgSrc(fallback);
+    } else {
+      setImgSrc(src);
+    }
   }, [src, fallback]);
 
   return (
@@ -20,8 +27,9 @@ function ImgWithFallback({ src, fallback, alt, ...props }: { src?: string; fallb
       {...props}
       src={imgSrc}
       alt={alt}
-      onError={() => {
+      onError={(e) => {
         if (imgSrc !== fallback) {
+          console.warn(`Image failed to load: ${imgSrc}. Falling back to ${fallback}`);
           setImgSrc(fallback);
         }
       }}

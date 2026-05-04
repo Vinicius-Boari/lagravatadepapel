@@ -94,7 +94,9 @@ export default function InstagramCarousel3D({ config }: { config: Config }) {
                     loading="lazy" 
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = "/images/hero_invasion.png"; // Generic fallback for IG posts
+                      if (!target.src.endsWith('/images/hero_invasion.png')) {
+                        target.src = "/images/hero_invasion.png";
+                      }
                     }}
                   />
                 ) : (
@@ -126,7 +128,17 @@ export default function InstagramCarousel3D({ config }: { config: Config }) {
           <span>Seguir @{handle}</span>
           <span className="ig3d-arrow">→</span>
         </a>
-        {loading && <span className="ig3d-loading">carregando feed…</span>}
+        {loading && (
+          <div className="flex flex-col items-center gap-2">
+            <span className="ig3d-loading">carregando feed…</span>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="text-[10px] uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+            >
+              Recarregar página
+            </button>
+          </div>
+        )}
       </div>
 
       {active && (
