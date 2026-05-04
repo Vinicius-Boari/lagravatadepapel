@@ -350,7 +350,7 @@ body.lg-body {
   border-radius: 50px; color: #c0392b !important; 
   text-decoration: none; font-family: var(--font-sans-lg); 
   font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; 
-  transition: all 0.4s; background: transparent; cursor: pointer;
+  transition: all 0.4s; background: #c0392b !important; cursor: pointer;
   font-weight: 700;
 }
 .btn-outline:hover { background: #c0392b; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(192,57,43,0.2); }
