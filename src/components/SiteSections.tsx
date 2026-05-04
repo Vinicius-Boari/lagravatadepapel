@@ -225,13 +225,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
-          <div className="hero-img hero-img-1">
+          <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
             <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
           </div>
-          <div className="hero-img hero-img-2">
+          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
             <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
           </div>
-          <div className="hero-img hero-img-3">
+          <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
             <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
           </div>
         </div>
@@ -269,7 +269,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
-            <div className="service-card tilt-3d scroll-3d reveal" key={i}>
+            <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
               <img src={s.img} alt={s.title} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
@@ -286,7 +286,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => (
-            <div className={`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`} key={i}>
+            <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
               {v.src ? (
                 <video src={v.src} poster={v.poster} autoPlay muted loop playsInline />
               ) : (
@@ -327,7 +327,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
-            <div className="place-card tilt-3d scroll-3d reveal" key={i}>
+            <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
               <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
@@ -341,7 +341,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
       <section className="about-section" id="sobre">
-        <div className="about-image scene-3d">
+        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}>
           <div className="scroll-3d tilt-3d">
             {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
           </div>
@@ -387,7 +387,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             </div>
           </div>
         </div>
-        <div className="about-image scene-3d">
+        <div className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")}>
           <div className="scroll-3d tilt-3d">
             <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
           </div>
