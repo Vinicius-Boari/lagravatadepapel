@@ -111,7 +111,15 @@ export function MediaLibrary() {
           <div key={i} className="group relative bg-zinc-900 rounded-lg border border-red-900/20 overflow-hidden hover:border-red-500 transition-all shadow-lg">
             <div className="aspect-square bg-zinc-950 flex items-center justify-center overflow-hidden">
               {item.type === 'image' ? (
-                <img src={item.src} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img 
+                  src={item.src} 
+                  alt="" 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/images/hero_invasion.png";
+                  }}
+                />
               ) : (
                 <div className="relative w-full h-full">
                    <video src={item.src} className="w-full h-full object-cover" muted />
