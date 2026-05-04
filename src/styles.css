@@ -310,7 +310,7 @@ body.lg-body {
   border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
   font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
   transition: all 0.3s;
-  min-width: 340px; justify-content: space-between;
+  min-width: 340px; justify-content: center;
   font-weight: 700;
 }
 .hero-cta a:hover { background: #c0392b; color: white; }
@@ -347,10 +347,10 @@ body.lg-body {
 .btn-outline { 
   display: inline-flex; align-items: center; gap: 12px; padding: 16px 40px; 
   border: 2px solid var(--color-red-lg); 
-  border-radius: 50px; color: #c0392b !important; 
+  border-radius: 50px; color: white !important; 
   text-decoration: none; font-family: var(--font-sans-lg); 
   font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; 
-  transition: all 0.4s; background: transparent; cursor: pointer;
+  transition: all 0.4s; background: #c0392b !important; cursor: pointer;
   font-weight: 700;
 }
 .btn-outline:hover { background: #c0392b; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(192,57,43,0.2); }
