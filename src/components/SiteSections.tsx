@@ -8,6 +8,27 @@ const tickerItems = [
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
 ];
 
+function ImgWithFallback({ src, fallback, alt, ...props }: { src?: string; fallback: string; alt?: string; [key: string]: any }) {
+  const [imgSrc, setImgSrc] = useState(src || fallback);
+  
+  useEffect(() => {
+    setImgSrc(src || fallback);
+  }, [src, fallback]);
+
+  return (
+    <img
+      {...props}
+      src={imgSrc}
+      alt={alt}
+      onError={() => {
+        if (imgSrc !== fallback) {
+          setImgSrc(fallback);
+        }
+      }}
+    />
+  );
+}
+
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
