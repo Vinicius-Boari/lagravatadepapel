@@ -307,7 +307,7 @@ body.lg-body {
   color: var(--color-red-lg); 
   padding: 16px 32px;
   border: 2px solid var(--color-red-lg);
-  border-radius: 4px; text-decoration: none; font-family: var(--font-sans-lg);
+  border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
   font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
   transition: all 0.3s;
   min-width: 340px; justify-content: space-between;
