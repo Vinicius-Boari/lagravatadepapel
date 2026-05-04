@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
+import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket, Play } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
@@ -31,11 +31,23 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   };
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({});
 
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     if (isMobile && e.currentTarget.currentTime >= 8) {
       e.currentTarget.currentTime = 0;
     }
+  };
+
+  const toggleVideo = (id: string, videoElement: HTMLVideoElement | null) => {
+    if (!videoElement) return;
+    
+    if (playingVideos[id]) {
+      videoElement.pause();
+    } else {
+      videoElement.play();
+    }
+    setPlayingVideos(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   useEffect(() => {
@@ -247,14 +259,31 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         {hero.video_url && (
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
+              id="hero-video"
               src={getLimitedVideoUrl(hero.video_url)} 
               onTimeUpdate={handleTimeUpdate}
-              autoPlay 
+              autoPlay={!isMobile}
               muted 
               loop 
               playsInline 
               preload="metadata" 
             />
+            {isMobile && !playingVideos['hero'] && (
+              <button 
+                className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 transition-opacity"
+                onClick={() => toggleVideo('hero', document.getElementById('hero-video') as HTMLVideoElement)}
+              >
+                <div className="bg-red-600 p-4 rounded-full shadow-lg shadow-red-900/50">
+                  <Play className="w-8 h-8 text-white fill-white" />
+                </div>
+              </button>
+            )}
+            {isMobile && playingVideos['hero'] && (
+              <button 
+                className="absolute inset-0 z-10 opacity-0 hover:opacity-100 flex items-center justify-center bg-black/20"
+                onClick={() => toggleVideo('hero', document.getElementById('hero-video') as HTMLVideoElement)}
+              />
+            )}
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
