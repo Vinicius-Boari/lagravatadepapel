@@ -8,6 +8,27 @@ const tickerItems = [
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
 ];
 
+function ImgWithFallback({ src, fallback, alt, ...props }: { src?: string; fallback: string; alt?: string; [key: string]: any }) {
+  const [imgSrc, setImgSrc] = useState(src || fallback);
+  
+  useEffect(() => {
+    setImgSrc(src || fallback);
+  }, [src, fallback]);
+
+  return (
+    <img
+      {...props}
+      src={imgSrc}
+      alt={alt}
+      onError={() => {
+        if (imgSrc !== fallback) {
+          setImgSrc(fallback);
+        }
+      }}
+    />
+  );
+}
+
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -233,13 +254,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <ImgWithFallback src={hero.image1} fallback="/images/hero_invasion.png" alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <ImgWithFallback src={hero.image2} fallback="/images/hero_venue.png" alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <ImgWithFallback src={hero.image3} fallback="/images/hero_party.png" alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
@@ -277,7 +298,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className="service-card tilt-3d scroll-3d reveal" key={i}>
-              <img src={s.img} alt={s.title} loading="lazy" />
+              <ImgWithFallback src={s.img} fallback="/images/hero_invasion.png" alt={s.title} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
@@ -335,7 +356,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
             <div className="place-card tilt-3d scroll-3d reveal" key={i}>
-              <img src={p.img} alt={p.title} />
+              <ImgWithFallback src={p.img} fallback="/images/hero_invasion.png" alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>
@@ -350,7 +371,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
+            <ImgWithFallback src={about.image} fallback="/images/hero_invasion.png" alt="Sobre La Gravata de Papel" />
           </div>
         </div>
         <div className="about-text">
@@ -396,7 +417,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <img src={tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" loading="lazy" />
+            <ImgWithFallback 
+              src={tropa_config?.image_url} 
+              fallback="https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg" 
+              alt="Tropa da Gravata" 
+              loading="lazy" 
+            />
           </div>
         </div>
       </section>
