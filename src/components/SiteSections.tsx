@@ -347,33 +347,55 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <h2>{videos.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
-          {(videos.items ?? []).map((v: any, i: number) => (
-            <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
-              {v.src ? (
-                <video 
-                  src={getLimitedVideoUrl(v.src)} 
-                  onTimeUpdate={handleTimeUpdate}
-                  poster={v.poster} 
-                  autoPlay 
-                  muted 
-                  loop 
-                  playsInline 
-                />
-              ) : (
-                <>
-                  {v.poster && <img src={v.poster} alt={v.title} />}
-                  <div className="video-card-placeholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                    <span>Vídeo em breve</span>
+          {(videos.items ?? []).map((v: any, i: number) => {
+            const videoId = `video-${i}`;
+            return (
+              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
+                {v.src ? (
+                  <div className="relative w-full h-full">
+                    <video 
+                      id={videoId}
+                      src={getLimitedVideoUrl(v.src)} 
+                      onTimeUpdate={handleTimeUpdate}
+                      poster={v.poster} 
+                      autoPlay={!isMobile}
+                      muted 
+                      loop 
+                      playsInline 
+                    />
+                    {isMobile && !playingVideos[videoId] && (
+                      <button 
+                        className="absolute inset-0 z-10 flex items-center justify-center bg-black/30"
+                        onClick={() => toggleVideo(videoId, document.getElementById(videoId) as HTMLVideoElement)}
+                      >
+                        <div className="bg-red-600 p-3 rounded-full shadow-lg">
+                          <Play className="w-6 h-6 text-white fill-white" />
+                        </div>
+                      </button>
+                    )}
+                    {isMobile && playingVideos[videoId] && (
+                      <button 
+                        className="absolute inset-0 z-10 opacity-0 flex items-center justify-center"
+                        onClick={() => toggleVideo(videoId, document.getElementById(videoId) as HTMLVideoElement)}
+                      />
+                    )}
                   </div>
-                </>
-              )}
-              <div className="video-card-overlay">
-                <h3>{v.title}</h3>
-                <span>{v.tag}</span>
+                ) : (
+                  <>
+                    {v.poster && <img src={v.poster} alt={v.title} />}
+                    <div className="video-card-placeholder">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                      <span>Vídeo em breve</span>
+                    </div>
+                  </>
+                )}
+                <div className="video-card-overlay">
+                  <h3>{v.title}</h3>
+                  <span>{v.tag}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
