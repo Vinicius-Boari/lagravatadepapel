@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
+import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket, Play } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
@@ -31,11 +31,23 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   };
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({});
 
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     if (isMobile && e.currentTarget.currentTime >= 8) {
       e.currentTarget.currentTime = 0;
     }
+  };
+
+  const toggleVideo = (id: string, videoElement: HTMLVideoElement | null) => {
+    if (!videoElement) return;
+    
+    if (playingVideos[id]) {
+      videoElement.pause();
+    } else {
+      videoElement.play();
+    }
+    setPlayingVideos(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   useEffect(() => {
@@ -247,14 +259,31 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         {hero.video_url && (
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
+              id="hero-video"
               src={getLimitedVideoUrl(hero.video_url)} 
               onTimeUpdate={handleTimeUpdate}
-              autoPlay 
+              autoPlay={!isMobile}
               muted 
               loop 
               playsInline 
               preload="metadata" 
             />
+            {isMobile && !playingVideos['hero'] && (
+              <button 
+                className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 transition-opacity"
+                onClick={() => toggleVideo('hero', document.getElementById('hero-video') as HTMLVideoElement)}
+              >
+                <div className="bg-red-600 p-4 rounded-full shadow-lg shadow-red-900/50">
+                  <Play className="w-8 h-8 text-white fill-white" />
+                </div>
+              </button>
+            )}
+            {isMobile && playingVideos['hero'] && (
+              <button 
+                className="absolute inset-0 z-10 opacity-0 hover:opacity-100 flex items-center justify-center bg-black/20"
+                onClick={() => toggleVideo('hero', document.getElementById('hero-video') as HTMLVideoElement)}
+              />
+            )}
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
@@ -318,33 +347,55 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <h2>{videos.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
-          {(videos.items ?? []).map((v: any, i: number) => (
-            <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
-              {v.src ? (
-                <video 
-                  src={getLimitedVideoUrl(v.src)} 
-                  onTimeUpdate={handleTimeUpdate}
-                  poster={v.poster} 
-                  autoPlay 
-                  muted 
-                  loop 
-                  playsInline 
-                />
-              ) : (
-                <>
-                  {v.poster && <img src={v.poster} alt={v.title} />}
-                  <div className="video-card-placeholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                    <span>Vídeo em breve</span>
+          {(videos.items ?? []).map((v: any, i: number) => {
+            const videoId = `video-${i}`;
+            return (
+              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
+                {v.src ? (
+                  <div className="relative w-full h-full">
+                    <video 
+                      id={videoId}
+                      src={getLimitedVideoUrl(v.src)} 
+                      onTimeUpdate={handleTimeUpdate}
+                      poster={v.poster} 
+                      autoPlay={!isMobile}
+                      muted 
+                      loop 
+                      playsInline 
+                    />
+                    {isMobile && !playingVideos[videoId] && (
+                      <button 
+                        className="absolute inset-0 z-10 flex items-center justify-center bg-black/30"
+                        onClick={() => toggleVideo(videoId, document.getElementById(videoId) as HTMLVideoElement)}
+                      >
+                        <div className="bg-red-600 p-3 rounded-full shadow-lg">
+                          <Play className="w-6 h-6 text-white fill-white" />
+                        </div>
+                      </button>
+                    )}
+                    {isMobile && playingVideos[videoId] && (
+                      <button 
+                        className="absolute inset-0 z-10 opacity-0 flex items-center justify-center"
+                        onClick={() => toggleVideo(videoId, document.getElementById(videoId) as HTMLVideoElement)}
+                      />
+                    )}
                   </div>
-                </>
-              )}
-              <div className="video-card-overlay">
-                <h3>{v.title}</h3>
-                <span>{v.tag}</span>
+                ) : (
+                  <>
+                    {v.poster && <img src={v.poster} alt={v.title} />}
+                    <div className="video-card-placeholder">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                      <span>Vídeo em breve</span>
+                    </div>
+                  </>
+                )}
+                <div className="video-card-overlay">
+                  <h3>{v.title}</h3>
+                  <span>{v.tag}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
