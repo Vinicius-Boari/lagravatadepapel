@@ -86,14 +86,7 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
           {value.match(/\.(mp4|webm|ogg)$/i) || value.includes('video') ? (
             <video src={value} className="w-full h-full object-contain" muted />
           ) : (
-            <img 
-              src={value} 
-              className="w-full h-full object-contain" 
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "/images/hero_invasion.png";
-              }} 
-            />
+            <img src={value} className="w-full h-full object-contain" />
           )}
         </div>
       )}
@@ -189,7 +182,7 @@ export function SiteContentEditor() {
     </Button>
   );
 
-  if (contentLoading) return <div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">

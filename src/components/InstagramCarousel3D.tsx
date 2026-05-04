@@ -13,7 +13,7 @@ type Config = {
  * Posts are arranged in a circle in 3D space and continuously rotate.
  * Hover any card to pause and inspect; click to open in Instagram.
  */
-export default function InstagramCarousel3D({ config }: { config: Config }) {
+export function InstagramCarousel3D({ config }: { config: Config }) {
   const { posts, loading } = useInstagramPosts();
   const stageRef = useRef<HTMLDivElement>(null);
   const angleRef = useRef(0);
@@ -88,17 +88,7 @@ export default function InstagramCarousel3D({ config }: { config: Config }) {
                 aria-label={post.caption || "Post do Instagram"}
               >
                 {post.image_url ? (
-                  <img 
-                    src={post.image_url} 
-                    alt={post.caption} 
-                    loading="lazy" 
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (!target.src.endsWith('/images/hero_invasion.png')) {
-                        target.src = "/images/hero_invasion.png";
-                      }
-                    }}
-                  />
+                  <img src={post.image_url} alt={post.caption} loading="lazy" />
                 ) : (
                   <div className="ig3d-empty">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -128,17 +118,7 @@ export default function InstagramCarousel3D({ config }: { config: Config }) {
           <span>Seguir @{handle}</span>
           <span className="ig3d-arrow">→</span>
         </a>
-        {loading && (
-          <div className="flex flex-col items-center gap-2">
-            <span className="ig3d-loading">carregando feed…</span>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="text-[10px] uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
-            >
-              Recarregar página
-            </button>
-          </div>
-        )}
+        {loading && <span className="ig3d-loading">carregando feed…</span>}
       </div>
 
       {active && (

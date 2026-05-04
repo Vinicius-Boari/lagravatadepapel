@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Users, 
@@ -144,4 +143,6 @@ export function DashboardOverview() {
   );
 }
 
-// Import removed, using standard cn from @/lib/utils
+function cn(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -38,8 +38,9 @@ export function UserManagement() {
   });
   const { status, setSaveStatus } = useSaveStatus();
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = async () => {
     setLoading(true);
+    // Junta papéis com profiles para mostrar email + papel
     const { data: roles, error: rolesError } = await supabase
       .from("user_roles")
       .select("user_id, role");
@@ -86,7 +87,7 @@ export function UserManagement() {
 
     setUsers(list);
     setLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -103,20 +104,29 @@ export function UserManagement() {
     }
 
     setSaveStatus('saving');
-
-    const { data, error } = await supabase.functions.invoke("create-admin", {
-      body: {
-        email: newAdmin.email.trim(),
-        password: newAdmin.password,
-        full_name: newAdmin.full_name,
-        role: newAdmin.role,
+    // Cria usuário via Supabase Auth (signup público)
+    const { data, error } = await supabase.auth.signUp({
+      email: newAdmin.email.trim(),
+      password: newAdmin.password,
+      options: {
+        data: { full_name: newAdmin.full_name || undefined },
       },
     });
 
-    if (error || (data && (data as any).error)) {
+    if (error || !data.user) {
       setSaveStatus('error');
-      if (import.meta.env.DEV) console.error("create-admin error:", error || (data as any)?.error);
-      toast.error("Não foi possível cadastrar o administrador. Verifique os dados e tente novamente.");
+      toast.error(error?.message || "Erro ao criar usuário.");
+      return;
+    }
+
+    // Promove para o papel selecionado (apenas owner consegue, conforme RLS)
+    const { error: roleError } = await supabase
+      .from("user_roles")
+      .insert({ user_id: data.user.id, role: newAdmin.role });
+
+    if (roleError) {
+      setSaveStatus('error');
+      toast.error(`Usuário criado, mas falhou ao dar permissão: ${roleError.message}`);
       return;
     }
 
@@ -129,7 +139,7 @@ export function UserManagement() {
     }, 1000);
   };
 
-  if (loading) return <div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">

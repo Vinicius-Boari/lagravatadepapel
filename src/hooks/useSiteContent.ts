@@ -1,137 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export type SiteContent = {
-  hero: {
-    title_lines: string[];
-    subtitle: string;
-    location: string;
-    cta_label: string;
-    cta_url: string;
-    images: string[];
-    image1?: string;
-    image2?: string;
-    image3?: string;
-    video_url?: string;
-  };
-  visual: {
-    primary_color: string;
-    secondary_color: string;
-    background_color: string;
-    text_color: string;
-    font_family: string;
-    logo_url: string;
-    favicon_url: string;
-  };
-  services: {
-    heading: string;
-    heading_em: string;
-    items: Array<{
-      title: string;
-      desc: string;
-      img: string;
-    }>;
-  };
-  videos: {
-    heading: string;
-    heading_em: string;
-    items: Array<{
-      title: string;
-      tag: string;
-      src?: string;
-      poster?: string;
-      tall?: boolean;
-    }>;
-  };
-  plan: {
-    heading: string;
-    heading_em: string;
-    text: string;
-    cta_label: string;
-    cta_url: string;
-  };
-  places: {
-    heading: string;
-    heading2: string;
-    instagram_url: string;
-    items: Array<{
-      title: string;
-      tag: string;
-      img: string;
-    }>;
-  };
-  about: {
-    heading: string;
-    heading_em: string;
-    image: string;
-    paragraphs: string[];
-    cta_label: string;
-    cta_url: string;
-  };
-  coupons: {
-    heading: string;
-    heading_em: string;
-    items: Array<{
-      title: string;
-      code: string;
-      discount: string;
-      description: string;
-      link: string;
-    }>;
-  };
-  instagram_config: {
-    handle: string;
-    profile_url: string;
-    title: string;
-    subtitle: string;
-    mode: 'auto' | 'manual';
-  };
-  integrations: {
-    google_analytics_id: string;
-    google_tag_manager_id: string;
-    facebook_pixel_id: string;
-    whatsapp_number: string;
-    whatsapp_message: string;
-  };
-  footer: {
-    phone: string;
-    phone_url: string;
-    address_line1: string;
-    address_line2: string;
-    instagram_url: string;
-    whatsapp_url: string;
-    copyright: string;
-    hashtag: string;
-  };
-  seo: {
-    title: string;
-    description: string;
-    keywords: string;
-  };
-  tropa_config: {
-    heading: string;
-    heading_em: string;
-    subheading: string;
-    paragraphs: string[];
-    image_url: string;
-    cta_label: string;
-    instagram_url: string;
-    instagram_label: string;
-  };
-  languages: {
-    default: string;
-    enabled: string[];
-    translations: Record<string, { name: string; flag: string }>;
-  };
-  settings?: {
-    notifications: boolean;
-    darkMode: boolean;
-    language: string;
-    maintenanceMode: boolean;
-    adminEmail: string;
-  };
-};
+export type SiteContent = Record<string, any>;
 
 export const FALLBACK_CONTENT: SiteContent = {
   hero: {
@@ -239,7 +110,7 @@ export function useSiteContent(useDraft = false) {
   const [content, setContent] = useState<SiteContent>(FALLBACK_CONTENT);
   const [loading, setLoading] = useState(true);
 
-  const fetchContent = useCallback(async () => {
+  const fetchContent = async () => {
     try {
       const { data, error } = await supabase
         .from("site_content")
@@ -248,11 +119,8 @@ export function useSiteContent(useDraft = false) {
       if (!error && data) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
-          const key = row.key as keyof SiteContent;
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          if (merged[key]) {
-            merged[key] = { ...(FALLBACK_CONTENT[key] ?? {}), ...(v as object) } as any;
-          }
+          merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
         }
         setContent(merged);
       }
@@ -261,21 +129,23 @@ export function useSiteContent(useDraft = false) {
     } finally {
       setLoading(false);
     }
-  }, [useDraft]);
+  };
 
   useEffect(() => {
     fetchContent();
 
+    // Configurar Realtime Subscription para atualizações automáticas
     const channel = supabase
       .channel('site_content_changes')
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*',
           schema: 'public',
           table: 'site_content'
         },
-        () => {
+        (payload) => {
+          console.log('Realtime update received:', payload);
           fetchContent();
         }
       )
@@ -284,30 +154,30 @@ export function useSiteContent(useDraft = false) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fetchContent]);
+  }, [useDraft]);
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      if (import.meta.env.DEV) console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
-
+      console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
+      
       const { data, error } = await supabase
         .from("site_content")
-        .upsert({
-          key,
-          value: newValue,
-          draft_value: newValue,
-          updated_at: new Date().toISOString()
+        .upsert({ 
+          key, 
+          value: newValue, 
+          draft_value: newValue, 
+          updated_at: new Date().toISOString() 
         }, { onConflict: 'key' })
         .select();
 
       if (error) {
-        if (import.meta.env.DEV) console.error(`[useSiteContent] Supabase error for ${key}:`, error);
-        toast.error("Erro ao salvar. Tente novamente.");
+        console.error(`[useSiteContent] Supabase error for ${key}:`, error);
+        toast.error(`Erro no Supabase: ${error.message}`);
         throw error;
       }
-
-      if (import.meta.env.DEV) console.log(`[useSiteContent] Update successful for ${key}:`, data);
-
+      
+      console.log(`[useSiteContent] Update successful for ${key}:`, data);
+      
       setContent(prev => ({
         ...prev,
         [key]: newValue
@@ -315,8 +185,8 @@ export function useSiteContent(useDraft = false) {
 
       return true;
     } catch (err: any) {
-      if (import.meta.env.DEV) console.error(`[useSiteContent] Catch block for ${key}:`, err);
-      toast.error("Erro ao salvar. Verifique sua conexão e tente novamente.");
+      console.error(`[useSiteContent] Catch block for ${key}:`, err);
+      toast.error(`Erro crítico ao salvar: ${err.message || 'Verifique sua conexão'}`);
       throw err;
     }
   };

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Video, ImageIcon, Search, Filter, Loader2 } from "lucide-react";
+import { Plus, Trash2, Video, ImageIcon, Search, Filter } from "lucide-react";
 import { toast } from "sonner";
 
 export function MediaLibrary() {
@@ -51,7 +51,7 @@ export function MediaLibrary() {
     return matchesFilter && matchesSearch;
   });
 
-  if (loading) return <div className="p-8 flex items-center gap-2 text-zinc-500"><Loader2 className="w-4 h-4 animate-spin" /> Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
@@ -111,15 +111,7 @@ export function MediaLibrary() {
           <div key={i} className="group relative bg-zinc-900 rounded-lg border border-red-900/20 overflow-hidden hover:border-red-500 transition-all shadow-lg">
             <div className="aspect-square bg-zinc-950 flex items-center justify-center overflow-hidden">
               {item.type === 'image' ? (
-                <img 
-                  src={item.src} 
-                  alt="" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "/images/hero_invasion.png";
-                  }}
-                />
+                <img src={item.src} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               ) : (
                 <div className="relative w-full h-full">
                    <video src={item.src} className="w-full h-full object-cover" muted />

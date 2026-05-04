@@ -1,56 +1,18 @@
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
-import InstagramCarousel3D from "@/components/InstagramCarousel3D";
+import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
   "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
 ];
 
-function ImgWithFallback({ src, fallback, alt, ...props }: { src?: string; fallback: string; alt?: string; [key: string]: any }) {
-  const [imgSrc, setImgSrc] = useState<string>(() => {
-    if (!src || src === "" || src === "null" || src === "undefined") return fallback;
-    return src;
-  });
-  
-  useEffect(() => {
-    if (!src || src === "" || src === "null" || src === "undefined") {
-      setImgSrc(fallback);
-    } else {
-      setImgSrc(src);
-    }
-  }, [src, fallback]);
-
-  return (
-    <img
-      {...props}
-      src={imgSrc}
-      alt={alt}
-      onError={(e) => {
-        if (imgSrc !== fallback) {
-          console.warn(`Image failed to load: ${imgSrc}. Falling back to ${fallback}`);
-          setImgSrc(fallback);
-        }
-      }}
-    />
-  );
-}
-
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsDesktop(mql.matches);
-    update();
-    mql.addEventListener("change", update);
-    return () => mql.removeEventListener("change", update);
-  }, []);
 
   useEffect(() => {
     document.body.classList.add("lg-body");
@@ -59,7 +21,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     };
   }, []);
 
-  const initEffects = useCallback(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -68,7 +30,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     let mx = 0, my = 0;
     let trailX = 0, trailY = 0;
     const points: { x: number; y: number }[] = [];
-    const maxPoints = 30;
+    const maxPoints = 30; // Reduced for a more minimal trail
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
@@ -95,9 +57,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           const p1 = points[i - 1];
           const p2 = points[i];
           
-          const progress = i / points.length;
+          const progress = i / points.length; // 0 at tail, 1 at head
           const opacity = progress * 0.5;
-          const width = progress * 2.5;
+          const width = progress * 2.5; // Starts thick at head (index length) and thins to tail
           
           ctx.beginPath();
           ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
@@ -188,20 +150,22 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       });
       obs.disconnect();
     };
-  }, []);
+  }, [content]);
 
-  useEffect(() => {
-    return initEffects();
-  }, [initEffects]);
-
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
-  const { hero, services, videos, plan, places, about, coupons, tropa_config, instagram_config, footer } = content;
+  const closeMenu = () => setMenuOpen(false);
+  const hero = content.hero;
+  const services = content.services;
+  const videos = content.videos;
+  const plan = content.plan;
+  const places = content.places;
+  const about = content.about;
+  const footer = content.footer;
+  const coupons = content.coupons;
 
   return (
     <>
       <canvas
         ref={canvasRef}
-        aria-hidden="true"
         style={{
           position: "fixed",
           inset: 0,
@@ -255,20 +219,20 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="hero" id="hero">
-        {hero.video_url && isDesktop && (
+        {hero.video_url && (
           <div className="hero-video-bg">
             <video src={hero.video_url} autoPlay muted loop playsInline preload="metadata" />
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className="hero-img hero-img-1">
-            <ImgWithFallback src={hero.image1} fallback="/images/hero_invasion.png" alt="Hero 1" loading="lazy" />
+            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
           </div>
           <div className="hero-img hero-img-2">
-            <ImgWithFallback src={hero.image2} fallback="/images/hero_venue.png" alt="Hero 2" loading="lazy" />
+            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
           </div>
           <div className="hero-img hero-img-3">
-            <ImgWithFallback src={hero.image3} fallback="/images/hero_party.png" alt="Hero 3" loading="lazy" />
+            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
           </div>
         </div>
 
@@ -306,7 +270,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className="service-card tilt-3d scroll-3d reveal" key={i}>
-              <ImgWithFallback src={s.img} fallback={`/images/service_${['foto360', 'robo', 'tequileiro', 'co2'][i] || 'robo'}.png`} alt={s.title} loading="lazy" />
+              <img src={s.img} alt={s.title} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
@@ -364,7 +328,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
             <div className="place-card tilt-3d scroll-3d reveal" key={i}>
-              <ImgWithFallback src={p.img} fallback={`/images/hero_${['invasion', 'party', 'venue'][i] || 'invasion'}.png`} alt={p.title} />
+              <img src={p.img} alt={p.title} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>
@@ -374,12 +338,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <InstagramCarousel3D config={instagram_config ?? {}} />
+      <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
       <section className="about-section" id="sobre">
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <ImgWithFallback src={about.image} fallback="/images/hero_invasion.png" alt="Sobre La Gravata de Papel" />
+            {about.image && <img src={about.image} alt="Sobre La Gravata de Papel" />}
           </div>
         </div>
         <div className="about-text">
@@ -396,10 +360,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
-          <h2 className="reveal">{(tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(tropa_config?.heading_em || "Seu Casamento")}</em></h2>
+          <h2 className="reveal">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
           <div className="space-y-6 text-left mb-10">
-            <p className="text-red-500 font-bold italic mb-4">{(tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
-            {(tropa_config?.paragraphs || []).map((p: string, i: number) => (
+            <p className="text-red-500 font-bold italic mb-4">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
+            {(content.tropa_config?.paragraphs || []).map((p: string, i: number) => (
               <p key={i} className="opacity-60">{p}</p>
             ))}
           </div>
@@ -408,29 +372,24 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <a href="/questionarioevento" className="btn-outline">
-                <span>{(tropa_config?.cta_label || "Contrate Agora")}</span>
+                <span>{(content.tropa_config?.cta_label || "Contrate Agora")}</span>
                 <span>→</span>
               </a>
               <a 
-                href={tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
+                href={content.tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
               >
                 <Instagram className="w-4 h-4" />
-                <span>{(tropa_config?.instagram_label || "Ver no Instagram")} →</span>
+                <span>{(content.tropa_config?.instagram_label || "Ver no Instagram")} →</span>
               </a>
             </div>
           </div>
         </div>
         <div className="about-image scene-3d">
           <div className="scroll-3d tilt-3d">
-            <ImgWithFallback 
-              src={tropa_config?.image_url} 
-              fallback="https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg" 
-              alt="Tropa da Gravata" 
-              loading="lazy" 
-            />
+            <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
           </div>
         </div>
       </section>

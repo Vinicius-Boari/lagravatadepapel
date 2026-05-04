@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Outlet } from "@tanstack/react-router";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/admin")({
@@ -11,13 +11,15 @@ function AdminLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loading) return;
     const isLoginPage = window.location.pathname === "/admin/login";
+    if (loading) return;
 
+    // Sem sessão → redireciona para login
     if (!user && !isLoginPage) {
       navigate({ to: "/admin/login" });
       return;
     }
+    // Sessão sem papel de admin → também redireciona (impede usuários comuns)
     if (user && !isAdmin && !isLoginPage) {
       navigate({ to: "/admin/login" });
     }
@@ -37,9 +39,7 @@ function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <Suspense fallback={<div className="p-8 text-zinc-500">Carregando painel...</div>}>
-        <Outlet />
-      </Suspense>
+      <Outlet />
     </div>
   );
 }
