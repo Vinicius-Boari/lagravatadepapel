@@ -86,7 +86,14 @@ const ImageUpload = ({ value, onChange, label }: { value: string, onChange: (val
           {value.match(/\.(mp4|webm|ogg)$/i) || value.includes('video') ? (
             <video src={value} className="w-full h-full object-contain" muted />
           ) : (
-            <img src={value} className="w-full h-full object-contain" />
+            <img 
+              src={value} 
+              className="w-full h-full object-contain" 
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/images/hero_invasion.png";
+              }} 
+            />
           )}
         </div>
       )}
