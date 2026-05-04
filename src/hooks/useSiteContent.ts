@@ -13,6 +13,7 @@ export const FALLBACK_CONTENT: SiteContent = {
     cta_url: "https://api.whatsapp.com/send?phone=5511985111012",
     images: [],
     video_url: "",
+    show_video: true,
   },
   visual: {
     primary_color: "#c0392b",
