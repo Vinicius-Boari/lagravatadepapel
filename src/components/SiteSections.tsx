@@ -54,19 +54,26 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   useEffect(() => {
     document.body.classList.add("lg-body");
 
-    // Optimized Intersection Observer for Videos
+    // Optimized Intersection Observer for Videos - only one video active at a time
     const videoObs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.play().catch(() => {});
+            // Give it a tiny delay to ensure smooth scrolling
+            setTimeout(() => {
+              if (video.paused) video.play().catch(() => {});
+            }, 50);
           } else {
             video.pause();
+            // Free up memory/buffer on mobile
+            if (window.innerWidth < 768) {
+              video.preload = "none";
+            }
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "50px" }
     );
 
     const videos = document.querySelectorAll('video');
