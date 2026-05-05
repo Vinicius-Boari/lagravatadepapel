@@ -385,9 +385,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       loop 
                       playsInline 
                       webkit-playsinline="true"
-                      preload="auto"
+                      preload={isMobile ? "none" : "auto"}
                       className="will-change-transform video-optimized"
-                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden' }}
+                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)' }}
                     >
                       <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
                     </video>
