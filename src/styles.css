@@ -447,7 +447,7 @@ body.lg-body {
 .btn-outline:hover { background: #c0392b; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(192,57,43,0.2); }
 
 /* PLACES */
-.places-section { background: var(--color-cream); padding: 120px 40px; position: relative; z-index: 20; }
+.places-section { background: var(--color-cream); padding: 120px 40px; position: relative; z-index: 20; box-shadow: 0 -50px 100px rgba(0,0,0,0.3); }
 .places-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; padding: 0 20px; gap: 24px; flex-wrap: wrap; }
 .places-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; }
 .places-header a { font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-muted-lg); text-decoration: none; border-bottom: 1px solid var(--color-muted-lg); padding-bottom: 4px; transition: color 0.3s; }
