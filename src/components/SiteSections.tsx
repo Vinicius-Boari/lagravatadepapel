@@ -313,7 +313,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
             <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
           </div>
-          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
+          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && !isMobile && "hidden md:block")}>
             <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
           </div>
           <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
