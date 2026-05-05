@@ -282,7 +282,9 @@ body.lg-body {
 .hero {
   min-height: 100vh;
   min-height: 100dvh;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
