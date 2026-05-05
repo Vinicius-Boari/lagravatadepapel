@@ -492,7 +492,7 @@ body.lg-body {
 .whatsapp-float-real svg { width: 30px; height: 30px; fill: white; }
 
 /* FOOTER */
-.lg-footer { background: var(--color-black-lg); color: var(--color-white-lg); padding: 80px 60px 40px; }
+.lg-footer { background: var(--color-black-lg); color: var(--color-white-lg); padding: 80px 60px 40px; position: relative; z-index: 20; }
 .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 80px; flex-wrap: wrap; gap: 40px; }
 .footer-logo { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.3; }
 .footer-links { display: flex; gap: 60px; flex-wrap: wrap; }
