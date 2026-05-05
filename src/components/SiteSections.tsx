@@ -36,6 +36,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     if (isMobile && e.currentTarget.currentTime >= 8) {
       e.currentTarget.currentTime = 0;
+      e.currentTarget.play().catch(() => {});
     }
   };
 
@@ -51,10 +52,29 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   };
 
   useEffect(() => {
-
     document.body.classList.add("lg-body");
+
+    // Optimized Intersection Observer for Videos
+    const videoObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const videos = document.querySelectorAll('video');
+    videos.forEach(v => videoObs.observe(v));
+
     return () => {
       document.body.classList.remove("lg-body");
+      videoObs.disconnect();
     };
   }, []);
 
@@ -269,8 +289,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               loop 
               playsInline 
               webkit-playsinline="true"
-              preload="auto" 
+              preload={isMobile ? "metadata" : "auto"} 
               className="will-change-transform"
+              style={{ height: '100%', width: '100%', objectFit: 'cover' }}
             />
           </div>
         )}
@@ -351,8 +372,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       loop 
                       playsInline 
                       webkit-playsinline="true"
-                      preload="auto"
+                      preload={isMobile ? "metadata" : "auto"}
                       className="will-change-transform"
+                      style={{ height: '100%', width: '100%', objectFit: 'cover' }}
                     />
                   </div>
                 ) : (
