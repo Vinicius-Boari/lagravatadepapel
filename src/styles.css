@@ -393,8 +393,12 @@ body.lg-body {
 .ticker-track span { font-family: var(--font-sans-lg); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); white-space: nowrap; }
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* SERVICES */
-.services-section { background: var(--color-cream); padding: 80px 0 120px; }
+.services-section { 
+  background: var(--color-cream); 
+  padding: 80px 0 120px; 
+  position: relative; 
+  z-index: 20; 
+}
 .section-header { text-align: center; margin-bottom: 60px; }
 .section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--color-dark-lg); opacity: 0.7; }
 .section-header h2 span { display: block; font-style: normal; }
