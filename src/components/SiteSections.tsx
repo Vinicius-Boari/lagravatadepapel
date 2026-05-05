@@ -314,6 +314,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
             )}
           </h1>
+          <div className="sr-only">
+            Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel.
+          </div>
           <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
         </div>
 
