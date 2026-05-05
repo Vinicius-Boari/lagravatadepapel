@@ -335,10 +335,15 @@ body.lg-body {
     border-radius: 0;
   }
   .hero-img-2 { 
-    width: 90vw !important; 
-    height: 70dvh !important;
+    width: 100vw !important; 
+    height: 100dvh !important;
     transform: translate(-50%, -50%) !important; 
-    z-index: 3;
+    z-index: 1;
+    opacity: 1 !important;
+  }
+  .hero-img-2 img {
+    border-radius: 0;
+    filter: brightness(0.7);
   }
   .hero-img-1, .hero-img-3 {
     display: none !important;
