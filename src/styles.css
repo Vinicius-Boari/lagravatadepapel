@@ -373,17 +373,17 @@ body.lg-body {
 .hero-cta { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); z-index: 6; }
 .hero-cta a {
   display: flex; align-items: center; gap: 16px;
-  background: transparent; 
-  color: var(--color-red-lg); 
+  background: white; 
+  color: #c0392b !important; 
   padding: 16px 32px;
-  border: 2px solid var(--color-red-lg);
+  border: none;
   border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
   font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
   transition: all 0.3s;
   min-width: 340px; justify-content: center;
   font-weight: 700;
 }
-.hero-cta a:hover { background: #c0392b; color: white; }
+.hero-cta a:hover { background: #f0f0f0; transform: scale(1.05); }
 .cta-dot { width: 6px; height: 6px; border-radius: 50%; background: #c0392b; transition: background 0.3s; }
 .hero-cta a:hover .cta-dot { background: white; }
 
