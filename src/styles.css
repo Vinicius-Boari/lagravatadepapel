@@ -380,7 +380,7 @@ body.lg-body {
 .hero-cta { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); z-index: 6; }
 .hero-cta { 
   position: fixed; 
-  bottom: 32px; 
+  bottom: 24px; 
   left: 50%; 
   transform: translateX(-50%); 
   z-index: 1001; 
@@ -393,12 +393,12 @@ body.lg-body {
   border: none;
   border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
   font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   min-width: 320px; justify-content: center;
   font-weight: 700;
-  box-shadow: 0 10px 30px rgba(192, 57, 43, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
-.hero-cta a:hover { background: #a93226; transform: translateX(-50%) scale(1.05); }
+.hero-cta a:hover { background: #a93226; transform: translateX(-50%) translateY(-2px); }
 .cta-dot { width: 6px; height: 6px; border-radius: 50%; background: #c0392b; transition: background 0.3s; }
 .hero-cta a:hover .cta-dot { background: white; }
 
