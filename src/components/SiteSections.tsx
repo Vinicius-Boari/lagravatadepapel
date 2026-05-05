@@ -287,7 +287,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="hero" id="hero">
         {hero.video_url && (
-          <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
+          <div className="hero-video-bg hidden md:block">
             <video 
               id="hero-video"
               title="Animação de Casamento Tropa da Gravata"
@@ -373,7 +373,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
             return (
-              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, v.show_mobile === false && "hidden md:block")} key={i}>
+              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro") || (!isMobile && v.show_mobile === false) ? "hidden md:block" : "")} key={i}>
                 {v.src ? (
                   <div className="relative w-full h-full">
                     <video 
@@ -389,6 +389,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       preload={isMobile ? "none" : "auto"}
                       className="will-change-transform video-optimized"
                       style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)' }}
+                      onLoadedMetadata={(e) => {
+                        e.currentTarget.muted = true;
+                      }}
                     >
                       <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
                     </video>
