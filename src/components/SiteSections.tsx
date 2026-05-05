@@ -54,19 +54,26 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   useEffect(() => {
     document.body.classList.add("lg-body");
 
-    // Optimized Intersection Observer for Videos
+    // Optimized Intersection Observer for Videos - only one video active at a time
     const videoObs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.play().catch(() => {});
+            // Give it a tiny delay to ensure smooth scrolling
+            setTimeout(() => {
+              if (video.paused) video.play().catch(() => {});
+            }, 50);
           } else {
             video.pause();
+            // Free up memory/buffer on mobile
+            if (window.innerWidth < 768) {
+              video.preload = "none";
+            }
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "50px" }
     );
 
     const videos = document.querySelectorAll('video');
@@ -186,6 +193,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       if (window.innerWidth < 768) return; // Disable scroll 3D effects on mobile for smoothness
       scrollEls.forEach((el) => {
         const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight || r.bottom < 0) return; // Only process visible elements
         const vh = window.innerHeight;
         const progress = (r.top + r.height / 2 - vh / 2) / vh;
         const clamped = Math.max(-1, Math.min(1, progress));
@@ -378,9 +386,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       loop 
                       playsInline 
                       webkit-playsinline="true"
-                      preload="auto"
+                      preload={isMobile ? "none" : "auto"}
                       className="will-change-transform video-optimized"
-                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden' }}
+                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)' }}
                     >
                       <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
                     </video>
