@@ -199,22 +199,27 @@ body.lg-body {
 /* HEADER */
 .lg-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  padding: 24px 40px; display: flex; justify-content: space-between;
-  align-items: flex-start; mix-blend-mode: difference;
-  transition: transform 0.4s;
+  padding: 16px 20px; display: flex; justify-content: space-between;
+  align-items: center; mix-blend-mode: normal !important;
+  transition: transform 0.4s, background 0.3s;
+  background: rgba(10, 10, 10, 0.4);
+  backdrop-filter: blur(8px);
+}
+@media (min-width: 769px) {
+  .lg-header { padding: 24px 40px; }
 }
 .logo { color: var(--color-white-lg); display: flex; align-items: flex-start; gap: 12px; }
 .logo-text { font-family: var(--font-serif); font-size: 1.1rem; line-height: 1.2; font-weight: 400; letter-spacing: -0.02em; }
 .logo-tagline { font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); margin-top: 4px; }
 .menu-btn {
-  background: rgba(255,255,255,0.12); backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.15); color: var(--color-white-lg);
-  padding: 8px 24px; border-radius: 50px; cursor: pointer;
+  background: #c0392b; border: none; color: white;
+  padding: 8px 20px; border-radius: 50px; cursor: pointer;
   font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em;
   text-transform: uppercase; display: flex; align-items: center; justify-content: center;
-  transition: background 0.3s; min-width: 100px;
+  transition: all 0.3s; min-width: 80px;
+  font-weight: 700;
 }
-.menu-btn:hover { background: rgba(255,255,255,0.2); }
+.menu-btn:hover { background: #a93226; transform: scale(1.05); }
 .menu-lines { display: flex; flex-direction: column; gap: 4px; }
 .menu-lines span { display: block; width: 24px; height: 1.5px; background: var(--color-white-lg); }
 
