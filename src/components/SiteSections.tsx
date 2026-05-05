@@ -373,7 +373,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
             return (
-              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro") || (!isMobile && v.show_mobile === false) ? "hidden md:block" : "")} key={i}>
+              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro") ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} key={i}>
                 {v.src ? (
                   <div className="relative w-full h-full">
                     <video 
