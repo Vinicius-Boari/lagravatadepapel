@@ -287,7 +287,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="hero" id="hero">
         {hero.video_url && (
-          <div className="hero-video-bg hidden md:block">
+          <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
               id="hero-video"
               title="Animação de Casamento Tropa da Gravata"
@@ -300,6 +300,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               preload="metadata"
               className="will-change-transform"
               style={{ height: '100%', width: '100%', objectFit: 'cover' }}
+              onLoadedMetadata={(e) => {
+                e.currentTarget.muted = true;
+              }}
             >
               <source src={getLimitedVideoUrl(hero.video_url)} type="video/mp4" />
               Seu navegador não suporta vídeos HTML5.
