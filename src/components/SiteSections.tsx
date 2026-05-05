@@ -282,6 +282,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
               id="hero-video"
+              title="Animação de Casamento Tropa da Gravata"
               src={getLimitedVideoUrl(hero.video_url)} 
               onTimeUpdate={handleTimeUpdate}
               autoPlay
@@ -297,13 +298,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
           </div>
           <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
           </div>
           <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero.image3 || "/images/hero_party.png"} alt="Entretenimento e diversão em eventos SP" loading="lazy" />
           </div>
         </div>
 
@@ -364,6 +365,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                   <div className="relative w-full h-full">
                     <video 
                       id={videoId}
+                      title={`Vídeo ${v.title || 'Animação'} - La Gravata de Papel`}
                       src={getLimitedVideoUrl(v.src)} 
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
