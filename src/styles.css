@@ -158,18 +158,27 @@
   --font-sans-lg: 'Inter', -apple-system, sans-serif;
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; height: 100%; }
-body { min-height: 100%; }
+html { 
+  scroll-behavior: smooth; 
+  overflow-x: hidden; 
+  height: 100%; 
+  -webkit-text-size-adjust: 100%;
+}
+body { 
+  min-height: 100%; 
+}
 body.lg-body {
   font-family: var(--font-sans-lg);
   background: var(--color-cream);
   color: var(--color-dark-lg);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* CURSOR EFFECTS */
