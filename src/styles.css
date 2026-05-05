@@ -369,19 +369,27 @@ body.lg-body {
 .hero-subtitle { font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.4rem); color: rgba(255,255,255,0.7); letter-spacing: 0.05em; text-shadow: 0 2px 12px rgba(0,0,0,0.3); font-style: normal; }
 .hero-location { position: absolute; top: 20%; right: 12%; z-index: 6; text-align: right; color: rgba(255,255,255,0.6); font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; }
 .hero-cta { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); z-index: 6; }
+.hero-cta { 
+  position: fixed; 
+  bottom: 32px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  z-index: 1001; 
+}
 .hero-cta a {
   display: flex; align-items: center; gap: 16px;
-  background: white; 
-  color: #c0392b !important; 
-  padding: 16px 32px;
+  background: #c0392b; 
+  color: white !important; 
+  padding: 18px 40px;
   border: none;
   border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
-  font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+  font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase;
   transition: all 0.3s;
-  min-width: 340px; justify-content: center;
+  min-width: 320px; justify-content: center;
   font-weight: 700;
+  box-shadow: 0 10px 30px rgba(192, 57, 43, 0.4);
 }
-.hero-cta a:hover { background: #f0f0f0; transform: scale(1.05); }
+.hero-cta a:hover { background: #a93226; transform: translateX(-50%) scale(1.05); }
 .cta-dot { width: 6px; height: 6px; border-radius: 50%; background: #c0392b; transition: background 0.3s; }
 .hero-cta a:hover .cta-dot { background: white; }
 
