@@ -33,9 +33,9 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "La Gravata de Papel - A melhor animação teatral para casamentos e festas em São Paulo. Tropa da Gravata, Tequileiros, Robô de LED e Bazuca CO2 para seu evento ser inesquecível.",
+          "La Gravata de Papel: A elite da animação para casamentos, debutantes e festas. Tropa inspirada no BOPE e La Casa de Papel com tequileiros, robô de LED e bazuca CO2. Transformamos sua hora da gravata e sua lua de mel em uma missão inesquecível.",
       },
-      { name: "keywords", content: "casamento sp, animação de festa, tequileiros para festa, robo de led casamento, bazuca co2, tropa da gravata, entretenimento casamento, festa corporativa sp, la gravata de papel, hora da gravata animada, personagens la casa de papel" },
+      { name: "keywords", content: "casamento sp, animação de festa, tequileiros para festa, robo de led casamento, bazuca co2, tropa da gravata, entretenimento casamento, festa corporativa sp, la gravata de papel, hora da gravata animada, personagens la casa de papel, BOPE, animação BOPE, festa debutante, 15 anos SP, lua de mel, entretenimento para eventos, show para casamento, personagens para festa, atrações para festas" },
       { name: "author", content: "La Gravata de Papel" },
       { property: "og:title", content: "La Gravata de Papel | Invasão de Eventos e Festas" },
       {
