@@ -283,17 +283,19 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <video 
               id="hero-video"
               title="Animação de Casamento Tropa da Gravata"
-              src={getLimitedVideoUrl(hero.video_url)} 
               onTimeUpdate={handleTimeUpdate}
               autoPlay
               muted 
               loop 
               playsInline 
               webkit-playsinline="true"
-              preload={isMobile ? "metadata" : "auto"} 
+              preload="metadata"
               className="will-change-transform"
               style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-            />
+            >
+              <source src={getLimitedVideoUrl(hero.video_url)} type="video/mp4" />
+              Seu navegador não suporta vídeos HTML5.
+            </video>
           </div>
         )}
         <div className="hero-images" ref={heroImgsRef}>
@@ -369,7 +371,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                     <video 
                       id={videoId}
                       title={`Vídeo ${v.title || 'Animação'} - La Gravata de Papel`}
-                      src={getLimitedVideoUrl(v.src)} 
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
                       autoPlay
@@ -377,10 +378,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       loop 
                       playsInline 
                       webkit-playsinline="true"
-                      preload={isMobile ? "metadata" : "auto"}
+                      preload="metadata"
                       className="will-change-transform"
                       style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-                    />
+                    >
+                      <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
+                    </video>
                   </div>
                 ) : (
                   <>
