@@ -342,7 +342,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
-              <img src={s.img} alt={s.title} loading="lazy" />
+              <img src={s.img} alt={`${s.title} - Serviço de animação La Gravata de Papel`} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
@@ -419,7 +419,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
             <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
-              <img src={p.img} alt={p.title} />
+              <img src={p.img} alt={`Invasão Tropa da Gravata em ${p.title}`} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>
