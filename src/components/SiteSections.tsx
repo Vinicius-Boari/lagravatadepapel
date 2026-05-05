@@ -118,6 +118,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     raf = requestAnimationFrame(animate);
 
     const onScroll = () => {
+      if (window.innerWidth < 768) return; // Skip parallax on mobile
       const c = window.scrollY;
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
@@ -162,6 +163,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     const scrollEls = document.querySelectorAll<HTMLElement>(".scroll-3d");
     const onScroll3d = () => {
+      if (window.innerWidth < 768) return; // Disable scroll 3D effects on mobile for smoothness
       scrollEls.forEach((el) => {
         const r = el.getBoundingClientRect();
         const vh = window.innerHeight;
