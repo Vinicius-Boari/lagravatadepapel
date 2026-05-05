@@ -338,12 +338,15 @@ body.lg-body {
 
 @media (max-width: 768px) {
   .hero-cta {
-    bottom: 20px;
+    bottom: 24px;
+    width: 100%;
+    padding: 0 20px;
   }
   .hero-cta a {
-    min-width: 280px;
-    padding: 14px 24px;
-    font-size: 0.75rem;
+    min-width: unset;
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 0.8rem;
   }
 }
   .hero { 
