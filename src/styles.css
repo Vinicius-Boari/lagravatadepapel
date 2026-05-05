@@ -398,6 +398,7 @@ body.lg-body {
   padding: 80px 0 120px; 
   position: relative; 
   z-index: 20; 
+  box-shadow: 0 -50px 100px rgba(0,0,0,0.3);
 }
 .section-header { text-align: center; margin-bottom: 60px; }
 .section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--color-dark-lg); opacity: 0.7; }
