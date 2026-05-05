@@ -498,11 +498,14 @@ body.lg-body {
 .whatsapp-float svg { width: 24px; height: 24px; fill: white; }
 
 .whatsapp-float-real { 
-  position: fixed; bottom: 24px; right: 24px; z-index: 999; 
+  position: fixed; bottom: 100px; right: 24px; z-index: 999; 
   width: 60px; height: 60px; border-radius: 50%; background: #25d366; 
   display: flex; align-items: center; justify-content: center; 
   box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.3s; 
   text-decoration: none; 
+}
+@media (max-width: 768px) {
+  .whatsapp-float-real { bottom: 90px; right: 16px; width: 50px; height: 50px; }
 }
 .whatsapp-float-real:hover { transform: scale(1.1); }
 .whatsapp-float-real svg { width: 30px; height: 30px; fill: white; }
