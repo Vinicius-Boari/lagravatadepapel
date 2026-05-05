@@ -245,7 +245,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <header className="lg-header" style={{ mixBlendMode: 'normal' }} ref={headerRef}>
         <div 
           className="logo cursor-pointer" 
-          style={{ color: '#000000', mixBlendMode: 'normal' }}
+          style={{ color: '#FFFFFF', mixBlendMode: 'normal' }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           role="button"
           aria-label="Voltar ao topo"
