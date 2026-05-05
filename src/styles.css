@@ -282,9 +282,7 @@ body.lg-body {
 .hero {
   min-height: 100vh;
   min-height: 100dvh;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -339,6 +337,18 @@ body.lg-body {
 }
 
 @media (max-width: 768px) {
+  .hero-cta {
+    bottom: 24px;
+    width: 100%;
+    padding: 0 20px;
+  }
+  .hero-cta a {
+    min-width: unset;
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 0.8rem;
+  }
+}
   .hero { 
     height: 100dvh !important; 
     min-height: 100dvh !important; 
@@ -371,19 +381,27 @@ body.lg-body {
 .hero-subtitle { font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.4rem); color: rgba(255,255,255,0.7); letter-spacing: 0.05em; text-shadow: 0 2px 12px rgba(0,0,0,0.3); font-style: normal; }
 .hero-location { position: absolute; top: 20%; right: 12%; z-index: 6; text-align: right; color: rgba(255,255,255,0.6); font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; }
 .hero-cta { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); z-index: 6; }
+.hero-cta { 
+  position: fixed; 
+  bottom: 24px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  z-index: 1001; 
+}
 .hero-cta a {
   display: flex; align-items: center; gap: 16px;
-  background: white; 
-  color: #c0392b !important; 
-  padding: 16px 32px;
+  background: #c0392b; 
+  color: white !important; 
+  padding: 18px 40px;
   border: none;
   border-radius: 50px; text-decoration: none; font-family: var(--font-sans-lg);
-  font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
-  transition: all 0.3s;
-  min-width: 340px; justify-content: center;
+  font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase;
+  transition: all 0.3s ease;
+  min-width: 320px; justify-content: center;
   font-weight: 700;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
-.hero-cta a:hover { background: #f0f0f0; transform: scale(1.05); }
+.hero-cta a:hover { background: #a93226; transform: translateX(-0%) translateY(-2px); }
 .cta-dot { width: 6px; height: 6px; border-radius: 50%; background: #c0392b; transition: background 0.3s; }
 .hero-cta a:hover .cta-dot { background: white; }
 
@@ -483,17 +501,20 @@ body.lg-body {
 .whatsapp-float svg { width: 24px; height: 24px; fill: white; }
 
 .whatsapp-float-real { 
-  position: fixed; bottom: 24px; right: 24px; z-index: 999; 
+  position: fixed; bottom: 100px; right: 24px; z-index: 999; 
   width: 60px; height: 60px; border-radius: 50%; background: #25d366; 
   display: flex; align-items: center; justify-content: center; 
   box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.3s; 
   text-decoration: none; 
 }
+@media (max-width: 768px) {
+  .whatsapp-float-real { bottom: 90px; right: 16px; width: 50px; height: 50px; }
+}
 .whatsapp-float-real:hover { transform: scale(1.1); }
 .whatsapp-float-real svg { width: 30px; height: 30px; fill: white; }
 
 /* FOOTER */
-.lg-footer { background: var(--color-black-lg); color: var(--color-white-lg); padding: 80px 60px 40px; position: relative; z-index: 20; }
+.lg-footer { background: var(--color-black-lg); color: var(--color-white-lg); padding: 80px 60px 40px; position: relative; z-index: 20; padding-bottom: 120px; }
 .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 80px; flex-wrap: wrap; gap: 40px; }
 .footer-logo { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.3; }
 .footer-links { display: flex; gap: 60px; flex-wrap: wrap; }
