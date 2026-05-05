@@ -378,9 +378,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       loop 
                       playsInline 
                       webkit-playsinline="true"
-                      preload="metadata"
-                      className="will-change-transform"
-                      style={{ height: '100%', width: '100%', objectFit: 'cover' }}
+                      preload="auto"
+                      className="will-change-transform video-optimized"
+                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden' }}
                     >
                       <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
                     </video>
