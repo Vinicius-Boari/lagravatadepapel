@@ -158,18 +158,27 @@
   --font-sans-lg: 'Inter', -apple-system, sans-serif;
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; height: 100%; }
-body { min-height: 100%; }
+html { 
+  scroll-behavior: smooth; 
+  overflow-x: hidden; 
+  height: 100%; 
+  -webkit-text-size-adjust: 100%;
+}
+body { 
+  min-height: 100%; 
+}
 body.lg-body {
   font-family: var(--font-sans-lg);
   background: var(--color-cream);
   color: var(--color-dark-lg);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* CURSOR EFFECTS */
@@ -1185,6 +1194,25 @@ body.lg-body {
 .coupon-border-left {
   left: -11px;
   box-shadow: inset -5px 0 5px rgba(0,0,0,0.02);
+}
+
+.video-optimized {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  image-rendering: -webkit-optimize-contrast;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  perspective: 1000;
+  -webkit-perspective: 1000;
+}
+
+@media (max-width: 768px) {
+  .video-card video {
+    object-fit: cover !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
 }
 
 .coupon-border-right {
