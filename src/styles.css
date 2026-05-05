@@ -306,6 +306,7 @@ body.lg-body {
 }
 
 @media (max-width: 768px) {
+  .hero { height: 100vh !important; min-height: 100vh !important; }
   .hero-img-1, .hero-img-2, .hero-img-3 { 
     animation: none !important; 
     transform: none !important;
