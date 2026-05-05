@@ -1196,6 +1196,25 @@ body.lg-body {
   box-shadow: inset -5px 0 5px rgba(0,0,0,0.02);
 }
 
+.video-optimized {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  image-rendering: -webkit-optimize-contrast;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  perspective: 1000;
+  -webkit-perspective: 1000;
+}
+
+@media (max-width: 768px) {
+  .video-card video {
+    object-fit: cover !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+}
+
 .coupon-border-right {
   right: -11px;
   box-shadow: inset 5px 0 5px rgba(0,0,0,0.02);
