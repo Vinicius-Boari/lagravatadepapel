@@ -88,7 +88,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
                 aria-label={post.caption || "Post do Instagram"}
               >
                 {post.image_url ? (
-                  <img src={post.image_url} alt={post.caption} loading="lazy" />
+                  <img src={post.image_url} alt={post.caption || "Foto de animação de casamento Instagram La Gravata"} loading="lazy" />
                 ) : (
                   <div className="ig3d-empty">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

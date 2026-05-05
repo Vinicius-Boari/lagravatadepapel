@@ -282,6 +282,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
               id="hero-video"
+              title="Animação de Casamento Tropa da Gravata"
               src={getLimitedVideoUrl(hero.video_url)} 
               onTimeUpdate={handleTimeUpdate}
               autoPlay
@@ -297,13 +298,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
         <div className="hero-images" ref={heroImgsRef}>
           <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Hero 1" loading="lazy" />
+            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
           </div>
           <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image2 || "/images/hero_venue.png"} alt="Hero 2" loading="lazy" />
+            <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
           </div>
           <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image3 || "/images/hero_party.png"} alt="Hero 3" loading="lazy" />
+            <img src={hero.image3 || "/images/hero_party.png"} alt="Entretenimento e diversão em eventos SP" loading="lazy" />
           </div>
         </div>
 
@@ -341,7 +342,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
             <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
-              <img src={s.img} alt={s.title} loading="lazy" />
+              <img src={s.img} alt={`${s.title} - Serviço de animação La Gravata de Papel`} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
@@ -364,6 +365,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                   <div className="relative w-full h-full">
                     <video 
                       id={videoId}
+                      title={`Vídeo ${v.title || 'Animação'} - La Gravata de Papel`}
                       src={getLimitedVideoUrl(v.src)} 
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
@@ -417,7 +419,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
             <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
-              <img src={p.img} alt={p.title} />
+              <img src={p.img} alt={`Invasão Tropa da Gravata em ${p.title}`} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>

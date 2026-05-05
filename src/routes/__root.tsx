@@ -29,25 +29,23 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "La Gravata de Papel — Vamos Invadir Seu Evento" },
+      { title: "La Gravata de Papel | Animação de Casamento e Festas em SP" },
       {
         name: "description",
         content:
-          "La Gravata de Papel — Vamos invadir seu casamento com personagens da série La Casa de Papel. Animação teatral, tequileiros, robô de LED, bazuca CO2 e muito mais.",
+          "La Gravata de Papel - A melhor animação teatral para casamentos e festas em São Paulo. Tropa da Gravata, Tequileiros, Robô de LED e Bazuca CO2 para seu evento ser inesquecível.",
       },
+      { name: "keywords", content: "casamento sp, animação de festa, tequileiros para festa, robo de led casamento, bazuca co2, tropa da gravata, entretenimento casamento, festa corporativa sp, la gravata de papel, hora da gravata animada, personagens la casa de papel" },
       { name: "author", content: "La Gravata de Papel" },
-      { property: "og:title", content: "La Gravata de Papel — Vamos Invadir Seu Evento" },
+      { property: "og:title", content: "La Gravata de Papel | Invasão de Eventos e Festas" },
       {
         property: "og:description",
         content:
-          "Animação teatral inspirada em La Casa de Papel para casamentos e festas em São Paulo.",
+          "Transforme seu casamento com a Tropa da Gravata. Personagens, tequileiros e muita energia para sua festa em SP.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "La Gravata de Papel — Vamos Invadir Seu Evento" },
-      { name: "description", content: "Lagravatadepapel" },
-      { property: "og:description", content: "Lagravatadepapel" },
-      { name: "twitter:description", content: "Lagravatadepapel" },
+      { name: "twitter:title", content: "La Gravata de Papel - Animação de Casamentos" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
     ],
