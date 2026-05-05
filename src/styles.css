@@ -1197,14 +1197,28 @@ body.lg-body {
 }
 
 .video-optimized {
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   image-rendering: -webkit-optimize-contrast;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   perspective: 1000;
   -webkit-perspective: 1000;
+  /* Disable pointer events on video itself to prevent accidental OS-level video controls/interruptions on long press */
+  pointer-events: none;
+}
+
+/* Reduzir efeitos de filtros complexos no mobile para poupar GPU */
+@media (max-width: 768px) {
+  .hero-video-bg video { 
+    filter: none !important;
+    opacity: 1 !important; 
+  }
+  .tilt-3d {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 @media (max-width: 768px) {
