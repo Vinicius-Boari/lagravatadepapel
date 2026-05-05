@@ -193,6 +193,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       if (window.innerWidth < 768) return; // Disable scroll 3D effects on mobile for smoothness
       scrollEls.forEach((el) => {
         const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight || r.bottom < 0) return; // Only process visible elements
         const vh = window.innerHeight;
         const progress = (r.top + r.height / 2 - vh / 2) / vh;
         const clamped = Math.max(-1, Math.min(1, progress));
