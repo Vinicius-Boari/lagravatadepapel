@@ -21,6 +21,8 @@ export function MediaLibrary() {
       const services = content.services?.items || [];
       const videos = content.videos?.items || [];
       const about = content.about || {};
+      const tropa = content.tropa_config || {};
+      const places = content.places?.items || [];
 
       const items: any[] = [];
 
@@ -30,7 +32,7 @@ export function MediaLibrary() {
       if (hero.image3) items.push({ type: 'image', src: hero.image3, source: 'Hero Card 3' });
 
       services.forEach((s: any, i: number) => {
-        if (s.image) items.push({ type: 'image', src: s.image, source: `Serviço: ${s.title || i+1}` });
+        if (s.img) items.push({ type: 'image', src: s.img, source: `Serviço: ${s.title || i+1}` });
       });
 
       videos.forEach((v: any, i: number) => {
@@ -39,6 +41,11 @@ export function MediaLibrary() {
       });
 
       if (about.image) items.push({ type: 'image', src: about.image, source: 'Sobre Nós' });
+      if (tropa.image_url) items.push({ type: 'image', src: tropa.image_url, source: 'Tropa da Gravata' });
+      
+      places.forEach((p: any, i: number) => {
+        if (p.img) items.push({ type: 'image', src: p.img, source: `Invasão: ${p.title || i+1}` });
+      });
 
       setMediaItems(items);
     }
