@@ -32,6 +32,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({});
+  const [clickedVideos, setClickedVideos] = useState<Record<string, boolean>>({});
 
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     if (isMobile && e.currentTarget.currentTime >= 8) {
@@ -406,29 +407,49 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
             const videoTitle = `Vídeo ${v.title || 'Animação'} - La Gravata de Papel | Entretenimento para Casamentos`;
+            const isAgitandoFesta = v.title === "Agitando a festa";
+            const shouldWaitClick = isMobile && isAgitandoFesta && !clickedVideos[videoId];
+
             return (
-              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} key={i}>
+              <div 
+                className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} 
+                key={i}
+                onClick={() => {
+                  if (shouldWaitClick) {
+                    setClickedVideos(prev => ({ ...prev, [videoId]: true }));
+                  }
+                }}
+              >
                 {v.src ? (
                   <div className="relative w-full h-full">
-                    <video 
-                      id={videoId}
-                      title={videoTitle}
-                      onTimeUpdate={handleTimeUpdate}
-                      poster={v.poster} 
-                      autoPlay
-                      muted 
-                      loop 
-                      playsInline 
-                      webkit-playsinline="true"
-                      preload={isMobile ? "none" : "auto"}
-                      className="will-change-transform video-optimized"
-                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)' }}
-                      onLoadedMetadata={(e) => {
-                        e.currentTarget.muted = true;
-                      }}
-                    >
-                      <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
-                    </video>
+                    {shouldWaitClick ? (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10 cursor-pointer">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/50">
+                          <Play className="w-8 h-8 text-white fill-white" />
+                        </div>
+                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover -z-10" />}
+                      </div>
+                    ) : (
+                      <video 
+                        id={videoId}
+                        title={videoTitle}
+                        onTimeUpdate={handleTimeUpdate}
+                        poster={v.poster} 
+                        autoPlay
+                        muted 
+                        loop 
+                        playsInline 
+                        webkit-playsinline="true"
+                        preload={(isMobile && !clickedVideos[videoId]) ? "none" : "auto"}
+                        className="will-change-transform video-optimized"
+                        style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)' }}
+                        onLoadedMetadata={(e) => {
+                          e.currentTarget.muted = true;
+                        }}
+                      >
+                        <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
+                      </video>
+                    )}
                   </div>
                 ) : (
                   <>
