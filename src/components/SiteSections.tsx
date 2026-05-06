@@ -32,6 +32,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({});
+  const [clickedVideos, setClickedVideos] = useState<Record<string, boolean>>({});
 
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     if (isMobile && e.currentTarget.currentTime >= 8) {
