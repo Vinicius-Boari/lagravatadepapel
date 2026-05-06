@@ -378,13 +378,12 @@ body.lg-body {
 .hero-title em { font-style: normal; color: #c0392b; text-transform: none; }
 .hero-subtitle { font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.4rem); color: rgba(255,255,255,0.7); letter-spacing: 0.05em; text-shadow: 0 2px 12px rgba(0,0,0,0.3); font-style: normal; }
 .hero-location { position: absolute; top: 20%; right: 12%; z-index: 6; text-align: right; color: rgba(255,255,255,0.6); font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; }
-.hero-cta { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); z-index: 6; }
 .hero-cta { 
-  position: fixed; 
-  bottom: 24px; 
-  left: 50%; 
-  transform: translateX(-50%); 
-  z-index: 1001; 
+  position: relative;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  z-index: 6; 
 }
 .hero-cta a {
   display: flex; align-items: center; gap: 16px;
