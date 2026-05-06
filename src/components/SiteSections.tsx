@@ -253,9 +253,39 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div>
             <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
-          <span className="logo-tagline">Os Originais</span>
+          <div className="flex flex-col">
+            <span className="logo-tagline">Os Originais</span>
+            {!isMobile && (
+              <span className="text-[10px] text-white/40 italic leading-none mt-1">
+                a hora da gravata nunca foi tão divertida
+              </span>
+            )}
+          </div>
         </div>
+
+        <div className="header-center hidden lg:flex items-center gap-6">
+          <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <Instagram className="w-5 h-5" />
+          </a>
+          <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <MessageCircle className="w-5 h-5" />
+          </a>
+          <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <TikTokIcon className="w-5 h-5" />
+          </a>
+        </div>
+
         <div className="nav-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {isMobile && (
+            <div className="flex items-center gap-3 mr-2">
+              <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link-mobile">
+                <Instagram className="w-4 h-4 text-white" />
+              </a>
+              <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link-mobile">
+                <MessageCircle className="w-4 h-4 text-white" />
+              </a>
+            </div>
+          )}
           <a href="/questionarioevento" className="orcamento-header-btn">
             <span>ORÇAMENTO</span>
           </a>
