@@ -360,9 +360,12 @@ body.lg-body {
     border-radius: 0;
   }
   .hero-img-2 { 
+    position: absolute;
     width: 100vw !important; 
     height: 100dvh !important;
-    transform: translate(-50%, -50%) !important; 
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important; 
     z-index: 0;
     opacity: 1 !important;
   }
