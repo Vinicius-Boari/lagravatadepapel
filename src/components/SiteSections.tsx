@@ -295,6 +295,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </button>
         <span className="menu-label">Navegação</span>
         <nav className="menu-nav">
+          <button 
+            onClick={closeMenu} 
+            className="mb-6 px-8 py-3 border border-white rounded-full text-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-[10px] font-bold"
+          >
+            ← Voltar
+          </button>
           <a href="#hero" onClick={closeMenu}>Home</a>
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
           <a href="/questionarioevento" onClick={closeMenu}>Orçamento</a>
@@ -305,12 +311,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <a href="#tropa-da-gravata" onClick={closeMenu}>Tropa da Gravata</a>
           <a href="#cupons" onClick={closeMenu}>Cupons</a>
           <a href="#contatos" onClick={closeMenu}>Contatos</a>
-          <button 
-            onClick={closeMenu} 
-            className="mt-8 px-8 py-3 border border-white/20 rounded-full text-white/60 hover:text-white hover:border-white/40 transition-all uppercase tracking-widest text-[10px] font-bold"
-          >
-            ← Voltar
-          </button>
         </nav>
       </div>
 
