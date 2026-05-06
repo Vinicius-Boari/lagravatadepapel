@@ -422,19 +422,24 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                 }}
               >
                 {v.src ? (
-                  <div className="relative w-full h-full pointer-events-none">
+                  <div className="relative w-full h-full pointer-events-auto">
                     {shouldWaitClick && !videoLoaded[videoId] ? (
                       <div 
-                        className="absolute inset-0 flex items-center justify-center bg-black/40 z-20 pointer-events-auto group"
+                        className="absolute inset-0 flex items-center justify-center bg-black/40 z-[100] cursor-pointer group"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setClickedVideos(prev => ({ ...prev, [videoId]: true }));
+                        }}
                       >
-                        <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-2xl transform transition-transform group-active:scale-95">
+                        <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-2xl transform transition-transform group-active:scale-95 z-[101]">
                           {clickedVideos[videoId] ? (
-                            <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                            <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
-                            <Play className="w-10 h-10 text-white fill-white ml-1" />
+                            <Play className="w-12 h-12 text-white fill-white ml-2" />
                           )}
                         </div>
-                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover -z-10" />}
+                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover z-[99]" />}
                       </div>
                     ) : null}
                     <video 
