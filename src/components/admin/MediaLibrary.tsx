@@ -39,6 +39,11 @@ export function MediaLibrary() {
       });
 
       if (about.image) items.push({ type: 'image', src: about.image, source: 'Sobre Nós' });
+      if (tropa.image_url) items.push({ type: 'image', src: tropa.image_url, source: 'Tropa da Gravata' });
+      
+      places.forEach((p: any, i: number) => {
+        if (p.img) items.push({ type: 'image', src: p.img, source: `Invasão: ${p.title || i+1}` });
+      });
 
       setMediaItems(items);
     }
