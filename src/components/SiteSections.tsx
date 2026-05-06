@@ -427,7 +427,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/50">
                           <Play className="w-8 h-8 text-white fill-white" />
                         </div>
-                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover -z-10" />}
+                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover" />}
                       </div>
                     ) : (
                       <video 
