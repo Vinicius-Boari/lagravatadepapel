@@ -442,7 +442,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       title={videoTitle}
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
-                      autoPlay={!shouldWaitClick}
+                      autoPlay={!shouldWaitClick || videoLoaded[videoId]}
                       muted 
                       loop 
                       playsInline 
