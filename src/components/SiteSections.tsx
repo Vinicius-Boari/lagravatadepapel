@@ -145,8 +145,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     raf = requestAnimationFrame(animate);
 
     const onScroll = () => {
-      if (window.innerWidth < 768) return; // Skip parallax on mobile
       const c = window.scrollY;
+      
+      // Fixed header visibility logic
+      if (headerRef.current) {
+        headerRef.current.style.transform = 'translateY(0)';
+      }
+
+      if (window.innerWidth < 768) return; // Skip parallax on mobile
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
         if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px)`;
