@@ -209,7 +209,7 @@ body.lg-body {
   align-items: center; 
   mix-blend-mode: normal !important;
   transition: background 0.3s;
-  background: rgba(10, 10, 10, 0.9) !important;
+  background: rgba(10, 10, 10, 0.4) !important;
   backdrop-filter: blur(8px);
 }
 @media (min-width: 769px) {
