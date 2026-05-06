@@ -266,13 +266,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
         <div className="nav-right flex items-center gap-2 md:gap-4 lg:gap-6">
           <div className="hidden sm:flex items-center gap-4 lg:gap-6 mr-4">
-            <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no Instagram">
               <Instagram className="w-5 h-5 text-white" />
             </a>
-            <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Fale pelo WhatsApp">
               <MessageCircle className="w-5 h-5 text-white" />
             </a>
-            <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no TikTok">
               <TikTokIcon className="w-5 h-5 text-white" />
             </a>
           </div>
@@ -319,7 +319,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
               id="hero-video"
-              title="Animação de Casamento Tropa da Gravata"
+              title="Animação de Casamento Tropa da Gravata - La Gravata de Papel"
               onTimeUpdate={handleTimeUpdate}
               autoPlay
               muted 
@@ -405,13 +405,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
+            const videoTitle = `Vídeo ${v.title || 'Animação'} - La Gravata de Papel | Entretenimento para Casamentos`;
             return (
               <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} key={i}>
                 {v.src ? (
                   <div className="relative w-full h-full">
                     <video 
                       id={videoId}
-                      title={`Vídeo ${v.title || 'Animação'} - La Gravata de Papel`}
+                      title={videoTitle}
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
                       autoPlay
@@ -632,7 +633,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <footer className="lg-footer">
+      <footer className="lg-footer" id="contatos">
         <div className="footer-top">
           <div className="footer-logo">La Gravata<br />de Papel</div>
           <div className="footer-links">
@@ -641,11 +642,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="#hero">Home</a>
             <a href="#servicos">Serviços</a>
             <a href="/questionarioevento">Questionário</a>
+            <a href="#videos">Vídeos</a>
             <a href="#invasoes">Invasões</a>
             <a href="#sobre">Sobre</a>
             <a href="#tropa-da-gravata">Tropa da Gravata</a>
             <a href="#cupons">Cupons</a>
-            <a href="#contatos">Contatos</a>
           </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
