@@ -331,12 +331,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel.
           </div>
           <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
-          <div className="hero-cta">
-            <a href="/questionarioevento">
-              <span className="text-red-500">{hero.cta_label}</span>
-              <span className="cta-dot bg-red-500" />
-            </a>
-          </div>
+          {hero.cta_label && (
+            <div className="hero-cta">
+              <a href="/questionarioevento">
+                <span className="text-red-500">{hero.cta_label}</span>
+                <span className="cta-dot bg-red-500" />
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
