@@ -424,15 +424,21 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                 {v.src ? (
                   <div className="relative w-full h-full">
                     {shouldWaitClick && !videoLoaded[videoId] ? (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10 cursor-pointer">
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/50">
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center bg-black/40 z-20 cursor-pointer group"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setClickedVideos(prev => ({ ...prev, [videoId]: true }));
+                        }}
+                      >
+                        <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-2xl transform transition-transform group-active:scale-90">
                           {clickedVideos[videoId] ? (
-                            <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                            <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
-                            <Play className="w-8 h-8 text-white fill-white" />
+                            <Play className="w-10 h-10 text-white fill-white ml-1" />
                           )}
                         </div>
-                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover" />}
+                        {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover -z-10" />}
                       </div>
                     ) : null}
                     <video 
