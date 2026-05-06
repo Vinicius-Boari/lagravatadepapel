@@ -21,6 +21,8 @@ export function MediaLibrary() {
       const services = content.services?.items || [];
       const videos = content.videos?.items || [];
       const about = content.about || {};
+      const tropa = content.tropa_config || {};
+      const places = content.places?.items || [];
 
       const items: any[] = [];
 
