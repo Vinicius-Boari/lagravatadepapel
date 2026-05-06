@@ -198,11 +198,18 @@ body.lg-body {
 
 /* HEADER */
 .lg-header {
-  position: fixed !important; top: 0 !important; left: 0; right: 0; z-index: 1000;
-  padding: 16px 20px; display: flex; justify-content: space-between;
-  align-items: center; mix-blend-mode: normal !important;
+  position: fixed !important; 
+  top: 0 !important; 
+  left: 0 !important; 
+  right: 0 !important; 
+  z-index: 99999 !important;
+  padding: 16px 20px; 
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+  mix-blend-mode: normal !important;
   transition: background 0.3s;
-  background: rgba(10, 10, 10, 0.4);
+  background: rgba(10, 10, 10, 0.9) !important;
   backdrop-filter: blur(8px);
 }
 @media (min-width: 769px) {
