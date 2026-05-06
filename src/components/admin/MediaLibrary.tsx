@@ -30,7 +30,7 @@ export function MediaLibrary() {
       if (hero.image3) items.push({ type: 'image', src: hero.image3, source: 'Hero Card 3' });
 
       services.forEach((s: any, i: number) => {
-        if (s.image) items.push({ type: 'image', src: s.image, source: `Serviço: ${s.title || i+1}` });
+        if (s.img) items.push({ type: 'image', src: s.img, source: `Serviço: ${s.title || i+1}` });
       });
 
       videos.forEach((v: any, i: number) => {
