@@ -416,22 +416,18 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                 className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} 
                 key={i}
                 onClick={() => {
-                  if (shouldWaitClick) {
+                  if (shouldWaitClick && !clickedVideos[videoId]) {
                     setClickedVideos(prev => ({ ...prev, [videoId]: true }));
                   }
                 }}
               >
                 {v.src ? (
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full pointer-events-none">
                     {shouldWaitClick && !videoLoaded[videoId] ? (
                       <div 
-                        className="absolute inset-0 flex items-center justify-center bg-black/40 z-20 cursor-pointer group"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setClickedVideos(prev => ({ ...prev, [videoId]: true }));
-                        }}
+                        className="absolute inset-0 flex items-center justify-center bg-black/40 z-20 pointer-events-auto group"
                       >
-                        <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-2xl transform transition-transform group-active:scale-90">
+                        <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-2xl transform transition-transform group-active:scale-95">
                           {clickedVideos[videoId] ? (
                             <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
@@ -446,7 +442,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                       title={videoTitle}
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
-                      autoPlay={!shouldWaitClick}
+                      autoPlay={!shouldWaitClick || videoLoaded[videoId]}
                       muted 
                       loop 
                       playsInline 
