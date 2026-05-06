@@ -147,11 +147,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const onScroll = () => {
       const c = window.scrollY;
       
-      // Fixed header visibility logic
-      if (headerRef.current) {
-        headerRef.current.style.transform = 'translateY(0)';
-      }
-
+      // Parallax and other scroll effects
       if (window.innerWidth < 768) return; // Skip parallax on mobile
       if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
         const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
