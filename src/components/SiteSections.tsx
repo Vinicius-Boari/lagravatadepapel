@@ -633,7 +633,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </section>
 
-      <footer className="lg-footer">
+      <footer className="lg-footer" id="contatos">
         <div className="footer-top">
           <div className="footer-logo">La Gravata<br />de Papel</div>
           <div className="footer-links">
@@ -642,11 +642,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="#hero">Home</a>
             <a href="#servicos">Serviços</a>
             <a href="/questionarioevento">Questionário</a>
+            <a href="#videos">Vídeos</a>
             <a href="#invasoes">Invasões</a>
             <a href="#sobre">Sobre</a>
             <a href="#tropa-da-gravata">Tropa da Gravata</a>
             <a href="#cupons">Cupons</a>
-            <a href="#contatos">Contatos</a>
           </div>
             <div className="footer-col">
               <h4>Redes Sociais</h4>
