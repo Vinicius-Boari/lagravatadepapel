@@ -295,13 +295,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </button>
         <span className="menu-label">Navegação</span>
         <nav className="menu-nav">
-          <button 
-            onClick={closeMenu} 
-            className="mb-6 px-8 py-3 border border-white rounded-full text-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-[10px] font-bold"
-          >
-            ← Voltar
-          </button>
-          <a href="#hero" onClick={closeMenu}>Home</a>
+          <div className="flex items-center gap-12 mb-4">
+            <button 
+              onClick={closeMenu} 
+              className="px-8 py-3 border border-white rounded-full text-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-[10px] font-bold whitespace-nowrap"
+            >
+              ← Voltar
+            </button>
+            <a href="#hero" onClick={closeMenu} className="!transform-none !m-0">Home</a>
+          </div>
           <a href="#servicos" onClick={closeMenu}>Serviços</a>
           <a href="/questionarioevento" onClick={closeMenu}>Orçamento</a>
           <a href="#videos" onClick={closeMenu}>Vídeos</a>
