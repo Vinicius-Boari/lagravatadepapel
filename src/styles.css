@@ -258,8 +258,8 @@ body.lg-body {
 
 @media (max-width: 640px) {
   .orcamento-header-btn {
-    padding: 6px 12px;
-    min-width: 90px;
+    padding: 4px 12px;
+    min-width: 70px;
     font-size: 0.6rem;
   }
 }
