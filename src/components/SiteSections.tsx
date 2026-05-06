@@ -319,7 +319,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
               id="hero-video"
-              title="Animação de Casamento Tropa da Gravata"
+              title="Animação de Casamento Tropa da Gravata - La Gravata de Papel"
               onTimeUpdate={handleTimeUpdate}
               autoPlay
               muted 
@@ -405,13 +405,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
+            const videoTitle = `Vídeo ${v.title || 'Animação'} - La Gravata de Papel | Entretenimento para Casamentos`;
             return (
               <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} key={i}>
                 {v.src ? (
                   <div className="relative w-full h-full">
                     <video 
                       id={videoId}
-                      title={`Vídeo ${v.title || 'Animação'} - La Gravata de Papel`}
+                      title={videoTitle}
                       onTimeUpdate={handleTimeUpdate}
                       poster={v.poster} 
                       autoPlay
