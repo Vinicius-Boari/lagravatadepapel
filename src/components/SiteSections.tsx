@@ -416,7 +416,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
                 className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} 
                 key={i}
                 onClick={() => {
-                  if (shouldWaitClick) {
+                  if (shouldWaitClick && !clickedVideos[videoId]) {
                     setClickedVideos(prev => ({ ...prev, [videoId]: true }));
                   }
                 }}
