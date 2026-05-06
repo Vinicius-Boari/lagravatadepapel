@@ -334,7 +334,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {hero.cta_label && (
             <div className="hero-cta">
               <a href="/questionarioevento">
-                <span className="text-red-500">{hero.cta_label}</span>
+                <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
               </a>
             </div>
