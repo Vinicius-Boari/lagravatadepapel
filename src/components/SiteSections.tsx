@@ -266,13 +266,13 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
         <div className="nav-right flex items-center gap-2 md:gap-4 lg:gap-6">
           <div className="hidden sm:flex items-center gap-4 lg:gap-6 mr-4">
-            <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no Instagram">
               <Instagram className="w-5 h-5 text-white" />
             </a>
-            <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Fale pelo WhatsApp">
               <MessageCircle className="w-5 h-5 text-white" />
             </a>
-            <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link">
+            <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no TikTok">
               <TikTokIcon className="w-5 h-5 text-white" />
             </a>
           </div>
