@@ -423,34 +423,43 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               >
                 {v.src ? (
                   <div className="relative w-full h-full">
-                    {shouldWaitClick ? (
+                    {shouldWaitClick && !videoLoaded[videoId] ? (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10 cursor-pointer">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/50">
-                          <Play className="w-8 h-8 text-white fill-white" />
+                          {clickedVideos[videoId] ? (
+                            <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Play className="w-8 h-8 text-white fill-white" />
+                          )}
                         </div>
                         {v.poster && <img src={v.poster} alt={v.title} className="absolute inset-0 w-full h-full object-cover" />}
                       </div>
-                    ) : (
-                      <video 
-                        id={videoId}
-                        title={videoTitle}
-                        onTimeUpdate={handleTimeUpdate}
-                        poster={v.poster} 
-                        autoPlay
-                        muted 
-                        loop 
-                        playsInline 
-                        webkit-playsinline="true"
-                        preload={(isMobile && !clickedVideos[videoId]) ? "none" : "auto"}
-                        className="will-change-transform video-optimized"
-                        style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)' }}
-                        onLoadedMetadata={(e) => {
-                          e.currentTarget.muted = true;
-                        }}
-                      >
-                        <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
-                      </video>
-                    )}
+                    ) : null}
+                    <video 
+                      id={videoId}
+                      title={videoTitle}
+                      onTimeUpdate={handleTimeUpdate}
+                      poster={v.poster} 
+                      autoPlay={!shouldWaitClick}
+                      muted 
+                      loop 
+                      playsInline 
+                      webkit-playsinline="true"
+                      preload={(isMobile && isAgitandoFesta) ? "auto" : (isMobile ? "none" : "auto")}
+                      className={cn(
+                        "will-change-transform video-optimized",
+                        shouldWaitClick && !videoLoaded[videoId] ? "opacity-0" : "opacity-100"
+                      )}
+                      style={{ height: '100%', width: '100%', objectFit: 'cover', backfaceVisibility: 'hidden', transform: 'translate3d(0,0,0)', transition: 'opacity 0.3s' }}
+                      onLoadedData={() => {
+                        if (isAgitandoFesta) setVideoLoaded(prev => ({ ...prev, [videoId]: true }));
+                      }}
+                      onLoadedMetadata={(e) => {
+                        e.currentTarget.muted = true;
+                      }}
+                    >
+                      <source src={getLimitedVideoUrl(v.src)} type="video/mp4" />
+                    </video>
                   </div>
                 ) : (
                   <>
