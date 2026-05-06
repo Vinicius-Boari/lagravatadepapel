@@ -266,22 +266,37 @@ body.lg-body {
 .fullscreen-menu::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.75); }
 .fullscreen-menu.active { opacity: 1; pointer-events: all; }
 .menu-close {
-  position: absolute; top: 24px; right: 40px;
+  position: absolute; top: 16px; right: 16px;
   background: rgba(255,255,255,0.1); backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.15); color: white;
-  padding: 12px 32px; border-radius: 50px; cursor: pointer;
-  font-family: var(--font-sans-lg); font-size: 0.75rem; letter-spacing: 0.15em;
-  text-transform: uppercase; display: flex; align-items: center; gap: 20px;
-  transition: background 0.3s; z-index: 2;
+  padding: 8px 24px; border-radius: 50px; cursor: pointer;
+  font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em;
+  text-transform: uppercase; display: flex; align-items: center; gap: 12px;
+  transition: background 0.3s; z-index: 10;
+}
+@media (min-width: 769px) {
+  .menu-close { top: 24px; right: 40px; padding: 12px 32px; font-size: 0.75rem; }
 }
 .menu-close:hover { background: rgba(255,255,255,0.2); }
-.menu-close-x { font-size: 1.4rem; font-weight: 300; }
-.menu-label { font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 32px; position: relative; z-index: 2; }
-.menu-nav { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 8px; }
+.menu-close-x { font-size: 1.2rem; font-weight: 300; }
+.menu-label { font-family: var(--font-sans-lg); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 20px; position: relative; z-index: 2; }
+.menu-nav { 
+  position: relative; 
+  z-index: 2; 
+  display: flex; 
+  flex-direction: column; 
+  gap: clamp(4px, 1vh, 12px); 
+  max-height: 80vh; 
+  overflow-y: auto; 
+  padding: 20px 0;
+  width: 100%;
+  align-items: center;
+}
 .menu-nav a {
-  font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4rem);
+  font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 3.5rem);
   color: white; text-decoration: none; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s, color 0.4s;
   opacity: 0.85; display: block; text-align: center;
+  transform: none !important;
 }
 .menu-nav a:nth-child(odd) { transform: translateX(-40px); }
 .menu-nav a:nth-child(even) { transform: translateX(40px); }
