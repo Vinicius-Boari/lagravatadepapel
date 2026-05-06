@@ -313,7 +313,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
             <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
           </div>
-          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && !isMobile && "hidden md:block")}>
+          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
             <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
           </div>
           <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
@@ -376,7 +376,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
             return (
-              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro") ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} key={i}>
+              <div className={cn(`video-card tilt-3d scroll-3d${v.tall ? " tall" : ""}`, (isMobile && v.title !== "Chove dinheiro" && v.show_mobile === false) ? "hidden" : (!isMobile && v.show_mobile === false ? "hidden md:block" : ""))} key={i}>
                 {v.src ? (
                   <div className="relative w-full h-full">
                     <video 
