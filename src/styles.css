@@ -228,6 +228,13 @@ body.lg-body {
   transition: all 0.3s; min-width: 80px;
   font-weight: 700;
 }
+@media (max-width: 640px) {
+  .menu-btn {
+    padding: 4px 12px;
+    font-size: 0.6rem;
+    min-width: 70px;
+  }
+}
 .menu-btn:hover { background: #a93226; transform: scale(1.05); }
 .menu-lines { display: flex; flex-direction: column; gap: 4px; }
 .menu-lines span { display: block; width: 24px; height: 1.5px; background: var(--color-white-lg); }
