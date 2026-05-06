@@ -37,7 +37,7 @@ export const Route = createRootRoute({
       },
       { name: "keywords", content: "casamento sp, animação de festa, tequileiros para festa, robo de led casamento, bazuca co2, tropa da gravata, entretenimento casamento, festa corporativa sp, la gravata de papel, hora da gravata animada, personagens la casa de papel, BOPE, animação BOPE, festa debutante, 15 anos SP, lua de mel, entretenimento para eventos, show para casamento, personagens para festa, atrações para festas" },
       { name: "author", content: "La Gravata de Papel" },
-      { property: "og:title", content: "La Gravata de Papel | Invasão de Eventos e Festas" },
+      { property: "og:title", content: "La Gravata de Papel | Animação de Casamento e Festas em SP" },
       {
         property: "og:description",
         content:
@@ -45,9 +45,12 @@ export const Route = createRootRoute({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "La Gravata de Papel - Animação de Casamentos" },
+      { name: "twitter:title", content: "La Gravata de Papel | Animação de Casamento e Festas em SP" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
+      { name: "description", content: "Lagravatadepapel is a dynamic website showcasing Instagram content and custom domain content with an administrative panel." },
+      { property: "og:description", content: "Lagravatadepapel is a dynamic website showcasing Instagram content and custom domain content with an administrative panel." },
+      { name: "twitter:description", content: "Lagravatadepapel is a dynamic website showcasing Instagram content and custom domain content with an administrative panel." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
