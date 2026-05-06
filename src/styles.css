@@ -198,7 +198,7 @@ body.lg-body {
 
 /* HEADER */
 .lg-header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  position: fixed !important; top: 0 !important; left: 0; right: 0; z-index: 1000;
   padding: 16px 20px; display: flex; justify-content: space-between;
   align-items: center; mix-blend-mode: normal !important;
   transition: background 0.3s;
