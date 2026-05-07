@@ -526,10 +526,10 @@ body.lg-body {
 .place-card-overlay span { font-family: var(--font-sans-lg); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
 
 /* ABOUT */
-.about-section { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; position: relative; z-index: 20; background: var(--color-cream); }
-.about-image { position: relative; overflow: hidden; }
+.about-section { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; position: relative; z-index: 20; background: var(--color-cream); direction: rtl; }
+.about-image { position: relative; overflow: hidden; direction: ltr; }
 .about-image img { width: 100%; height: 100%; object-fit: cover; }
-.about-text { background: var(--color-dark-lg); color: var(--color-white-lg); display: flex; flex-direction: column; justify-content: center; padding: 80px 60px; }
+.about-text { background: var(--color-dark-lg); color: var(--color-white-lg); display: flex; flex-direction: column; justify-content: center; padding: 80px 60px; direction: ltr; }
 .about-text h2 { font-family: var(--font-serif); font-size: clamp(2rem, 3vw, 3rem); font-weight: 400; line-height: 1.2; margin-bottom: 32px; }
 .about-text h2 em { font-style: normal; color: var(--color-red-lg); }
 .about-text p { font-size: 0.95rem; line-height: 1.8; color: rgba(255,255,255,0.6); margin-bottom: 24px; }
