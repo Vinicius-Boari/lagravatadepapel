@@ -202,16 +202,8 @@ const SettingsTab = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-red-500">E-mail para Notificações Administrativas</Label>
-              <Input 
-                type="email" 
-                value={settings.adminEmail} 
-                onChange={(e) => setSettings({...settings, adminEmail: e.target.value})}
-                placeholder="exemplo@admin.com" 
-                className="bg-zinc-800 border-red-900 text-red-500"
-              />
-            </div>
+          </CardContent>
+        </Card>
           </CardContent>
         </Card>
       </div>
