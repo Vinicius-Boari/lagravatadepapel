@@ -328,7 +328,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </nav>
       </div>
 
-      <section className="hero" id="hero">
+      <section className="hero relative" id="hero">
+        <div className="absolute top-10 right-10 z-20 hidden lg:flex flex-col items-end opacity-40 hover:opacity-100 transition-opacity">
+          <span className="text-white font-bold uppercase tracking-[0.2em] text-[10px]">Os Originais</span>
+          <span className="text-white/60 italic text-[9px] uppercase">Pioneiros em animação teatral</span>
+        </div>
         {hero.video_url && (
           <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
@@ -396,6 +400,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </div>
 
       <section className="services-section" id="servicos">
+        <div className="flex flex-col items-center justify-center mb-8 reveal">
+          <span className="text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
+          <p className="text-gray-500 italic text-sm md:text-base">A hora da gravata nunca foi tão divertida</p>
+        </div>
         <div className="section-header reveal">
           <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
         </div>
@@ -413,6 +421,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </section>
 
       <section className="video-section" id="videos">
+        <div className="flex flex-col mb-12 reveal">
+          <span className="text-white/40 font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
+          <p className="text-red-500 font-serif italic text-lg md:text-xl">A hora da gravata nunca foi tão divertida</p>
+        </div>
         <div className="video-section-header reveal">
           <h2>{videos.heading}</h2>
         </div>
