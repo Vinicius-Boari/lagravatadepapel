@@ -1339,3 +1339,104 @@ body.lg-body {
     padding: 0 20px;
   }
 }
+
+/* INSTAGRAM FOLLOWER COUNTER */
+.ig-counter-wrapper {
+  margin: 30px auto 0;
+  display: flex;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.ig-counter-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px 40px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateZ(20px);
+  animation: counterFloat 4s ease-in-out infinite;
+}
+
+@keyframes counterFloat {
+  0%, 100% { transform: translateY(0) translateZ(20px); }
+  50% { transform: translateY(-10px) translateZ(30px); }
+}
+
+.ig-counter-label-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+}
+
+.ig-counter-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ig-counter-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.5) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  letter-spacing: -0.02em;
+}
+
+.ig-counter-suffix {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ff4560;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: -5px;
+}
+
+.ig-counter-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.3);
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.ig-counter-live-dot {
+  width: 6px;
+  height: 6px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #22c55e;
+  animation: dotPulse 1.5s infinite;
+}
+
+@keyframes dotPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .ig-counter-value { font-size: 3.5rem; }
+  .ig-counter-card { padding: 20px 30px; }
+}
