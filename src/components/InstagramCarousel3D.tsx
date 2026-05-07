@@ -62,9 +62,9 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
         <div className="ig3d-eyebrow">
           <span className="ig3d-dot" /> ao vivo no instagram
         </div>
-        <h2>
-          {config.title ?? "Siga no Instagram"}
-          <span className="not-italic">@{handle}</span>
+        <h2 className="flex flex-col items-center gap-1">
+          <span className="text-white">{config.title ?? "Siga no Instagram"}</span>
+          <span className="not-italic text-red-600 font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]">@{handle}</span>
         </h2>
         <p className="ig3d-sub">{config.subtitle ?? "Os bastidores das nossas invasões — atualizados em tempo real."}</p>
       </div>
