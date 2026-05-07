@@ -615,7 +615,7 @@ export function SiteContentEditor() {
           <CardContent className="space-y-4">
             <Input value={about.heading || ""} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="Título (Ex: La Gravata)" />
             <div className="space-y-2">
-              <Label className="text-red-500">Destaque (Ex: Sobre nós)</Label>
+              <Label className="text-red-500">Destaque (Ex: La gravata)</Label>
               <Input value={about.heading_em || ""} onChange={e => setAbout({...about, heading_em: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
             </div>
             <ImageUpload 
