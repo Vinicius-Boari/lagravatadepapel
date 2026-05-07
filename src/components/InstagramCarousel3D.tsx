@@ -67,8 +67,6 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
           <span className="not-italic">@{handle}</span>
         </h2>
         <p className="ig3d-sub">{config.subtitle ?? "Os bastidores das nossas invasões — atualizados em tempo real."}</p>
-        
-        <InstagramFollowerCounter initialCount={config.follower_count || 20200} />
       </div>
 
       <div className="ig3d-scene">
