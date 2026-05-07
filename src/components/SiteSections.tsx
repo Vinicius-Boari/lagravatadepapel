@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
 
 const tickerItems = [
-  "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "ANIMAÇÃO TEATRAL", "CASAMENTOS",
-  "TEQUILEIROS", "ROBÔ DE LED", "BAZUCA CO2", "PLATAFORMA 360°",
+  "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
+  "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
 ];
 
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
