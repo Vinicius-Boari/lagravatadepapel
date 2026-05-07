@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "");
     const fullName = body.full_name ? String(body.full_name).slice(0, 200) : undefined;
+    const requestedRole = body.role === "owner" ? "owner" : "admin";
 
     if (!email || !email.includes("@") || email.length > 255) {
       return new Response(JSON.stringify({ error: "Email inválido" }), {
@@ -89,7 +90,7 @@ Deno.serve(async (req) => {
     // Atribui papel de admin server-side (bypass RLS via service role)
     const { error: roleErr } = await admin
       .from("user_roles")
-      .insert({ user_id: created.user.id, role: "admin" });
+      .insert({ user_id: created.user.id, role: requestedRole });
     if (roleErr) {
       // rollback do usuário criado para evitar conta órfã
       await admin.auth.admin.deleteUser(created.user.id);
