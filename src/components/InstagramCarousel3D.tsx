@@ -7,6 +7,7 @@ type Config = {
   profile_url?: string;
   title?: string;
   subtitle?: string;
+  follower_count?: number;
 };
 
 /**
