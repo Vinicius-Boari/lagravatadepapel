@@ -34,7 +34,6 @@ export function IntegrationsManager() {
     whatsapp_message: integrations.whatsapp_message || "",
     instagram_handle: instagram.handle || "",
     instagram_mode: instagram.mode || "manual",
-    instagram_follower_count: instagram.follower_count || 15400,
   });
 
   const handleSave = useCallback(async () => {
