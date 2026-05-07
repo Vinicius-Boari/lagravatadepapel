@@ -609,7 +609,7 @@ export function SiteContentEditor() {
       {activeSection === "about" && (
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <div><CardTitle className="text-red-500">Sobre</CardTitle></div>
+            <div><CardTitle className="text-red-500">La gravata</CardTitle></div>
             <SaveBtn section="about" data={about} status={aboutStatus} setStatus={setAboutStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
