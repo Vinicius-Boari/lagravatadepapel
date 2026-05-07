@@ -86,7 +86,6 @@ const SettingsTab = () => {
         darkMode: true,
         language: "pt",
         maintenanceMode: false,
-        adminEmail: "",
       });
     }
   }, [contentLoading, content]);
