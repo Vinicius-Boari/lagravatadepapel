@@ -121,20 +121,6 @@ export function UserManagement() {
       return;
     }
 
-    const newUserId = (fnData as any)?.user_id as string | undefined;
-
-    // Se o papel solicitado for diferente do default ('admin') aplicado pela função, ajuste
-    if (newUserId && newAdmin.role !== "admin") {
-      const { error: roleError } = await supabase
-        .from("user_roles")
-        .insert({ user_id: newUserId, role: newAdmin.role });
-      if (roleError) {
-        setSaveStatus('error');
-        toast.error(`Usuário criado, mas falhou ao atualizar permissão: ${roleError.message}`);
-        return;
-      }
-    }
-
     setSaveStatus('saved');
     toast.success("Administrador cadastrado!");
     setTimeout(() => {
