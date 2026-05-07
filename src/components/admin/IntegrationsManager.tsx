@@ -55,7 +55,6 @@ export function IntegrationsManager() {
         ...safeInstagram,
         handle: formData.instagram_handle,
         mode: formData.instagram_mode,
-        follower_count: Number(formData.instagram_follower_count),
       };
 
       const results = await Promise.all([
