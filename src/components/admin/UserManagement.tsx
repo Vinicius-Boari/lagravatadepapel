@@ -104,30 +104,35 @@ export function UserManagement() {
     }
 
     setSaveStatus('saving');
-    // Cria usuário via Supabase Auth (signup público)
-    const { data, error } = await supabase.auth.signUp({
-      email: newAdmin.email.trim(),
-      password: newAdmin.password,
-      options: {
-        data: { full_name: newAdmin.full_name || undefined },
+
+    // Cria usuário via edge function segura (verifica owner no servidor)
+    const { data: fnData, error: fnError } = await supabase.functions.invoke("create-admin", {
+      body: {
+        email: newAdmin.email.trim(),
+        password: newAdmin.password,
+        full_name: newAdmin.full_name || undefined,
+        role: newAdmin.role,
       },
     });
 
-    if (error || !data.user) {
+    if (fnError || (fnData && (fnData as any).error)) {
       setSaveStatus('error');
-      toast.error(error?.message || "Erro ao criar usuário.");
+      toast.error((fnData as any)?.error || fnError?.message || "Erro ao criar usuário.");
       return;
     }
 
-    // Promove para o papel selecionado (apenas owner consegue, conforme RLS)
-    const { error: roleError } = await supabase
-      .from("user_roles")
-      .insert({ user_id: data.user.id, role: newAdmin.role });
+    const newUserId = (fnData as any)?.user_id as string | undefined;
 
-    if (roleError) {
-      setSaveStatus('error');
-      toast.error(`Usuário criado, mas falhou ao dar permissão: ${roleError.message}`);
-      return;
+    // Se o papel solicitado for diferente do default ('admin') aplicado pela função, ajuste
+    if (newUserId && newAdmin.role !== "admin") {
+      const { error: roleError } = await supabase
+        .from("user_roles")
+        .insert({ user_id: newUserId, role: newAdmin.role });
+      if (roleError) {
+        setSaveStatus('error');
+        toast.error(`Usuário criado, mas falhou ao atualizar permissão: ${roleError.message}`);
+        return;
+      }
     }
 
     setSaveStatus('saved');
