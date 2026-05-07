@@ -292,7 +292,7 @@ export function SiteContentEditor() {
           { id: "videos", label: "Vídeos" },
           { id: "places", label: "Nossas Invasões" },
           { id: "plan", label: "O Plano" },
-          { id: "about", label: "Sobre" },
+          { id: "about", label: "La gravata" },
           { id: "tropa", label: "Tropa da Gravata" },
           { id: "footer", label: "Rodapé" },
           { id: "coupons", label: "Cupons", icon: <Ticket className="w-4 h-4" /> },
