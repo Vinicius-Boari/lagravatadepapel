@@ -201,9 +201,6 @@ const SettingsTab = () => {
                 className="data-[state=checked]:bg-red-600"
               />
             </div>
-
-          </CardContent>
-        </Card>
           </CardContent>
         </Card>
       </div>
