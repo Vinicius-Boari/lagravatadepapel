@@ -126,7 +126,7 @@ export function useAuth() {
     isOwner: role === "owner",
     isAdmin,
     login,
-    signup,
+    
     logout,
   };
 }
