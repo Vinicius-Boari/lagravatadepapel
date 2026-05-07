@@ -40,7 +40,7 @@ export function MediaLibrary() {
         if (v.poster) items.push({ type: 'image', src: v.poster, source: `Capa: ${v.title || i+1}` });
       });
 
-      if (about.image) items.push({ type: 'image', src: about.image, source: 'Sobre Nós' });
+      if (about.image) items.push({ type: 'image', src: about.image, source: 'La gravata' });
       if (tropa.image_url) items.push({ type: 'image', src: tropa.image_url, source: 'Tropa da Gravata' });
       
       places.forEach((p: any, i: number) => {
