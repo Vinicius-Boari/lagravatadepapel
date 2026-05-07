@@ -208,9 +208,17 @@ body.lg-body {
   justify-content: space-between;
   align-items: center; 
   mix-blend-mode: normal !important;
-  transition: background 0.3s;
+  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease, backdrop-filter 0.4s ease;
   background: rgba(10, 10, 10, 0.4) !important;
   backdrop-filter: blur(8px);
+}
+
+.lg-header.header-sticky {
+  background: rgba(10, 10, 10, 0.95) !important;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 @media (min-width: 769px) {
   .lg-header { padding: 24px 40px; }
