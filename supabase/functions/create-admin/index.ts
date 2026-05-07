@@ -58,6 +58,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "");
+    const fullName = body.full_name ? String(body.full_name).slice(0, 200) : undefined;
 
     if (!email || !email.includes("@") || email.length > 255) {
       return new Response(JSON.stringify({ error: "Email inválido" }), {
@@ -76,16 +77,30 @@ Deno.serve(async (req) => {
       email,
       password,
       email_confirm: true,
+      user_metadata: fullName ? { full_name: fullName } : undefined,
     });
-    if (createErr) {
-      return new Response(JSON.stringify({ error: createErr.message }), {
+    if (createErr || !created?.user) {
+      return new Response(JSON.stringify({ error: createErr?.message || "Falha ao criar usuário" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    // Atribui papel de admin server-side (bypass RLS via service role)
+    const { error: roleErr } = await admin
+      .from("user_roles")
+      .insert({ user_id: created.user.id, role: "admin" });
+    if (roleErr) {
+      // rollback do usuário criado para evitar conta órfã
+      await admin.auth.admin.deleteUser(created.user.id);
+      return new Response(JSON.stringify({ error: `Falha ao atribuir papel: ${roleErr.message}` }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(
-      JSON.stringify({ status: "ok", user_id: created.user!.id }),
+      JSON.stringify({ status: "ok", user_id: created.user.id }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {

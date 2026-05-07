@@ -86,7 +86,6 @@ const SettingsTab = () => {
         darkMode: true,
         language: "pt",
         maintenanceMode: false,
-        adminEmail: "",
       });
     }
   }, [contentLoading, content]);
@@ -199,17 +198,6 @@ const SettingsTab = () => {
                 checked={settings.maintenanceMode} 
                 onCheckedChange={(val) => setSettings({...settings, maintenanceMode: val})} 
                 className="data-[state=checked]:bg-red-600"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-red-500">E-mail para Notificações Administrativas</Label>
-              <Input 
-                type="email" 
-                value={settings.adminEmail} 
-                onChange={(e) => setSettings({...settings, adminEmail: e.target.value})}
-                placeholder="exemplo@admin.com" 
-                className="bg-zinc-800 border-red-900 text-red-500"
               />
             </div>
           </CardContent>
