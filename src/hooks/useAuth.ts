@@ -108,23 +108,6 @@ export function useAuth() {
     return true;
   };
 
-  const signup = async (email: string, password: string, fullName?: string): Promise<boolean> => {
-    setError(null);
-    const { error: signUpError } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/admin/dashboard`,
-        data: fullName ? { full_name: fullName } : undefined,
-      },
-    });
-    if (signUpError) {
-      setError(signUpError.message);
-      return false;
-    }
-    return true;
-  };
-
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -143,7 +126,7 @@ export function useAuth() {
     isOwner: role === "owner",
     isAdmin,
     login,
-    signup,
+    
     logout,
   };
 }
