@@ -15,11 +15,23 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
+    
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
     window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const getLimitedVideoUrl = (url: string) => {
@@ -246,7 +258,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         }}
       />
 
-      <header className="lg-header" style={{ mixBlendMode: 'normal' }} ref={headerRef}>
+      <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: 'normal' }} ref={headerRef}>
         <div 
           className="logo cursor-pointer" 
           style={{ color: '#FFFFFF', mixBlendMode: 'normal' }}
