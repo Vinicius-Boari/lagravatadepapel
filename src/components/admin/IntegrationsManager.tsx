@@ -34,7 +34,6 @@ export function IntegrationsManager() {
     whatsapp_message: integrations.whatsapp_message || "",
     instagram_handle: instagram.handle || "",
     instagram_mode: instagram.mode || "manual",
-    instagram_follower_count: instagram.follower_count || 15400,
   });
 
   const handleSave = useCallback(async () => {
@@ -56,7 +55,6 @@ export function IntegrationsManager() {
         ...safeInstagram,
         handle: formData.instagram_handle,
         mode: formData.instagram_mode,
-        follower_count: Number(formData.instagram_follower_count),
       };
 
       const results = await Promise.all([
@@ -138,17 +136,7 @@ export function IntegrationsManager() {
                   onChange={(e) => setFormData({...formData, instagram_handle: e.target.value})} 
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-400">Contador de Seguidores (Base)</Label>
-                <Input 
-                  type="number"
-                  className="bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-red-500/50" 
-                  value={formData.instagram_follower_count} 
-                  onChange={(e) => setFormData({...formData, instagram_follower_count: e.target.value})} 
-                />
-                <p className="text-[10px] text-zinc-500">O site simulará um crescimento em tempo real a partir deste valor.</p>
-              </div>
-              <div className="md:col-span-1 space-y-2">
+              <div className="md:col-span-2 space-y-2">
                 <p className="text-xs text-zinc-500 italic">
                   Por segurança, credenciais sensíveis (App ID, App Secret e Access Token) devem ser armazenadas apenas como segredos do servidor (Edge Function secrets), nunca neste painel público. Configure-as em Lovable Cloud → Secrets.
                 </p>
