@@ -1,8 +1,26 @@
-import { createFileRoute, useNavigate, Outlet } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { verifyAdminAccess } from "@/lib/admin-guard.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin")({
+  beforeLoad: async ({ location }) => {
+    if (typeof window === "undefined") return;
+    const isLoginPage = location.pathname === "/admin/login";
+    if (isLoginPage) return;
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      throw redirect({ to: "/admin/login" });
+    }
+
+    try {
+      await verifyAdminAccess();
+    } catch (err) {
+      throw redirect({ to: "/admin/login" });
+    }
+  },
   component: AdminLayout,
 });
 
@@ -13,13 +31,10 @@ function AdminLayout() {
   useEffect(() => {
     const isLoginPage = window.location.pathname === "/admin/login";
     if (loading) return;
-
-    // Sem sessão → redireciona para login
     if (!user && !isLoginPage) {
       navigate({ to: "/admin/login" });
       return;
     }
-    // Sessão sem papel de admin → também redireciona (impede usuários comuns)
     if (user && !isAdmin && !isLoginPage) {
       navigate({ to: "/admin/login" });
     }
