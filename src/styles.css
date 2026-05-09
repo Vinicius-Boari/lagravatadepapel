@@ -459,10 +459,9 @@ body.lg-body {
 
 .services-section { 
   background: var(--color-cream); 
-  padding: 80px 0 120px; 
+  padding: 120px 0; 
   position: relative; 
   z-index: 20; 
-  box-shadow: 0 -50px 100px rgba(0,0,0,0.3);
 }
 .section-header { text-align: center; margin-bottom: 60px; }
 .section-header h2 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--color-dark-lg); opacity: 0.7; }
@@ -1442,3 +1441,58 @@ body.lg-body {
   .ig-counter-value { font-size: 3.5rem; }
   .ig-counter-card { padding: 20px 30px; }
 }
+
+/* ─── SECTION DIVIDERS ─── */
+.section-divider {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+  z-index: 21;
+}
+
+.divider-top { top: -1px; transform: rotate(180deg); }
+.divider-bottom { bottom: -1px; }
+
+.section-divider svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 50px;
+}
+
+@media (min-width: 768px) {
+  .section-divider svg { height: 100px; }
+}
+
+.divider-fill-cream { fill: var(--color-cream); }
+.divider-fill-dark { fill: var(--color-dark-lg); }
+.divider-fill-white { fill: var(--color-white-lg); }
+
+/* REVEAL REFINEMENTS */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 3D SCENE REFINEMENTS */
+.scene-3d {
+  perspective: 1500px;
+}
+.scroll-3d {
+  transition: transform 0.2s ease-out;
+  transform: rotateX(var(--sx, 0deg)) rotateY(var(--sy, 0deg)) translateZ(var(--sz, 0px));
+}
+
+.lg-body ::selection {
+  background: var(--color-red-lg);
+  color: white;
+}
+
