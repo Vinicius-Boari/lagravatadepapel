@@ -1442,34 +1442,6 @@ body.lg-body {
   .ig-counter-card { padding: 20px 30px; }
 }
 
-/* ─── SECTION DIVIDERS ─── */
-.section-divider {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
-  pointer-events: none;
-  z-index: 21;
-}
-
-.divider-top { top: -1px; transform: rotate(180deg); }
-.divider-bottom { bottom: -1px; }
-
-.section-divider svg {
-  position: relative;
-  display: block;
-  width: calc(100% + 1.3px);
-  height: 50px;
-}
-
-@media (min-width: 768px) {
-  .section-divider svg { height: 100px; }
-}
-
-.divider-fill-cream { fill: var(--color-cream); }
-.divider-fill-dark { fill: var(--color-dark-lg); }
-.divider-fill-white { fill: var(--color-white-lg); }
 
 /* REVEAL REFINEMENTS */
 .reveal {
