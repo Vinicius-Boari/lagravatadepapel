@@ -58,7 +58,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
     <section className="ig3d-section" id="instagram">
       <div className="ig3d-bg" aria-hidden />
 
-      <div className="ig3d-header reveal">
+      <div className="ig3d-header" data-animate="blur-right">
         <div className="ig3d-eyebrow">
           <span className="ig3d-dot" /> ao vivo no instagram
         </div>
@@ -79,6 +79,8 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
                 key={post.id}
                 type="button"
                 className="ig3d-card"
+                data-animate="blur-zoom"
+                data-delay={Math.min(i * 100, 700)}
                 style={{ transform: `rotateY(${rot}deg) translateZ(${radius}px)` }}
                 onClick={() => {
                   if (post.permalink) {
