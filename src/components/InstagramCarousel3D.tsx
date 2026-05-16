@@ -58,7 +58,7 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
     <section className="ig3d-section" id="instagram">
       <div className="ig3d-bg" aria-hidden />
 
-      <div className="ig3d-header reveal">
+      <div className="ig3d-header" data-animate="blur-right">
         <div className="ig3d-eyebrow">
           <span className="ig3d-dot" /> ao vivo no instagram
         </div>
