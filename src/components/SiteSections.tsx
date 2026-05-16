@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket, Play } from "lucide-react";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
@@ -9,30 +8,6 @@ const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
 ];
-
-const CinematicSection = ({ children, className, id, style }: { children: React.ReactNode; className?: string; id?: string; style?: React.CSSProperties }) => {
-  return (
-    <motion.section
-      id={id}
-      className={cn("relative overflow-hidden", className)}
-      initial={{ opacity: 0, scale: 0.95, y: 50 }}
-      whileInView={{ 
-        opacity: 1, 
-        scale: 1, 
-        y: 0,
-        transition: {
-          duration: 1.2,
-          ease: [0.22, 1, 0.36, 1],
-          staggerChildren: 0.2
-        }
-      }}
-      viewport={{ once: false, margin: "-10%" }}
-      style={style}
-    >
-      {children}
-    </motion.section>
-  );
-};
 
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -130,20 +105,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let mx = -100, my = -100; // Start off-screen
-    let trailX = -100, trailY = -100;
+    let mx = 0, my = 0;
+    let trailX = 0, trailY = 0;
     const points: { x: number; y: number }[] = [];
-    const maxPoints = 40; // Increased for a longer, more cinematic trail
+    const maxPoints = 30; // Reduced for a more minimal trail
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
-    };
-
-    const onLeave = () => {
-      // When mouse leaves, we move target far away to let it fade out naturally
-      mx = -500;
-      my = -500;
     };
 
     const resize = () => {
@@ -155,29 +124,26 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Smoothing factor - lower is smoother/slower
-      trailX += (mx - trailX) * 0.12;
-      trailY += (my - trailY) * 0.12;
+      trailX += (mx - trailX) * 0.15;
+      trailY += (my - trailY) * 0.15;
 
       points.push({ x: trailX, y: trailY });
       if (points.length > maxPoints) points.shift();
 
       if (points.length > 1) {
-        ctx.beginPath();
         for (let i = 1; i < points.length; i++) {
           const p1 = points[i - 1];
           const p2 = points[i];
           
-          const progress = i / points.length; 
-          const opacity = Math.pow(progress, 2) * 0.6; // Quadratic ease-in for opacity
-          const width = progress * 4; // Tapered line
+          const progress = i / points.length; // 0 at tail, 1 at head
+          const opacity = progress * 0.5;
+          const width = progress * 2.5; // Starts thick at head (index length) and thins to tail
           
+          ctx.beginPath();
           ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
           ctx.lineWidth = width;
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
-          
-          ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
           ctx.stroke();
@@ -189,16 +155,35 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     window.addEventListener("resize", resize);
     document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseleave", onLeave);
     resize();
     raf = requestAnimationFrame(animate);
 
     const onScroll = () => {
-      // Parallax handled by motion components for better performance
+      const c = window.scrollY;
+      
+      // Parallax and other scroll effects
+      if (window.innerWidth < 768) return; // Skip parallax on mobile
+      if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
+        const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
+        if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px)`;
+        if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px)`;
+        if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px)`;
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // Removed manual intersection observer for .reveal since we use CinematicSection now
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add("visible"), i * 100);
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 
     const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
     const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
@@ -238,7 +223,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     return () => {
       document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("scroll", onScroll3d);
@@ -247,7 +231,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         el.removeEventListener("mousemove", move);
         el.removeEventListener("mouseleave", leave);
       });
-      // obs.disconnect(); removed since we use framer-motion now
+      obs.disconnect();
     };
   }, [content]);
 
@@ -261,20 +245,8 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const footer = content.footer;
   const coupons = content.coupons;
 
-  const { scrollYProgress } = useScroll();
-  const background = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.4, 0.6, 0.8, 1],
-    ["#f0ebe3", "#eaddca", "#1a1a1a", "#0a0a0a", "#f0ebe3", "#0a0a0a"]
-  );
-
   return (
-    <motion.div style={{ backgroundColor: background }}>
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-red-600 origin-left z-[200]"
-        style={{ scaleX: useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 }) }}
-      />
-
+    <>
       <canvas
         ref={canvasRef}
         style={{
@@ -285,44 +257,38 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           mixBlendMode: "difference",
         }}
       />
-      <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: "normal" }} ref={headerRef}>
-        <motion.div 
+
+      <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: 'normal' }} ref={headerRef}>
+        <div 
           className="logo cursor-pointer" 
           style={{ color: '#FFFFFF', mixBlendMode: 'normal' }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           role="button"
           aria-label="Voltar ao topo"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
         >
           <div>
             <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
           <span className="logo-tagline">Os Originais</span>
-        </motion.div>
+        </div>
 
         <div className="header-center flex-1 flex flex-col items-center justify-center px-4">
-          <motion.span 
-            className="text-[12px] md:text-[18px] lg:text-[22px] text-white font-serif italic tracking-wide text-center uppercase leading-tight drop-shadow-md"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+          <span className="text-[12px] md:text-[18px] lg:text-[22px] text-white font-serif italic tracking-wide text-center uppercase leading-tight drop-shadow-md">
             a hora da gravata nunca foi tão divertida
-          </motion.span>
+          </span>
         </div>
 
         <div className="nav-right flex items-center gap-2 md:gap-4 lg:gap-6">
           <div className="hidden sm:flex items-center gap-4 lg:gap-6 mr-4">
-            <motion.a whileHover={{ scale: 1.2, color: "#c0392b" }} href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no Instagram">
+            <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no Instagram">
               <Instagram className="w-5 h-5 text-white" />
-            </motion.a>
-            <motion.a whileHover={{ scale: 1.2, color: "#c0392b" }} href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Fale pelo WhatsApp">
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Fale pelo WhatsApp">
               <MessageCircle className="w-5 h-5 text-white" />
-            </motion.a>
-            <motion.a whileHover={{ scale: 1.2, color: "#c0392b" }} href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no TikTok">
+            </a>
+            <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no TikTok">
               <TikTokIcon className="w-5 h-5 text-white" />
-            </motion.a>
+            </a>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
@@ -336,66 +302,33 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </header>
 
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div 
-            className="fullscreen-menu active"
-            initial={{ opacity: 0, clipPath: "circle(0% at 90% 10%)" }}
-            animate={{ opacity: 1, clipPath: "circle(150% at 90% 10%)" }}
-            exit={{ opacity: 0, clipPath: "circle(0% at 90% 10%)" }}
-            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          >
-            <button className="menu-close" onClick={closeMenu} aria-label="Fechar menu">
-              <span>Fechar</span>
-              <span className="menu-close-x">✕</span>
-            </button>
-            <span className="menu-label">Navegação</span>
-            <nav className="menu-nav relative">
-              {[
-                { label: "Home", href: "#hero" },
-                { label: "Serviços", href: "#servicos" },
-                { label: "Orçamento", href: "/questionarioevento" },
-                { label: "Vídeos", href: "#videos" },
-                { label: "Invasões", href: "#invasoes" },
-                { label: "Instagram", href: "#instagram" },
-                { label: "La gravata", href: "#sobre" },
-                { label: "Tropa da Gravata", href: "#tropa-da-gravata" },
-                { label: "Cupons", href: "#cupons" },
-                { label: "Contatos", href: "#contatos" }
-              ].map((link, idx) => (
-                <motion.a 
-                  key={link.label}
-                  href={link.href} 
-                  onClick={closeMenu}
-                  initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + idx * 0.05, duration: 0.5 }}
-                >
-                  {link.label}
-                </motion.a>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className={`fullscreen-menu${menuOpen ? " active" : ""}`}>
+        <button className="menu-close" onClick={closeMenu} aria-label="Fechar menu">
+          <span>Fechar</span>
+          <span className="menu-close-x">✕</span>
+        </button>
+        <span className="menu-label">Navegação</span>
+        <nav className="menu-nav relative">
+          <a href="#hero" onClick={closeMenu}>Home</a>
+          <a href="#servicos" onClick={closeMenu}>Serviços</a>
+          <a href="/questionarioevento" onClick={closeMenu}>Orçamento</a>
+          <a href="#videos" onClick={closeMenu}>Vídeos</a>
+          <a href="#invasoes" onClick={closeMenu}>Invasões</a>
+          <a href="#instagram" onClick={closeMenu}>Instagram</a>
+          <a href="#sobre" onClick={closeMenu}>La gravata</a>
+          <a href="#tropa-da-gravata" onClick={closeMenu}>Tropa da Gravata</a>
+          <a href="#cupons" onClick={closeMenu}>Cupons</a>
+          <a href="#contatos" onClick={closeMenu}>Contatos</a>
+        </nav>
+      </div>
 
       <section className="hero relative" id="hero">
-        <motion.div 
-          className="absolute top-10 right-10 z-20 hidden lg:flex flex-col items-end"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 0.4, x: 0 }}
-          whileHover={{ opacity: 1 }}
-        >
+        <div className="absolute top-10 right-10 z-20 hidden lg:flex flex-col items-end opacity-40 hover:opacity-100 transition-opacity">
           <span className="text-white font-bold uppercase tracking-[0.2em] text-[10px]">Os Originais</span>
           <span className="text-white/60 italic text-[9px] uppercase">Pioneiros em animação teatral</span>
-        </motion.div>
+        </div>
         {hero.video_url && (
-          <motion.div 
-            className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-          >
+          <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
             <video 
               id="hero-video"
               title="Animação de Casamento Tropa da Gravata - La Gravata de Papel"
@@ -415,42 +348,22 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               <source src={getLimitedVideoUrl(hero.video_url)} type="video/mp4" />
               Seu navegador não suporta vídeos HTML5.
             </video>
-          </motion.div>
+          </div>
         )}
 
         <div className="hero-images" ref={heroImgsRef}>
-          <motion.div 
-            className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}
-            initial={{ opacity: 0, x: -100, rotateY: -20 }}
-            animate={{ opacity: 1, x: 0, rotateY: -6 }}
-            transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
-          >
+          <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
             <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
-          </motion.div>
-          <motion.div 
-            className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
-          >
+          </div>
+          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
             <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
-          </motion.div>
-          <motion.div 
-            className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}
-            initial={{ opacity: 0, x: 100, rotateY: 20 }}
-            animate={{ opacity: 1, x: 0, rotateY: 6 }}
-            transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
-          >
+          </div>
+          <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
             <img src={hero.image3 || "/images/hero_party.png"} alt="Entretenimento e diversão em eventos SP" loading="lazy" />
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div 
-          className="hero-content"
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-        >
+        <div className="hero-content">
           <h1 className="hero-title">
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
@@ -461,27 +374,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
           <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
           {hero.cta_label && (
-            <motion.div 
-              className="hero-cta"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <div className="hero-cta">
               <a href="/questionarioevento">
                 <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
               </a>
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
 
-        <motion.div 
-          className="hero-location"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.6 }}
-          transition={{ duration: 1, delay: 1.2 }}
-        >
-          {hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}
-        </motion.div>
+        <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
       </section>
 
       <div className="ticker">
@@ -492,54 +394,36 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </div>
 
-      <CinematicSection className="services-section" id="servicos">
-        <div className="flex flex-col items-center justify-center mb-8">
+      <section className="services-section" id="servicos">
+
+        <div className="flex flex-col items-center justify-center mb-8 reveal">
           <span className="text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-gray-500 italic text-sm md:text-base">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="section-header">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 0.7, y: 0 }}
-            viewport={{ once: true }}
-          >
-            {services.heading}<br /><span>{services.heading_em}</span>
-          </motion.h2>
+        <div className="section-header reveal">
+          <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
-            <motion.div 
-              className={cn("service-card tilt-3d scroll-3d", s.show_mobile === false && "hidden md:block")} 
-              key={i}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.05, zIndex: 10 }}
-            >
+            <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
               <img src={s.img} alt={`${s.title} - Serviço de animação La Gravata de Papel`} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </CinematicSection>
+      </section>
 
-      <CinematicSection className="video-section" id="videos" style={{ background: 'var(--color-dark-lg)' }}>
-        <div className="flex flex-col mb-12">
+      <section className="video-section" id="videos">
+
+        <div className="flex flex-col mb-12 reveal">
           <span className="text-white/40 font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-red-500 font-serif italic text-lg md:text-xl">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="video-section-header">
-          <motion.h2
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            {videos.heading}
-          </motion.h2>
+        <div className="video-section-header reveal">
+          <h2>{videos.heading}</h2>
         </div>
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => {
@@ -621,161 +505,105 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             );
           })}
         </div>
-      </CinematicSection>
+      </section>
 
-      <CinematicSection className="dark-section" style={{ background: 'var(--color-black-lg)' }}>
-        <div className="dark-content">
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-          >
-            {plan.heading}<br /><em>{plan.heading_em}</em>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            {plan.text}
-          </motion.p>
-          <motion.a 
-            href="/questionarioevento" 
-            className="btn-outline"
-            whileHover={{ scale: 1.05, backgroundColor: "white", color: "black" }}
-          >
+      <section className="dark-section">
+        <div className="dark-content reveal">
+          <h2>{plan.heading}<br /><em>{plan.heading_em}</em></h2>
+          <p>{plan.text}</p>
+          <a href="/questionarioevento" className="btn-outline">
             <span>{plan.cta_label}</span>
             <span>→</span>
-          </motion.a>
+          </a>
         </div>
-      </CinematicSection>
+      </section>
 
-      <CinematicSection className="places-section" id="invasoes" style={{ background: 'var(--color-cream)' }}>
-        <div className="places-header">
-          <motion.h2
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-          >
-            {places.heading}<br />{places.heading2}
-          </motion.h2>
-          <motion.a 
-            href={places.instagram_url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            whileHover={{ x: 10, color: "#c0392b" }}
-          >
+      <section className="places-section" id="invasoes">
+        <div className="places-header reveal">
+          <h2>{places.heading}<br />{places.heading2}</h2>
+          <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
             Ver no Instagram →
-          </motion.a>
+          </a>
         </div>
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
-            <motion.div 
-              className={cn("place-card tilt-3d scroll-3d", p.show_mobile === false && "hidden md:block")} 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-            >
+            <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
               <img src={p.img} alt={`Invasão Tropa da Gravata em ${p.title}`} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </CinematicSection>
+      </section>
 
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
-      <CinematicSection className="about-section" id="sobre" style={{ background: 'var(--color-cream)' }}>
+      <section className="about-section" id="sobre">
         <div className="about-text">
-          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>{about.heading}<br /><em>{about.heading_em}</em></motion.h2>
+          <h2 className="reveal">{about.heading}<br /><em>{about.heading_em}</em></h2>
           {(about.paragraphs ?? []).map((p: string, i: number) => (
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: i * 0.2 }} key={i}>{p}</motion.p>
+            <p className="reveal" key={i}>{p}</p>
           ))}
-          <motion.a 
-            href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="btn-outline"
-            whileHover={{ scale: 1.05, x: 10 }}
-          >
+          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
             <span>{about.cta_label}</span>
             <span>→</span>
-          </motion.a>
+          </a>
         </div>
-        <motion.div 
-          className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}
-          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 1 }}
-        >
+        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}>
           <div className="scroll-3d tilt-3d">
             <img 
               src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/1778107838154_payono_image.png"} 
               alt="Biografia - La Gravata de Papel" 
             />
           </div>
-        </motion.div>
-      </CinematicSection>
+        </div>
+      </section>
 
-      <CinematicSection className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
+      <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
-          <motion.h2 initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></motion.h2>
+          <h2 className="reveal">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
           <div className="space-y-6 text-left mb-10">
-            <motion.p className="text-red-500 font-bold italic mb-4" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</motion.p>
+            <p className="text-red-500 font-bold italic mb-4">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
             {(content.tropa_config?.paragraphs || []).map((p: string, i: number) => (
-              <motion.p key={i} className="opacity-60" initial={{ opacity: 0 }} whileInView={{ opacity: 0.6 }} transition={{ delay: i * 0.1 }}>{p}</motion.p>
+              <p key={i} className="opacity-60">{p}</p>
             ))}
           </div>
           
           <div className="mt-8">
             <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <motion.a href="/questionarioevento" className="btn-outline" whileHover={{ scale: 1.05, x: 10 }}>
+              <a href="/questionarioevento" className="btn-outline">
                 <span>{(content.tropa_config?.cta_label || "Contrate Agora")}</span>
                 <span>→</span>
-              </motion.a>
-              <motion.a 
+              </a>
+              <a 
                 href={content.tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
-                whileHover={{ scale: 1.1, x: 5 }}
               >
                 <Instagram className="w-4 h-4" />
                 <span>{(content.tropa_config?.instagram_label || "Ver no Instagram")} →</span>
-              </motion.a>
+              </a>
             </div>
           </div>
         </div>
-        <motion.div 
-          className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")}
-          initial={{ opacity: 0, scale: 1.2, x: 50 }}
-          whileInView={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 1.2 }}
-        >
+        <div className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")}>
           <div className="scroll-3d tilt-3d">
             <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
           </div>
-        </motion.div>
-      </CinematicSection>
+        </div>
+      </section>
       
-      <CinematicSection className="coupons-section" id="cupons" style={{ background: 'var(--color-cream)' }}>
-        <div className="section-header text-center">
-          <motion.h2 className="mx-auto" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}>{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></motion.h2>
+      <section className="coupons-section" id="cupons">
+        <div className="section-header reveal text-center">
+          <h2 className="mx-auto">{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></h2>
         </div>
         <div className="coupons-grid max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-4">
           {(coupons?.items || []).map((coupon: any, i: number) => (
-            <motion.div 
-              key={i} 
-              className="coupon-card tilt-3d scroll-3d"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-            >
+            <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
               <div className="coupon-content">
                 <div className="coupon-header">
                   <Ticket className="w-8 h-8 text-red-600 mb-2" />
@@ -792,20 +620,20 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               </div>
               <div className="coupon-border-left"></div>
               <div className="coupon-border-right"></div>
-            </motion.div>
+            </div>
           ))}
         </div>
-        <div className="flex justify-center mt-12">
-          <motion.a href="/questionarioevento" className="btn-outline" whileHover={{ scale: 1.05 }}>
+        <div className="flex justify-center mt-12 reveal">
+          <a href="/questionarioevento" className="btn-outline">
             <span>QUERO MEU CUPOM</span>
             <span>→</span>
-          </motion.a>
+          </a>
         </div>
-      </CinematicSection>
+      </section>
 
-      <CinematicSection className="contacts-section" id="contatos" style={{ background: 'var(--color-cream)' }}>
-        <div className="section-header text-center">
-          <motion.h2 className="mx-auto !text-red-600 font-bold" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}>Contatos</motion.h2>
+      <section className="contacts-section" id="contatos">
+        <div className="section-header reveal text-center">
+          <h2 className="mx-auto !text-red-600 font-bold">Contatos</h2>
         </div>
         
         <div className="contacts-grid scene-3d">
@@ -841,16 +669,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               icon: <Mail className="w-6 h-6" />
             }
           ].map((contact, i) => (
-            <motion.a 
+            <a 
               key={i}
               href={contact.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-card tilt-3d scroll-3d group"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.05 }}
+              className="contact-card tilt-3d scroll-3d reveal group"
             >
               <div className="contact-icon-wrapper group-hover:scale-110 transition-transform duration-300">
                 {contact.icon}
@@ -862,10 +686,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               <div className="contact-arrow">
                 <span>→</span>
               </div>
-            </motion.a>
+            </a>
           ))}
         </div>
-      </CinematicSection>
+      </section>
 
       <footer className="lg-footer" id="contatos">
         <div className="footer-top">
@@ -915,6 +739,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <a className="whatsapp-float-real" href={hero.cta_url} target="_blank" rel="noopener noreferrer" aria-label="Fale pelo WhatsApp">
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
       </a>
-    </motion.div>
+    </>
   );
 }
