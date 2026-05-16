@@ -400,12 +400,17 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <span className="text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-gray-500 italic text-sm md:text-base">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="section-header reveal">
+        <div className="section-header" data-animate="blur-up">
           <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
-            <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
+            <div 
+              className={cn("service-card tilt-3d scroll-3d", s.show_mobile === false && "hidden md:block")} 
+              key={i}
+              data-animate="blur-up"
+              data-delay={100 + (i * 150)}
+            >
               <img src={s.img} alt={`${s.title} - Serviço de animação La Gravata de Papel`} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
