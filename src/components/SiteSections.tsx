@@ -801,9 +801,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </CinematicSection>
 
-      <section className="contacts-section" id="contatos">
-        <div className="section-header reveal text-center">
-          <h2 className="mx-auto !text-red-600 font-bold">Contatos</h2>
+      <CinematicSection className="contacts-section" id="contatos" style={{ background: 'var(--color-cream)' }}>
+        <div className="section-header text-center">
+          <motion.h2 className="mx-auto !text-red-600 font-bold" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}>Contatos</motion.h2>
         </div>
         
         <div className="contacts-grid scene-3d">
@@ -839,12 +839,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               icon: <Mail className="w-6 h-6" />
             }
           ].map((contact, i) => (
-            <a 
+            <motion.a 
               key={i}
               href={contact.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-card tilt-3d scroll-3d reveal group"
+              className="contact-card tilt-3d scroll-3d group"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ scale: 1.05 }}
             >
               <div className="contact-icon-wrapper group-hover:scale-110 transition-transform duration-300">
                 {contact.icon}
@@ -856,10 +860,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               <div className="contact-arrow">
                 <span>→</span>
               </div>
-            </a>
+            </motion.a>
           ))}
         </div>
-      </section>
+      </CinematicSection>
 
       <footer className="lg-footer" id="contatos">
         <div className="footer-top">
