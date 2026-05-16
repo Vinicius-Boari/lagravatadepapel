@@ -174,16 +174,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e, i) => {
+        entries.forEach((e) => {
           if (e.isIntersecting) {
-            setTimeout(() => e.target.classList.add("visible"), i * 100);
+            e.target.classList.add("animate-in");
             obs.unobserve(e.target);
           }
         });
       },
       { threshold: 0.15 },
     );
-    document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
+    document.querySelectorAll("[data-animate]").forEach((el) => obs.observe(el));
 
     const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
     const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
