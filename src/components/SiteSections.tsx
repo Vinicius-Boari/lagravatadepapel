@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket, Play } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
@@ -8,6 +9,30 @@ const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
 ];
+
+const CinematicSection = ({ children, className, id, style }: { children: React.ReactNode; className?: string; id?: string; style?: React.CSSProperties }) => {
+  return (
+    <motion.section
+      id={id}
+      className={cn("relative overflow-hidden", className)}
+      initial={{ opacity: 0, scale: 0.95, y: 50 }}
+      whileInView={{ 
+        opacity: 1, 
+        scale: 1, 
+        y: 0,
+        transition: {
+          duration: 1.2,
+          ease: [0.22, 1, 0.36, 1],
+          staggerChildren: 0.2
+        }
+      }}
+      viewport={{ once: false, margin: "-10%" }}
+      style={style}
+    >
+      {children}
+    </motion.section>
+  );
+};
 
 export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const [isMobile, setIsMobile] = useState(false);
