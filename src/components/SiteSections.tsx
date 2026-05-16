@@ -274,6 +274,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           mixBlendMode: "difference",
         }}
       />
+      <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: "normal" }} ref={headerRef}>
         <motion.div 
           className="logo cursor-pointer" 
           style={{ color: '#FFFFFF', mixBlendMode: 'normal' }}
