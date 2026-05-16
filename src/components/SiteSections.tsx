@@ -130,14 +130,20 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let mx = 0, my = 0;
-    let trailX = 0, trailY = 0;
+    let mx = -100, my = -100; // Start off-screen
+    let trailX = -100, trailY = -100;
     const points: { x: number; y: number }[] = [];
-    const maxPoints = 30; // Reduced for a more minimal trail
+    const maxPoints = 40; // Increased for a longer, more cinematic trail
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
+    };
+
+    const onLeave = () => {
+      // When mouse leaves, we move target far away to let it fade out naturally
+      mx = -500;
+      my = -500;
     };
 
     const resize = () => {
@@ -149,26 +155,29 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      trailX += (mx - trailX) * 0.15;
-      trailY += (my - trailY) * 0.15;
+      // Smoothing factor - lower is smoother/slower
+      trailX += (mx - trailX) * 0.12;
+      trailY += (my - trailY) * 0.12;
 
       points.push({ x: trailX, y: trailY });
       if (points.length > maxPoints) points.shift();
 
       if (points.length > 1) {
+        ctx.beginPath();
         for (let i = 1; i < points.length; i++) {
           const p1 = points[i - 1];
           const p2 = points[i];
           
-          const progress = i / points.length; // 0 at tail, 1 at head
-          const opacity = progress * 0.5;
-          const width = progress * 2.5; // Starts thick at head (index length) and thins to tail
+          const progress = i / points.length; 
+          const opacity = Math.pow(progress, 2) * 0.6; // Quadratic ease-in for opacity
+          const width = progress * 4; // Tapered line
           
-          ctx.beginPath();
           ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
           ctx.lineWidth = width;
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
+          
+          ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
           ctx.stroke();
@@ -180,6 +189,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     window.addEventListener("resize", resize);
     document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseleave", onLeave);
     resize();
     raf = requestAnimationFrame(animate);
 
@@ -228,6 +238,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     return () => {
       document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("scroll", onScroll3d);
