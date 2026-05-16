@@ -174,16 +174,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
+        entries.forEach((e, i) => {
           if (e.isIntersecting) {
-            e.target.classList.add("animate-in");
+            setTimeout(() => e.target.classList.add("visible"), i * 100);
             obs.unobserve(e.target);
           }
         });
       },
       { threshold: 0.15 },
     );
-    document.querySelectorAll("[data-animate]").forEach((el) => obs.observe(el));
+    document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 
     const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
     const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
@@ -352,19 +352,19 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         )}
 
         <div className="hero-images" ref={heroImgsRef}>
-          <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")} data-animate="blur-zoom" data-delay="100">
+          <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
             <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
           </div>
-          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")} data-animate="blur-zoom" data-delay="100">
+          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
             <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
           </div>
-          <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")} data-animate="blur-zoom" data-delay="100">
+          <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
             <img src={hero.image3 || "/images/hero_party.png"} alt="Entretenimento e diversão em eventos SP" loading="lazy" />
           </div>
         </div>
 
         <div className="hero-content">
-          <h1 className="hero-title" data-animate="blur-in">
+          <h1 className="hero-title">
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
             )}
@@ -372,9 +372,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className="sr-only">
             Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel.
           </div>
-          <p className="hero-subtitle" data-animate="blur-up" data-delay="200">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
+          <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
           {hero.cta_label && (
-            <div className="hero-cta" data-animate="blur-up" data-delay="400">
+            <div className="hero-cta">
               <a href="/questionarioevento">
                 <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
@@ -400,17 +400,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <span className="text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-gray-500 italic text-sm md:text-base">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="section-header" data-animate="blur-up">
+        <div className="section-header reveal">
           <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
-            <div 
-              className={cn("service-card tilt-3d scroll-3d", s.show_mobile === false && "hidden md:block")} 
-              key={i}
-              data-animate="blur-up"
-              data-delay={100 + (i * 150)}
-            >
+            <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
               <img src={s.img} alt={`${s.title} - Serviço de animação La Gravata de Papel`} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
@@ -427,10 +422,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <span className="text-white/40 font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-red-500 font-serif italic text-lg md:text-xl">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="video-section-header" data-animate="blur-left">
+        <div className="video-section-header reveal">
           <h2>{videos.heading}</h2>
         </div>
-        <div className="video-grid scene-3d" data-animate="blur-zoom" data-delay="300">
+        <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
             const videoTitle = `Vídeo ${v.title || 'Animação'} - La Gravata de Papel | Entretenimento para Casamentos`;
@@ -524,7 +519,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </section>
 
       <section className="places-section" id="invasoes">
-        <div className="places-header" data-animate="blur-up">
+        <div className="places-header reveal">
           <h2>{places.heading}<br />{places.heading2}</h2>
           <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
             Ver no Instagram →
@@ -532,12 +527,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
-            <div 
-              className={cn("place-card tilt-3d scroll-3d", p.show_mobile === false && "hidden md:block")} 
-              key={i}
-              data-animate="blur-up"
-              data-delay={i * 150}
-            >
+            <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
               <img src={p.img} alt={`Invasão Tropa da Gravata em ${p.title}`} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
@@ -552,16 +542,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="about-section" id="sobre">
         <div className="about-text">
-          <h2 data-animate="blur-left">{about.heading}<br /><em>{about.heading_em}</em></h2>
+          <h2 className="reveal">{about.heading}<br /><em>{about.heading_em}</em></h2>
           {(about.paragraphs ?? []).map((p: string, i: number) => (
-            <p key={i} data-animate="blur-up" data-delay={i * 150}>{p}</p>
+            <p className="reveal" key={i}>{p}</p>
           ))}
-          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline" data-animate="blur-up" data-delay={(about.paragraphs?.length || 1) * 150}>
+          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
             <span>{about.cta_label}</span>
             <span>→</span>
           </a>
         </div>
-        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")} data-animate="blur-right">
+        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}>
           <div className="scroll-3d tilt-3d">
             <img 
               src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/1778107838154_payono_image.png"} 
@@ -573,15 +563,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
-          <h2 data-animate="blur-in">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
+          <h2 className="reveal">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
           <div className="space-y-6 text-left mb-10">
-            <p className="text-red-500 font-bold italic mb-4" data-animate="blur-up" data-delay="300">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
+            <p className="text-red-500 font-bold italic mb-4">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
             {(content.tropa_config?.paragraphs || []).map((p: string, i: number) => (
-              <p key={i} className="opacity-60" data-animate="blur-up" data-delay={300 + (i * 150)}>{p}</p>
+              <p key={i} className="opacity-60">{p}</p>
             ))}
           </div>
           
-          <div className="mt-8" data-animate="blur-up" data-delay="500">
+          <div className="mt-8">
             <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <a href="/questionarioevento" className="btn-outline">
@@ -600,7 +590,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             </div>
           </div>
         </div>
-        <div className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")} data-animate="blur-zoom" data-delay="200">
+        <div className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")}>
           <div className="scroll-3d tilt-3d">
             <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
           </div>
@@ -608,17 +598,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </section>
       
       <section className="coupons-section" id="cupons">
-        <div className="section-header text-center" data-animate="blur-up">
+        <div className="section-header reveal text-center">
           <h2 className="mx-auto">{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></h2>
         </div>
         <div className="coupons-grid max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-4">
           {(coupons?.items || []).map((coupon: any, i: number) => (
-            <div 
-              key={i} 
-              className="coupon-card tilt-3d scroll-3d"
-              data-animate="blur-up"
-              data-delay={100 + (i * 200)}
-            >
+            <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
               <div className="coupon-content">
                 <div className="coupon-header">
                   <Ticket className="w-8 h-8 text-red-600 mb-2" />
@@ -647,7 +632,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </section>
 
       <section className="contacts-section" id="contatos">
-        <div className="section-header text-center" data-animate="blur-up">
+        <div className="section-header reveal text-center">
           <h2 className="mx-auto !text-red-600 font-bold">Contatos</h2>
         </div>
         
@@ -689,9 +674,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               href={contact.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-card tilt-3d scroll-3d group"
-              data-animate="blur-left"
-              data-delay={(i + 1) * 100}
+              className="contact-card tilt-3d scroll-3d reveal group"
             >
               <div className="contact-icon-wrapper group-hover:scale-110 transition-transform duration-300">
                 {contact.icon}
@@ -710,9 +693,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <footer className="lg-footer" id="contatos">
         <div className="footer-top">
-          <div className="footer-logo" data-animate="blur-in">La Gravata<br />de Papel</div>
+          <div className="footer-logo">La Gravata<br />de Papel</div>
           <div className="footer-links">
-          <div className="footer-col" data-animate="blur-up" data-delay="150">
+          <div className="footer-col">
             <h4>Navegação</h4>
             <a href="#hero">Home</a>
             <a href="#servicos">Serviços</a>
@@ -723,14 +706,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="#tropa-da-gravata">Tropa da Gravata</a>
             <a href="#cupons">Cupons</a>
           </div>
-            <div className="footer-col" data-animate="blur-up" data-delay="300">
+            <div className="footer-col">
               <h4>Redes Sociais</h4>
               <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer">Instagram</a>
               <a href="https://www.facebook.com/lagravatadepapel" target="_blank" rel="noopener noreferrer">Facebook</a>
               <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer">TikTok</a>
               <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
-            <div className="footer-col" data-animate="blur-up" data-delay="450">
+            <div className="footer-col">
               <h4>Contato</h4>
               <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">(11) 98511-1012</a>
               <a href="mailto:torontosac@gmail.com" target="_blank" rel="noopener noreferrer">torontosac@gmail.com</a>
