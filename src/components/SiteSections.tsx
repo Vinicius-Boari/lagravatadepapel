@@ -648,25 +648,41 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </CinematicSection>
 
-      <section className="places-section" id="invasoes">
-        <div className="places-header reveal">
-          <h2>{places.heading}<br />{places.heading2}</h2>
-          <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
+      <CinematicSection className="places-section" id="invasoes" style={{ background: 'var(--color-cream)' }}>
+        <div className="places-header">
+          <motion.h2
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+          >
+            {places.heading}<br />{places.heading2}
+          </motion.h2>
+          <motion.a 
+            href={places.instagram_url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            whileHover={{ x: 10, color: "#c0392b" }}
+          >
             Ver no Instagram →
-          </a>
+          </motion.a>
         </div>
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
-            <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
+            <motion.div 
+              className={cn("place-card tilt-3d scroll-3d", p.show_mobile === false && "hidden md:block")} 
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+            >
               <img src={p.img} alt={`Invasão Tropa da Gravata em ${p.title}`} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
                 <span>{p.tag}</span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </CinematicSection>
 
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
