@@ -525,14 +525,19 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </CinematicSection>
 
-      <section className="video-section" id="videos">
-
-        <div className="flex flex-col mb-12 reveal">
+      <CinematicSection className="video-section" id="videos" style={{ background: 'var(--color-dark-lg)' }}>
+        <div className="flex flex-col mb-12">
           <span className="text-white/40 font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-red-500 font-serif italic text-lg md:text-xl">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="video-section-header reveal">
-          <h2>{videos.heading}</h2>
+        <div className="video-section-header">
+          <motion.h2
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            {videos.heading}
+          </motion.h2>
         </div>
         <div className="video-grid scene-3d">
           {(videos.items ?? []).map((v: any, i: number) => {
