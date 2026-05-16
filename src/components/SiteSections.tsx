@@ -608,12 +608,17 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </section>
       
       <section className="coupons-section" id="cupons">
-        <div className="section-header reveal text-center">
+        <div className="section-header text-center" data-animate="blur-up">
           <h2 className="mx-auto">{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></h2>
         </div>
         <div className="coupons-grid max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-4">
           {(coupons?.items || []).map((coupon: any, i: number) => (
-            <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
+            <div 
+              key={i} 
+              className="coupon-card tilt-3d scroll-3d"
+              data-animate="blur-up"
+              data-delay={100 + (i * 200)}
+            >
               <div className="coupon-content">
                 <div className="coupon-header">
                   <Ticket className="w-8 h-8 text-red-600 mb-2" />
