@@ -112,12 +112,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
-      my = e.clientY;
+      my = e.clientY + window.scrollY;
     };
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.height = document.documentElement.scrollHeight;
     };
 
     let raf: number;
@@ -250,7 +250,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <canvas
         ref={canvasRef}
         style={{
-          position: "fixed",
+          position: "absolute",
           inset: 0,
           pointerEvents: "none",
           zIndex: 10000,
