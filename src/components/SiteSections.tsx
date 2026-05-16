@@ -710,9 +710,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <footer className="lg-footer" id="contatos">
         <div className="footer-top">
-          <div className="footer-logo">La Gravata<br />de Papel</div>
+          <div className="footer-logo" data-animate="blur-in">La Gravata<br />de Papel</div>
           <div className="footer-links">
-          <div className="footer-col">
+          <div className="footer-col" data-animate="blur-up" data-delay="150">
             <h4>Navegação</h4>
             <a href="#hero">Home</a>
             <a href="#servicos">Serviços</a>
@@ -723,14 +723,14 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             <a href="#tropa-da-gravata">Tropa da Gravata</a>
             <a href="#cupons">Cupons</a>
           </div>
-            <div className="footer-col">
+            <div className="footer-col" data-animate="blur-up" data-delay="300">
               <h4>Redes Sociais</h4>
               <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer">Instagram</a>
               <a href="https://www.facebook.com/lagravatadepapel" target="_blank" rel="noopener noreferrer">Facebook</a>
               <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer">TikTok</a>
               <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             </div>
-            <div className="footer-col">
+            <div className="footer-col" data-animate="blur-up" data-delay="450">
               <h4>Contato</h4>
               <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer">(11) 98511-1012</a>
               <a href="mailto:torontosac@gmail.com" target="_blank" rel="noopener noreferrer">torontosac@gmail.com</a>
