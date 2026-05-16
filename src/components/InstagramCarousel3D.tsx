@@ -79,6 +79,8 @@ export function InstagramCarousel3D({ config }: { config: Config }) {
                 key={post.id}
                 type="button"
                 className="ig3d-card"
+                data-animate="blur-zoom"
+                data-delay={Math.min(i * 100, 700)}
                 style={{ transform: `rotateY(${rot}deg) translateZ(${radius}px)` }}
                 onClick={() => {
                   if (post.permalink) {
