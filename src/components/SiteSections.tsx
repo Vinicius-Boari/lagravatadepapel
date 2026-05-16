@@ -364,7 +364,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
 
         <div className="hero-content">
-          <h1 className="hero-title">
+          <h1 className="hero-title" data-animate="blur-in">
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
             )}
@@ -372,9 +372,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <div className="sr-only">
             Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel.
           </div>
-          <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
+          <p className="hero-subtitle" data-animate="blur-up" data-delay="200">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
           {hero.cta_label && (
-            <div className="hero-cta">
+            <div className="hero-cta" data-animate="blur-up" data-delay="400">
               <a href="/questionarioevento">
                 <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
