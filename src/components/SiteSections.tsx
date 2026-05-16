@@ -250,8 +250,15 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
   const footer = content.footer;
   const coupons = content.coupons;
 
+  const { scrollYProgress } = useScroll();
+  const background = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.4, 0.6, 0.8, 1],
+    ["#f0ebe3", "#eaddca", "#1a1a1a", "#0a0a0a", "#f0ebe3", "#0a0a0a"]
+  );
+
   return (
-    <>
+    <motion.div style={{ backgroundColor: background }}>
       <canvas
         ref={canvasRef}
         style={{
