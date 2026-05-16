@@ -718,49 +718,62 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </motion.div>
       </CinematicSection>
 
-      <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
+      <CinematicSection className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
-          <h2 className="reveal">{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></h2>
+          <motion.h2 initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>{(content.tropa_config?.heading || "A Tropa Invadiu")}<br /><em>{(content.tropa_config?.heading_em || "Seu Casamento")}</em></motion.h2>
           <div className="space-y-6 text-left mb-10">
-            <p className="text-red-500 font-bold italic mb-4">{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</p>
+            <motion.p className="text-red-500 font-bold italic mb-4" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>{(content.tropa_config?.subheading || "A hora da gravata nunca mais será a mesma.")}</motion.p>
             {(content.tropa_config?.paragraphs || []).map((p: string, i: number) => (
-              <p key={i} className="opacity-60">{p}</p>
+              <motion.p key={i} className="opacity-60" initial={{ opacity: 0 }} whileInView={{ opacity: 0.6 }} transition={{ delay: i * 0.1 }}>{p}</motion.p>
             ))}
           </div>
           
           <div className="mt-8">
             <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <a href="/questionarioevento" className="btn-outline">
+              <motion.a href="/questionarioevento" className="btn-outline" whileHover={{ scale: 1.05, x: 10 }}>
                 <span>{(content.tropa_config?.cta_label || "Contrate Agora")}</span>
                 <span>→</span>
-              </a>
-              <a 
+              </motion.a>
+              <motion.a 
                 href={content.tropa_config?.instagram_url || "https://www.instagram.com/tropadagravata/"} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
+                whileHover={{ scale: 1.1, x: 5 }}
               >
                 <Instagram className="w-4 h-4" />
                 <span>{(content.tropa_config?.instagram_label || "Ver no Instagram")} →</span>
-              </a>
+              </motion.a>
             </div>
           </div>
         </div>
-        <div className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")}>
+        <motion.div 
+          className={cn("about-image scene-3d", content.tropa_config?.show_mobile === false && "hidden md:block")}
+          initial={{ opacity: 0, scale: 1.2, x: 50 }}
+          whileInView={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ duration: 1.2 }}
+        >
           <div className="scroll-3d tilt-3d">
             <img src={content.tropa_config?.image_url || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/Instagram_files/561755360_18109376935599626_8280922716105922460_n.jpg"} alt="Tropa da Gravata" />
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </CinematicSection>
       
-      <section className="coupons-section" id="cupons">
-        <div className="section-header reveal text-center">
-          <h2 className="mx-auto">{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></h2>
+      <CinematicSection className="coupons-section" id="cupons" style={{ background: 'var(--color-cream)' }}>
+        <div className="section-header text-center">
+          <motion.h2 className="mx-auto" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}>{coupons?.heading || "Cupons"} <em>{coupons?.heading_em || "Especiais"}</em></motion.h2>
         </div>
         <div className="coupons-grid max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-4">
           {(coupons?.items || []).map((coupon: any, i: number) => (
-            <div key={i} className="coupon-card reveal tilt-3d scroll-3d">
+            <motion.div 
+              key={i} 
+              className="coupon-card tilt-3d scroll-3d"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+            >
               <div className="coupon-content">
                 <div className="coupon-header">
                   <Ticket className="w-8 h-8 text-red-600 mb-2" />
@@ -777,16 +790,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               </div>
               <div className="coupon-border-left"></div>
               <div className="coupon-border-right"></div>
-            </div>
+            </motion.div>
           ))}
         </div>
-        <div className="flex justify-center mt-12 reveal">
-          <a href="/questionarioevento" className="btn-outline">
+        <div className="flex justify-center mt-12">
+          <motion.a href="/questionarioevento" className="btn-outline" whileHover={{ scale: 1.05 }}>
             <span>QUERO MEU CUPOM</span>
             <span>→</span>
-          </a>
+          </motion.a>
         </div>
-      </section>
+      </CinematicSection>
 
       <section className="contacts-section" id="contatos">
         <div className="section-header reveal text-center">
