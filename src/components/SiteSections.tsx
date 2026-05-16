@@ -284,36 +284,43 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       />
 
       <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: 'normal' }} ref={headerRef}>
-        <div 
+        <motion.div 
           className="logo cursor-pointer" 
           style={{ color: '#FFFFFF', mixBlendMode: 'normal' }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           role="button"
           aria-label="Voltar ao topo"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           <div>
             <div className="logo-text">La Gravata<br />de Papel</div>
           </div>
           <span className="logo-tagline">Os Originais</span>
-        </div>
+        </motion.div>
 
         <div className="header-center flex-1 flex flex-col items-center justify-center px-4">
-          <span className="text-[12px] md:text-[18px] lg:text-[22px] text-white font-serif italic tracking-wide text-center uppercase leading-tight drop-shadow-md">
+          <motion.span 
+            className="text-[12px] md:text-[18px] lg:text-[22px] text-white font-serif italic tracking-wide text-center uppercase leading-tight drop-shadow-md"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             a hora da gravata nunca foi tão divertida
-          </span>
+          </motion.span>
         </div>
 
         <div className="nav-right flex items-center gap-2 md:gap-4 lg:gap-6">
           <div className="hidden sm:flex items-center gap-4 lg:gap-6 mr-4">
-            <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no Instagram">
+            <motion.a whileHover={{ scale: 1.2, color: "#c0392b" }} href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no Instagram">
               <Instagram className="w-5 h-5 text-white" />
-            </a>
-            <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Fale pelo WhatsApp">
+            </motion.a>
+            <motion.a whileHover={{ scale: 1.2, color: "#c0392b" }} href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Fale pelo WhatsApp">
               <MessageCircle className="w-5 h-5 text-white" />
-            </a>
-            <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no TikTok">
+            </motion.a>
+            <motion.a whileHover={{ scale: 1.2, color: "#c0392b" }} href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link" title="Siga no TikTok">
               <TikTokIcon className="w-5 h-5 text-white" />
-            </a>
+            </motion.a>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
@@ -327,25 +334,48 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </header>
 
-      <div className={`fullscreen-menu${menuOpen ? " active" : ""}`}>
-        <button className="menu-close" onClick={closeMenu} aria-label="Fechar menu">
-          <span>Fechar</span>
-          <span className="menu-close-x">✕</span>
-        </button>
-        <span className="menu-label">Navegação</span>
-        <nav className="menu-nav relative">
-          <a href="#hero" onClick={closeMenu}>Home</a>
-          <a href="#servicos" onClick={closeMenu}>Serviços</a>
-          <a href="/questionarioevento" onClick={closeMenu}>Orçamento</a>
-          <a href="#videos" onClick={closeMenu}>Vídeos</a>
-          <a href="#invasoes" onClick={closeMenu}>Invasões</a>
-          <a href="#instagram" onClick={closeMenu}>Instagram</a>
-          <a href="#sobre" onClick={closeMenu}>La gravata</a>
-          <a href="#tropa-da-gravata" onClick={closeMenu}>Tropa da Gravata</a>
-          <a href="#cupons" onClick={closeMenu}>Cupons</a>
-          <a href="#contatos" onClick={closeMenu}>Contatos</a>
-        </nav>
-      </div>
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div 
+            className="fullscreen-menu active"
+            initial={{ opacity: 0, clipPath: "circle(0% at 90% 10%)" }}
+            animate={{ opacity: 1, clipPath: "circle(150% at 90% 10%)" }}
+            exit={{ opacity: 0, clipPath: "circle(0% at 90% 10%)" }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          >
+            <button className="menu-close" onClick={closeMenu} aria-label="Fechar menu">
+              <span>Fechar</span>
+              <span className="menu-close-x">✕</span>
+            </button>
+            <span className="menu-label">Navegação</span>
+            <nav className="menu-nav relative">
+              {[
+                { label: "Home", href: "#hero" },
+                { label: "Serviços", href: "#servicos" },
+                { label: "Orçamento", href: "/questionarioevento" },
+                { label: "Vídeos", href: "#videos" },
+                { label: "Invasões", href: "#invasoes" },
+                { label: "Instagram", href: "#instagram" },
+                { label: "La gravata", href: "#sobre" },
+                { label: "Tropa da Gravata", href: "#tropa-da-gravata" },
+                { label: "Cupons", href: "#cupons" },
+                { label: "Contatos", href: "#contatos" }
+              ].map((link, idx) => (
+                <motion.a 
+                  key={link.label}
+                  href={link.href} 
+                  onClick={closeMenu}
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + idx * 0.05, duration: 0.5 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <section className="hero relative" id="hero">
         <div className="absolute top-10 right-10 z-20 hidden lg:flex flex-col items-end opacity-40 hover:opacity-100 transition-opacity">
