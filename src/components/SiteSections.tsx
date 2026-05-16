@@ -264,8 +264,17 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         style={{ scaleX: useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 }) }}
       />
 
-
-      <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: 'normal' }} ref={headerRef}>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 10000,
+          mixBlendMode: "difference",
+        }}
+      />
+      <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: "normal" }} ref={headerRef}>
         <motion.div 
           className="logo cursor-pointer" 
           style={{ color: '#FFFFFF', mixBlendMode: 'normal' }}
