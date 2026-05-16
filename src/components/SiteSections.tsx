@@ -619,18 +619,34 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
             );
           })}
         </div>
-      </section>
+      </CinematicSection>
 
-      <section className="dark-section">
-        <div className="dark-content reveal">
-          <h2>{plan.heading}<br /><em>{plan.heading_em}</em></h2>
-          <p>{plan.text}</p>
-          <a href="/questionarioevento" className="btn-outline">
+      <CinematicSection className="dark-section" style={{ background: 'var(--color-black-lg)' }}>
+        <div className="dark-content">
+          <motion.h2
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1 }}
+          >
+            {plan.heading}<br /><em>{plan.heading_em}</em>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            {plan.text}
+          </motion.p>
+          <motion.a 
+            href="/questionarioevento" 
+            className="btn-outline"
+            whileHover={{ scale: 1.05, backgroundColor: "white", color: "black" }}
+          >
             <span>{plan.cta_label}</span>
             <span>→</span>
-          </a>
+          </motion.a>
         </div>
-      </section>
+      </CinematicSection>
 
       <section className="places-section" id="invasoes">
         <div className="places-header reveal">
