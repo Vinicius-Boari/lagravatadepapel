@@ -686,26 +686,37 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
 
-      <section className="about-section" id="sobre">
+      <CinematicSection className="about-section" id="sobre" style={{ background: 'var(--color-cream)' }}>
         <div className="about-text">
-          <h2 className="reveal">{about.heading}<br /><em>{about.heading_em}</em></h2>
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>{about.heading}<br /><em>{about.heading_em}</em></motion.h2>
           {(about.paragraphs ?? []).map((p: string, i: number) => (
-            <p className="reveal" key={i}>{p}</p>
+            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: i * 0.2 }} key={i}>{p}</motion.p>
           ))}
-          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
+          <motion.a 
+            href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="btn-outline"
+            whileHover={{ scale: 1.05, x: 10 }}
+          >
             <span>{about.cta_label}</span>
             <span>→</span>
-          </a>
+          </motion.a>
         </div>
-        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}>
+        <motion.div 
+          className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}
+          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 1 }}
+        >
           <div className="scroll-3d tilt-3d">
             <img 
               src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/1778107838154_payono_image.png"} 
               alt="Biografia - La Gravata de Papel" 
             />
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </CinematicSection>
 
       <section className="about-section" id="tropa-da-gravata" style={{ background: 'var(--color-black-lg)', color: 'var(--color-white-lg)' }}>
         <div className="about-text" style={{ background: 'transparent' }}>
