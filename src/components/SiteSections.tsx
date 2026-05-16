@@ -524,7 +524,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </section>
 
       <section className="places-section" id="invasoes">
-        <div className="places-header reveal">
+        <div className="places-header" data-animate="blur-up">
           <h2>{places.heading}<br />{places.heading2}</h2>
           <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
             Ver no Instagram →
@@ -532,7 +532,12 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
         <div className="places-grid scene-3d">
           {(places.items ?? []).map((p: any, i: number) => (
-            <div className={cn("place-card tilt-3d scroll-3d reveal", p.show_mobile === false && "hidden md:block")} key={i}>
+            <div 
+              className={cn("place-card tilt-3d scroll-3d", p.show_mobile === false && "hidden md:block")} 
+              key={i}
+              data-animate="blur-up"
+              data-delay={i * 150}
+            >
               <img src={p.img} alt={`Invasão Tropa da Gravata em ${p.title}`} />
               <div className="place-card-overlay">
                 <h3>{p.title}</h3>
