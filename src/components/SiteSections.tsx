@@ -552,16 +552,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
 
       <section className="about-section" id="sobre">
         <div className="about-text">
-          <h2 className="reveal">{about.heading}<br /><em>{about.heading_em}</em></h2>
+          <h2 data-animate="blur-left">{about.heading}<br /><em>{about.heading_em}</em></h2>
           {(about.paragraphs ?? []).map((p: string, i: number) => (
-            <p className="reveal" key={i}>{p}</p>
+            <p key={i} data-animate="blur-up" data-delay={i * 150}>{p}</p>
           ))}
-          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
+          <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline" data-animate="blur-up" data-delay={(about.paragraphs?.length || 1) * 150}>
             <span>{about.cta_label}</span>
             <span>→</span>
           </a>
         </div>
-        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")}>
+        <div className={cn("about-image scene-3d", about.show_mobile === false && "hidden md:block")} data-animate="blur-right">
           <div className="scroll-3d tilt-3d">
             <img 
               src={about.image || "https://rmetppilvfrxosvxzhgj.supabase.co/storage/v1/object/public/message-attachments/fa1e2554-75eb-47f0-ba93-607583130d73/1778107838154_payono_image.png"} 
