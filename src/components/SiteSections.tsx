@@ -378,12 +378,22 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </AnimatePresence>
 
       <section className="hero relative" id="hero">
-        <div className="absolute top-10 right-10 z-20 hidden lg:flex flex-col items-end opacity-40 hover:opacity-100 transition-opacity">
+        <motion.div 
+          className="absolute top-10 right-10 z-20 hidden lg:flex flex-col items-end"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 0.4, x: 0 }}
+          whileHover={{ opacity: 1 }}
+        >
           <span className="text-white font-bold uppercase tracking-[0.2em] text-[10px]">Os Originais</span>
           <span className="text-white/60 italic text-[9px] uppercase">Pioneiros em animação teatral</span>
-        </div>
+        </motion.div>
         {hero.video_url && (
-          <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
+          <motion.div 
+            className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          >
             <video 
               id="hero-video"
               title="Animação de Casamento Tropa da Gravata - La Gravata de Papel"
@@ -403,22 +413,42 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               <source src={getLimitedVideoUrl(hero.video_url)} type="video/mp4" />
               Seu navegador não suporta vídeos HTML5.
             </video>
-          </div>
+          </motion.div>
         )}
 
         <div className="hero-images" ref={heroImgsRef}>
-          <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
+          <motion.div 
+            className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}
+            initial={{ opacity: 0, x: -100, rotateY: -20 }}
+            animate={{ opacity: 1, x: 0, rotateY: -6 }}
+            transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
+          >
             <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
-          </div>
-          <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
+          </motion.div>
+          <motion.div 
+            className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
+          >
             <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
-          </div>
-          <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
+          </motion.div>
+          <motion.div 
+            className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}
+            initial={{ opacity: 0, x: 100, rotateY: 20 }}
+            animate={{ opacity: 1, x: 0, rotateY: 6 }}
+            transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+          >
             <img src={hero.image3 || "/images/hero_party.png"} alt="Entretenimento e diversão em eventos SP" loading="lazy" />
-          </div>
+          </motion.div>
         </div>
 
-        <div className="hero-content">
+        <motion.div 
+          className="hero-content"
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+        >
           <h1 className="hero-title">
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
@@ -429,16 +459,27 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           </div>
           <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
           {hero.cta_label && (
-            <div className="hero-cta">
+            <motion.div 
+              className="hero-cta"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <a href="/questionarioevento">
                 <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
               </a>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
-        <div className="hero-location">{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
+        <motion.div 
+          className="hero-location"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ duration: 1, delay: 1.2 }}
+        >
+          {hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}
+        </motion.div>
       </section>
 
       <div className="ticker">
