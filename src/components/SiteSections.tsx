@@ -427,10 +427,10 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
           <span className="text-white/40 font-bold uppercase tracking-[0.3em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-red-500 font-serif italic text-lg md:text-xl">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="video-section-header reveal">
+        <div className="video-section-header" data-animate="blur-left">
           <h2>{videos.heading}</h2>
         </div>
-        <div className="video-grid scene-3d">
+        <div className="video-grid scene-3d" data-animate="blur-zoom" data-delay="300">
           {(videos.items ?? []).map((v: any, i: number) => {
             const videoId = `video-${i}`;
             const videoTitle = `Vídeo ${v.title || 'Animação'} - La Gravata de Papel | Entretenimento para Casamentos`;
