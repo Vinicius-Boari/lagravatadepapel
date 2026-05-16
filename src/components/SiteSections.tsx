@@ -184,31 +184,11 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     raf = requestAnimationFrame(animate);
 
     const onScroll = () => {
-      const c = window.scrollY;
-      
-      // Parallax and other scroll effects
-      if (window.innerWidth < 768) return; // Skip parallax on mobile
-      if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
-        const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
-        if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px)`;
-        if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px)`;
-        if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px)`;
-      }
+      // Parallax handled by motion components for better performance
     };
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e, i) => {
-          if (e.isIntersecting) {
-            setTimeout(() => e.target.classList.add("visible"), i * 100);
-            obs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15 },
-    );
-    document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
+    // Removed manual intersection observer for .reveal since we use CinematicSection now
 
     const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
     const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
