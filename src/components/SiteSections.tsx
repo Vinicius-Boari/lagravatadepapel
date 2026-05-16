@@ -490,27 +490,40 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         </div>
       </div>
 
-      <section className="services-section" id="servicos">
-
-        <div className="flex flex-col items-center justify-center mb-8 reveal">
+      <CinematicSection className="services-section" id="servicos">
+        <div className="flex flex-col items-center justify-center mb-8">
           <span className="text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-gray-500 italic text-sm md:text-base">A hora da gravata nunca foi tão divertida</p>
         </div>
-        <div className="section-header reveal">
-          <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
+        <div className="section-header">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 0.7, y: 0 }}
+            viewport={{ once: true }}
+          >
+            {services.heading}<br /><span>{services.heading_em}</span>
+          </motion.h2>
         </div>
         <div className="services-grid scene-3d">
           {(services.items ?? []).map((s: any, i: number) => (
-            <div className={cn("service-card tilt-3d scroll-3d reveal", s.show_mobile === false && "hidden md:block")} key={i}>
+            <motion.div 
+              className={cn("service-card tilt-3d scroll-3d", s.show_mobile === false && "hidden md:block")} 
+              key={i}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ scale: 1.05, zIndex: 10 }}
+            >
               <img src={s.img} alt={`${s.title} - Serviço de animação La Gravata de Papel`} loading="lazy" />
               <div className="service-card-overlay">
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </CinematicSection>
 
       <section className="video-section" id="videos">
 
