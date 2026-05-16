@@ -236,7 +236,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
         el.removeEventListener("mousemove", move);
         el.removeEventListener("mouseleave", leave);
       });
-      obs.disconnect();
+      // obs.disconnect(); removed since we use framer-motion now
     };
   }, [content]);
 
