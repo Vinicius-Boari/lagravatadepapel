@@ -1468,3 +1468,55 @@ body.lg-body {
   color: white;
 }
 
+
+/* CINEMATIC TRANSITIONS */
+.services-section, .video-section, .dark-section, .places-section, .about-section, .coupons-section, .contacts-section {
+  transition: clip-path 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: clip-path;
+}
+
+/* Add a cinematic scale effect to the body on scroll */
+body {
+  perspective: 1000px;
+}
+
+.cinematic-reveal {
+  opacity: 0;
+  transform: translate3d(0, 100px, -100px) rotateX(10deg);
+  transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cinematic-reveal.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotateX(0deg);
+}
+
+/* Glassmorphism for cinematic overlays */
+.cinematic-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* Absurd 3D hover effects */
+.service-card, .place-card, .video-card, .coupon-card {
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.service-card:hover, .place-card:hover, .video-card:hover, .coupon-card:hover {
+  transform: translateZ(50px) rotateY(10deg);
+}
+
+.service-card-overlay, .place-card-overlay, .video-card-overlay {
+  transform: translateZ(20px);
+}
+
+/* Smooth section transitions */
+section {
+  margin-top: -1px; /* Avoid tiny gaps */
+}
