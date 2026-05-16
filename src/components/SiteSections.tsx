@@ -689,7 +689,9 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
               href={contact.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-card tilt-3d scroll-3d reveal group"
+              className="contact-card tilt-3d scroll-3d group"
+              data-animate="blur-left"
+              data-delay={(i + 1) * 100}
             >
               <div className="contact-icon-wrapper group-hover:scale-110 transition-transform duration-300">
                 {contact.icon}
