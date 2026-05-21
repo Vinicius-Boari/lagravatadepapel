@@ -33,8 +33,15 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     
+    let scrollTicking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
     };
 
     window.addEventListener("resize", checkMobile);
@@ -722,7 +729,7 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
         </div>
       </section>
 
-      <footer className="lg-footer" id="contatos">
+      <footer className="lg-footer">
         <div className="footer-top">
           <div className="footer-logo">La Gravata<br />de Papel</div>
           <div className="footer-links">
