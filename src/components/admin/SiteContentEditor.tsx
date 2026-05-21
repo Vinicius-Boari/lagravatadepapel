@@ -6,7 +6,7 @@
  * Supports direct text editing, list management, and image/video uploads.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSiteContent } from "@/hooks/useSiteContent";
+import { useSiteContent, SiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -15,9 +15,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket } from "lucide-react";
+import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { useVisualEditor } from "./VisualEditorContext";
 
 /**
  * Utility for displaying standardized toasts.
@@ -135,6 +136,7 @@ const ImageUpload = ({
 
 export function SiteContentEditor() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const { saveChanges: publishVisualChanges, draftContent: visualDraft } = useVisualEditor();
   const [activeSection, setActiveSection] = useState("hero");
 
   const [hero, setHero] = useState<any>({});
@@ -149,13 +151,12 @@ export function SiteContentEditor() {
   const [tropaConfig, setTropaConfig] = useState<any>({});
   const [languages, setLanguages] = useState<any>({});
   const [instagramConfig, setInstagramConfig] = useState<any>({});
-  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
-  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
-  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
+  
+  const [hasVisualDraft, setHasVisualDraft] = useState(false);
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
-    if (!contentLoading && isInitialLoad.current && Object.keys(content).length > 0) {
+    if (!contentLoading && Object.keys(content).length > 0) {
       setHero(content.hero || {});
       setAbout(content.about || {});
       setPlan(content.plan || {});
@@ -171,6 +172,14 @@ export function SiteContentEditor() {
       isInitialLoad.current = false;
     }
   }, [contentLoading, content]);
+
+  // Check for visual drafts
+  useEffect(() => {
+    if (Object.keys(visualDraft).length > 0 && Object.keys(content).length > 0) {
+      const diff = JSON.stringify(visualDraft) !== JSON.stringify(content);
+      setHasVisualDraft(diff);
+    }
+  }, [visualDraft, content]);
 
   const handleSave = useCallback(async (section: string, data: any) => {
     if (!data || Object.keys(data).length === 0) {
@@ -298,6 +307,24 @@ export function SiteContentEditor() {
           Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
         </Button>
       </div>
+
+      {hasVisualDraft && (
+        <div className="bg-amber-900/20 border border-amber-500/30 p-4 rounded-lg flex items-center justify-between mb-6 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-3 text-amber-500">
+            <AlertCircle className="w-5 h-5" />
+            <div className="text-sm">
+              <span className="font-bold">Alterações Pendentes!</span> Existem edições feitas no Editor Visual que ainda não foram publicadas.
+            </div>
+          </div>
+          <Button 
+            size="sm" 
+            className="bg-amber-600 hover:bg-amber-700 text-white font-bold"
+            onClick={publishVisualChanges}
+          >
+            Publicar Agora
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
         {[
