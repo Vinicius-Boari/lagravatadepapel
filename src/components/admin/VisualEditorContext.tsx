@@ -41,7 +41,11 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
         const property = parts[2];
         
         const array = [...(sectionData[arrayKey] || [])];
-        array[index] = { ...array[index], [property]: value };
+        if (value === null || value === "") {
+          array[index] = { ...array[index], [property]: "" };
+        } else {
+          array[index] = { ...array[index], [property]: value };
+        }
         sectionData[arrayKey] = array;
       } else if (field === "title_lines" && typeof value === "string") {
         sectionData[field] = value.split("\n");
