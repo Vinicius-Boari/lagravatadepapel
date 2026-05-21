@@ -15,12 +15,15 @@ interface VisualEditorContextType {
 const VisualEditorContext = createContext<VisualEditorContextType | undefined>(undefined);
 
 export function VisualEditorProvider({ children }: { children: ReactNode }) {
-  const { content, updateSection } = useSiteContent(true); // Always use draft if possible
+  // We check if we are in the visual editor route to decide whether to use drafts
+  const isVisualEditorPath = typeof window !== 'undefined' && window.location.pathname === '/admin/visual-editor';
+  const { content, updateSection } = useSiteContent(isVisualEditorPath); 
+  
   const [isEditing, setIsEditing] = useState(false);
   const [draftContent, setDraftContent] = useState<SiteContent>(content);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
 
-  // Sync draftContent when content from hook changes (e.g. initial load)
+  // Sync draftContent when content from hook changes (e.g. initial load or path change)
   React.useEffect(() => {
     setDraftContent(content);
   }, [content]);
@@ -41,10 +44,8 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
         array[index] = { ...array[index], [property]: value };
         sectionData[arrayKey] = array;
       } else if (field === "title_lines" && typeof value === "string") {
-        // Special case for title_lines textarea
         sectionData[field] = value.split("\n");
       } else if (field === "paragraphs" && typeof value === "string") {
-        // Special case for paragraphs textarea
         sectionData[field] = value.split("\n");
       } else {
         sectionData[field] = value;
@@ -57,15 +58,13 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
 
   const saveChanges = async () => {
     try {
-      // In a real visual editor, we might want to save all modified sections
-      // For simplicity, we'll compare and save what changed or just save everything
       const sections = Object.keys(draftContent);
       const savePromises = sections.map(section => 
         updateSection(section, draftContent[section])
       );
       
       await Promise.all(savePromises);
-      toast.success("Alterações salvas com sucesso!");
+      toast.success("Alterações salvas e publicadas com sucesso!");
     } catch (error) {
       console.error("Error saving changes:", error);
       toast.error("Erro ao salvar alterações.");
@@ -92,6 +91,8 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
 export const useVisualEditor = () => {
   const context = useContext(VisualEditorContext);
   if (context === undefined) {
+    // Return a safe fallback or throw depending on architecture
+    // For this project, we want it available everywhere
     throw new Error("useVisualEditor must be used within a VisualEditorProvider");
   }
   return context;

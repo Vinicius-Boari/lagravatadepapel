@@ -6,7 +6,7 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteSections } from "@/components/SiteSections";
-import { useSiteContent } from "@/hooks/useSiteContent";
+import { useVisualEditor } from "@/components/admin/VisualEditorContext";
 import { SEO } from "@/components/SEO";
 
 export const Route = createFileRoute("/")({
@@ -14,17 +14,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  // Use published content (useDraft = false) for the public site
-  const { content } = useSiteContent(false);
+  // Use draftContent from the context which automatically handles draft/published switching
+  const { draftContent } = useVisualEditor();
   
   return (
     <>
       <SEO 
-        title={content.seo?.title}
-        description={content.seo?.description}
-        keywords={content.seo?.keywords}
+        title={draftContent.seo?.title}
+        description={draftContent.seo?.description}
+        keywords={draftContent.seo?.keywords}
       />
-      <SiteSections content={content} />
+      <SiteSections content={draftContent} />
     </>
   );
 }
