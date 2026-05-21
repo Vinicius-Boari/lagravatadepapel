@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { memo } from "react";
-import { EditableElement } from "@/components/admin/EditableElement";
+
 
 interface HeroProps {
   hero: any;
@@ -18,7 +18,7 @@ export const Hero = memo(({ hero, heroImgsRef, getLimitedVideoUrl, handleTimeUpd
       </div>
       {hero.video_url && (
         <div className={`hero-video-bg ${hero.show_video_mobile === false ? 'hidden md:block' : ''}`}>
-          <EditableElement section="hero" field="video_url" type="text" label="Vídeo de Fundo">
+          
             <video 
               id="hero-video"
               title="Animação de Casamento Tropa da Gravata - La Gravata de Papel"
@@ -38,57 +38,57 @@ export const Hero = memo(({ hero, heroImgsRef, getLimitedVideoUrl, handleTimeUpd
               <source src={getLimitedVideoUrl(hero.video_url)} type="video/mp4" />
               Seu navegador não suporta vídeos HTML5.
             </video>
-          </EditableElement>
+          
         </div>
       )}
 
       <div className="hero-images" ref={heroImgsRef}>
         <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
-          <EditableElement section="hero" field="image1" type="image">
+          
             <img src={hero.image1 || "/images/hero_invasion.png"} alt={hero.image1_alt || "Animação teatral para casamentos - La Gravata de Papel"} loading="lazy" decoding="async" />
-          </EditableElement>
+          
         </div>
         <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
-          <EditableElement section="hero" field="image2" type="image">
+          
             <img src={hero.image2 || "/images/hero_venue.png"} alt={hero.image2_alt || "Tropa da Gravata animando festa de casamento"} loading="lazy" decoding="async" />
-          </EditableElement>
+          
         </div>
         <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
-          <EditableElement section="hero" field="image3" type="image">
+          
             <img src={hero.image3 || "/images/hero_party.png"} alt={hero.image3_alt || "Entretenimento e diversão em eventos SP"} loading="lazy" decoding="async" />
-          </EditableElement>
+          
         </div>
       </div>
 
       <div className="hero-content">
         <h1 className="hero-title">
-          <EditableElement section="hero" field="title_lines" type="textarea" label="Linhas do Título (uma por linha)">
+          
             {(hero.title_lines ?? []).map((line: string, i: number, arr: string[]) =>
               i === arr.length - 1 ? <em key={i}>{line}</em> : <span key={i}>{line}<br /></span>
             )}
-          </EditableElement>
+          
         </h1>
         <div className="sr-only">
           {hero.seo_hidden_text || "Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel."}
         </div>
-        <EditableElement section="hero" field="subtitle" type="textarea">
+        
           <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
-        </EditableElement>
+        
         {hero.cta_label && (
           <div className="hero-cta">
-            <EditableElement section="hero" field="cta_url" type="button" label="Botão Principal">
+            
               <a href="/questionarioevento" onClick={(e) => e.preventDefault()}>
                 <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
               </a>
-            </EditableElement>
+            
           </div>
         )}
       </div>
 
-      <EditableElement section="hero" field="location" type="text" className="hero-location">
+      
         <div>{hero.location?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</div>
-      </EditableElement>
+      
     </section>
   );
 });

@@ -1,7 +1,7 @@
 import { Instagram, MessageCircle, Video as TikTokIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
-import { EditableElement } from "@/components/admin/EditableElement";
+
 
 interface HeaderProps {
   isScrolled: boolean;
@@ -49,11 +49,11 @@ export const Header = memo(({ isScrolled, onMenuClick, content }: HeaderProps) =
         </div>
         
         <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
-          <EditableElement section="hero" field="cta_label" type="text" label="Rótulo Orçamento">
+          
             <a href="/questionarioevento" className="orcamento-header-btn">
               <span>{content?.hero?.cta_label || "ORÇAMENTO"}</span>
             </a>
-          </EditableElement>
+          
           <button className="menu-btn" onClick={onMenuClick} aria-label="Abrir menu">
             <span>MENU</span>
           </button>

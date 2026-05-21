@@ -1,7 +1,7 @@
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
-import { EditableElement } from "@/components/admin/EditableElement";
+
 
 interface VideoGridProps {
   videos: any;
@@ -31,9 +31,9 @@ export const VideoGrid = memo(({
         <p className="text-red-500 font-serif italic text-lg md:text-xl">A hora da gravata nunca foi tão divertida</p>
       </div>
       <div className="video-section-header reveal">
-        <EditableElement section="videos" field="heading" type="text" label="Título Galeria">
+        
           <h2>{videos.heading}</h2>
-        </EditableElement>
+        
       </div>
       <div className="video-grid scene-3d">
         {(videos.items ?? []).map((v: any, i: number) => {
@@ -53,7 +53,7 @@ export const VideoGrid = memo(({
               }}
             >
               <div className="relative w-full h-full">
-                <EditableElement section="videos" field={`items[${i}].src`} type="text" label="Link do Vídeo">
+                
                   <div className="w-full h-full">
                     {v.src ? (
                       <>
@@ -111,15 +111,15 @@ export const VideoGrid = memo(({
                       </>
                     )}
                   </div>
-                </EditableElement>
+                
               </div>
               <div className="video-card-overlay">
-                <EditableElement section="videos" field={`items[${i}].title`} type="text" label="Título Vídeo">
+                
                   <h3>{v.title}</h3>
-                </EditableElement>
-                <EditableElement section="videos" field={`items[${i}].tag`} type="text" label="Tag Vídeo">
+                
+                
                   <span>{v.tag}</span>
-                </EditableElement>
+                
               </div>
             </div>
           );
