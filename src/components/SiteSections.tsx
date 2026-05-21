@@ -392,7 +392,7 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
             )}
           </h1>
           <div className="sr-only">
-            Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel.
+            {content.hero?.seo_hidden_text || "Animação para Casamentos, Debutantes, Festas de 15 anos e Eventos. Tropa da Gravata, Inspiração BOPE e La Casa de Papel. Tequileiros, Robô de LED, Bazuca CO2. Especialistas em transformar a hora da gravata e garantir sua lua de mel."}
           </div>
           <p className="hero-subtitle">{hero.subtitle?.split("\n").map((l: string, i: number) => (<span key={i}>{l}<br /></span>))}</p>
           {hero.cta_label && (
@@ -417,11 +417,10 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
       </div>
 
       <section className="services-section" id="servicos">
-
-        <div className="flex flex-col items-center justify-center mb-8 reveal">
+        <header className="flex flex-col items-center justify-center mb-8 reveal">
           <span className="text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-[12px] mb-2">Os Originais</span>
           <p className="text-gray-500 italic text-sm md:text-base">A hora da gravata nunca foi tão divertida</p>
-        </div>
+        </header>
         <div className="section-header reveal">
           <h2>{services.heading}<br /><span>{services.heading_em}</span></h2>
         </div>
