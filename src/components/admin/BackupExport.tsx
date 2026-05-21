@@ -123,6 +123,26 @@ export function BackupExport() {
 
   useEffect(() => {
     fetchData();
+
+    // Subscribe to realtime updates for backups table
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'backups'
+        },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleRunBackup = async () => {
