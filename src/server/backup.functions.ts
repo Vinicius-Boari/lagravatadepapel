@@ -142,13 +142,14 @@ export const runBackupNow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     try {
+      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       const result = await runBackup({ trigger: "manual", createdBy: context.userId });
       await applyRetentionPolicy();
-      return result;
+      return { ok: true, result };
     } catch (err: any) {
       console.error("[backup.functions] runBackupNow error:", err.message);
-      throw new Error(err.message || "Internal Server Error");
+      return { ok: false, error: err.message };
     }
   });
 
