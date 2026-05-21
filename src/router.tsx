@@ -1,16 +1,26 @@
 import { createRouter, useRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
-function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+/**
+ * Standard Error Component
+ * 
+ * Provides a clean fallback UI for unexpected runtime errors.
+ * Includes a stack trace preview in development mode.
+ */
+function DefaultErrorComponent({ error, reset }: { error: any; reset: () => void }) {
   const router = useRouter();
 
+  // Standardize error message extraction
+  const errorMessage = error?.message || (typeof error === 'string' ? error : "An unexpected error occurred.");
+  const isResponseError = error instanceof Response || (error && typeof error === 'object' && 'status' in error);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 text-zinc-100">
+      <div className="max-w-md w-full text-center space-y-6 animate-in fade-in duration-500">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-red-600/10 border border-red-600/20 shadow-2xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 text-destructive"
+            className="h-10 w-10 text-red-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -23,30 +33,44 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
             />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Something went wrong</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          An unexpected error occurred. Please try again.
-        </p>
-        {import.meta.env.DEV && error.message && (
-          <pre className="mt-4 max-h-40 overflow-auto rounded-md bg-muted p-3 text-left font-mono text-xs text-destructive">
-            {error.message}
-          </pre>
+        
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight text-white uppercase italic">Ops! Algo deu errado</h1>
+          <p className="text-sm text-zinc-400">
+            {isResponseError 
+              ? "Sua sessão pode ter expirado ou você não tem permissão para acessar esta área." 
+              : "Tivemos um problema técnico temporário. Nossa equipe já foi notificada."}
+          </p>
+        </div>
+
+        {import.meta.env.DEV && errorMessage && (
+          <div className="mt-4 p-4 rounded-lg bg-zinc-900 border border-zinc-800 text-left overflow-hidden shadow-inner">
+            <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+              Debug Info (Dev Only)
+            </p>
+            <pre className="max-h-40 overflow-auto font-mono text-[11px] text-zinc-500 leading-relaxed custom-scrollbar">
+              {errorMessage}
+              {error?.stack && `\n\nStack:\n${error.stack}`}
+            </pre>
+          </div>
         )}
-        <div className="mt-6 flex items-center justify-center gap-3">
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
           <button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-red-600 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-red-700 hover:scale-105 active:scale-95 shadow-lg shadow-red-900/20"
           >
-            Try again
+            Tentar novamente
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-3 text-sm font-bold text-zinc-300 transition-all hover:bg-zinc-800 hover:text-white"
           >
-            Go home
+            Voltar ao Início
           </a>
         </div>
       </div>

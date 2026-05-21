@@ -94,6 +94,14 @@ export function BackupExport() {
         listBackupsFn({ headers }),
         getSettingsFn({ headers }),
       ]);
+
+      if (backupsRes && 'ok' in backupsRes && !backupsRes.ok) {
+        throw new Error(backupsRes.error);
+      }
+      if (settingsRes && 'ok' in settingsRes && !settingsRes.ok) {
+        throw new Error(settingsRes.error);
+      }
+
       setBackups(backupsRes?.backups || []);
       setSettings(settingsRes?.settings || {
         backup_type: "Supabase (Nativo)",
@@ -106,8 +114,8 @@ export function BackupExport() {
       });
     } catch (error: any) {
       console.error("Backup fetch error:", error);
-      const errorMessage = error instanceof Response ? `Erro ${error.status}: ${error.statusText}` : error.message || "Erro desconhecido";
-      toast.error(`Erro ao carregar dados de backup: ${errorMessage}`);
+      const errorMessage = error?.message || "Erro desconhecido ao carregar dados.";
+      toast.error(`Erro: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -126,18 +134,18 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      await toast.promise(runNowFn({ headers }), {
-        loading: "Iniciando backup...",
-        success: () => {
-          fetchData();
-          return "Backup concluído com sucesso!";
-        },
-        error: (err) => {
-          fetchData();
-          const errorMessage = err instanceof Response ? `Erro ${err.status}` : err.message || "Erro desconhecido";
-          return `Erro ao executar backup: ${errorMessage}`;
-        }
-      });
+      const res = await runNowFn({ headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      toast.success("Backup concluído com sucesso!");
+      fetchData();
+    } catch (err: any) {
+      console.error("Backup manual error:", err);
+      toast.error(`Erro ao executar backup: ${err.message || "Erro desconhecido"}`);
+      fetchData();
     } finally {
       setIsRunningBackup(false);
     }
@@ -168,15 +176,19 @@ export function BackupExport() {
         backup_path: settings.backup_path || "/data/backups"
       };
 
-      await updateSettingsFn({ data: dataToSave, headers });
+      const res = await updateSettingsFn({ data: dataToSave, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
 
       setSaveStatus('saved');
       toast.success("Configurações de backup salvas!");
       fetchData();
     } catch (error: any) {
       setSaveStatus('error');
-      const errorMessage = error instanceof Response ? `Erro ${error.status}` : error.message || "Erro desconhecido";
-      toast.error(`Erro ao salvar: ${errorMessage}`);
+      console.error("Backup settings error:", error);
+      toast.error(`Erro ao salvar: ${error.message || "Erro desconhecido"}`);
     }
   };
 
@@ -188,32 +200,40 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      await toast.promise(deleteFn({ data: { id }, headers }), {
-        loading: "Excluindo backup...",
-        success: () => {
-          fetchData();
-          return "Backup excluído.";
-        },
-        error: (err) => `Erro ao excluir backup: ${err.message}`
-      });
-    } catch (error) {}
+      const res = await deleteFn({ data: { id }, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      toast.success("Backup excluído.");
+      fetchData();
+    } catch (err: any) {
+      console.error("Backup delete error:", err);
+      toast.error(`Erro ao excluir backup: ${err.message || "Erro desconhecido"}`);
+    }
   };
 
   const handleRestore = async (id: string) => {
     if (!confirm("Isso irá restaurar o sistema para este ponto. Continuar?")) return;
     
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    const headers = { Authorization: `Bearer ${token}` };
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers = { Authorization: `Bearer ${token}` };
 
-    toast.promise(restoreFn({ data: { id }, headers }), {
-      loading: "Restaurando sistema...",
-      success: () => {
-        setTimeout(() => window.location.reload(), 2000);
-        return "Sistema restaurado com sucesso!";
-      },
-      error: (err) => `Erro na restauração: ${err.message}`
-    });
+      const res = await restoreFn({ data: { id }, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      toast.success("Sistema restaurado com sucesso!");
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (err: any) {
+      console.error("Backup restore error:", err);
+      toast.error(`Erro na restauração: ${err.message || "Erro desconhecido"}`);
+    }
   };
 
   const handleDownload = async (id: string) => {
@@ -224,7 +244,13 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      const { url } = await getDownloadFn({ data: { id }, headers });
+      const res = await getDownloadFn({ data: { id }, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      const url = res?.url;
       
       if (url) {
         // Fetch the file as a blob to trigger a direct download instead of just opening a tab
@@ -250,9 +276,9 @@ export function BackupExport() {
       } else {
         toast.error("URL de download não disponível.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Download error:", error);
-      toast.error("Erro ao realizar o download do arquivo.");
+      toast.error(`Erro ao realizar download: ${error.message || "Erro desconhecido"}`);
     }
   };
 

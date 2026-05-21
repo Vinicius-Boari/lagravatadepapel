@@ -43,17 +43,16 @@ export function useAuth() {
         else if (roles.some((r) => r.role === "admin")) resolvedRole = "admin";
       }
 
-      // Role is determined exclusively from the user_roles table (server-side, RLS-protected).
-      // No client-side hardcoded fallbacks — use the bootstrap-owner edge function to seed an owner.
-
-      
-
       // Fetch profile data to get full_name and latest email
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("full_name, email")
         .eq("id", authUser.id)
         .maybeSingle();
+
+      if (profileError) {
+        console.warn("[useAuth] Profile fetch error:", profileError);
+      }
 
       const displayName =
         profile?.full_name ||
@@ -71,47 +70,78 @@ export function useAuth() {
         role: resolvedRole,
       });
       setRole(resolvedRole);
-    } catch (err) {
-      console.error("[useAuth] Critical error in loadRole:", err);
+    } catch (err: any) {
+      console.error("[useAuth] Critical error in loadRole:", err?.message || err);
     }
   };
 
   useEffect(() => {
-    // IMPORTANTE: registrar o listener ANTES de chamar getSession (regra do Supabase).
+    let isMounted = true;
+
+    // Listener para mudanças de estado de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      if (!isMounted) return;
       setSession(newSession);
-      // Defer Supabase calls para evitar deadlock no callback.
+      // Defer calls para evitar deadlock
       setTimeout(() => {
-        loadRole(newSession?.user ?? null);
+        if (isMounted) loadRole(newSession?.user ?? null);
       }, 0);
     });
 
-    supabase.auth.getSession().then(({ data: { session: existing } }) => {
-      setSession(existing);
-      loadRole(existing?.user ?? null).finally(() => setLoading(false));
-    });
+    // Carga inicial
+    const initSession = async () => {
+      try {
+        const { data: { session: existing } } = await supabase.auth.getSession();
+        if (isMounted) {
+          setSession(existing);
+          await loadRole(existing?.user ?? null);
+        }
+      } catch (err) {
+        console.error("[useAuth] Session init error:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
 
-    return () => subscription.unsubscribe();
+    initSession();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setError(null);
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    if (signInError) {
-      setError(signInError.message);
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+        return false;
+      }
+      return true;
+    } catch (err: any) {
+      setError(err?.message || "Erro inesperado no servidor de login.");
       return false;
     }
-    return true;
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setRole(null);
-    setSession(null);
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setRole(null);
+      setSession(null);
+    } catch (err) {
+      console.error("[useAuth] Sign out error:", err);
+      // Forçar limpeza local mesmo se o servidor falhar
+      setUser(null);
+      setRole(null);
+      setSession(null);
+    }
   };
 
   const isAdmin = role === "admin" || role === "owner";
@@ -125,7 +155,6 @@ export function useAuth() {
     isOwner: role === "owner",
     isAdmin,
     login,
-    
     logout,
   };
 }

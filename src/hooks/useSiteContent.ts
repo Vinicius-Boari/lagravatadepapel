@@ -163,14 +163,13 @@ export function useSiteContent(useDraft = false) {
 
   const fetchContent = useCallback(async (isMounted: boolean = true) => {
     try {
-      setLoading(true);
+      if (isMounted) setLoading(true);
       const { data, error } = await supabase
         .from("site_content")
         .select("key, value, draft_value");
       
       if (error) {
-        console.error("Supabase error fetching site content:", error);
-        // Silent error for end users unless it's a critical fetch
+        console.error("[useSiteContent] Supabase fetch error:", error.message);
         return;
       }
 
@@ -178,12 +177,15 @@ export function useSiteContent(useDraft = false) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
+          // Deep merge protection to avoid overwriting with null/empty
+          if (v && typeof v === 'object') {
+            merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
+          }
         }
         setContent(merged);
       }
-    } catch (err) {
-      console.error("Critical error fetching site content:", err);
+    } catch (err: any) {
+      console.error("[useSiteContent] Critical fetch error:", err?.message || err);
     } finally {
       if (isMounted) setLoading(false);
     }
@@ -221,25 +223,27 @@ export function useSiteContent(useDraft = false) {
     };
   }, [fetchContent]);
 
-  const updateSection = async (key: string, newValue: any, isDraft = false) => {
+  const updateSection = async (key: string, newValue: any) => {
     try {
-      const { data, error } = await supabase
+      if (!newValue) {
+        console.warn(`[useSiteContent] Blocked attempt to save empty data for ${key}`);
+        return false;
+      }
+
+      const { error } = await supabase
         .from("site_content")
         .upsert({ 
           key, 
           value: newValue, 
           draft_value: newValue, 
           updated_at: new Date().toISOString() 
-        }, { onConflict: 'key' })
-        .select();
+        }, { onConflict: 'key' });
 
       if (error) {
-        console.error(`[useSiteContent] Supabase error for ${key}:`, error);
-        toast.error(`Erro no Supabase: ${error.message}`);
-        throw error;
+        console.error(`[useSiteContent] Upsert error for ${key}:`, error.message);
+        toast.error(`Erro ao salvar: ${error.message}`);
+        return false;
       }
-      
-      
       
       setContent(prev => ({
         ...prev,
@@ -248,11 +252,11 @@ export function useSiteContent(useDraft = false) {
 
       return true;
     } catch (err: any) {
-      console.error(`[useSiteContent] Catch block for ${key}:`, err);
-      toast.error(`Erro crítico ao salvar: ${err.message || 'Verifique sua conexão'}`);
-      throw err;
+      console.error(`[useSiteContent] Critical save error for ${key}:`, err?.message || err);
+      toast.error(`Erro inesperado ao salvar. Verifique sua rede.`);
+      return false;
     }
   };
 
-  return { content, loading, updateSection, refresh: fetchContent };
+  return { content, loading, updateSection, refresh: () => fetchContent(true) };
 }

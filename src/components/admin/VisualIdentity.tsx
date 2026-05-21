@@ -94,7 +94,7 @@ export function VisualIdentity() {
     setLoading(true);
     try {
       console.log("Tentando salvar Identidade Visual", dataToSave);
-      const success = await updateSection("visual", dataToSave, isDraft);
+      const success = await updateSection("visual", dataToSave);
       if (!success) throw new Error("Update failed");
       return true;
     } catch (err: any) {

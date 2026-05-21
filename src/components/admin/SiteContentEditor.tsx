@@ -184,11 +184,16 @@ export function SiteContentEditor() {
   const handleSave = useCallback(async (section: string, data: any) => {
     if (!data || Object.keys(data).length === 0) {
       console.warn(`[SiteContentEditor] Tentativa de salvar seção ${section} vazia.`);
-      return;
+      return false;
     }
-    console.log(`[SiteContentEditor] Calling updateSection for: ${section}`, data);
-    const success = await updateSection(section, data, false);
-    return success;
+    try {
+      console.log(`[SiteContentEditor] Calling updateSection for: ${section}`);
+      const success = await updateSection(section, data);
+      return success;
+    } catch (err: any) {
+      console.error(`[SiteContentEditor] handleSave error for ${section}:`, err);
+      return false;
+    }
   }, [updateSection]);
 
   const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
@@ -210,7 +215,6 @@ export function SiteContentEditor() {
       onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log(`[SaveBtn] Clicked for section: ${section}`, data);
         setStatus('saving');
         try {
           const result = await handleSave(section, data);
@@ -218,12 +222,13 @@ export function SiteContentEditor() {
             setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
           } else {
-            throw new Error("Falha ao salvar");
+            setStatus('error');
+            showToast(`Erro ao salvar ${section}. Verifique sua conexão.`, 'error');
           }
         } catch (err: any) {
           console.error(`[SaveBtn] Error in section ${section}:`, err);
           setStatus('error');
-          showToast(`Erro ao salvar ${section}: ${err.message || 'Erro desconhecido'}`, 'error');
+          showToast(`Erro ao salvar ${section}: ${err?.message || 'Erro desconhecido'}`, 'error');
         }
       }}
       className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
@@ -276,11 +281,12 @@ export function SiteContentEditor() {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
                 } else {
-                  throw new Error("Falha ao salvar");
+                  current.set('error');
+                  showToast(`Erro ao salvar ${activeSection}.`, 'error');
                 }
               } catch (err: any) {
                 current.set('error');
-                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
+                showToast(`Erro ao salvar ${activeSection}: ${err?.message || "Erro de rede"}`, 'error');
               }
             }
           }}
