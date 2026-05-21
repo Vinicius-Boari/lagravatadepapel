@@ -94,6 +94,14 @@ export function BackupExport() {
         listBackupsFn({ headers }),
         getSettingsFn({ headers }),
       ]);
+
+      if (backupsRes && 'ok' in backupsRes && !backupsRes.ok) {
+        throw new Error(backupsRes.error);
+      }
+      if (settingsRes && 'ok' in settingsRes && !settingsRes.ok) {
+        throw new Error(settingsRes.error);
+      }
+
       setBackups(backupsRes?.backups || []);
       setSettings(settingsRes?.settings || {
         backup_type: "Supabase (Nativo)",
@@ -106,8 +114,8 @@ export function BackupExport() {
       });
     } catch (error: any) {
       console.error("Backup fetch error:", error);
-      const errorMessage = error instanceof Response ? `Erro ${error.status}: ${error.statusText}` : error.message || "Erro desconhecido";
-      toast.error(`Erro ao carregar dados de backup: ${errorMessage}`);
+      const errorMessage = error?.message || "Erro desconhecido ao carregar dados.";
+      toast.error(`Erro: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
