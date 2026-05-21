@@ -46,7 +46,7 @@ export function useAuth() {
       // Role is determined exclusively from the user_roles table (server-side, RLS-protected).
       // No client-side hardcoded fallbacks — use the bootstrap-owner edge function to seed an owner.
 
-      console.log("[useAuth] Resolved role:", resolvedRole);
+      
 
       // Fetch profile data to get full_name and latest email
       const { data: profile } = await supabase
