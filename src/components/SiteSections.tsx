@@ -305,7 +305,7 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
       <About about={content.about} />
       <Tropa tropaConfig={content.tropa_config} />
       <Coupons coupons={content.coupons} />
-      <Contacts />
+      <Contacts content={content} />
       <Footer footer={content.footer} content={content} />
       
       <a className="whatsapp-float-real" href={content.hero?.cta_url} target="_blank" rel="noopener noreferrer" aria-label="Fale pelo WhatsApp">
