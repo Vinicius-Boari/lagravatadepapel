@@ -32,7 +32,7 @@ export function PagesRoutes() {
           <p className="text-red-500/70">Visualize as rotas ativas do site e gerencie redirecionamentos.</p>
         </div>
         <div className="flex items-center gap-4">
-          <AutosaveIndicator status={status} />
+          
           <Button onClick={() => toast.info("Funcionalidade de criação de novas páginas em breve.")}>
             <Plus className="mr-2 w-4 h-4" />
             Nova Rota
