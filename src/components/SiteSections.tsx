@@ -375,13 +375,13 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
 
         <div className="hero-images" ref={heroImgsRef}>
           <div className={cn("hero-img hero-img-1", hero.image1_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image1 || "/images/hero_invasion.png"} alt="Animação teatral para casamentos - La Gravata de Papel" loading="lazy" />
+            <img src={hero.image1 || "/images/hero_invasion.png"} alt={hero.image1_alt || "Animação teatral para casamentos - La Gravata de Papel"} loading="lazy" decoding="async" />
           </div>
           <div className={cn("hero-img hero-img-2", hero.image2_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image2 || "/images/hero_venue.png"} alt="Tropa da Gravata animando festa de casamento" loading="lazy" />
+            <img src={hero.image2 || "/images/hero_venue.png"} alt={hero.image2_alt || "Tropa da Gravata animando festa de casamento"} loading="lazy" decoding="async" />
           </div>
           <div className={cn("hero-img hero-img-3", hero.image3_show_mobile === false && "hidden md:block")}>
-            <img src={hero.image3 || "/images/hero_party.png"} alt="Entretenimento e diversão em eventos SP" loading="lazy" />
+            <img src={hero.image3 || "/images/hero_party.png"} alt={hero.image3_alt || "Entretenimento e diversão em eventos SP"} loading="lazy" decoding="async" />
           </div>
         </div>
 
