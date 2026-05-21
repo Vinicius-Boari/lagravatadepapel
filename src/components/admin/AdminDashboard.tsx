@@ -262,13 +262,8 @@ export function AdminDashboard() {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => {
-                if (item.id === "visual_editor") {
-                  router.navigate({ to: "/admin/visual-editor" });
-                } else {
-                  setActiveTab(item.id);
-                }
-              }}
+              onClick={() => setActiveTab(item.id)}
+
               className={cn(
                 "w-full flex items-center px-6 py-3 transition-all relative group",
                 activeTab === item.id 

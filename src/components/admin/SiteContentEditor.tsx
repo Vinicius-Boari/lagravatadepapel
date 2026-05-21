@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
-import { useVisualEditor } from "./VisualEditorContext";
+
 
 /**
  * Utility for displaying standardized toasts.
@@ -136,7 +136,7 @@ const ImageUpload = ({
 
 export function SiteContentEditor() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
-  const { saveChanges: publishVisualChanges, draftContent: visualDraft } = useVisualEditor();
+  
   const [activeSection, setActiveSection] = useState("hero");
 
   const [hero, setHero] = useState<any>({});
@@ -152,7 +152,7 @@ export function SiteContentEditor() {
   const [languages, setLanguages] = useState<any>({});
   const [instagramConfig, setInstagramConfig] = useState<any>({});
   
-  const [hasVisualDraft, setHasVisualDraft] = useState(false);
+  
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
@@ -173,13 +173,8 @@ export function SiteContentEditor() {
     }
   }, [contentLoading, content]);
 
-  // Check for visual drafts
-  useEffect(() => {
-    if (Object.keys(visualDraft).length > 0 && Object.keys(content).length > 0) {
-      const diff = JSON.stringify(visualDraft) !== JSON.stringify(content);
-      setHasVisualDraft(diff);
-    }
-  }, [visualDraft, content]);
+
+
 
   const handleSave = useCallback(async (section: string, data: any) => {
     if (!data || Object.keys(data).length === 0) {
@@ -317,23 +312,8 @@ export function SiteContentEditor() {
         </Button>
       </div>
 
-      {hasVisualDraft && (
-        <div className="bg-amber-900/20 border border-amber-500/30 p-4 rounded-lg flex items-center justify-between mb-6 animate-in fade-in slide-in-from-top-2">
-          <div className="flex items-center gap-3 text-amber-500">
-            <AlertCircle className="w-5 h-5" />
-            <div className="text-sm">
-              <span className="font-bold">Alterações Pendentes!</span> Existem edições feitas no Editor Visual que ainda não foram publicadas.
-            </div>
-          </div>
-          <Button 
-            size="sm" 
-            className="bg-amber-600 hover:bg-amber-700 text-white font-bold"
-            onClick={publishVisualChanges}
-          >
-            Publicar Agora
-          </Button>
-        </div>
-      )}
+
+
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
         {[

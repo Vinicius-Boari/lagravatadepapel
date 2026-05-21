@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useInstagramPosts, type InstagramPost } from "@/hooks/useInstagramPosts";
 import { memo } from "react";
-import { EditableElement } from "@/components/admin/EditableElement";
+
 
 type Config = {
   handle?: string;
@@ -80,16 +80,16 @@ export const InstagramCarousel3D = memo(function InstagramCarousel3D({ config }:
           <span className="ig3d-dot" /> ao vivo no instagram
         </div>
         <h2 className="flex flex-col items-center gap-1">
-          <EditableElement section="instagram_config" field="title" type="text" label="Título Instagram">
+          
             <span className="text-white">{config.title ?? "Siga no Instagram"}</span>
-          </EditableElement>
-          <EditableElement section="instagram_config" field="handle" type="text" label="Usuário Instagram">
+          
+          
             <span className="not-italic text-red-600 font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]">@{handle}</span>
-          </EditableElement>
+          
         </h2>
-        <EditableElement section="instagram_config" field="subtitle" type="textarea" label="Subtítulo Instagram">
+        
           <p className="ig3d-sub">{config.subtitle ?? "Os bastidores das nossas invasões — atualizados em tempo real."}</p>
-        </EditableElement>
+        
       </div>
 
       <div className="ig3d-scene">
@@ -132,7 +132,7 @@ export const InstagramCarousel3D = memo(function InstagramCarousel3D({ config }:
       </div>
 
       <div className="ig3d-footer reveal">
-        <EditableElement section="instagram_config" field="profile_url" type="link" label="Link Perfil Instagram">
+        
           <a className="ig3d-cta" href={profileUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.preventDefault()}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -142,7 +142,7 @@ export const InstagramCarousel3D = memo(function InstagramCarousel3D({ config }:
             <span>Seguir @{handle}</span>
             <span className="ig3d-arrow">→</span>
           </a>
-        </EditableElement>
+        
         {loading && <span className="ig3d-loading">carregando feed…</span>}
       </div>
 
