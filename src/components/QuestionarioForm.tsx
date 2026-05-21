@@ -134,10 +134,10 @@ export function QuestionarioForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
         {/* Seção 0: Invasão e Cupom */}
-        <div className="space-y-6">
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Tipo de Invasão</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-[100]">
@@ -199,10 +199,10 @@ export function QuestionarioForm() {
         <Separator className="bg-zinc-800/50" />
 
         {/* Seção 1: Informações Básicas */}
-        <div className="space-y-6">
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Informações do Evento</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Informações do Evento</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -290,10 +290,10 @@ export function QuestionarioForm() {
         <Separator className="bg-zinc-800/50" />
 
         {/* Seção 2: Localização */}
-        <div className="space-y-6">
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Local do Evento</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Local do Evento</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
