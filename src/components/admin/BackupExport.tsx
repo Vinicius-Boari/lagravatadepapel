@@ -484,16 +484,20 @@ export function BackupExport() {
                       <TableCell className="text-zinc-300">{formatSize(b.size_bytes)}</TableCell>
                       <TableCell className="text-center">
                         <div className="flex justify-center">
-                          {b.status === "completed" ? (
+                          {b.status === "success" || b.status === "completed" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20">
                               <Check className="w-3 h-3 mr-1" /> Sucesso
                             </span>
-                          ) : b.status === "failed" ? (
+                          ) : b.status === "error" || b.status === "failed" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20">
                               <X className="w-3 h-3 mr-1" /> Falha
                             </span>
-                          ) : (
+                          ) : b.status === "processing" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
+                              <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Processando
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
                               <Clock className="w-3 h-3 mr-1" /> Pendente
                             </span>
                           )}
