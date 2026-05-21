@@ -108,16 +108,16 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     let mx = 0, my = 0;
     let trailX = 0, trailY = 0;
     const points: { x: number; y: number }[] = [];
-    const maxPoints = 30; // Reduced for a more minimal trail
+    const maxPoints = 30;
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
-      my = e.clientY + window.scrollY;
+      my = e.clientY;
     };
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = document.documentElement.scrollHeight;
+      canvas.height = window.innerHeight;
     };
 
     let raf: number;
@@ -250,7 +250,7 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       <canvas
         ref={canvasRef}
         style={{
-          position: "absolute",
+          position: "fixed",
           inset: 0,
           pointerEvents: "none",
           zIndex: 10000,
