@@ -1,3 +1,9 @@
+/**
+ * SEO Component
+ * 
+ * Handles all meta tags, social media previews (Open Graph/Twitter), 
+ * and JSON-LD structured data for search engine optimization.
+ */
 import { Helmet } from "react-helmet-async";
 
 interface SEOProps {

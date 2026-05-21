@@ -1,3 +1,9 @@
+/**
+ * useInstagramPosts Hook
+ * 
+ * Fetches and manages Instagram posts stored in Supabase.
+ * Supports real-time updates and filtering by publication status.
+ */
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
