@@ -11,7 +11,7 @@ import {
 } from "./backup.server";
 
 async function assertIsAdmin(userId: string) {
-  console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  
   if (!userId) {
     console.error("[backup.functions] assertIsAdmin: No userId provided");
     throw new Error("Usuário não identificado");
