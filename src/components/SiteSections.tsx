@@ -4,12 +4,12 @@
  * This is the main layout component that orchestrates all the sections of the public site.
  * It handles global UI states like scrolling, mobile detection, and mouse trail animations.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket, Play } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
-import { memo } from "react";
+
 
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
@@ -20,7 +20,6 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
   // --- UI States ---
   const [isMobile, setIsMobile] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   
   // --- Refs for DOM elements and animations ---
   const headerRef = useRef<HTMLElement>(null);

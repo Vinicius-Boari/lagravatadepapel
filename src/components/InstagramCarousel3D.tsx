@@ -20,7 +20,6 @@ type Config = {
  * Posts are arranged in a circle in 3D space and continuously rotate.
  * Hover any card to pause and inspect; click to open in Instagram.
  */
-import { memo } from "react";
 
 export const InstagramCarousel3D = memo(function InstagramCarousel3D({ config }: { config: Config }) {
   const { posts, loading } = useInstagramPosts();
