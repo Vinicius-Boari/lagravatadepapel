@@ -21,7 +21,6 @@ export function useAuth() {
 
   // Carrega o papel (role) do usuário autenticado a partir da tabela user_roles.
   const loadRole = async (authUser: User | null) => {
-    console.log("[useAuth] loadRole starting for:", authUser?.email);
     if (!authUser) {
       setUser(null);
       setRole(null);
