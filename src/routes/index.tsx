@@ -1,3 +1,9 @@
+/**
+ * Home Route (index)
+ * 
+ * Entry point for the public website.
+ * Loads site content, injects SEO meta tags, and renders the SiteSections orchestration component.
+ */
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteSections } from "@/components/SiteSections";
 import { useSiteContent } from "@/hooks/useSiteContent";
@@ -8,7 +14,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  // Use published content (useDraft = false) for the public site
   const { content } = useSiteContent(false);
+  
   return (
     <>
       <SEO 

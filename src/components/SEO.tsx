@@ -6,6 +6,14 @@
  */
 import { Helmet } from "react-helmet-async";
 
+/**
+ * SEOProps Interface
+ * @property {string} title - Page title for the <title> tag and social shares.
+ * @property {string} description - Meta description for search results and social shares.
+ * @property {string} keywords - Meta keywords tag (limited SEO impact but good for internal categorization).
+ * @property {string} ogImage - URL for the Open Graph image preview.
+ * @property {string} ogUrl - Canonical URL for the page.
+ */
 interface SEOProps {
   title?: string;
   description?: string;
