@@ -62,7 +62,9 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
     if (playingVideos[id]) {
       videoElement.pause();
     } else {
-      videoElement.play();
+      videoElement.play().catch(err => {
+        console.error("Manual video play failed:", err);
+      });
     }
     setPlayingVideos(prev => ({ ...prev, [id]: !prev[id] }));
   };
@@ -78,7 +80,11 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
           if (entry.isIntersecting) {
             // Give it a tiny delay to ensure smooth scrolling
             setTimeout(() => {
-              if (video.paused) video.play().catch(() => {});
+              if (video.paused) {
+                video.play().catch((err) => {
+                  console.warn("Video auto-play failed (expected if no user interaction):", err);
+                });
+              }
             }, 50);
           } else {
             video.pause();
@@ -124,35 +130,40 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
 
     let raf: number;
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      trailX += (mx - trailX) * 0.15;
-      trailY += (my - trailY) * 0.15;
+      try {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        trailX += (mx - trailX) * 0.15;
+        trailY += (my - trailY) * 0.15;
 
-      points.push({ x: trailX, y: trailY });
-      if (points.length > maxPoints) points.shift();
+        points.push({ x: trailX, y: trailY });
+        if (points.length > maxPoints) points.shift();
 
-      if (points.length > 1) {
-        for (let i = 1; i < points.length; i++) {
-          const p1 = points[i - 1];
-          const p2 = points[i];
-          
-          const progress = i / points.length; // 0 at tail, 1 at head
-          const opacity = progress * 0.5;
-          const width = progress * 2.5; // Starts thick at head (index length) and thins to tail
-          
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
-          ctx.lineWidth = width;
+        if (points.length > 1) {
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
+          for (let i = 1; i < points.length; i++) {
+            const p1 = points[i - 1];
+            const p2 = points[i];
+            
+            const progress = i / points.length; 
+            const opacity = progress * 0.5;
+            const width = progress * 2.5; 
+            
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(192, 57, 43, ${opacity})`;
+            ctx.lineWidth = width;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
         }
-      }
 
-      raf = requestAnimationFrame(animate);
+        raf = requestAnimationFrame(animate);
+      } catch (err) {
+        console.error("Canvas animation error:", err);
+        cancelAnimationFrame(raf);
+      }
     };
 
     window.addEventListener("resize", resize);
