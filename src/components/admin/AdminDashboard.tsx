@@ -212,6 +212,7 @@ export function AdminDashboard() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "visual", label: "Identidade Visual", icon: Palette },
+    { id: "visual_editor", label: "Editor Visual (Wix)", icon: PenTool },
     { id: "content", label: "Conteúdo do Site", icon: FileText },
     
     { id: "media", label: "Mídia / Fotos e Vídeos", icon: ImageIcon },
@@ -261,7 +262,13 @@ export function AdminDashboard() {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                if (item.id === "visual_editor") {
+                  router.navigate({ to: "/admin/visual-editor" });
+                } else {
+                  setActiveTab(item.id);
+                }
+              }}
               className={cn(
                 "w-full flex items-center px-6 py-3 transition-all relative group",
                 activeTab === item.id 
