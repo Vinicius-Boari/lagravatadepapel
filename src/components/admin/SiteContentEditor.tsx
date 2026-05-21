@@ -215,7 +215,6 @@ export function SiteContentEditor() {
       onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log(`[SaveBtn] Clicked for section: ${section}`, data);
         setStatus('saving');
         try {
           const result = await handleSave(section, data);
@@ -223,12 +222,13 @@ export function SiteContentEditor() {
             setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
           } else {
-            throw new Error("Falha ao salvar");
+            setStatus('error');
+            showToast(`Erro ao salvar ${section}. Verifique sua conexão.`, 'error');
           }
         } catch (err: any) {
           console.error(`[SaveBtn] Error in section ${section}:`, err);
           setStatus('error');
-          showToast(`Erro ao salvar ${section}: ${err.message || 'Erro desconhecido'}`, 'error');
+          showToast(`Erro ao salvar ${section}: ${err?.message || 'Erro desconhecido'}`, 'error');
         }
       }}
       className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
