@@ -24,16 +24,28 @@ export function useInstagramPosts(opts: { all?: boolean } = {}) {
     let mounted = true;
 
     const load = async () => {
-      let q = supabase
-        .from("instagram_posts")
-        .select("*")
-        .order("position", { ascending: true })
-        .order("posted_at", { ascending: false });
-      if (!opts.all) q = q.eq("is_published", true);
-      const { data } = await q;
-      if (!mounted) return;
-      setPosts((data ?? []) as InstagramPost[]);
-      setLoading(false);
+      try {
+        let q = supabase
+          .from("instagram_posts")
+          .select("*")
+          .order("position", { ascending: true })
+          .order("posted_at", { ascending: false });
+        if (!opts.all) q = q.eq("is_published", true);
+        const { data, error } = await q;
+        
+        if (error) {
+          console.error("Supabase error fetching instagram posts:", error);
+          // Don't toast here to avoid spamming the user on every background refresh
+          return;
+        }
+
+        if (!mounted) return;
+        setPosts((data ?? []) as InstagramPost[]);
+      } catch (err) {
+        console.error("Critical error loading instagram posts:", err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     };
 
     load();

@@ -113,11 +113,18 @@ export function useSiteContent(useDraft = false) {
 
   const fetchContent = async () => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from("site_content")
         .select("key, value, draft_value");
       
-      if (!error && data) {
+      if (error) {
+        console.error("Supabase error fetching site content:", error);
+        toast.error("Erro ao carregar conteúdo do site. Tente novamente mais tarde.");
+        return;
+      }
+
+      if (data) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
@@ -126,7 +133,8 @@ export function useSiteContent(useDraft = false) {
         setContent(merged);
       }
     } catch (err) {
-      console.error("Error fetching content:", err);
+      console.error("Critical error fetching site content:", err);
+      toast.error("Ocorreu um erro inesperado ao carregar o conteúdo.");
     } finally {
       setLoading(false);
     }
