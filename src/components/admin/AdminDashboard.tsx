@@ -212,7 +212,7 @@ export function AdminDashboard() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "visual", label: "Identidade Visual", icon: Palette },
-    { id: "visual_editor", label: "Editor Visual (Wix)", icon: PenTool },
+    
     { id: "content", label: "Conteúdo do Site", icon: FileText },
     
     { id: "media", label: "Mídia / Fotos e Vídeos", icon: ImageIcon },
