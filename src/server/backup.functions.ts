@@ -11,7 +11,7 @@ import {
 } from "./backup.server";
 
 async function assertIsAdmin(userId: string) {
-  console.log("[backup.functions] assertIsAdmin starting for userId:", userId);
+  
   if (!userId) {
     console.error("[backup.functions] assertIsAdmin: No userId provided");
     throw new Error("Usuário não identificado");
@@ -28,7 +28,7 @@ async function assertIsAdmin(userId: string) {
   }
   
   const roles = data?.map(r => r.role) || [];
-  console.log("[backup.functions] assertIsAdmin: User roles found:", roles);
+  
   
   const isAdmin = roles.some(role => ["admin", "owner"].includes(role));
   
@@ -41,7 +41,7 @@ async function assertIsAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    console.log("[backup.functions] listBackups starting for user:", context.userId);
+    
     try {
       await assertIsAdmin(context.userId);
       const { data: backups, error } = await supabaseAdmin
@@ -55,7 +55,7 @@ export const listBackups = createServerFn({ method: "POST" })
         throw new Error(`Erro no banco de dados: ${error.message}`);
       }
       
-      console.log("[backup.functions] listBackups success, count:", backups?.length ?? 0);
+      
       return { backups: backups ?? [] };
     } catch (err: any) {
       console.error("[backup.functions] listBackups caught error:", err.message);
@@ -67,7 +67,7 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    console.log("[backup.functions] getBackupSettings starting for user:", context.userId);
+    
     try {
       await assertIsAdmin(context.userId);
       
@@ -82,7 +82,7 @@ export const getBackupSettings = createServerFn({ method: "POST" })
         throw new Error(`Erro ao buscar configurações: ${error.message}`);
       }
       
-      console.log("[backup.functions] getBackupSettings success, found:", !!settings);
+      
       return { settings };
     } catch (err: any) {
       console.error("[backup.functions] getBackupSettings caught error:", err.message);

@@ -8,7 +8,51 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export type SiteContent = Record<string, any>;
+export interface SiteContent {
+  hero: {
+    title_lines: string[];
+    subtitle: string;
+    location: string;
+    cta_label: string;
+    cta_url: string;
+    images: string[];
+    video_url: string;
+    show_video_mobile: boolean;
+    seo_hidden_text?: string;
+    image1?: string;
+    image1_alt?: string;
+    image1_show_mobile?: boolean;
+    image2?: string;
+    image2_alt?: string;
+    image2_show_mobile?: boolean;
+    image3?: string;
+    image3_alt?: string;
+    image3_show_mobile?: boolean;
+  };
+  visual: {
+    primary_color: string;
+    secondary_color: string;
+    background_color: string;
+    text_color: string;
+    font_family: string;
+    logo_url: string;
+    favicon_url: string;
+  };
+  services: { heading: string; heading_em: string; items: Array<{ title: string; desc: string; img: string; show_mobile?: boolean }> };
+  videos: { heading: string; heading_em: string; items: Array<{ title: string; tag: string; src: string; poster?: string; tall?: boolean; show_mobile?: boolean }> };
+  plan: { heading: string; heading_em: string; text: string; cta_label: string; cta_url: string };
+  places: { heading: string; heading2: string; instagram_url: string; items: Array<{ title: string; tag: string; img: string; show_mobile?: boolean }> };
+  about: { heading: string; heading_em: string; image: string; paragraphs: string[]; cta_label: string; cta_url: string; show_mobile?: boolean };
+  coupons: { heading: string; heading_em: string; items: Array<{ title: string; code: string; discount: string; description: string; link: string }> };
+  instagram_config: { handle: string; profile_url: string; title: string; subtitle: string; mode: "manual" | "auto" };
+  integrations: { google_analytics_id: string; google_tag_manager_id: string; facebook_pixel_id: string; whatsapp_number: string; whatsapp_message: string; formspree_url?: string; notification_email?: string };
+  footer: { phone: string; phone_url: string; address_line1: string; address_line2: string; instagram_url: string; whatsapp_url: string; copyright: string; hashtag: string };
+  seo: { title: string; description: string; keywords: string };
+  tropa_config: { heading: string; heading_em: string; subheading: string; paragraphs: string[]; image_url: string; cta_label: string; instagram_url: string; instagram_label: string; show_mobile?: boolean };
+  languages: { default: string; enabled: string[]; translations: Record<string, { name: string; flag: string }> };
+  settings?: { notifications: boolean; darkMode: boolean; language: string; maintenanceMode: boolean };
+  [key: string]: any;
+}
 
 export const FALLBACK_CONTENT: SiteContent = {
   hero: {
@@ -173,8 +217,6 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
-      
       const { data, error } = await supabase
         .from("site_content")
         .upsert({ 
@@ -191,7 +233,7 @@ export function useSiteContent(useDraft = false) {
         throw error;
       }
       
-      console.log(`[useSiteContent] Update successful for ${key}:`, data);
+      
       
       setContent(prev => ({
         ...prev,

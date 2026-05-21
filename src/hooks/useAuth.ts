@@ -21,7 +21,6 @@ export function useAuth() {
 
   // Carrega o papel (role) do usuário autenticado a partir da tabela user_roles.
   const loadRole = async (authUser: User | null) => {
-    console.log("[useAuth] loadRole starting for:", authUser?.email);
     if (!authUser) {
       setUser(null);
       setRole(null);
@@ -47,7 +46,7 @@ export function useAuth() {
       // Role is determined exclusively from the user_roles table (server-side, RLS-protected).
       // No client-side hardcoded fallbacks — use the bootstrap-owner edge function to seed an owner.
 
-      console.log("[useAuth] Resolved role:", resolvedRole);
+      
 
       // Fetch profile data to get full_name and latest email
       const { data: profile } = await supabase
