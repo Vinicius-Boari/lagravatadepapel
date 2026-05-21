@@ -1,5 +1,12 @@
+/**
+ * InstagramCarousel3D Component
+ * 
+ * A 3D rotating carousel that displays Instagram posts.
+ * Utilizes RequestAnimationFrame for smooth rotation and CSS 3D transforms.
+ */
 import { useEffect, useRef, useState } from "react";
 import { useInstagramPosts, type InstagramPost } from "@/hooks/useInstagramPosts";
+import { memo } from "react";
 
 type Config = {
   handle?: string;
@@ -13,7 +20,6 @@ type Config = {
  * Posts are arranged in a circle in 3D space and continuously rotate.
  * Hover any card to pause and inspect; click to open in Instagram.
  */
-import { memo } from "react";
 
 export const InstagramCarousel3D = memo(function InstagramCarousel3D({ config }: { config: Config }) {
   const { posts, loading } = useInstagramPosts();

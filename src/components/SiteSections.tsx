@@ -1,24 +1,34 @@
-import { useEffect, useRef, useState } from "react";
+/**
+ * SiteSections Component
+ * 
+ * This is the main layout component that orchestrates all the sections of the public site.
+ * It handles global UI states like scrolling, mobile detection, and mouse trail animations.
+ */
+import { useEffect, useRef, useState, memo } from "react";
 import { MessageCircle, Instagram, Facebook, Mail, Video as TikTokIcon, Ticket, Play } from "lucide-react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { cn } from "@/lib/utils";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
+
 
 const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
 ];
 
-import { memo } from "react";
-
 export const SiteSections = memo(function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
+  // --- UI States ---
   const [isMobile, setIsMobile] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  
+  // --- Refs for DOM elements and animations ---
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heroImgsRef = useRef<HTMLDivElement>(null);
 
-  const [isScrolled, setIsScrolled] = useState(false);
-
+  /**
+   * Effect to handle responsive checks and global scroll events for header styling.
+   */
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
