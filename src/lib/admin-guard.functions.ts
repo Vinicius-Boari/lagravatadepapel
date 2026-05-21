@@ -32,7 +32,7 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
         .eq("user_id", userId);
 
       if (error) {
-        console.error("[verifyAdminAccess] DB error:", error);
+        console.error("[verifyAdminAccess] DB error:", error.message);
         return { ok: false, error: "Database error", status: 500 };
       }
 
@@ -47,7 +47,7 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
 
       return { ok: true as const };
     } catch (err: any) {
-      console.error("[verifyAdminAccess] Unexpected error:", err);
+      console.error("[verifyAdminAccess] Unexpected error:", err?.message || err);
       return { ok: false, error: "Internal error", status: 500 };
     }
   });
