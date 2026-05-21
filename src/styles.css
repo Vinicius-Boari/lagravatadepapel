@@ -142,6 +142,10 @@
 }
 
 /* ─── La Gravata de Papel — site styles ─── */
+.services-section, .video-section, .places-section, .about-section, .coupons-section, .contacts-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
 :root {
   --color-cream: #f0ebe3;
   --color-warm: #8b1a1a;
