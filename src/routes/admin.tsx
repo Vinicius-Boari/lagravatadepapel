@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
-    // Only run on client to avoid SSR issues with auth session
+    // Only run on client to avoid SSR issues with auth session in this specific logic
     if (typeof window === "undefined") return;
     
     const isLoginPage = location.pathname === "/admin/login";
@@ -23,18 +23,18 @@ export const Route = createFileRoute("/admin")({
       // Verify server-side if user is admin
       const result = await verifyAdminAccess();
       
-      // Check for errors returned in the object instead of caught exceptions
+      // Handle the standardized object return
       if (result && 'ok' in result && !result.ok) {
         console.warn("[admin-route] Server verification failed:", result.error);
         throw redirect({ to: "/admin/login" });
       }
     } catch (err: any) {
       // If it's already a TanStack redirect, just let it through
-      if (err && err.status === 301 || err.status === 302 || err.isRedirect) {
+      if (err && (err.status === 301 || err.status === 302 || err.isRedirect)) {
         throw err;
       }
       
-      console.error("[admin-route] Access verification failed:", err);
+      console.error("[admin-route] Access verification error:", err?.message || err);
       throw redirect({ to: "/admin/login" });
     }
   },
@@ -57,7 +57,7 @@ function AdminLayout() {
     }
     
     if (!isAdmin) {
-      console.warn("[AdminLayout] User is authenticated but not an admin. Redirecting...");
+      console.warn("[AdminLayout] User authenticated but not admin. Redirecting...");
       navigate({ to: "/admin/login" });
     }
   }, [user, isAdmin, loading, navigate]);
@@ -65,9 +65,12 @@ function AdminLayout() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-zinc-400">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
-          <span>Verificando acesso...</span>
+        <div className="flex flex-col items-center gap-4 text-center px-4">
+          <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
+          <div className="space-y-1">
+            <p className="text-zinc-100 font-bold uppercase tracking-widest text-sm">Segurança do Painel</p>
+            <p className="text-xs text-zinc-500">Autenticando credenciais de acesso...</p>
+          </div>
         </div>
       </div>
     );
