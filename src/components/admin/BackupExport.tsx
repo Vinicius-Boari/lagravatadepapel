@@ -176,15 +176,19 @@ export function BackupExport() {
         backup_path: settings.backup_path || "/data/backups"
       };
 
-      await updateSettingsFn({ data: dataToSave, headers });
+      const res = await updateSettingsFn({ data: dataToSave, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
 
       setSaveStatus('saved');
       toast.success("Configurações de backup salvas!");
       fetchData();
     } catch (error: any) {
       setSaveStatus('error');
-      const errorMessage = error instanceof Response ? `Erro ${error.status}` : error.message || "Erro desconhecido";
-      toast.error(`Erro ao salvar: ${errorMessage}`);
+      console.error("Backup settings error:", error);
+      toast.error(`Erro ao salvar: ${error.message || "Erro desconhecido"}`);
     }
   };
 
