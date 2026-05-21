@@ -21,13 +21,11 @@ export const Route = createFileRoute("/admin")({
 
     try {
       // Verify server-side if user is admin
-      const result = await verifyAdminAccess();
+      // Returns a simple boolean to avoid serialization errors
+      const isAdmin = await verifyAdminAccess();
       
-      // Handle the standardized data object return
-      // If 'ok' is missing or false, we assume access denied
-      if (!result || (typeof result === 'object' && 'ok' in result && !result.ok)) {
-        const errorMsg = (result as any)?.error || "Access denied";
-        console.warn("[admin-route] Server verification failed:", errorMsg);
+      if (!isAdmin) {
+        console.warn("[admin-route] Server verification failed: User is not an admin");
         throw redirect({ to: "/admin/login" });
       }
     } catch (err: any) {
