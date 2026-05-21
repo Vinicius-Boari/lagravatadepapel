@@ -19,25 +19,36 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { userId } = context;
     
-    // Fetch user roles using service role to ensure we can read permissions
-    const { data, error } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId);
-
-    if (error) {
-      console.error("[verifyAdminAccess] DB error:", error);
-      throw new Response("Forbidden", { status: 403 });
+    if (!userId) {
+      console.error("[verifyAdminAccess] No userId found in context");
+      throw new Response("Unauthorized", { status: 401 });
     }
 
-    // Determine if the user has required privileges
-    const roles = (data ?? []).map((r: any) => r.role);
-    const isAdmin = roles.includes("owner") || roles.includes("admin");
+    try {
+      // Fetch user roles using service role to ensure we can read permissions
+      const { data, error } = await supabaseAdmin
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId);
 
-    if (!isAdmin) {
-      console.warn(`[verifyAdminAccess] Unauthorized access attempt by user: ${userId}`);
+      if (error) {
+        console.error("[verifyAdminAccess] DB error:", error);
+        throw new Response("Internal Server Error", { status: 500 });
+      }
+
+      // Determine if the user has required privileges
+      const roles = (data ?? []).map((r: any) => r.role);
+      const isAdmin = roles.includes("owner") || roles.includes("admin");
+
+      if (!isAdmin) {
+        console.warn(`[verifyAdminAccess] Unauthorized access attempt by user: ${userId}. Roles: ${roles.join(', ')}`);
+        throw new Response("Forbidden", { status: 403 });
+      }
+
+      return { ok: true as const };
+    } catch (err: any) {
+      if (err instanceof Response) throw err;
+      console.error("[verifyAdminAccess] Unexpected error:", err);
       throw new Response("Forbidden", { status: 403 });
     }
-
-    return { ok: true as const };
   });
