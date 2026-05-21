@@ -9,7 +9,9 @@ const tickerItems = [
   "LA GRAVATA DE PAPEL", "OS ORIGINAIS", "TROPA DA GRAVATA",
 ];
 
-export function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
+import { memo } from "react";
+
+export const SiteSections = memo(function SiteSections({ content, onMenuClick }: { content: SiteContent; onMenuClick?: () => void }) {
   const [isMobile, setIsMobile] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -158,20 +160,6 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     resize();
     raf = requestAnimationFrame(animate);
 
-    const onScroll = () => {
-      const c = window.scrollY;
-      
-      // Parallax and other scroll effects
-      if (window.innerWidth < 768) return; // Skip parallax on mobile
-      if (c < window.innerHeight * 1.5 && heroImgsRef.current) {
-        const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
-        if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px)`;
-        if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px)`;
-        if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px)`;
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((e, i) => {
@@ -205,27 +193,50 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
     });
 
     const scrollEls = document.querySelectorAll<HTMLElement>(".scroll-3d");
-    const onScroll3d = () => {
-      if (window.innerWidth < 768) return; // Disable scroll 3D effects on mobile for smoothness
-      scrollEls.forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.top > window.innerHeight || r.bottom < 0) return; // Only process visible elements
-        const vh = window.innerHeight;
-        const progress = (r.top + r.height / 2 - vh / 2) / vh;
-        const clamped = Math.max(-1, Math.min(1, progress));
-        el.style.setProperty("--sx", `${clamped * 8}deg`);
-        el.style.setProperty("--sy", `${clamped * -10}deg`);
-        el.style.setProperty("--sz", `${-Math.abs(clamped) * 60}px`);
-      });
+    let ticking = false;
+
+    const updateScrollEffects = () => {
+      const c = window.scrollY;
+      
+      // Parallax on desktop
+      if (window.innerWidth >= 768 && heroImgsRef.current) {
+        if (c < window.innerHeight * 1.5) {
+          const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
+          if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px) translateZ(0)`;
+          if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px) translateZ(0)`;
+          if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px) translateZ(0)`;
+        }
+
+        // Scroll 3D effects
+        scrollEls.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top > window.innerHeight || r.bottom < 0) return;
+          const vh = window.innerHeight;
+          const progress = (r.top + r.height / 2 - vh / 2) / vh;
+          const clamped = Math.max(-1, Math.min(1, progress));
+          el.style.setProperty("--sx", `${clamped * 8}deg`);
+          el.style.setProperty("--sy", `${clamped * -10}deg`);
+          el.style.setProperty("--sz", `${-Math.abs(clamped) * 60}px`);
+        });
+      }
+      
+      ticking = false;
     };
-    window.addEventListener("scroll", onScroll3d, { passive: true });
-    onScroll3d();
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScrollEffects);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updateScrollEffects();
 
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("scroll", onScroll3d);
       cancelAnimationFrame(raf);
       tiltHandlers.forEach(({ el, move, leave }) => {
         el.removeEventListener("mousemove", move);
@@ -741,4 +752,4 @@ export function SiteSections({ content, onMenuClick }: { content: SiteContent; o
       </a>
     </>
   );
-}
+});
