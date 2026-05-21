@@ -200,6 +200,9 @@ export function SiteContentEditor() {
   const { status: footerStatus, setSaveStatus: setFooterStatus } = useSaveStatus();
   const { status: seoStatus, setSaveStatus: setSeoStatus } = useSaveStatus();
   const { status: langStatus, setSaveStatus: setLangStatus } = useSaveStatus();
+  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
+  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
+  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
 
   const SaveBtn = ({ section, data, status, setStatus }: any) => (
     <Button 
