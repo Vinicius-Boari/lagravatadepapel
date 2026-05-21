@@ -82,7 +82,7 @@ export const getBackupSettings = createServerFn({ method: "POST" })
         throw new Error(`Erro ao buscar configurações: ${error.message}`);
       }
       
-      console.log("[backup.functions] getBackupSettings success, found:", !!settings);
+      
       return { settings };
     } catch (err: any) {
       console.error("[backup.functions] getBackupSettings caught error:", err.message);
