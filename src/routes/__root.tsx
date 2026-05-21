@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { HelmetProvider } from "react-helmet-async";
 
 import appCss from "../styles.css?url";
 
@@ -80,5 +81,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <HelmetProvider>
+      <Outlet />
+    </HelmetProvider>
+  );
 }
