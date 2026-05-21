@@ -1,33 +1,45 @@
 /**
  * Administrative Access Guard Functions
- * 
+ *
  * Server-side functions to verify user roles and permissions.
- * Prevents unauthorized access to administrative features.
+ * Returns plain serializable objects — never throws Response — so the
+ * client never sees "Error: [object Response]".
  */
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getRequest } from "@tanstack/react-start/server";
+import { createClient } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-/**
- * verifyAdminAccess
- * Middleware-protected server function that checks if the authenticated user
- * has 'owner' or 'admin' roles in the user_roles table.
- * 
- * CRITICAL: We return a plain object instead of throwing or returning Response objects
- * to avoid client-side TanStack Start serialization errors.
- */
-export const verifyAdminAccess = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { userId } = context;
-    
-    if (!userId) {
-      console.error("[verifyAdminAccess] No userId found in context");
-      return { ok: false, error: "Unauthorized" };
-    }
-
+export const verifyAdminAccess = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ ok: boolean; error?: string }> => {
     try {
-      // Fetch user roles using service role to ensure we can read permissions
+      const SUPABASE_URL = process.env.SUPABASE_URL;
+      const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
+
+      if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+        console.error("[verifyAdminAccess] Missing Supabase env vars");
+        return { ok: false, error: "Server misconfigured" };
+      }
+
+      const request = getRequest();
+      const authHeader = request?.headers?.get("authorization");
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return { ok: false, error: "Unauthorized" };
+      }
+      const token = authHeader.slice("Bearer ".length);
+      if (!token) return { ok: false, error: "Unauthorized" };
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        global: { headers: { Authorization: `Bearer ${token}` } },
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+
+      const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+      if (userErr || !userData?.user) {
+        return { ok: false, error: "Unauthorized" };
+      }
+      const userId = userData.user.id;
+
       const { data, error } = await supabaseAdmin
         .from("user_roles")
         .select("role")
@@ -38,12 +50,10 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
         return { ok: false, error: "Database error" };
       }
 
-      // Determine if the user has required privileges
       const roles = (data ?? []).map((r: any) => r.role);
       const isAdmin = roles.includes("owner") || roles.includes("admin");
 
       if (!isAdmin) {
-        console.warn(`[verifyAdminAccess] Unauthorized access attempt by user: ${userId}. Roles: ${roles.join(', ')}`);
         return { ok: false, error: "Forbidden" };
       }
 
@@ -52,4 +62,5 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
       console.error("[verifyAdminAccess] Unexpected error:", err?.message || err);
       return { ok: false, error: "Internal server error" };
     }
-  });
+  },
+);
