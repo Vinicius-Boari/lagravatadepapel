@@ -223,25 +223,27 @@ export function useSiteContent(useDraft = false) {
     };
   }, [fetchContent]);
 
-  const updateSection = async (key: string, newValue: any, isDraft = false) => {
+  const updateSection = async (key: string, newValue: any) => {
     try {
-      const { data, error } = await supabase
+      if (!newValue) {
+        console.warn(`[useSiteContent] Blocked attempt to save empty data for ${key}`);
+        return false;
+      }
+
+      const { error } = await supabase
         .from("site_content")
         .upsert({ 
           key, 
           value: newValue, 
           draft_value: newValue, 
           updated_at: new Date().toISOString() 
-        }, { onConflict: 'key' })
-        .select();
+        }, { onConflict: 'key' });
 
       if (error) {
-        console.error(`[useSiteContent] Supabase error for ${key}:`, error);
-        toast.error(`Erro no Supabase: ${error.message}`);
-        throw error;
+        console.error(`[useSiteContent] Upsert error for ${key}:`, error.message);
+        toast.error(`Erro ao salvar: ${error.message}`);
+        return false;
       }
-      
-      
       
       setContent(prev => ({
         ...prev,
@@ -250,11 +252,11 @@ export function useSiteContent(useDraft = false) {
 
       return true;
     } catch (err: any) {
-      console.error(`[useSiteContent] Catch block for ${key}:`, err);
-      toast.error(`Erro crítico ao salvar: ${err.message || 'Verifique sua conexão'}`);
-      throw err;
+      console.error(`[useSiteContent] Critical save error for ${key}:`, err?.message || err);
+      toast.error(`Erro inesperado ao salvar. Verifique sua rede.`);
+      return false;
     }
   };
 
-  return { content, loading, updateSection, refresh: fetchContent };
+  return { content, loading, updateSection, refresh: () => fetchContent(true) };
 }
