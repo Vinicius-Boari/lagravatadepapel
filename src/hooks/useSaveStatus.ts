@@ -1,3 +1,9 @@
+/**
+ * useSaveStatus Hook
+ * 
+ * Manages the state of save operations (idle, saving, saved, error).
+ * Automatically resets status to 'idle' after a timeout for 'saved' and 'error' states.
+ */
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';

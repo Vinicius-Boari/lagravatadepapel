@@ -1,3 +1,10 @@
+/**
+ * VisualIdentity Component
+ * 
+ * Administrative interface for configuring the site's colors, fonts, and branding assets.
+ * Allows uploading logos and favicons to Supabase storage.
+ * Includes a real-time preview of stylistic changes.
+ */
 import { useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
@@ -10,6 +17,9 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
+/**
+ * Utility for displaying standardized toasts.
+ */
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
     toast.success(message, { position: "top-center", duration: 4000 });
