@@ -188,7 +188,7 @@ export function SiteContentEditor() {
     }
     try {
       console.log(`[SiteContentEditor] Calling updateSection for: ${section}`);
-      const success = await updateSection(section, data, false);
+      const success = await updateSection(section, data);
       return success;
     } catch (err: any) {
       console.error(`[SiteContentEditor] handleSave error for ${section}:`, err);

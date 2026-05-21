@@ -68,8 +68,8 @@ export function IntegrationsManager() {
       };
 
       const results = await Promise.all([
-        updateSection("integrations", integrationsData, false),
-        updateSection("instagram_config", instagramData, false)
+        updateSection("integrations", integrationsData),
+        updateSection("instagram_config", instagramData)
       ]);
       
       if (results.some(r => !r)) throw new Error("Falha ao salvar uma ou mais seções");
