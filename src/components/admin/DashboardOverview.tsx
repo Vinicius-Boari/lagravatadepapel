@@ -95,13 +95,49 @@ export function DashboardOverview() {
       supabase.removeChannel(backupsChannel);
     };
   }, []);
-
-  const cards = [
-    { title: "Total de Administradores", value: stats.totalAdmins, icon: Users, color: "text-red-500" },
-    { title: "Logs de Atividades", value: stats.totalLogs, icon: History, color: "text-red-500" },
-    { title: "Status do Site", value: stats.siteStatus, icon: Globe, color: "text-red-500" },
-    { title: "Última Alteração", value: stats.lastUpdate, icon: Clock, color: "text-zinc-400", isDate: true },
-  ];
+      <Card className="bg-zinc-900 border-zinc-800 shadow-xl overflow-hidden">
+        <CardHeader className="border-b border-zinc-800/50">
+          <CardTitle className="text-lg flex items-center">
+            <TrendingUp className="mr-2 w-5 h-5 text-red-400" />
+            <span className="text-red-500">Cron Jobs (Monitoramento)</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-zinc-950/50">
+              <TableRow className="hover:bg-transparent border-zinc-800">
+                <TableHead className="text-red-400">Tarefa</TableHead>
+                <TableHead className="text-red-400">Frequência</TableHead>
+                <TableHead className="text-red-400">Última Execução</TableHead>
+                <TableHead className="text-red-400">Próxima Execução</TableHead>
+                <TableHead className="text-red-400 text-center">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="border-zinc-800 hover:bg-zinc-800/20 transition-colors">
+                <TableCell className="font-medium text-red-300">Backup Automático Diário</TableCell>
+                <TableCell className="text-zinc-400">
+                  {backupSettings ? `${backupSettings.interval_value} ${backupSettings.interval_unit === 'days' ? 'dia(s)' : 'hora(s)'}` : 'Diário'}
+                </TableCell>
+                <TableCell className="text-zinc-400">
+                  {backupSettings?.last_run_at ? new Date(backupSettings.last_run_at).toLocaleString('pt-BR') : '---'}
+                </TableCell>
+                <TableCell className="text-zinc-400">
+                  {backupSettings?.next_run_at ? new Date(backupSettings.next_run_at).toLocaleString('pt-BR') : '---'}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge className={cn(
+                    "font-bold",
+                    backupSettings?.auto_enabled ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"
+                  )}>
+                    {backupSettings?.auto_enabled ? "Ativo" : "Desativado"}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
