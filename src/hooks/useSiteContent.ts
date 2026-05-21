@@ -217,8 +217,6 @@ export function useSiteContent(useDraft = false) {
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      console.log(`[useSiteContent] Starting update for section: ${key}`, { newValue });
-      
       const { data, error } = await supabase
         .from("site_content")
         .upsert({ 
