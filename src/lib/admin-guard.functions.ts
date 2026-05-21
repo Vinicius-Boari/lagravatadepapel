@@ -12,7 +12,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  * verifyAdminAccess
  * Middleware-protected server function that checks if the authenticated user
  * has 'owner' or 'admin' roles in the user_roles table.
- * Returns a simple object instead of throwing Response objects to avoid client-side TanStack errors.
+ * Returns a simple data object instead of throwing Response objects to avoid client-side TanStack errors.
  */
 export const verifyAdminAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -48,6 +48,7 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
       return { ok: true as const };
     } catch (err: any) {
       console.error("[verifyAdminAccess] Unexpected error:", err?.message || err);
+      // Return a plain object to avoid the "[object Response]" serialization error
       return { ok: false, error: "Internal error", status: 500 };
     }
   });
