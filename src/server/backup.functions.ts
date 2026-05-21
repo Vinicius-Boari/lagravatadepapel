@@ -41,7 +41,7 @@ async function assertIsAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    console.log("[backup.functions] listBackups starting for user:", context.userId);
+    
     try {
       await assertIsAdmin(context.userId);
       const { data: backups, error } = await supabaseAdmin
