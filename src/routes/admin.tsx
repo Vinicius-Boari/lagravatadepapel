@@ -18,11 +18,14 @@ export const Route = createFileRoute("/admin")({
       console.log("[admin-route] No session found, redirecting to login");
       throw redirect({ to: "/admin/login" });
     }
+    const token = sessionData.session.access_token;
 
     try {
       // Verify server-side if user is admin
-      // Now returns a safe object to avoid serialization errors
-      const result = await verifyAdminAccess();
+      // Send the token explicitly and also rely on src/start.ts as a global fallback.
+      const result = await verifyAdminAccess({
+        headers: { Authorization: `Bearer ${token}` },
+      });
       
       if (!result || (typeof result === 'object' && 'ok' in result && !result.ok)) {
         console.warn("[admin-route] Server verification failed: User is not authorized");
