@@ -281,11 +281,12 @@ export function SiteContentEditor() {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
                 } else {
-                  throw new Error("Falha ao salvar");
+                  current.set('error');
+                  showToast(`Erro ao salvar ${activeSection}.`, 'error');
                 }
               } catch (err: any) {
                 current.set('error');
-                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
+                showToast(`Erro ao salvar ${activeSection}: ${err?.message || "Erro de rede"}`, 'error');
               }
             }
           }}
