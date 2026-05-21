@@ -134,18 +134,18 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      await toast.promise(runNowFn({ headers }), {
-        loading: "Iniciando backup...",
-        success: () => {
-          fetchData();
-          return "Backup concluído com sucesso!";
-        },
-        error: (err) => {
-          fetchData();
-          const errorMessage = err instanceof Response ? `Erro ${err.status}` : err.message || "Erro desconhecido";
-          return `Erro ao executar backup: ${errorMessage}`;
-        }
-      });
+      const res = await runNowFn({ headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      toast.success("Backup concluído com sucesso!");
+      fetchData();
+    } catch (err: any) {
+      console.error("Backup manual error:", err);
+      toast.error(`Erro ao executar backup: ${err.message || "Erro desconhecido"}`);
+      fetchData();
     } finally {
       setIsRunningBackup(false);
     }
