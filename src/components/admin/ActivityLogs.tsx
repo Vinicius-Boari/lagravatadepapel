@@ -32,18 +32,39 @@ export function ActivityLogs() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  async function fetchLogs() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("admin_logs")
+      .select("*")
+      .order("created_at", { ascending: false });
+    
+    if (!error) setLogs(data || []);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function fetchLogs() {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("admin_logs")
-        .select("*")
-        .order("created_at", { ascending: false });
-      
-      if (!error) setLogs(data || []);
-      setLoading(false);
-    }
     fetchLogs();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('admin-logs-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'admin_logs'
+        },
+        () => {
+          fetchLogs();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const filteredLogs = logs.filter(log => 
