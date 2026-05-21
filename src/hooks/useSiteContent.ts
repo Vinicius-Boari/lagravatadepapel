@@ -4,7 +4,7 @@
  * Manage and fetch global site content from Supabase.
  * Provides real-time updates and draft/published content switching.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -117,7 +117,7 @@ export function useSiteContent(useDraft = false) {
   const [content, setContent] = useState<SiteContent>(FALLBACK_CONTENT);
   const [loading, setLoading] = useState(true);
 
-  const fetchContent = async () => {
+  const fetchContent = useCallback(async (isMounted: boolean = true) => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -126,11 +126,11 @@ export function useSiteContent(useDraft = false) {
       
       if (error) {
         console.error("Supabase error fetching site content:", error);
-        toast.error("Erro ao carregar conteúdo do site. Tente novamente mais tarde.");
+        // Silent error for end users unless it's a critical fetch
         return;
       }
 
-      if (data) {
+      if (data && isMounted) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
@@ -140,14 +140,14 @@ export function useSiteContent(useDraft = false) {
       }
     } catch (err) {
       console.error("Critical error fetching site content:", err);
-      toast.error("Ocorreu um erro inesperado ao carregar o conteúdo.");
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
-  };
+  }, [useDraft]);
 
   useEffect(() => {
-    fetchContent();
+    let isMounted = true;
+    fetchContent(isMounted);
 
     // Configurar Realtime Subscription para atualizações automáticas
     const channel = supabase
@@ -159,17 +159,17 @@ export function useSiteContent(useDraft = false) {
           schema: 'public',
           table: 'site_content'
         },
-        (payload) => {
-          console.log('Realtime update received:', payload);
-          fetchContent();
+        () => {
+          if (isMounted) fetchContent(isMounted);
         }
       )
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
-  }, [useDraft]);
+  }, [fetchContent]);
 
   const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {

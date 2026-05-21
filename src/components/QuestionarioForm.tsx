@@ -91,7 +91,10 @@ export function QuestionarioForm() {
 
       if (dbError) throw dbError;
 
-      await fetch("https://formspree.io/f/xvgzbgkg", {
+      const formspreeUrl = content.integrations?.formspree_url || "https://formspree.io/f/xvgzbgkg";
+      const notificationEmail = content.integrations?.notification_email || "viniciusbataglia500@gmail.com";
+
+      await fetch(formspreeUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +102,7 @@ export function QuestionarioForm() {
         body: JSON.stringify({
           ...values,
           _subject: `Novo Questionário: ${values.primary_name} - ${values.event_date}`,
-          _to: "viniciusbataglia500@gmail.com"
+          _to: notificationEmail
         }),
       });
 

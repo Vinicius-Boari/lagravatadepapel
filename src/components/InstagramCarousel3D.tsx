@@ -25,11 +25,19 @@ export const InstagramCarousel3D = memo(function InstagramCarousel3D({ config }:
   const { posts, loading } = useInstagramPosts();
   const stageRef = useRef<HTMLDivElement>(null);
   const angleRef = useRef(0);
-  // Speed: each card stays in front for ~2.5s. degrees/frame = (360/count) / (2.5 * 60fps)
-  const computedSpeed = (360 / (posts.length > 0 ? posts.length : 8)) / (2.5 * 60);
-  const targetSpeedRef = useRef(computedSpeed);
-  const speedRef = useRef(computedSpeed);
+  
+  // Speed calculation: each card stays in front for ~2.5s.
+  const getSpeed = (itemCount: number) => (360 / (itemCount > 0 ? itemCount : 8)) / (2.5 * 60);
+  
+  const targetSpeedRef = useRef(getSpeed(posts.length));
+  const speedRef = useRef(getSpeed(posts.length));
   const rafRef = useRef<number>(0);
+
+  // Update target speed when posts change
+  useEffect(() => {
+    targetSpeedRef.current = getSpeed(posts.length);
+  }, [posts.length]);
+
   const [active, setActive] = useState<InstagramPost | null>(null);
 
   const profileUrl = config.profile_url ?? `https://www.instagram.com/${config.handle ?? "lagravatadepapel"}`;

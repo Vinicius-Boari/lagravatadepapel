@@ -45,11 +45,11 @@ export const Route = createRootRoute({
           "Transforme seu casamento com a Tropa da Gravata. Personagens, tequileiros e muita energia para sua festa em SP.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://testesite.com.br/" },
+      { property: "og:url", content: "https://lagravatadepapel.com.br/" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "La Gravata de Papel | Animação de Casamento e Festas em SP" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57d9c635-ddb0-48c2-9b6d-ddc2b59b2927/id-preview-101bea68--b8b46a26-2e6d-4ba6-8b8c-8d0a9627d82c.lovable.app-1777559985653.png" },
+      { property: "og:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: "/og-image.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -68,7 +68,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
