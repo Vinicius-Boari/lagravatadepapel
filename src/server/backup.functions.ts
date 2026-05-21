@@ -28,7 +28,7 @@ async function assertIsAdmin(userId: string) {
   }
   
   const roles = data?.map(r => r.role) || [];
-  console.log("[backup.functions] assertIsAdmin: User roles found:", roles);
+  
   
   const isAdmin = roles.some(role => ["admin", "owner"].includes(role));
   
