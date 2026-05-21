@@ -158,6 +158,7 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
+      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       await restoreBackup(data.id);
       await supabaseAdmin.from("admin_logs").insert({
@@ -167,10 +168,10 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
         entity_type: "backup",
         entity_id: data.id,
       });
-      return { success: true };
+      return { ok: true, success: true };
     } catch (err: any) {
       console.error("[backup.functions] restoreBackupFn error:", err.message);
-      throw new Error(err.message || "Internal Server Error");
+      return { ok: false, error: err.message };
     }
   });
 
