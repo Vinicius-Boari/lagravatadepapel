@@ -21,15 +21,15 @@ export const Route = createFileRoute("/admin")({
 
     try {
       // Verify server-side if user is admin
-      // Returns a simple boolean to avoid serialization errors
-      const isAdmin = await verifyAdminAccess();
+      // Now returns a safe object to avoid serialization errors
+      const result = await verifyAdminAccess();
       
-      if (!isAdmin) {
-        console.warn("[admin-route] Server verification failed: User is not an admin");
+      if (!result || (typeof result === 'object' && 'ok' in result && !result.ok)) {
+        console.warn("[admin-route] Server verification failed: User is not authorized");
         throw redirect({ to: "/admin/login" });
       }
     } catch (err: any) {
-      // If it's already a TanStack redirect, just let it through
+      // If it's already a TanStack redirect or TanStack internal error, just let it through
       if (err && (err.status === 301 || err.status === 302 || err.isRedirect || err.name === 'Invariant Violation')) {
         throw err;
       }

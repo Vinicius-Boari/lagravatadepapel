@@ -13,17 +13,17 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  * Middleware-protected server function that checks if the authenticated user
  * has 'owner' or 'admin' roles in the user_roles table.
  * 
- * CRITICAL: We return a plain value (true/false) to ensure TanStack Start 
- * can serialize the result without "Error: [object Response]".
+ * CRITICAL: We return a plain object instead of throwing or returning Response objects
+ * to avoid client-side TanStack Start serialization errors.
  */
 export const verifyAdminAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<boolean> => {
+  .handler(async ({ context }) => {
     const { userId } = context;
     
     if (!userId) {
       console.error("[verifyAdminAccess] No userId found in context");
-      return false;
+      return { ok: false, error: "Unauthorized" };
     }
 
     try {
@@ -35,7 +35,7 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
 
       if (error) {
         console.error("[verifyAdminAccess] DB error:", error.message);
-        return false;
+        return { ok: false, error: "Database error" };
       }
 
       // Determine if the user has required privileges
@@ -44,12 +44,12 @@ export const verifyAdminAccess = createServerFn({ method: "GET" })
 
       if (!isAdmin) {
         console.warn(`[verifyAdminAccess] Unauthorized access attempt by user: ${userId}. Roles: ${roles.join(', ')}`);
-        return false;
+        return { ok: false, error: "Forbidden" };
       }
 
-      return true;
+      return { ok: true };
     } catch (err: any) {
       console.error("[verifyAdminAccess] Unexpected error:", err?.message || err);
-      return false;
+      return { ok: false, error: "Internal server error" };
     }
   });
