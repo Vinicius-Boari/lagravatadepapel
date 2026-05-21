@@ -160,7 +160,39 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
     resize();
     raf = requestAnimationFrame(animate);
 
-    let lastScrollY = window.scrollY;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add("visible"), i * 100);
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
+
+    const tiltEls = document.querySelectorAll<HTMLElement>(".tilt-3d");
+    const tiltHandlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
+    tiltEls.forEach((el) => {
+      const move = (e: MouseEvent) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.setProperty("--tx", `${x * 14}deg`);
+        el.style.setProperty("--ty", `${-y * 14}deg`);
+      };
+      const leave = () => {
+        el.style.setProperty("--tx", `0deg`);
+        el.style.setProperty("--ty", `0deg`);
+      };
+      el.addEventListener("mousemove", move);
+      el.addEventListener("mouseleave", leave);
+      tiltHandlers.push({ el, move, leave });
+    });
+
+    const scrollEls = document.querySelectorAll<HTMLElement>(".scroll-3d");
     let ticking = false;
 
     const updateScrollEffects = () => {
