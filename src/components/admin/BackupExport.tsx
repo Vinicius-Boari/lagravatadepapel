@@ -200,15 +200,18 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      await toast.promise(deleteFn({ data: { id }, headers }), {
-        loading: "Excluindo backup...",
-        success: () => {
-          fetchData();
-          return "Backup excluído.";
-        },
-        error: (err) => `Erro ao excluir backup: ${err.message}`
-      });
-    } catch (error) {}
+      const res = await deleteFn({ data: { id }, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      toast.success("Backup excluído.");
+      fetchData();
+    } catch (err: any) {
+      console.error("Backup delete error:", err);
+      toast.error(`Erro ao excluir backup: ${err.message || "Erro desconhecido"}`);
+    }
   };
 
   const handleRestore = async (id: string) => {
