@@ -34,6 +34,7 @@ export function DashboardOverview() {
     lastUpdate: "---"
   });
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
+  const [backupSettings, setBackupSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
