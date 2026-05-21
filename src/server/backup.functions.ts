@@ -55,7 +55,7 @@ export const listBackups = createServerFn({ method: "POST" })
         throw new Error(`Erro no banco de dados: ${error.message}`);
       }
       
-      console.log("[backup.functions] listBackups success, count:", backups?.length ?? 0);
+      
       return { backups: backups ?? [] };
     } catch (err: any) {
       console.error("[backup.functions] listBackups caught error:", err.message);
