@@ -41,9 +41,10 @@ async function assertIsAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    
     try {
+      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
+      
       const { data: backups, error } = await supabaseAdmin
         .from("backups")
         .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
@@ -52,15 +53,13 @@ export const listBackups = createServerFn({ method: "POST" })
 
       if (error) {
         console.error("[backup.functions] listBackups database error:", error.message);
-        throw new Error(`Erro no banco de dados: ${error.message}`);
+        return { ok: false, error: error.message };
       }
       
-      
-      return { backups: backups ?? [] };
+      return { ok: true, backups: backups ?? [] };
     } catch (err: any) {
       console.error("[backup.functions] listBackups caught error:", err.message);
-      // Ensure we always return a plain object with error info if we want to avoid throwing Response
-      throw err;
+      return { ok: false, error: err.message };
     }
   });
 
