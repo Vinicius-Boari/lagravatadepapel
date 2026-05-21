@@ -37,40 +37,62 @@ export function DashboardOverview() {
   const [backupSettings, setBackupSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const loadStats = async (isMounted = true) => {
+    try {
+      const [adminsRes, logsRes, recentLogsRes, backupRes] = await Promise.all([
+        supabase.from("user_roles").select("user_id", { count: "exact", head: true }).in("role", ["admin", "owner"]),
+        supabase.from("admin_logs").select("id", { count: "exact", head: true }),
+        supabase.from("admin_logs").select("*").order("created_at", { ascending: false }).limit(5),
+        supabase.from("backup_settings").select("*").maybeSingle()
+      ]);
+
+      if (isMounted) {
+        setStats({
+          totalAdmins: adminsRes.count || 0,
+          totalLogs: logsRes.count || 0,
+          siteStatus: "Online",
+          lastUpdate: recentLogsRes.data?.[0]?.created_at 
+            ? new Date(recentLogsRes.data[0].created_at).toLocaleString('pt-BR') 
+            : "---"
+        });
+
+        setRecentLogs(recentLogsRes.data || []);
+        setBackupSettings(backupRes.data);
+      }
+    } catch (err) {
+      console.error("Error loading dashboard stats:", err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     
-    async function loadStats() {
-      try {
-        const [adminsRes, logsRes, recentLogsRes] = await Promise.all([
-          supabase.from("user_roles").select("user_id", { count: "exact", head: true }).in("role", ["admin", "owner"]),
-          supabase.from("admin_logs").select("id", { count: "exact", head: true }),
-          supabase.from("admin_logs").select("*").order("created_at", { ascending: false }).limit(5)
-        ]);
+    loadStats(isMounted);
 
-        if (isMounted) {
-          setStats({
-            totalAdmins: adminsRes.count || 0,
-            totalLogs: logsRes.count || 0,
-            siteStatus: "Online",
-            lastUpdate: recentLogsRes.data?.[0]?.created_at 
-              ? new Date(recentLogsRes.data[0].created_at).toLocaleString('pt-BR') 
-              : "---"
-          });
+    const logsChannel = supabase
+      .channel('dashboard-logs-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'admin_logs' },
+        () => loadStats(isMounted)
+      )
+      .subscribe();
 
-          setRecentLogs(recentLogsRes.data || []);
-        }
-      } catch (err) {
-        console.error("Error loading dashboard stats:", err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-    
-    loadStats();
+    const backupsChannel = supabase
+      .channel('dashboard-backups-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'backup_settings' },
+        () => loadStats(isMounted)
+      )
+      .subscribe();
     
     return () => {
       isMounted = false;
+      supabase.removeChannel(logsChannel);
+      supabase.removeChannel(backupsChannel);
     };
   }, []);
 
