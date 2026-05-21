@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteSections } from "@/components/SiteSections";
 import { VisualEditorProvider, useVisualEditor } from "@/components/admin/VisualEditorContext";
 import { Button } from "@/components/ui/button";
-import { Save, X, Eye, EyeOff, Monitor, Smartphone, Layout, ArrowLeft } from "lucide-react";
+import { Save, Eye, EyeOff, Monitor, Smartphone, Layout, ArrowLeft, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +22,7 @@ function VisualEditorContent() {
   const { isEditing, setIsEditing, draftContent, saveChanges } = useVisualEditor();
   const [viewport, setViewport] = useState<"desktop" | "mobile">("desktop");
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
 
   // Enable editing on mount
@@ -38,10 +39,19 @@ function VisualEditorContent() {
     navigate({ to: "/admin" });
   };
 
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await saveChanges();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-zinc-950 text-white flex flex-col overflow-hidden z-[9999]">
       {/* Editor Toolbar */}
-      <header className="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 z-[100] shadow-xl">
+      <header className="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 z-[100] shadow-xl shrink-0">
         <div className="flex items-center gap-4">
           <Button 
             variant="ghost" 
@@ -79,10 +89,11 @@ function VisualEditorContent() {
           <Button 
             variant="outline" 
             size="sm" 
-            className={cn("border-zinc-800 text-zinc-400", isPreviewMode && "bg-zinc-800 text-white border-zinc-700")}
+            className={cn("border-zinc-800 text-zinc-400 hover:bg-zinc-800", isPreviewMode && "bg-zinc-800 text-white border-zinc-700")}
             onClick={() => {
-              setIsPreviewMode(!isPreviewMode);
-              setIsEditing(isPreviewMode);
+              const newMode = !isPreviewMode;
+              setIsPreviewMode(newMode);
+              setIsEditing(!newMode);
             }}
           >
             {isPreviewMode ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
@@ -92,41 +103,54 @@ function VisualEditorContent() {
           <Button 
             size="sm" 
             className="bg-red-600 hover:bg-red-700 text-white font-bold"
-            onClick={saveChanges}
+            onClick={handleSave}
+            disabled={isSaving}
           >
-            <Save className="w-4 h-4 mr-2" />
+            {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Publicar Alterações
           </Button>
         </div>
       </header>
 
       {/* Main Viewport */}
-      <main className="flex-1 overflow-auto bg-zinc-950 flex flex-col items-center py-8">
+      <main className="flex-1 overflow-auto bg-zinc-950 flex flex-col items-center py-8 relative">
         <div 
           className={cn(
-            "bg-black shadow-[0_0_100px_rgba(0,0,0,0.5)] transition-all duration-500 relative",
-            viewport === "desktop" ? "w-full max-w-[1920px]" : "w-[390px] h-[844px] rounded-[40px] border-[8px] border-zinc-800 overflow-hidden"
+            "bg-black shadow-[0_0_100px_rgba(0,0,0,0.5)] transition-all duration-500 relative flex flex-col",
+            viewport === "desktop" ? "w-full min-h-full" : "w-[390px] h-[844px] rounded-[40px] border-[12px] border-zinc-800 overflow-hidden shrink-0"
           )}
         >
           <div className={cn("w-full h-full bg-black overflow-y-auto overflow-x-hidden", viewport === "mobile" && "no-scrollbar")}>
-            <SiteSections content={draftContent} />
+            {/* Wrap in a container to ensure content is centered/scaled if needed */}
+            <div className="min-h-full">
+              <SiteSections content={draftContent} />
+            </div>
           </div>
+          
+          {viewport === "mobile" && (
+            <>
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-800 rounded-b-2xl z-50" />
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-50" />
+            </>
+          )}
         </div>
       </main>
 
       {/* Helper Footer */}
       {!isPreviewMode && (
-        <div className="h-10 bg-zinc-900 border-t border-zinc-800 flex items-center justify-center px-4 text-[10px] text-zinc-500 uppercase tracking-widest gap-8">
+        <footer className="h-10 bg-zinc-900 border-t border-zinc-800 flex items-center justify-center px-4 text-[10px] text-zinc-500 uppercase tracking-widest gap-8 shrink-0">
           <span className="flex items-center gap-1"><Layout className="w-3 h-3" /> Clique em qualquer elemento para editar</span>
           <span className="flex items-center gap-1"><Save className="w-3 h-3" /> Salve para aplicar no site público</span>
-        </div>
+        </footer>
       )}
 
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .is-visual-editing .whatsapp-float-real { display: none !important; }
+        .is-visual-editing .lg-body { overflow: hidden !important; }
       `}</style>
     </div>
   );
 }
+
