@@ -27,14 +27,31 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
 
   const updateDraft = useCallback((section: string, field: string, value: any) => {
     setDraftContent(prev => {
-      const sectionData = prev[section] || {};
-      return {
-        ...prev,
-        [section]: {
-          ...sectionData,
-          [field]: value
-        }
-      };
+      const newContent = { ...prev };
+      const sectionData = { ...(newContent[section] || {}) };
+      
+      // Handle array paths like "items[0].title"
+      if (field.includes('[') && field.includes(']')) {
+        const parts = field.split(/[\[\].]+/);
+        const arrayKey = parts[0];
+        const index = parseInt(parts[1], 10);
+        const property = parts[2];
+        
+        const array = [...(sectionData[arrayKey] || [])];
+        array[index] = { ...array[index], [property]: value };
+        sectionData[arrayKey] = array;
+      } else if (field === "title_lines" && typeof value === "string") {
+        // Special case for title_lines textarea
+        sectionData[field] = value.split("\n");
+      } else if (field === "paragraphs" && typeof value === "string") {
+        // Special case for paragraphs textarea
+        sectionData[field] = value.split("\n");
+      } else {
+        sectionData[field] = value;
+      }
+      
+      newContent[section] = sectionData;
+      return newContent;
     });
   }, []);
 
