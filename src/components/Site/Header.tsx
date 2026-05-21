@@ -1,13 +1,19 @@
 import { Instagram, MessageCircle, Video as TikTokIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
+import { EditableElement } from "@/components/admin/EditableElement";
 
 interface HeaderProps {
   isScrolled: boolean;
   onMenuClick: () => void;
+  content?: any;
 }
 
-export const Header = memo(({ isScrolled, onMenuClick }: HeaderProps) => {
+export const Header = memo(({ isScrolled, onMenuClick, content }: HeaderProps) => {
+  const instagramUrl = content?.integrations?.instagram_url || "https://www.instagram.com/lagravatadepapel/";
+  const whatsappUrl = content?.hero?.cta_url || "https://api.whatsapp.com/send?phone=5511985111012";
+  const tiktokUrl = "https://www.tiktok.com/@lagravatadepapel";
+
   return (
     <header className={cn("lg-header", isScrolled && "header-sticky")} style={{ mixBlendMode: 'normal' }}>
       <div 
@@ -31,21 +37,23 @@ export const Header = memo(({ isScrolled, onMenuClick }: HeaderProps) => {
 
       <div className="nav-right flex items-center gap-2 md:gap-4 lg:gap-6">
         <div className="hidden sm:flex items-center gap-4 lg:gap-6 mr-4">
-          <a href="https://www.instagram.com/lagravatadepapel/" target="_blank" rel="noopener noreferrer" className="header-social-link p-2 rounded-full hover:bg-white/10 transition-colors" title="Siga no Instagram">
+          <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="header-social-link p-2 rounded-full hover:bg-white/10 transition-colors" title="Siga no Instagram">
             <Instagram className="w-5 h-5 text-white" />
           </a>
-          <a href="https://api.whatsapp.com/send?phone=5511985111012" target="_blank" rel="noopener noreferrer" className="header-social-link p-2 rounded-full hover:bg-white/10 transition-colors" title="Fale pelo WhatsApp">
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="header-social-link p-2 rounded-full hover:bg-white/10 transition-colors" title="Fale pelo WhatsApp">
             <MessageCircle className="w-5 h-5 text-white" />
           </a>
-          <a href="https://www.tiktok.com/@lagravatadepapel" target="_blank" rel="noopener noreferrer" className="header-social-link p-2 rounded-full hover:bg-white/10 transition-colors" title="Siga no TikTok">
+          <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="header-social-link p-2 rounded-full hover:bg-white/10 transition-colors" title="Siga no TikTok">
             <TikTokIcon className="w-5 h-5 text-white" />
           </a>
         </div>
         
         <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
-          <a href="/questionarioevento" className="orcamento-header-btn">
-            <span>ORÇAMENTO</span>
-          </a>
+          <EditableElement section="hero" field="cta_label" type="text" label="Rótulo Orçamento">
+            <a href="/questionarioevento" className="orcamento-header-btn">
+              <span>{content?.hero?.cta_label || "ORÇAMENTO"}</span>
+            </a>
+          </EditableElement>
           <button className="menu-btn" onClick={onMenuClick} aria-label="Abrir menu">
             <span>MENU</span>
           </button>
