@@ -66,8 +66,8 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    
     try {
+      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       
       const { data: settings, error } = await supabaseAdmin
@@ -78,14 +78,13 @@ export const getBackupSettings = createServerFn({ method: "POST" })
       
       if (error) {
         console.error("[backup.functions] getBackupSettings database error:", error.message);
-        throw new Error(`Erro ao buscar configurações: ${error.message}`);
+        return { ok: false, error: error.message };
       }
       
-      
-      return { settings };
+      return { ok: true, settings };
     } catch (err: any) {
       console.error("[backup.functions] getBackupSettings caught error:", err.message);
-      throw err;
+      return { ok: false, error: err.message };
     }
   });
 
