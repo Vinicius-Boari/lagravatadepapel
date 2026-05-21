@@ -217,18 +217,23 @@ export function BackupExport() {
   const handleRestore = async (id: string) => {
     if (!confirm("Isso irá restaurar o sistema para este ponto. Continuar?")) return;
     
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    const headers = { Authorization: `Bearer ${token}` };
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers = { Authorization: `Bearer ${token}` };
 
-    toast.promise(restoreFn({ data: { id }, headers }), {
-      loading: "Restaurando sistema...",
-      success: () => {
-        setTimeout(() => window.location.reload(), 2000);
-        return "Sistema restaurado com sucesso!";
-      },
-      error: (err) => `Erro na restauração: ${err.message}`
-    });
+      const res = await restoreFn({ data: { id }, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      toast.success("Sistema restaurado com sucesso!");
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (err: any) {
+      console.error("Backup restore error:", err);
+      toast.error(`Erro na restauração: ${err.message || "Erro desconhecido"}`);
+    }
   };
 
   const handleDownload = async (id: string) => {
