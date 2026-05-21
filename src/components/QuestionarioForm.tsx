@@ -80,7 +80,6 @@ export function QuestionarioForm() {
 
       if (dbError) throw dbError;
 
-      // Envia para o Formspree
       await fetch("https://formspree.io/f/xvgzbgkg", {
         method: "POST",
         headers: {
@@ -134,10 +133,10 @@ export function QuestionarioForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
         {/* Seção 0: Invasão e Cupom */}
-        <div className="space-y-6">
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Invasão</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Tipo de Invasão</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end relative z-[100]">
@@ -199,10 +198,10 @@ export function QuestionarioForm() {
         <Separator className="bg-zinc-800/50" />
 
         {/* Seção 1: Informações Básicas */}
-        <div className="space-y-6">
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Informações do Evento</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Informações do Evento</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -239,18 +238,6 @@ export function QuestionarioForm() {
                       <SelectItem value="Outros">Outros</SelectItem>
                     </SelectContent>
                   </Select>
-                  {field.value === "Outros" && (
-                    <FormControl>
-                      <Input 
-                        placeholder="Especifique o tipo de evento" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
-                        onChange={(e) => {
-                          // Aqui poderíamos salvar em um campo separado se quiséssemos manter o "Outros" no select
-                          // mas para simplificar vamos deixar o usuário digitar
-                        }}
-                      />
-                    </FormControl>
-                  )}
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
@@ -290,10 +277,10 @@ export function QuestionarioForm() {
         <Separator className="bg-zinc-800/50" />
 
         {/* Seção 2: Localização */}
-        <div className="space-y-6">
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Local do Evento</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Local do Evento</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -398,156 +385,11 @@ export function QuestionarioForm() {
 
         <Separator className="bg-zinc-800/50" />
 
-        {/* Seção 3: Requisitos e Permissões */}
-        <div className="space-y-6">
+        {/* Seção 3: Responsável */}
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
           <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Requisitos e Permissões</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-zinc-900/30 rounded-2xl border border-zinc-800/50">
-            <FormField
-              control={form.control}
-              name="is_assistant_aware"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel className="text-white font-semibold">Assessoria está ciente dos requisitos?*</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-2"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0 group cursor-pointer">
-                        <FormControl>
-                          <RadioGroupItem value="Sim" className="border-zinc-700 text-primary focus:ring-primary" />
-                        </FormControl>
-                        <FormLabel className="font-normal text-zinc-300 group-hover:text-white transition-colors cursor-pointer">Sim</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0 group cursor-pointer">
-                        <FormControl>
-                          <RadioGroupItem value="Não" className="border-zinc-700 text-primary focus:ring-primary" />
-                        </FormControl>
-                        <FormLabel className="font-normal text-zinc-300 group-hover:text-white transition-colors cursor-pointer">Não</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage className="text-primary" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="parking_payment_pref"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel className="text-white font-semibold">Pagamento de estacionamento/valet?*</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-2"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0 group cursor-pointer">
-                        <FormControl>
-                          <RadioGroupItem value="Através da assessora no local na chegada" className="border-zinc-700 text-primary focus:ring-primary" />
-                        </FormControl>
-                        <FormLabel className="font-normal text-zinc-300 group-hover:text-white transition-colors cursor-pointer">Na chegada (pela assessora)</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0 group cursor-pointer">
-                        <FormControl>
-                          <RadioGroupItem value="No dia ao final do evento" className="border-zinc-700 text-primary focus:ring-primary" />
-                        </FormControl>
-                        <FormLabel className="font-normal text-zinc-300 group-hover:text-white transition-colors cursor-pointer">Ao final do evento</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage className="text-primary" />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <Card className="bg-zinc-900/30 border-zinc-800 overflow-hidden">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 bg-primary rounded-full" />
-                Assinale os itens permitidos pelo local*
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  "Uso de instrumentos (pandeiro)",
-                  "Bomba de som de explosão (sem fogo)",
-                  "Sinalizador (área externa)",
-                  "Papel picado não laminado (bomba sem fogo)",
-                  "Chuva de prata/gerb indoor",
-                  "Fumaça bastão",
-                  "Bazuca CO2",
-                  "Adesivos p/ convidados",
-                ].map((item) => (
-                  <FormField
-                    key={item}
-                    control={form.control}
-                    name="allowed_items"
-                    render={({ field }) => {
-                      return (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-3 rounded-lg hover:bg-zinc-800/30 transition-colors">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...(field.value || []), item])
-                                  : field.onChange(
-                                      field.value?.filter((value) => value !== item)
-                                    );
-                              }}
-                              className="border-zinc-700 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal text-zinc-300 cursor-pointer">{item}</FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <FormField
-            control={form.control}
-            name="has_screen"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-zinc-400">O Local tem telão? Vídeo com áudio sincronizado?*</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                      <SelectValue placeholder="Selecione..." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <SelectItem value="Sim">Sim</SelectItem>
-                    <SelectItem value="Não">Não</SelectItem>
-                    <SelectItem value="Não, apenas som">Não, apenas som</SelectItem>
-                    <SelectItem value="Apenas video">Apenas vídeo</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-primary" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <Separator className="bg-zinc-800/50" />
-
-        {/* Seção 4: Contato e Detalhes do Plano */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Equipe e Detalhes</h2>
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Equipe e Responsável</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -556,7 +398,7 @@ export function QuestionarioForm() {
               name="contact_person_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-400">Responsável pelo cronograma/local*</FormLabel>
+                  <FormLabel className="text-zinc-400">Responsável pelo cronograma*</FormLabel>
                   <FormControl>
                     <Input placeholder="Nome" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
                   </FormControl>
@@ -578,293 +420,195 @@ export function QuestionarioForm() {
               )}
             />
           </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+            <FormField
+              control={form.control}
+              name="is_assistant_aware"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel className="text-white font-semibold">Assessoria está ciente dos requisitos?*</FormLabel>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-2">
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="Sim" className="border-zinc-700 text-primary" />
+                        </FormControl>
+                        <FormLabel className="font-normal text-zinc-300">Sim</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="Não" className="border-zinc-700 text-primary" />
+                        </FormControl>
+                        <FormLabel className="font-normal text-zinc-300">Não</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage className="text-primary" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="parking_payment_pref"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel className="text-white font-semibold">Pagamento de estacionamento/valet?*</FormLabel>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-2">
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="Através da assessora no local na chegada" className="border-zinc-700 text-primary" />
+                        </FormControl>
+                        <FormLabel className="font-normal text-zinc-300">Na chegada</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="No dia ao final do evento" className="border-zinc-700 text-primary" />
+                        </FormControl>
+                        <FormLabel className="font-normal text-zinc-300">Ao final</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage className="text-primary" />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <Separator className="bg-zinc-800/50" />
+
+        {/* Seção 4: Permissões do Local */}
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Permissões do Local</h2>
+          </div>
 
           <Card className="bg-zinc-900/30 border-zinc-800 overflow-hidden">
             <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 bg-primary rounded-full" />
-                Serviços extras inclusos
-              </h3>
+              <h3 className="text-lg font-bold text-white mb-6">Assinale os itens permitidos pelo local*</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  "Sapatinho",
-                  "Tequileiros",
+                  "Uso de instrumentos (pandeiro)",
+                  "Bomba de som de explosão (sem fogo)",
+                  "Sinalizador (área externa)",
+                  "Papel picado não laminado (bomba sem fogo)",
+                  "Chuva de prata/gerb indoor",
+                  "Fumaça bastão",
                   "Bazuca CO2",
-                  "Plataforma 360º",
-                  "Totem Fotográfico",
-                  "Fantasia extra",
-                  "Não está incluso",
+                  "Adesivos p/ convidados",
                 ].map((item) => (
                   <FormField
                     key={item}
                     control={form.control}
-                    name="extra_services"
-                    render={({ field }) => {
-                      return (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-3 rounded-lg hover:bg-zinc-800/30 transition-colors">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...(field.value || []), item])
-                                  : field.onChange(
-                                      field.value?.filter((value) => value !== item)
-                                    );
-                              }}
-                              className="border-zinc-700 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal text-zinc-300 cursor-pointer">{item}</FormLabel>
-                        </FormItem>
-                      );
-                    }}
+                    name="allowed_items"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-3 rounded-lg hover:bg-zinc-800/30 transition-colors">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(item)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...(field.value || []), item])
+                                : field.onChange(field.value?.filter((value) => value !== item));
+                            }}
+                            className="border-zinc-700"
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal text-zinc-300">{item}</FormLabel>
+                      </FormItem>
+                    )}
                   />
                 ))}
               </div>
             </CardContent>
           </Card>
 
+          <FormField
+            control={form.control}
+            name="has_screen"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-zinc-400">O Local tem telão?*</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 h-12">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectItem value="Sim">Sim</SelectItem>
+                    <SelectItem value="Não">Não</SelectItem>
+                    <SelectItem value="Não, apenas som">Não, apenas som</SelectItem>
+                    <SelectItem value="Apenas video">Apenas vídeo</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-primary" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <Separator className="bg-zinc-800/50" />
+
+        {/* Seção 5: Financeiro e Finalização */}
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Financeiro</h2>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
-              name="character_count"
+              name="pix_key"
               render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel className="text-zinc-400">Quantos personagens contratados?*</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                        <SelectValue placeholder="Selecione..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="Outro">Outro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {field.value === "Outro" && (
-                    <FormControl>
-                      <Input 
-                        placeholder="Especifique a quantidade" 
-                        className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
-                      />
-                    </FormControl>
-                  )}
+                <FormItem>
+                  <FormLabel className="text-zinc-400">Chave Pix p/ Reembolso (Estacionamento)*</FormLabel>
+                  <FormControl>
+                    <Input className="bg-zinc-900/50 border-zinc-800 h-12" {...field} />
+                  </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="stay_duration"
+              name="pix_holder_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-400">Tempo de permanência na balada*</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                        <SelectValue placeholder="Selecione..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                      <SelectItem value="20min">20min</SelectItem>
-                      <SelectItem value="30min">30min</SelectItem>
-                      <SelectItem value="45min">45min</SelectItem>
-                      <SelectItem value="1h00">1h00</SelectItem>
-                      <SelectItem value="1h30">1h30</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormLabel className="text-zinc-400">Nome do Titular da Chave*</FormLabel>
+                  <FormControl>
+                    <Input className="bg-zinc-900/50 border-zinc-800 h-12" {...field} />
+                  </FormControl>
                   <FormMessage className="text-primary" />
                 </FormItem>
               )}
             />
           </div>
-        </div>
 
-        <Separator className="bg-zinc-800/50" />
-
-        {/* Seção 5: Financeiro */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Informações Financeiras</h2>
-          </div>
-
-          <div className="p-8 bg-zinc-900/40 rounded-2xl border border-primary/20 space-y-8 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <span className="text-6xl font-bold italic text-primary">PIX</span>
-            </div>
-            
-            <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-              Chave Pix para Gravata
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <FormField
-                control={form.control}
-                name="pix_key"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-zinc-400">Chave Pix*</FormLabel>
-                    <FormControl>
-                      <Input className="bg-zinc-950 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 font-mono" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-primary" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="pix_holder_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-zinc-400">Nome do Titular da conta*</FormLabel>
-                    <FormControl>
-                      <Input className="bg-zinc-950 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12 uppercase" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-primary" />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <FormField
-                control={form.control}
-                name="pix_key_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-zinc-400">Tipo de chave (CPF, E-mail, Celular...)*</FormLabel>
-                    <FormControl>
-                      <Input className="bg-zinc-950 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-primary" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="pix_bank"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-zinc-400">Banco*</FormLabel>
-                    <FormControl>
-                      <Input className="bg-zinc-950 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-primary" />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-
-          <FormField
-            control={form.control}
-            name="is_aware_of_card_fees"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-zinc-400">Ciente das taxas da máquina de cartão da La Gravata?*</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                      <SelectValue placeholder="Selecione..." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <SelectItem value="Sim, iremos usar maquina da la gravata">Sim, iremos usar máquina da La Gravata</SelectItem>
-                    <SelectItem value="Não, usaremos a nossa">Não, usaremos a nossa</SelectItem>
-                    <SelectItem value="Não usaremos maquina">Não usaremos máquina</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-primary" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <Separator className="bg-zinc-800/50" />
-
-        {/* Seção 6: Finalização */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Redes Sociais e Feedback</h2>
-          </div>
-
-          <FormField
-            control={form.control}
-            name="social_media_1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-zinc-400">Qual rede social (Insta/FB) devemos marcar?*</FormLabel>
-                <FormControl>
-                  <Input placeholder="@digite o @ aqui!" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12" {...field} />
-                </FormControl>
-                <FormMessage className="text-primary" />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="how_did_you_hear_about_us"
-            render={({ field }) => (
-              <FormItem className="space-y-4">
-                <FormLabel className="text-zinc-400">Como nos conheceu?*</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all h-12">
-                      <SelectValue placeholder="Selecione..." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <SelectItem value="Instagram">Instagram</SelectItem>
-                    <SelectItem value="TikTok">TikTok</SelectItem>
-                    <SelectItem value="Google">Google</SelectItem>
-                    <SelectItem value="Indicação">Indicação</SelectItem>
-                    <SelectItem value="Vi em um evento">Vi em um evento</SelectItem>
-                    <SelectItem value="Outros">Outros</SelectItem>
-                  </SelectContent>
-                </Select>
-                {field.value === "Outros" && (
-                  <FormControl>
-                    <Input 
-                      placeholder="Especifique como nos conheceu" 
-                      className="bg-zinc-900/50 border-zinc-800 focus:border-primary transition-all h-12 animate-in fade-in slide-in-from-top-1"
-                    />
-                  </FormControl>
-                )}
-                <FormMessage className="text-primary" />
-              </FormItem>
-            )}
-          />
-          
           <FormField
             control={form.control}
             name="observations"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-zinc-400">Observações Adicionais</FormLabel>
+                <FormLabel className="text-zinc-400">Observações Extras</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Campo destinado para fazer observações para equipe La Gravata de Papel" className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all min-h-[120px]" {...field} />
+                  <Textarea className="bg-zinc-900/50 border-zinc-800 min-h-[120px]" {...field} />
                 </FormControl>
-                <FormMessage className="text-primary" />
               </FormItem>
             )}
           />
-        </div>
 
-        <div className="flex pt-10">
           <Button 
             type="submit" 
-            className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-8 text-xl rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95 border-none group"
+            className="w-full h-16 text-lg font-bold uppercase tracking-widest bg-primary hover:bg-primary/90 transition-all shadow-[0_10px_30px_rgba(192,57,43,0.3)]"
             disabled={submitting}
           >
-            {submitting ? "PROCESSANDO..." : "ENVIAR QUESTIONÁRIO AGORA"}
+            {submitting ? "ENVIANDO..." : "FINALIZAR E ENVIAR PLANO 🚀"}
           </Button>
         </div>
       </form>
