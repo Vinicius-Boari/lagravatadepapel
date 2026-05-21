@@ -37,6 +37,8 @@ export function DashboardOverview() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     async function loadStats() {
       try {
         const [adminsRes, logsRes, recentLogsRes] = await Promise.all([
@@ -45,23 +47,30 @@ export function DashboardOverview() {
           supabase.from("admin_logs").select("*").order("created_at", { ascending: false }).limit(5)
         ]);
 
-        setStats({
-          totalAdmins: adminsRes.count || 0,
-          totalLogs: logsRes.count || 0,
-          siteStatus: "Online",
-          lastUpdate: recentLogsRes.data?.[0]?.created_at 
-            ? new Date(recentLogsRes.data[0].created_at).toLocaleString('pt-BR') 
-            : "---"
-        });
+        if (isMounted) {
+          setStats({
+            totalAdmins: adminsRes.count || 0,
+            totalLogs: logsRes.count || 0,
+            siteStatus: "Online",
+            lastUpdate: recentLogsRes.data?.[0]?.created_at 
+              ? new Date(recentLogsRes.data[0].created_at).toLocaleString('pt-BR') 
+              : "---"
+          });
 
-        setRecentLogs(recentLogsRes.data || []);
+          setRecentLogs(recentLogsRes.data || []);
+        }
       } catch (err) {
-        console.error("Error loading stats:", err);
+        console.error("Error loading dashboard stats:", err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
+    
     loadStats();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const cards = [
