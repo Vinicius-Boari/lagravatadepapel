@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Link as LinkIcon, Plus, Trash2, Globe, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { useAutosave } from "@/hooks/useAutosave";
-import { AutosaveIndicator } from "./AutosaveIndicator";
+
 
 export function PagesRoutes() {
   const [routes, setRoutes] = useState([
