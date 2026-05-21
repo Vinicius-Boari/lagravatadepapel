@@ -105,6 +105,7 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => settingsSchema.parse(input))
   .handler(async ({ data, context }) => {
     try {
+      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       const { data: existing } = await supabaseAdmin
         .from("backup_settings")
@@ -130,10 +131,10 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
           .insert({ ...settingsData, id: crypto.randomUUID() });
         if (error) throw new Error(error.message);
       }
-      return { success: true };
+      return { ok: true, success: true };
     } catch (err: any) {
       console.error("[backup.functions] updateBackupSettings error:", err.message);
-      throw new Error(err.message || "Internal Server Error");
+      return { ok: false, error: err.message };
     }
   });
 
