@@ -195,6 +195,7 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
+      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       const { data: row, error } = await supabaseAdmin
         .from("backups")
@@ -206,9 +207,9 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
       if (!row?.file_path) throw new Error("Arquivo indisponível");
       const url = await getSignedDownloadUrl(row.file_path);
       if (!url) throw new Error("Falha ao gerar URL de download");
-      return { url };
+      return { ok: true, url };
     } catch (err: any) {
       console.error("[backup.functions] getBackupDownloadUrl error:", err.message);
-      throw new Error(err.message || "Internal Server Error");
+      return { ok: false, error: err.message };
     }
   });
