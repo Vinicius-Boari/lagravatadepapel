@@ -21,13 +21,20 @@ export const Route = createFileRoute("/admin")({
 
     try {
       // Verify server-side if user is admin
-      await verifyAdminAccess();
-    } catch (err: any) {
-      console.error("[admin-route] Access verification failed:", err);
-      // If it's a redirect/response from verifyAdminAccess, re-throw it
-      if (err instanceof Response || (err && err.status)) {
+      const result = await verifyAdminAccess();
+      
+      // Check for errors returned in the object instead of caught exceptions
+      if (result && 'ok' in result && !result.ok) {
+        console.warn("[admin-route] Server verification failed:", result.error);
         throw redirect({ to: "/admin/login" });
       }
+    } catch (err: any) {
+      // If it's already a TanStack redirect, just let it through
+      if (err && err.status === 301 || err.status === 302 || err.isRedirect) {
+        throw err;
+      }
+      
+      console.error("[admin-route] Access verification failed:", err);
       throw redirect({ to: "/admin/login" });
     }
   },
