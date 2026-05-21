@@ -4,7 +4,7 @@
  * Manage and fetch global site content from Supabase.
  * Provides real-time updates and draft/published content switching.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
