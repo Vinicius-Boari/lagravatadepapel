@@ -233,7 +233,7 @@ export function useSiteContent(useDraft = false) {
         throw error;
       }
       
-      console.log(`[useSiteContent] Update successful for ${key}:`, data);
+      
       
       setContent(prev => ({
         ...prev,
