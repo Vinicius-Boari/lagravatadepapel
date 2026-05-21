@@ -381,11 +381,12 @@ export function QuestionarioForm() {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="complement"
-            render={({ field }) => (
-              <FormItem>
+        {/* Seção 3: Responsável */}
+        <div className="space-y-8 bg-zinc-900/30 p-6 md:p-8 rounded-2xl border border-zinc-800/50">
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(192,57,43,0.5)]" />
+            <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tighter">Responsável pelo Contrato</h2>
+          </div>
                 <FormLabel className="text-zinc-400">Referência ou complemento*</FormLabel>
                 <FormControl>
                   <Textarea className="bg-zinc-900/50 border-zinc-800 focus:border-primary focus:ring-primary/20 transition-all min-h-[100px]" {...field} />

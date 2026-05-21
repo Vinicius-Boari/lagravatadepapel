@@ -854,9 +854,10 @@ body.lg-body {
   position: relative;
   background: #0a0a0a;
   color: #f5f5f5;
-  padding: 120px 24px 100px;
+  padding: 140px 24px 120px;
   overflow: hidden;
   isolation: isolate;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 .ig3d-bg {
   position: absolute; inset: 0; z-index: -1;
