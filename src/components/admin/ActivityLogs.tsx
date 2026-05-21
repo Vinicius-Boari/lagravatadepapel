@@ -1,3 +1,10 @@
+/**
+ * ActivityLogs Component
+ * 
+ * Displays a searchable audit trail of administrative actions.
+ * Fetches data from the 'admin_logs' table in Supabase.
+ * Allows filtering by user email, action type, or entity.
+ */
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

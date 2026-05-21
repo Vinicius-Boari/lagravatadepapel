@@ -1,3 +1,9 @@
+/**
+ * useAutosave Hook
+ * 
+ * Automatically triggers a save function when the provided data changes,
+ * with debouncing and optional local storage backup.
+ */
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 export function useAutosave<T>(

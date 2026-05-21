@@ -1,3 +1,10 @@
+/**
+ * QuestionarioForm Component
+ * 
+ * A comprehensive multi-step form for event inquiries.
+ * Collects event details, contact information, service preferences, and Pix details.
+ * Integrates with Supabase for data persistence and Formspree for email notifications.
+ */
 import { useState, useEffect } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useForm } from "react-hook-form";
@@ -15,6 +22,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
+/**
+ * Validation schema for the questionnaire form.
+ * Ensures all required fields are filled and formatted correctly.
+ */
 const formSchema = z.object({
   event_date: z.string().min(1, "Data é obrigatória"),
   invasion_type: z.string().min(1, "Tipo de invasão é obrigatório"),

@@ -1,3 +1,10 @@
+/**
+ * IntegrationsManager Component
+ * 
+ * Administrative tool for managing third-party connections.
+ * Includes settings for Instagram (Feed API), WhatsApp (contact buttons),
+ * and tracking tools (Google Analytics, Facebook Pixel, GTM).
+ */
 import { useState, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,6 +19,9 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
+/**
+ * Utility for displaying standardized toasts.
+ */
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
     toast.success(message, { position: "top-center", duration: 4000 });

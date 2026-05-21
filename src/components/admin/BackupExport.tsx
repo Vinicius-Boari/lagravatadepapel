@@ -1,3 +1,10 @@
+/**
+ * BackupExport Component
+ * 
+ * Manages system backups, allowing users to schedule automatic copies,
+ * run manual backups, and download or restore previous versions.
+ * Utilizes server functions for secure database operations.
+ */
 import { useState, useEffect, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { 

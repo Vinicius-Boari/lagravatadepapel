@@ -1,3 +1,10 @@
+/**
+ * SiteContentEditor Component
+ * 
+ * The primary editor for modifying all sections of the public website.
+ * Organizes content into tabs (Hero, Services, About, etc.).
+ * Supports direct text editing, list management, and image/video uploads.
+ */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +19,9 @@ import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, I
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
+/**
+ * Utility for displaying standardized toasts.
+ */
 const showToast = (message: string, type: 'success' | 'error') => {
   if (type === 'success') {
     toast.success(message, { position: "top-center", duration: 4000 });
@@ -20,6 +30,10 @@ const showToast = (message: string, type: 'success' | 'error') => {
   }
 };
 
+/**
+ * ImageUpload sub-component
+ * Handles file selection, uploading to Supabase, and previewing images/videos.
+ */
 const ImageUpload = ({ 
   value, 
   onChange, 

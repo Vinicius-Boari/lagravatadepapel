@@ -1,3 +1,10 @@
+/**
+ * AdminDashboard Component
+ * 
+ * The main control center for website management.
+ * Provides a tabbed interface for managing content, visual identity, media, users, and system settings.
+ * Includes sidebar navigation and specialized components for each administrative task.
+ */
 import { useState, useEffect } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,6 +50,12 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+/**
+ * AutoBackupTrigger Component
+ * 
+ * A background component that triggers a site backup every 5 minutes
+ * while the admin dashboard is active.
+ */
 const AutoBackupTrigger = () => {
   useEffect(() => {
     const triggerAutoBackup = async () => {
