@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as QuestionarioeventoRouteImport } from './routes/questionarioevento'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminVisualEditorRouteImport } from './routes/admin.visual-editor'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as ApiPublicHooksRunBackupRouteImport } from './routes/api.public.hooks.run-backup'
@@ -31,11 +30,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AdminVisualEditorRoute = AdminVisualEditorRouteImport.update({
-  id: '/visual-editor',
-  path: '/visual-editor',
-  getParentRoute: () => AdminRoute,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
@@ -59,7 +53,6 @@ export interface FileRoutesByFullPath {
   '/questionarioevento': typeof QuestionarioeventoRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/visual-editor': typeof AdminVisualEditorRoute
   '/api/public/hooks/run-backup': typeof ApiPublicHooksRunBackupRoute
 }
 export interface FileRoutesByTo {
@@ -68,7 +61,6 @@ export interface FileRoutesByTo {
   '/questionarioevento': typeof QuestionarioeventoRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/visual-editor': typeof AdminVisualEditorRoute
   '/api/public/hooks/run-backup': typeof ApiPublicHooksRunBackupRoute
 }
 export interface FileRoutesById {
@@ -78,7 +70,6 @@ export interface FileRoutesById {
   '/questionarioevento': typeof QuestionarioeventoRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/visual-editor': typeof AdminVisualEditorRoute
   '/api/public/hooks/run-backup': typeof ApiPublicHooksRunBackupRoute
 }
 export interface FileRouteTypes {
@@ -89,7 +80,6 @@ export interface FileRouteTypes {
     | '/questionarioevento'
     | '/admin/dashboard'
     | '/admin/login'
-    | '/admin/visual-editor'
     | '/api/public/hooks/run-backup'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -98,7 +88,6 @@ export interface FileRouteTypes {
     | '/questionarioevento'
     | '/admin/dashboard'
     | '/admin/login'
-    | '/admin/visual-editor'
     | '/api/public/hooks/run-backup'
   id:
     | '__root__'
@@ -107,7 +96,6 @@ export interface FileRouteTypes {
     | '/questionarioevento'
     | '/admin/dashboard'
     | '/admin/login'
-    | '/admin/visual-editor'
     | '/api/public/hooks/run-backup'
   fileRoutesById: FileRoutesById
 }
@@ -141,13 +129,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/visual-editor': {
-      id: '/admin/visual-editor'
-      path: '/visual-editor'
-      fullPath: '/admin/visual-editor'
-      preLoaderRoute: typeof AdminVisualEditorRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -175,13 +156,11 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminLoginRoute: typeof AdminLoginRoute
-  AdminVisualEditorRoute: typeof AdminVisualEditorRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminLoginRoute: AdminLoginRoute,
-  AdminVisualEditorRoute: AdminVisualEditorRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

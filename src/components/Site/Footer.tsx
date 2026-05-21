@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { EditableElement } from "@/components/admin/EditableElement";
+
 
 interface FooterProps {
   footer: any;
@@ -35,15 +35,15 @@ export const Footer = memo(({ footer, content }: FooterProps) => {
           </div>
           <div className="footer-col">
             <h4>Contato</h4>
-            <EditableElement section="footer" field="phone" type="text" label="Telefone Rodapé">
+            
               <a href={footer.phone_url || whatsappUrl} target="_blank" rel="noopener noreferrer">{footer.phone || "(11) 98511-1012"}</a>
-            </EditableElement>
+            
             <a href="mailto:torontosac@gmail.com" target="_blank" rel="noopener noreferrer">torontosac@gmail.com</a>
-            <EditableElement section="footer" field="address_line1" type="textarea" label="Endereço Rodapé">
+            
               <a href="https://maps.google.com/?q=Rua+Mesquita,+384,+Vila+Deodoro,+SP" target="_blank" rel="noopener noreferrer">
                 {footer.address_line1 || "Rua Mesquita, 384"}<br />{footer.address_line2 || "Vila Deodoro, SP"}
               </a>
-            </EditableElement>
+            
           </div>
         </div>
       </div>
@@ -57,9 +57,9 @@ export const Footer = memo(({ footer, content }: FooterProps) => {
           >
             painel
           </a>
-          <EditableElement section="footer" field="copyright" type="text" label="Direitos Autorais">
+          
             <span>{footer.copyright}</span>
-          </EditableElement>
+          
         </div>
       </div>
     </footer>

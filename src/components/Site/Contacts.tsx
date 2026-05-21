@@ -1,6 +1,6 @@
 import { MessageCircle, Instagram, Facebook, Video as TikTokIcon, Mail } from "lucide-react";
 import { memo } from "react";
-import { EditableElement } from "@/components/admin/EditableElement";
+
 
 interface ContactsProps {
   content?: any;
@@ -63,7 +63,7 @@ export const Contacts = memo(({ content }: ContactsProps) => {
       <div className="contacts-grid scene-3d">
         {contacts.map((contact, i) => (
           <div key={i} className="reveal">
-            <EditableElement section={contact.section} field={contact.field} type="link" label={`Link ${contact.platform}`}>
+            
               <a 
                 href={contact.link}
                 target="_blank"
@@ -82,7 +82,7 @@ export const Contacts = memo(({ content }: ContactsProps) => {
                   <span>→</span>
                 </div>
               </a>
-            </EditableElement>
+            
           </div>
         ))}
       </div>
