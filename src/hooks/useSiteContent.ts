@@ -193,7 +193,8 @@ export function useSiteContent(useDraft = false) {
     let isMounted = true;
     fetchContent(isMounted);
 
-    // Configurar Realtime Subscription para atualizações automáticas
+    // Configurar Realtime Subscription corretamente
+    // Criamos o canal e definimos os ouvintes ANTES de chamar .subscribe()
     const channel = supabase
       .channel('site_content_changes')
       .on(
@@ -204,10 +205,15 @@ export function useSiteContent(useDraft = false) {
           table: 'site_content'
         },
         () => {
-          if (isMounted) fetchContent(isMounted);
+          if (isMounted) {
+            console.log("[useSiteContent] Conteúdo atualizado via Realtime");
+            fetchContent(isMounted);
+          }
         }
-      )
-      .subscribe();
+      );
+    
+    // Agora que as callbacks foram registradas, podemos assinar
+    channel.subscribe();
 
     return () => {
       isMounted = false;
