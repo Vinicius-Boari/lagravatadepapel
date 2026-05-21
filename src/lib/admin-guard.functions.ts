@@ -6,6 +6,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 /**
  * verifyAdminAccess
@@ -16,10 +17,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 export const verifyAdminAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase, userId } = context;
+    const { userId } = context;
     
-    // Fetch user roles from the database
-    const { data, error } = await supabase
+    // Fetch user roles using service role to ensure we can read permissions
+    const { data, error } = await supabaseAdmin
       .from("user_roles")
       .select("role")
       .eq("user_id", userId);
