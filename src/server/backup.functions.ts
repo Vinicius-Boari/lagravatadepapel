@@ -67,7 +67,7 @@ export const listBackups = createServerFn({ method: "POST" })
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    console.log("[backup.functions] getBackupSettings starting for user:", context.userId);
+    
     try {
       await assertIsAdmin(context.userId);
       
