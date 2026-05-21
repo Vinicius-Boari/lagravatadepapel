@@ -244,7 +244,13 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      const { url } = await getDownloadFn({ data: { id }, headers });
+      const res = await getDownloadFn({ data: { id }, headers });
+      
+      if (res && 'ok' in res && !res.ok) {
+        throw new Error(res.error);
+      }
+
+      const url = res?.url;
       
       if (url) {
         // Fetch the file as a blob to trigger a direct download instead of just opening a tab
@@ -270,9 +276,9 @@ export function BackupExport() {
       } else {
         toast.error("URL de download não disponível.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Download error:", error);
-      toast.error("Erro ao realizar o download do arquivo.");
+      toast.error(`Erro ao realizar download: ${error.message || "Erro desconhecido"}`);
     }
   };
 
