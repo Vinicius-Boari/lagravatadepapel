@@ -1,3 +1,10 @@
+/**
+ * UserManagement Component
+ * 
+ * Interface for managing administrative users and their access levels.
+ * Only accessible to users with the 'owner' role.
+ * Integrates with a secure Supabase Edge Function to create new administrators.
+ */
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +26,10 @@ import { Badge } from "@/components/ui/badge";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { cn } from "@/lib/utils";
 
+/**
+ * UserRow Interface
+ * Defines the structure for administrative users displayed in the list.
+ */
 interface UserRow {
   id: string;
   email: string;
