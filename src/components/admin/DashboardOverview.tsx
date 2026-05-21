@@ -3,17 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "@tanstack/react-router";
 import { 
   Users, 
-  Eye, 
   History, 
   Globe, 
   TrendingUp, 
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  PenTool,
-  ArrowRight
+  Clock
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Table, 
@@ -95,6 +89,34 @@ export function DashboardOverview() {
       supabase.removeChannel(backupsChannel);
     };
   }, []);
+
+  const cards = [
+    { title: "Total de Administradores", value: stats.totalAdmins, icon: Users, color: "text-red-500" },
+    { title: "Logs de Atividades", value: stats.totalLogs, icon: History, color: "text-red-500" },
+    { title: "Status do Site", value: stats.siteStatus, icon: Globe, color: "text-red-500" },
+    { title: "Última Alteração", value: stats.lastUpdate, icon: Clock, color: "text-zinc-400", isDate: true },
+  ];
+
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+
+  return (
+    <div className="p-8 space-y-8 animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {cards.map((card, i) => (
+          <Card key={i} className="bg-zinc-900 border-zinc-800 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-red-400">{card.title}</CardTitle>
+              <card.icon className={cn("w-4 h-4", card.color)} />
+            </CardHeader>
+            <CardContent>
+              <div className={cn("font-bold text-red-500", card.isDate ? "text-sm" : "text-2xl")}>
+                {card.value}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       <Card className="bg-zinc-900 border-zinc-800 shadow-xl overflow-hidden">
         <CardHeader className="border-b border-zinc-800/50">
           <CardTitle className="text-lg flex items-center">
@@ -138,27 +160,6 @@ export function DashboardOverview() {
           </Table>
         </CardContent>
       </Card>
-
-  return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {cards.map((card, i) => (
-          <Card key={i} className="bg-zinc-900 border-zinc-800 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-red-400">{card.title}</CardTitle>
-              <card.icon className={cn("w-4 h-4", card.color)} />
-            </CardHeader>
-            <CardContent>
-              <div className={cn("font-bold text-red-500", card.isDate ? "text-sm" : "text-2xl")}>
-                {card.value}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      
-
-
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
