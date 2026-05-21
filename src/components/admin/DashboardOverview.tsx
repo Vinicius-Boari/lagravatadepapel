@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "@tanstack/react-router";
 import { 
   Users, 
   Eye, 
@@ -8,8 +9,11 @@ import {
   TrendingUp, 
   Clock,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  PenTool,
+  ArrowRight
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Table, 
@@ -22,6 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 export function DashboardOverview() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalAdmins: 0,
     totalLogs: 0,
@@ -82,6 +87,25 @@ export function DashboardOverview() {
             </CardContent>
           </Card>
         ))}
+      </div>
+      
+      <div className="bg-gradient-to-r from-red-900/20 to-zinc-900 border border-red-900/30 p-8 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+        <div className="flex items-center gap-6">
+          <div className="bg-red-600 p-4 rounded-2xl shadow-lg shadow-red-900/40 animate-pulse">
+            <PenTool className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-white tracking-tight">Editor Visual Wix</h3>
+            <p className="text-red-500/70 text-sm max-w-md">Novo sistema de edição completa! Altere textos, cores e imagens clicando diretamente no site.</p>
+          </div>
+        </div>
+        <Button 
+          onClick={() => navigate({ to: "/admin/visual-editor" })}
+          className="bg-white hover:bg-zinc-100 text-black font-bold h-14 px-8 rounded-xl flex items-center gap-2 group transition-all"
+        >
+          Abrir Editor Visual
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
