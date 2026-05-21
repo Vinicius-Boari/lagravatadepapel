@@ -23,14 +23,16 @@ export const Route = createFileRoute("/admin")({
       // Verify server-side if user is admin
       const result = await verifyAdminAccess();
       
-      // Handle the standardized object return
-      if (result && 'ok' in result && !result.ok) {
-        console.warn("[admin-route] Server verification failed:", result.error);
+      // Handle the standardized data object return
+      // If 'ok' is missing or false, we assume access denied
+      if (!result || (typeof result === 'object' && 'ok' in result && !result.ok)) {
+        const errorMsg = (result as any)?.error || "Access denied";
+        console.warn("[admin-route] Server verification failed:", errorMsg);
         throw redirect({ to: "/admin/login" });
       }
     } catch (err: any) {
       // If it's already a TanStack redirect, just let it through
-      if (err && (err.status === 301 || err.status === 302 || err.isRedirect)) {
+      if (err && (err.status === 301 || err.status === 302 || err.isRedirect || err.name === 'Invariant Violation')) {
         throw err;
       }
       
