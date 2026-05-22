@@ -17,7 +17,9 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { SectionHeader } from "./shared/SectionHeader";
+import { StatusIndicator } from "./shared/StatusIndicator";
+
 
 
 /**
@@ -135,7 +137,7 @@ const ImageUpload = ({
 };
 
 export function SiteContentEditor() {
-  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading, saveStatus: status } = useSiteContent();
   
   const [activeSection, setActiveSection] = useState("hero");
 
@@ -191,126 +193,84 @@ export function SiteContentEditor() {
     }
   }, [updateSection]);
 
-  const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
-  const { status: aboutStatus, setSaveStatus: setAboutStatus } = useSaveStatus();
-  const { status: planStatus, setSaveStatus: setPlanStatus } = useSaveStatus();
-  const { status: servicesStatus, setSaveStatus: setServicesStatus } = useSaveStatus();
-  const { status: videosStatus, setSaveStatus: setVideosStatus } = useSaveStatus();
-  const { status: placesStatus, setSaveStatus: setPlacesStatus } = useSaveStatus();
-  const { status: footerStatus, setSaveStatus: setFooterStatus } = useSaveStatus();
-  const { status: seoStatus, setSaveStatus: setSeoStatus } = useSaveStatus();
-  const { status: langStatus, setSaveStatus: setLangStatus } = useSaveStatus();
-  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
-  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
-  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
+  // Status management is now handled by useSiteContent globally for this component
 
-  const SaveBtn = ({ section, data, status, setStatus }: any) => (
+
+  const SaveBtn = ({ section, data }: any) => (
     <Button 
       type="button"
       onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        setStatus('saving');
         try {
           const result = await handleSave(section, data);
           if (result) {
-            setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
           } else {
-            setStatus('error');
             showToast(`Erro ao salvar ${section}. Verifique sua conexão.`, 'error');
           }
         } catch (err: any) {
           console.error(`[SaveBtn] Error in section ${section}:`, err);
-          setStatus('error');
           showToast(`Erro ao salvar ${section}: ${err?.message || 'Erro desconhecido'}`, 'error');
         }
       }}
-      className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+      className={cn(
+        "transition-all duration-300 w-32 font-bold",
+        status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
+        status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
+      )}
+      disabled={status === 'saving'}
     >
       {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
       {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
     </Button>
   );
 
-  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
+
+  if (contentLoading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl gap-4 mb-6">
-        <div className="flex items-center gap-4">
-          <div className="bg-red-600/10 p-2 rounded-lg">
-            <Globe className="w-5 h-5 text-red-500" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-red-500 leading-none">Conteúdo do Site</h2>
-            <p className="text-[10px] text-red-500/50 uppercase tracking-widest mt-1">Gerencie as informações públicas</p>
-          </div>
-        </div>
-        
-        <Button 
-          onClick={async () => {
-            const btnMap: Record<string, any> = {
-              hero: { data: hero, status: heroStatus, set: setHeroStatus },
-              services: { data: services, status: servicesStatus, set: setServicesStatus },
-              videos: { data: videos, status: videosStatus, set: setVideosStatus },
-              places: { data: places, status: placesStatus, set: setPlacesStatus },
-              plan: { data: plan, status: planStatus, set: setPlanStatus },
-              about: { data: about, status: aboutStatus, set: setAboutStatus },
-              footer: { data: footer, status: footerStatus, set: setFooterStatus },
-              coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
-              seo: { data: seo, status: seoStatus, set: setSeoStatus },
-              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
-              languages: { data: languages, status: langStatus, set: setLangStatus },
-              instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
-            };
-            const current = btnMap[activeSection];
-            if (current) {
-              current.set('saving');
-              try {
-                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
-                               activeSection === 'tropa' ? 'tropa_config' : 
-                               activeSection;
-                const result = await handleSave(saveKey, current.data);
-                if (result) {
-                  current.set('saved');
-                  showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
-                } else {
-                  current.set('error');
-                  showToast(`Erro ao salvar ${activeSection}.`, 'error');
+      <SectionHeader 
+        title="Conteúdo do Site"
+        subtitle="Gerencie as informações públicas"
+        icon={Globe}
+        action={
+          <>
+            <StatusIndicator status={status} />
+            <Button 
+              onClick={async () => {
+                const dataMap: Record<string, any> = {
+                  hero, services, videos, places, plan, about, footer, coupons, seo, languages,
+                  tropa: tropaConfig,
+                  instagram: instagramConfig
+                };
+                const data = dataMap[activeSection];
+                if (data) {
+                  const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                                 activeSection === 'tropa' ? 'tropa_config' : 
+                                 activeSection;
+                  const result = await handleSave(saveKey, data);
+                  if (result) {
+                    showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo!`, 'success');
+                  }
                 }
-              } catch (err: any) {
-                current.set('error');
-                showToast(`Erro ao salvar ${activeSection}: ${err?.message || "Erro de rede"}`, 'error');
-              }
-            }
-          }}
-          size="sm"
-          className={cn(
-            "transition-all duration-300 w-40 font-bold shadow-lg h-10",
-            getSaveButtonStyles(
-              activeSection === "hero" ? heroStatus :
-              activeSection === "services" ? servicesStatus :
-              activeSection === "videos" ? videosStatus :
-              activeSection === "places" ? placesStatus :
-              activeSection === "plan" ? planStatus :
-              activeSection === "about" ? aboutStatus :
-              activeSection === "footer" ? footerStatus :
-              activeSection === "coupons" ? couponsStatus :
-              activeSection === "seo" ? seoStatus :
-              activeSection === "tropa" ? tropaStatus :
-              activeSection === "instagram" ? instagramStatus :
-              langStatus
-            )
-          )}
-        >
-          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving' || tropaStatus === 'saving') 
-            ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> 
-            : <Save className="w-4 h-4 mr-2" />
-          }
-          Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
-        </Button>
-      </div>
+              }}
+              size="sm"
+              className={cn(
+                "transition-all duration-300 w-48 font-bold h-10 shadow-lg",
+                status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
+                status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
+              )}
+              disabled={status === 'saving'}
+            >
+              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+            </Button>
+          </>
+        }
+      />
+
 
 
 
@@ -353,7 +313,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
               <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
             </div>
-            <SaveBtn section="hero" data={hero} status={heroStatus} setStatus={setHeroStatus} />
+            <SaveBtn section="hero" data={hero} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
