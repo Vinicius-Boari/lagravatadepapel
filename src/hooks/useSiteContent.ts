@@ -1,12 +1,8 @@
-/**
- * useSiteContent Hook
- * 
- * Manage and fetch global site content from Supabase.
- * Provides real-time updates and draft/published content switching.
- */
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 export interface SiteContent {
   hero: {
@@ -160,6 +156,16 @@ export const FALLBACK_CONTENT: SiteContent = {
 export function useSiteContent(useDraft = false) {
   const [content, setContent] = useState<SiteContent>(FALLBACK_CONTENT);
   const [loading, setLoading] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const updateSaveStatus = useCallback((newStatus: SaveStatus) => {
+    setSaveStatus(newStatus);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (newStatus === 'saved' || newStatus === 'error') {
+      timerRef.current = setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  }, []);
 
   const fetchContent = useCallback(async (isMounted: boolean = true) => {
     try {
@@ -177,7 +183,6 @@ export function useSiteContent(useDraft = false) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          // Deep merge protection to avoid overwriting with null/empty
           if (v && typeof v === 'object') {
             merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
           }
@@ -195,8 +200,6 @@ export function useSiteContent(useDraft = false) {
     let isMounted = true;
     fetchContent(isMounted);
 
-    // Configurar Realtime Subscription corretamente
-    // Criamos o canal e definimos os ouvintes ANTES de chamar .subscribe()
     const channel = supabase
       .channel('site_content_changes')
       .on(
@@ -214,12 +217,12 @@ export function useSiteContent(useDraft = false) {
         }
       );
     
-    // Agora que as callbacks foram registradas, podemos assinar
     channel.subscribe();
 
     return () => {
       isMounted = false;
       supabase.removeChannel(channel);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [fetchContent]);
 
@@ -230,6 +233,7 @@ export function useSiteContent(useDraft = false) {
         return false;
       }
 
+      updateSaveStatus('saving');
       const { error } = await supabase
         .from("site_content")
         .upsert({ 
@@ -242,6 +246,7 @@ export function useSiteContent(useDraft = false) {
       if (error) {
         console.error(`[useSiteContent] Upsert error for ${key}:`, error.message);
         toast.error(`Erro ao salvar: ${error.message}`);
+        updateSaveStatus('error');
         return false;
       }
       
@@ -250,13 +255,15 @@ export function useSiteContent(useDraft = false) {
         [key]: newValue
       }));
 
+      updateSaveStatus('saved');
       return true;
     } catch (err: any) {
       console.error(`[useSiteContent] Critical save error for ${key}:`, err?.message || err);
       toast.error(`Erro inesperado ao salvar. Verifique sua rede.`);
+      updateSaveStatus('error');
       return false;
     }
   };
 
-  return { content, loading, updateSection, refresh: () => fetchContent(true) };
+  return { content, loading, updateSection, saveStatus, refresh: () => fetchContent(true) };
 }
