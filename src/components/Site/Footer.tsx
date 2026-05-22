@@ -13,10 +13,7 @@ export const Footer = memo(({ footer, content }: FooterProps) => {
   return (
     <footer className="lg-footer">
       <div className="footer-top">
-        <div className="footer-logo">
-          <img src="https://lovasiri.com.br/api/i/3y8mb6pafz.png" alt="Logo La Gravata de Papel" className="footer-logo-img" />
-          <span>La Gravata<br />de Papel</span>
-        </div>
+        <div className="footer-logo">La Gravata<br />de Papel</div>
         <div className="footer-links">
           <div className="footer-col">
             <h4>Navegação</h4>
