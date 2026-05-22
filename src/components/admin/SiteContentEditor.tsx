@@ -377,7 +377,7 @@ export function SiteContentEditor() {
             <div>
               <CardTitle className="text-red-500">Serviços</CardTitle>
             </div>
-            <SaveBtn section="services" data={services}   />
+            <SaveBtn section="services" data={services} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
@@ -425,7 +425,7 @@ export function SiteContentEditor() {
                       onMobileToggle={checked => { const newI = [...services.items]; newI[idx].show_mobile = checked; setServices({...services, items: newI}); }}
                     />
                    <div className="flex justify-end pt-4">
-                     <SaveBtn section="services" data={services}   />
+                     <SaveBtn section="services" data={services} />
                    </div>
                  </div>
                ))}
@@ -444,7 +444,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">Vídeos</CardTitle></div>
-            <SaveBtn section="videos" data={videos}   />
+            <SaveBtn section="videos" data={videos} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -487,7 +487,7 @@ export function SiteContentEditor() {
                     onMobileToggle={checked => { const newV = [...videos.items]; newV[idx].show_mobile = checked; setVideos({...videos, items: newV}); }}
                   />
                   <div className="flex justify-end pt-2">
-                    <SaveBtn section="videos" data={videos}   />
+                    <SaveBtn section="videos" data={videos} />
                   </div>
                 </div>
               ))}
@@ -509,7 +509,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Invasões</CardTitle>
               <CardDescription className="text-red-500/60">Lista de locais e invasões realizadas.</CardDescription>
             </div>
-            <SaveBtn section="places" data={places}   />
+            <SaveBtn section="places" data={places} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -558,7 +558,7 @@ export function SiteContentEditor() {
                       onMobileToggle={checked => { const newI = [...places.items]; newI[idx].show_mobile = checked; setPlaces({...places, items: newI}); }}
                     />
                     <div className="flex justify-end pt-2">
-                      <SaveBtn section="places" data={places}   />
+                      <SaveBtn section="places" data={places} />
                     </div>
                   </div>
                 ))}
@@ -577,7 +577,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">O Plano</CardTitle></div>
-            <SaveBtn section="plan" data={plan}   />
+            <SaveBtn section="plan" data={plan} />
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -600,7 +600,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">La gravata</CardTitle></div>
-            <SaveBtn section="about" data={about}   />
+            <SaveBtn section="about" data={about} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={about.heading || ""} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="Título (Ex: La Gravata)" />
@@ -627,7 +627,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">Rodapé</CardTitle></div>
-            <SaveBtn section="footer" data={footer}   />
+            <SaveBtn section="footer" data={footer} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={footer.copyright || ""} onChange={e => setFooter({...footer, copyright: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
@@ -643,7 +643,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Cupons Especiais</CardTitle>
               <CardDescription className="text-red-500/60">Gerencie os cupons exibidos no site.</CardDescription>
             </div>
-            <SaveBtn section="coupons" data={coupons}   />
+            <SaveBtn section="coupons" data={coupons} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -708,7 +708,7 @@ export function SiteContentEditor() {
                     <Textarea value={coupon.description} onChange={e => { const newItems = [...coupons.items]; newItems[idx].description = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                   </div>
                   <div className="flex justify-end pt-2">
-                    <SaveBtn section="coupons" data={coupons}   />
+                    <SaveBtn section="coupons" data={coupons} />
                   </div>
                 </div>
               ))}
@@ -724,7 +724,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Tropa da Gravata</CardTitle>
               <CardDescription className="text-red-500/60">Configure a seção Tropa da Gravata.</CardDescription>
             </div>
-            <SaveBtn section="tropa_config" data={tropaConfig}   />
+            <SaveBtn section="tropa_config" data={tropaConfig} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -775,7 +775,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">SEO</CardTitle></div>
-            <SaveBtn section="seo" data={seo}   />
+            <SaveBtn section="seo" data={seo} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={seo.title || ""} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
@@ -791,7 +791,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Instagram Config (Feed)</CardTitle>
               <CardDescription className="text-red-500/60">Textos e links da seção do Instagram.</CardDescription>
             </div>
-            <SaveBtn section="instagram_config" data={instagramConfig}   />
+            <SaveBtn section="instagram_config" data={instagramConfig} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -822,7 +822,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">Idiomas</CardTitle></div>
-            <SaveBtn section="languages" data={languages}   />
+            <SaveBtn section="languages" data={languages} />
           </CardHeader>
           <CardContent>
             <p className="text-red-500 italic">Idiomas ativos do site.</p>
