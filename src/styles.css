@@ -580,6 +580,26 @@ body.lg-body {
 .whatsapp-float-real:hover { transform: scale(1.1); }
 .whatsapp-float-real svg { width: 30px; height: 30px; fill: white; }
 
+.toronto-float { 
+  position: fixed; bottom: 24px; left: 24px; z-index: 999; 
+  width: 60px; height: 60px; border-radius: 50%; background: #000; 
+  display: flex; align-items: center; justify-content: center; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: transform 0.3s; 
+  text-decoration: none; 
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.toronto-float img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+@media (max-width: 768px) {
+  .toronto-float { bottom: 20px; left: 16px; width: 50px; height: 50px; }
+}
+.toronto-float:hover { transform: scale(1.1); }
+
+
 /* FOOTER */
 .lg-footer { background: var(--color-black-lg); color: var(--color-white-lg); padding: 80px 60px 40px; position: relative; z-index: 20; }
 .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 80px; flex-wrap: wrap; gap: 40px; }
