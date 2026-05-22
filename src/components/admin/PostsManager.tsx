@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Save, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { SectionHeader } from "./shared/SectionHeader";
+import { StatusIndicator } from "./shared/StatusIndicator";
+
 
 export function PostsManager() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -55,11 +57,25 @@ export function PostsManager() {
     }
   }, [selectedPostId, posts]);
 
-  const { status, setSaveStatus } = useSaveStatus();
+  const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const updateStatus = (newStatus: 'idle' | 'saving' | 'saved' | 'error') => {
+    setStatus(newStatus);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (newStatus === 'saved' || newStatus === 'error') {
+      timerRef.current = setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
+
 
   const handleManualSave = async () => {
     if (!selectedPostId) return;
-    setSaveStatus('saving');
+    updateStatus('saving');
     
     try {
       console.log("[PostsManager] Saving post:", { id: selectedPostId, titulo, conteudo, midiaUrl });
@@ -75,12 +91,12 @@ export function PostsManager() {
 
       if (error) throw error;
       
-      setSaveStatus('saved');
+      updateStatus('saved');
       toast.success("Post salvo com sucesso!");
       await fetchPosts(); // Refresh list to ensure UI is in sync
     } catch (err: any) {
       console.error("[PostsManager] Error saving post:", err);
-      setSaveStatus('error');
+      updateStatus('error');
       toast.error(`Erro ao salvar post: ${err.message || "Erro desconhecido"}`);
     }
   };
@@ -152,31 +168,39 @@ export function PostsManager() {
     p.conteudo?.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center sticky top-0 md:top-16 bg-zinc-950/80 backdrop-blur-sm z-[60] py-4 -mt-4 border-b border-zinc-800/50 gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-red-500">Gestão de Posts / Feed</h2>
-          <p className="text-red-500/70">Crie e edite conteúdos dinâmicos para o site.</p>
-        </div>
-        <div className="flex items-center gap-4">
-          {selectedPostId && (
-            <Button 
-              onClick={handleManualSave}
-              className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
-            >
-              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+      <SectionHeader 
+        title="Gestão de Posts / Feed"
+        subtitle="Crie e edite conteúdos dinâmicos para o site"
+        icon={FileText}
+        action={
+          <div className="flex items-center gap-4">
+            <StatusIndicator status={status} />
+            {selectedPostId && (
+              <Button 
+                onClick={handleManualSave}
+                className={cn(
+                  "transition-all duration-300 w-32 font-bold",
+                  status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
+                  status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
+                )}
+                disabled={status === 'saving'}
+              >
+                {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+              </Button>
+            )}
+            <Button onClick={handleCreatePost} className="bg-red-600 hover:bg-red-700 text-white border-none font-bold">
+              <Plus className="mr-2 w-4 h-4" />
+              Novo Post
             </Button>
-          )}
-          <Button onClick={handleCreatePost} className="bg-red-600 hover:bg-red-700 text-white border-none">
-            <Plus className="mr-2 w-4 h-4" />
-            Novo Post
-          </Button>
-        </div>
-      </div>
+          </div>
+        }
+      />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Sidebar / List */}
@@ -274,11 +298,17 @@ export function PostsManager() {
                   </Button>
                   <Button 
                     onClick={handleManualSave}
-                    className={cn("transition-all duration-300 w-full md:w-48 text-lg font-bold h-12 shadow-lg", getSaveButtonStyles(status))}
+                    className={cn(
+                      "transition-all duration-300 w-full md:w-48 text-lg font-bold h-12 shadow-lg",
+                      status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
+                      status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
+                    )}
+                    disabled={status === 'saving'}
                   >
                     {status === 'saving' ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
                     {status === 'saved' ? 'Post Salvo!' : status === 'error' ? 'Erro!' : 'Salvar Post Agora'}
                   </Button>
+
                 </div>
               </CardContent>
             </Card>
