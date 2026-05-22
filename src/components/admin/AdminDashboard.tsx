@@ -166,12 +166,18 @@ const SettingsTab = () => {
         <Button 
           onClick={handleSave}
           size="lg"
-          className={cn("transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20", getSaveButtonStyles(status))}
+          className={cn(
+            "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
+            saveStatus === 'saved' ? "bg-green-600 hover:bg-green-700" : 
+            saveStatus === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
+          )}
+          disabled={saveStatus === 'saving'}
         >
-          {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
-          {status === 'saved' ? 'Configurações Salvas!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Configurações'}
+          {saveStatus === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
+          {saveStatus === 'saved' ? 'Configurações Salvas!' : saveStatus === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Configurações'}
         </Button>
       </div>
+
     </div>
   );
 };
