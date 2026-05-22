@@ -24,10 +24,11 @@ export const About = memo(({ about }: AboutProps) => {
 
         <div className="mt-8">
           
-            <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal" onClick={(e) => e.preventDefault()}>
+            <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
               <span>{about.cta_label}</span>
               <span>→</span>
             </a>
+
           
         </div>
       </div>
