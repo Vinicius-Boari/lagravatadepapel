@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "@tanstack/react-router";
 import { 
@@ -6,8 +6,11 @@ import {
   History, 
   Globe, 
   TrendingUp, 
-  Clock
+  Clock,
+  Loader2
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Table, 
@@ -31,7 +34,7 @@ export function DashboardOverview() {
   const [backupSettings, setBackupSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadStats = async (isMounted = true) => {
+  const loadStats = useCallback(async (isMounted = true) => {
     try {
       const [adminsRes, logsRes, recentLogsRes, backupRes] = await Promise.all([
         supabase.from("user_roles").select("user_id", { count: "exact", head: true }).in("role", ["admin", "owner"]),
@@ -58,7 +61,8 @@ export function DashboardOverview() {
     } finally {
       if (isMounted) setLoading(false);
     }
-  };
+  }, []);
+
 
   useEffect(() => {
     let isMounted = true;
@@ -88,7 +92,8 @@ export function DashboardOverview() {
       supabase.removeChannel(logsChannel);
       supabase.removeChannel(backupsChannel);
     };
-  }, []);
+  }, [loadStats]);
+
 
   const cards = [
     { title: "Total de Administradores", value: stats.totalAdmins, icon: Users, color: "text-red-500" },
@@ -97,7 +102,7 @@ export function DashboardOverview() {
     { title: "Última Alteração", value: stats.lastUpdate, icon: Clock, color: "text-zinc-400", isDate: true },
   ];
 
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
@@ -218,8 +223,4 @@ export function DashboardOverview() {
       </div>
     </div>
   );
-}
-
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
 }
