@@ -13,11 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, Link as LinkIcon, MessageCircle, BarChart, Code, CheckCircle2, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { SectionHeader } from "./shared/SectionHeader";
+import { StatusIndicator } from "./shared/StatusIndicator";
+
 
 /**
  * Utility for displaying standardized toasts.
@@ -31,7 +32,7 @@ const showToast = (message: string, type: 'success' | 'error') => {
 };
 
 export function IntegrationsManager() {
-  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const { content, updateSection, loading: contentLoading, saveStatus: status } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const integrations = content.integrations || {};
   const instagram = content.instagram_config || {};
@@ -82,37 +83,43 @@ export function IntegrationsManager() {
     }
   }, [formData, instagram, updateSection]);
 
-  const { status, setSaveStatus } = useSaveStatus();
-
   const handleManualSave = async () => {
-    setSaveStatus('saving');
     try {
       await handleSave();
-      setSaveStatus('saved');
       showToast("Integrações salvas com sucesso!", "success");
     } catch {
-      setSaveStatus('error');
       showToast("Erro ao salvar integrações.", "error");
     }
   };
+
 
   if (contentLoading) return <div className="p-8 text-zinc-400">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
-        <div>
-          <h2 className="text-2xl font-bold text-red-500">Integrações e APIs</h2>
-          <p className="text-zinc-400">Conecte redes sociais, analytics e botões de contato.</p>
-        </div>
-        <Button 
-          onClick={handleManualSave}
-          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
-        >
-          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
-        </Button>
-      </div>
+      <SectionHeader 
+        title="Integrações e APIs"
+        subtitle="Conecte redes sociais, analytics e botões de contato"
+        icon={Instagram}
+        action={
+          <>
+            <StatusIndicator status={status} />
+            <Button 
+              onClick={handleManualSave}
+              className={cn(
+                "transition-all duration-300 w-32 font-bold",
+                status === 'saved' ? "bg-green-600 hover:bg-green-700 text-white" : 
+                status === 'error' ? "bg-red-600 hover:bg-red-700 text-white" : "bg-black hover:bg-zinc-900 text-white"
+              )}
+              disabled={status === 'saving'}
+            >
+              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+            </Button>
+          </>
+        }
+      />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Instagram API */}
@@ -232,12 +239,18 @@ export function IntegrationsManager() {
         <Button 
           onClick={handleManualSave}
           size="lg"
-          className={cn("transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20", getSaveButtonStyles(status))}
+          className={cn(
+            "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
+            status === 'saved' ? "bg-green-600 hover:bg-green-700 text-white" : 
+            status === 'error' ? "bg-red-600 hover:bg-red-700 text-white" : "bg-black hover:bg-zinc-900 text-white"
+          )}
+          disabled={status === 'saving'}
         >
           {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
           {status === 'saved' ? 'Integrações Salvas!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Integrações'}
         </Button>
       </div>
+
     </div>
   );
 }
