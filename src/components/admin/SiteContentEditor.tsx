@@ -833,62 +833,32 @@ export function SiteContentEditor() {
       <div className="flex justify-center pt-8 border-t border-zinc-800/50 pb-10">
         <Button 
           onClick={async () => {
-            const btnMap: Record<string, any> = {
-              hero: { data: hero, status: heroStatus, set: setHeroStatus },
-              services: { data: services, status: servicesStatus, set: setServicesStatus },
-              videos: { data: videos, status: videosStatus, set: setVideosStatus },
-              places: { data: places, status: placesStatus, set: setPlacesStatus },
-              plan: { data: plan, status: planStatus, set: setPlanStatus },
-              about: { data: about, status: aboutStatus, set: setAboutStatus },
-              footer: { data: footer, status: footerStatus, set: setFooterStatus },
-              coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
-              seo: { data: seo, status: seoStatus, set: setSeoStatus },
-              languages: { data: languages, status: langStatus, set: setLangStatus },
-              instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
-              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
+            const dataMap: Record<string, any> = {
+              hero, services, videos, places, plan, about, footer, coupons, seo, languages,
+              tropa: tropaConfig,
+              instagram: instagramConfig
             };
-            const current = btnMap[activeSection];
-            if (current) {
-              current.set('saving');
-              try {
-                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
-                               activeSection === 'tropa' ? 'tropa_config' : 
-                               activeSection;
-                const result = await handleSave(saveKey, current.data);
-                if (result) {
-                  current.set('saved');
-                  showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
-                } else {
-                  throw new Error("Falha ao salvar");
-                }
-              } catch (err: any) {
-                current.set('error');
-                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
-              }
+            const data = dataMap[activeSection];
+            if (data) {
+              const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                             activeSection === 'tropa' ? 'tropa_config' : 
+                             activeSection;
+              await handleSave(saveKey, data);
             }
           }}
           size="lg"
           className={cn(
             "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
-            getSaveButtonStyles(
-              activeSection === "hero" ? heroStatus :
-              activeSection === "services" ? servicesStatus :
-              activeSection === "videos" ? videosStatus :
-              activeSection === "places" ? placesStatus :
-              activeSection === "plan" ? planStatus :
-              activeSection === "about" ? aboutStatus :
-              activeSection === "footer" ? footerStatus :
-              activeSection === "coupons" ? couponsStatus :
-              activeSection === "seo" ? seoStatus :
-              activeSection === "instagram" ? instagramStatus :
-              langStatus
-            )
+            status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
+            status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
           )}
+          disabled={status === 'saving'}
         >
-          <Save className="w-6 h-6 mr-2" />
-          Salvar Alterações de {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+          {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
+          {status === 'saved' ? 'Conteúdo Salvo!' : status === 'error' ? 'Erro ao Salvar!' : `Salvar Alterações de ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}`}
         </Button>
       </div>
+
     </div>
   );
 }
