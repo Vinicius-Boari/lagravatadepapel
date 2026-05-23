@@ -4,13 +4,16 @@ import { SkillsContainer } from './SkillsContainer';
 import React from 'react';
 
 // Mock dependencies
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: React.forwardRef(({ children, ...props }: any, ref) => <div ref={ref} {...props}>{children}</div>),
-    section: React.forwardRef(({ children, ...props }: any, ref) => <section ref={ref} {...props}>{children}</section>),
-  },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
-}));
+vi.mock('framer-motion', () => {
+  const ReactMock = require('react');
+  return {
+    motion: {
+      div: ReactMock.forwardRef(({ children, ...props }: any, ref: any) => <div ref={ref} {...props}>{children}</div>),
+      section: ReactMock.forwardRef(({ children, ...props }: any, ref: any) => <section ref={ref} {...props}>{children}</section>),
+    },
+    AnimatePresence: ({ children }: any) => <>{children}</>,
+  };
+});
 
 // Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
