@@ -1490,46 +1490,6 @@ body.lg-body {
   color: white;
 }
 
-/* TORONTO FILMS FLOATING BUTTON */
-.toronto-float {
-  position: fixed;
-  left: 20px;
-  bottom: 20px;
-  width: 60px;
-  height: 60px;
-  background: #000;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  overflow: visible;
-}
-
-.toronto-float img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-origin: bottom left;
-  display: block;
-}
-
-.toronto-float:hover img {
-  transform: scale(2.2) translate(5px, -5px);
-  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
-}
-
-.toronto-float:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  z-index: 1001;
-}
 
 
 
