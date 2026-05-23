@@ -1497,6 +1497,7 @@ body.lg-body {
   bottom: 20px;
   width: 60px;
   height: 60px;
+  aspect-ratio: 1 / 1;
   background: #000;
   border-radius: 50%;
   display: flex;
@@ -1505,17 +1506,18 @@ body.lg-body {
   z-index: 999;
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  overflow: visible;
+  overflow: hidden;
   border: none;
   transform-origin: bottom left;
+  padding: 0;
 }
 
 .toronto-float img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  display: block;
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border-radius: 50%;
 }
 
 .toronto-float:hover {
@@ -1525,8 +1527,9 @@ body.lg-body {
 }
 
 .toronto-float:hover img {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
+
 
 
 
