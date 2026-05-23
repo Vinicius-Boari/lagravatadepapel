@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Box, 
@@ -9,10 +9,19 @@ import {
   Layout, 
   Brain,
   Code2,
-  Terminal
+  Terminal,
+  Cpu,
+  MessageSquare,
+  Sparkles,
+  Search,
+  History
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Skill {
   title: string;
@@ -71,6 +80,21 @@ const INITIAL_SKILLS: Skill[] = [
     tech: ["HTML5", "TypeScript", "Vite", "React"]
   },
   {
+    title: "Aprendizagem Autônoma",
+    category: "Cérebro",
+    description: "Sistema de 'Segundo Cérebro' digital que adapta seu conhecimento através de interações e feedback.",
+    icon: <Cpu className="w-6 h-6 text-purple-500" />,
+    technicalIndicator: "Self-Learning AI",
+    details: [
+      "Banco de Dados Vetorial/Grafo",
+      "Aquisição por Feedback Direto",
+      "Mecanismo de Auto-Reflexão",
+      "Recuperação Semântica",
+      "Esquecimento Gradual Simulado"
+    ],
+    tech: ["Supabase", "NLP", "Vector DB", "Embeddings"]
+  },
+  {
     title: "3D Animation (Fiber)",
     category: "Cérebro",
     description: "Animações complexas utilizando Three.js e sua integração profunda com React.",
@@ -99,11 +123,87 @@ const INITIAL_SKILLS: Skill[] = [
   }
 ];
 
-// Sub-componente para otimizar renderização via memoization se necessário no futuro
+// Componente do Centro de Aprendizagem (Brain Learning Center)
+const BrainLearningCenter = () => {
+  const [query, setQuery] = useState("");
+  const [messages, setMessages] = useState<{ role: 'user' | 'brain', text: string, type?: string }[]>([
+    { role: 'brain', text: "Olá! Eu sou o módulo de Aprendizagem Autônoma do Cérebro. O que você quer me ensinar hoje ou sobre o que quer perguntar?" }
+  ]);
+
+  const handleSend = () => {
+    if (!query.trim()) return;
+    
+    setMessages(prev => [...prev, { role: 'user', text: query }]);
+    
+    // Simulação de processamento do Cérebro (em um app real isso chamaria uma Edge Function)
+    setTimeout(() => {
+      let response = "";
+      if (query.toLowerCase().includes("ensine") || query.toLowerCase().includes("aprenda")) {
+        response = "Entendido. Processei essa nova informação e a integrei ao meu banco de dados de grafo com confiança inicial de 0.7. Como você sabe disso?";
+      } else if (query.toLowerCase().includes("errou") || query.toLowerCase().includes("errado")) {
+        response = "Peço desculpas. Corrigi meu registro interno. A confiança na informação anterior foi reduzida e a nova versão foi priorizada.";
+      } else {
+        response = "Baseado no meu conhecimento atual (Confiança: 0.85), identifiquei uma relação semântica entre esse conceito e suas interações anteriores. Deseja aprofundar?";
+      }
+      setMessages(prev => [...prev, { role: 'brain', text: response }]);
+    }, 800);
+    
+    setQuery("");
+  };
+
+  return (
+    <Card className="mt-12 border-primary/20 bg-background/40 backdrop-blur-xl overflow-hidden shadow-2xl">
+      <div className="p-4 border-b border-primary/10 bg-primary/5 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+          <h3 className="font-bold uppercase tracking-widest text-sm">Learning Center</h3>
+        </div>
+        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">Autônomo v1.0</Badge>
+      </div>
+      <CardContent className="p-0">
+        <ScrollArea className="h-[300px] p-6">
+          <div className="space-y-4">
+            {messages.map((m, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: m.role === 'user' ? 20 : -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                  m.role === 'user' 
+                    ? 'bg-primary text-primary-foreground rounded-tr-none' 
+                    : 'bg-muted border border-border/50 rounded-tl-none'
+                }`}>
+                  {m.text}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollArea>
+        <div className="p-4 border-t border-primary/10 bg-muted/20 flex gap-2">
+          <Input 
+            placeholder="Ensine algo ou pergunte..." 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            className="bg-background/50 border-primary/20 focus-visible:ring-primary"
+          />
+          <Button onClick={handleSend} size="icon">
+            <Search className="w-4 h-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Sub-componente para otimizar renderização via memoization
 const SkillCard = React.memo(({ skill, index }: { skill: Skill; index: number }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
+
     transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
     viewport={{ once: true, margin: "-50px" }}
   >
@@ -206,6 +306,8 @@ export const SkillsContainer: React.FC = () => {
           ))}
         </div>
       </TooltipProvider>
+
+      <BrainLearningCenter />
     </section>
   );
 };
