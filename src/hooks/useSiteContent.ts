@@ -162,6 +162,8 @@ export function useSiteContent(useDraft = false) {
   const [loading, setLoading] = useState(true);
 
   const fetchContent = useCallback(async (isMounted: boolean = true) => {
+    if (typeof window === 'undefined') return;
+
     try {
       setLoading(true);
       const { data, error } = await supabase
