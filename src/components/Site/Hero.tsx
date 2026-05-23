@@ -77,7 +77,7 @@ export const Hero = memo(({ hero, heroImgsRef, getLimitedVideoUrl, handleTimeUpd
         {hero.cta_label && (
           <div className="hero-cta">
             <EditableElement section="hero" field="cta_url" type="button" label="Botão Principal">
-              <a href="/questionarioevento" onClick={(e) => e.preventDefault()}>
+              <a href="/questionarioevento">
                 <span className="text-white">{hero.cta_label}</span>
                 <span className="cta-dot bg-red-500" />
               </a>

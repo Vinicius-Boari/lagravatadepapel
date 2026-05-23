@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import { SiteContent, useSiteContent } from "@/hooks/useSiteContent";
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
+import { SiteContent, useSiteContent, FALLBACK_CONTENT } from "@/hooks/useSiteContent";
 import { toast } from "sonner";
 
 interface VisualEditorContextType {
@@ -15,13 +15,21 @@ interface VisualEditorContextType {
 const VisualEditorContext = createContext<VisualEditorContextType | undefined>(undefined);
 
 export function VisualEditorProvider({ children }: { children: ReactNode }) {
-  // We check if we are in the visual editor route to decide whether to use drafts
-  const isVisualEditorPath = typeof window !== 'undefined' && window.location.pathname === '/admin/visual-editor';
-  const { content, updateSection } = useSiteContent(isVisualEditorPath); 
+  // Use a more robust check for the path that doesn't rely solely on window for logic
+  const [isVisualEditor, setIsVisualEditor] = useState(false);
+  
+  const { content, updateSection } = useSiteContent(isVisualEditor); 
   
   const [isEditing, setIsEditing] = useState(false);
   const [draftContent, setDraftContent] = useState<SiteContent>(content);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsVisualEditor(window.location.pathname === '/admin/visual-editor');
+    }
+  }, []);
+
 
   // Sync draftContent when content from hook changes (e.g. initial load or path change)
   React.useEffect(() => {
@@ -91,9 +99,18 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
 export const useVisualEditor = () => {
   const context = useContext(VisualEditorContext);
   if (context === undefined) {
-    // Return a safe fallback or throw depending on architecture
-    // For this project, we want it available everywhere
-    throw new Error("useVisualEditor must be used within a VisualEditorProvider");
+    // Return a safe fallback instead of throwing
+    // This allows components like EditableElement to be used on the public site
+    // without requiring a global provider.
+    return {
+      isEditing: false,
+      setIsEditing: () => {},
+      draftContent: FALLBACK_CONTENT,
+      updateDraft: () => {},
+      saveChanges: async () => {},
+      selectedElement: null,
+      setSelectedElement: () => {}
+    };
   }
   return context;
 }
