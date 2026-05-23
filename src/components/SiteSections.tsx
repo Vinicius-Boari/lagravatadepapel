@@ -7,6 +7,8 @@
 import { useEffect, useRef, useState, memo, useCallback } from "react";
 import type { SiteContent } from "@/hooks/useSiteContent";
 import { InstagramCarousel3D } from "@/components/InstagramCarousel3D";
+import { SkillsContainer } from "@/components/SkillsContainer";
+
 
 // Modularized components
 import { Header } from "./Site/Header";
@@ -301,6 +303,9 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
       <Places places={content.places} />
       
       <InstagramCarousel3D config={content.instagram_config ?? {}} />
+      
+      <SkillsContainer />
+
       
       <About about={content.about} />
       <Tropa tropaConfig={content.tropa_config} />
