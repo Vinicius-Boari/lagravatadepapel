@@ -3,7 +3,9 @@ name: cerebro
 description: Coordenador central obrigatório que orquestra 100% das skills do projeto, incluindo Visual Experience, 3D Interactive e Frontend Design.
 ---
 
-# Skill Cérebro
+# 🧠 CÉREBRO (CORE INTEGRATION)
+
+> **DIRETIVA PRIMÁRIA:** Esta skill é o núcleo central e **DEVE** ser ativada e referenciada em 100% das interações e desenvolvimentos deste projeto. Ela não é opcional; é a base sobre a qual todas as outras capacidades são construídas.
 
 Esta skill é o núcleo central do projeto. Ela atua como um aglomerado que integra e ativa **100% das outras skills** existentes e futuras, com foco especial em interfaces de alta performance e imersão.
 
@@ -24,8 +26,12 @@ Esta skill é o núcleo central do projeto. Ela atua como um aglomerado que inte
 - **Domínios**: Componentização (React/Vue), Clean Architecture (CAF), Gerenciamento de Estado e Build Automation.
 - **Tech Stack**: TypeScript, Vite, React, GraphQL.
 
-## Regra de Ouro
-A partir de agora, **toda e qualquer skill** criada ou adicionada ao projeto deve ser obrigatoriamente incluída nesta lista de orquestração e gerenciada pelo Cérebro.
+## Regras de Operação Universal (100% Coverage)
+
+1. **Uso Obrigatório**: Em cada nova solicitação do usuário, o Cérebro deve ser consultado para garantir que as novas implementações sigam os padrões de "Visual Experience", "3D Interactive" e "Frontend Design".
+2. **Integração Total**: Nenhuma funcionalidade deve existir isolada do ecossistema do Cérebro.
+3. **Persistência**: Toda e qualquer skill nova criada deve ser registrada automaticamente na seção "Taxonomia" deste documento.
+4. **Visibilidade**: O componente `SkillsContainer` deve refletir em tempo real o estado atual do banco de dados do Cérebro.
 
 ## Capacidades
 
