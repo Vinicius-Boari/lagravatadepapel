@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
 import { SiteContent, useSiteContent } from "@/hooks/useSiteContent";
 import { toast } from "sonner";
 
