@@ -1495,36 +1495,40 @@ body.lg-body {
   position: fixed;
   left: 20px;
   bottom: 20px;
-  width: 60px;
-  height: 60px;
-  background: black;
+  width: 70px;
+  height: 70px;
+  background: #000;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  overflow: visible;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  padding: 0;
 }
 
 .toronto-float img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
 }
 
 .toronto-float:hover {
-  transform: scale(1.25);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  transform: scale(1.3);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
   z-index: 1001;
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .toronto-float:hover img {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
+
 
 @media (max-width: 768px) {
   .toronto-float {
