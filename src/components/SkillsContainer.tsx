@@ -12,7 +12,9 @@ import {
   Share2, 
   Layout, 
   Brain,
-  Info
+  Info,
+  Code2,
+  Terminal
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -23,135 +25,177 @@ interface Skill {
   category: string;
   icon: React.ReactNode;
   technicalIndicator: string;
+  details: string[];
+  tech: string[];
 }
 
 const skills: Skill[] = [
   {
-    title: "3D Animation (Three.js/Fiber)",
-    category: "Brain",
-    description: "Capacidade de implementar animações complexas em três dimensões utilizando Three.js e React Three Fiber. Inclui manipulação de modelos 3D, câmeras, luzes e materiais para experiências web imersivas.",
-    icon: <Box className="w-6 h-6 text-blue-500 animate-bounce" />,
-    technicalIndicator: "Three.js / R3F"
-  },
-  {
-    title: "Parallax Effect (JS/CSS)",
-    category: "Brain",
-    description: "Criação de efeitos de rolagem dinâmica onde elementos de fundo se movem em velocidades diferentes, adicionando profundidade e imersão visual com performance otimizada.",
-    icon: <Layers className="w-6 h-6 text-purple-500" />,
-    technicalIndicator: "Dynamic Z-Index"
-  },
-  {
-    title: "Scroll Effect (Intersection Observer/GSAP)",
-    category: "Brain",
-    description: "Interações visuais acionadas por rolagem utilizando Intersection Observer API para detecção eficiente e GSAP para animações fluidas e controladas por linha do tempo.",
-    icon: <ArrowDownCircle className="w-6 h-6 text-green-500" />,
-    technicalIndicator: "GSAP / Observer"
-  },
-  {
     title: "Visual Experience",
-    category: "Brain",
-    description: "Interfaces que priorizam estética visual e performance. Microinterações significativas que garantem uma experiência de usuário agradável e responsiva.",
+    category: "Cérebro",
+    description: "Componentes visuais que impactam a percepção estética e usabilidade, focando em Design Systems e Acessibilidade.",
     icon: <Eye className="w-6 h-6 text-yellow-500" />,
-    technicalIndicator: "Aesthetics & FPS"
+    technicalIndicator: "UX/UI Visual",
+    details: [
+      "Design Systems (Shadcn UI, IBM Carbon)",
+      "UI Prototyping (Figma, Adobe XD)",
+      "Animações CSS/JS (Framer Motion)",
+      "Design Responsivo & Mobile-First",
+      "Acessibilidade Web (WCAG/ARIA)"
+    ],
+    tech: ["CSS3", "SVG", "Tailwind", "Figma"]
   },
   {
-    title: "3D Interactive (WebXR/Babylon)",
-    category: "Brain",
-    description: "Desenvolvimento de experiências AR/VR na web utilizando WebXR e frameworks como Babylon.js para interações complexas e imersão total do usuário.",
+    title: "3D Interactive",
+    category: "Cérebro",
+    description: "Criação e manipulação de objetos e ambientes 3D em tempo real com suporte a WebXR.",
     icon: <Headset className="w-6 h-6 text-red-500" />,
-    technicalIndicator: "WebXR / Spatial"
-  },
-  {
-    title: "Storytelling (Narrative UI/UX)",
-    category: "Brain",
-    description: "Aplicação de princípios narrativos no design, guiando o usuário através de uma jornada coesa onde a interface se desdobra como uma história envolvente.",
-    icon: <BookOpen className="w-6 h-6 text-emerald-500" />,
-    technicalIndicator: "Narrative Flow"
-  },
-  {
-    title: "UI-UX-PRO-MAX",
-    category: "Brain",
-    description: "Domínio avançado de UI/UX, incluindo Design Thinking, prototipagem de alta fidelidade e arquitetura de informação robusta para produtos digitais de elite.",
-    icon: <Crown className="w-6 h-6 text-orange-500" />,
-    technicalIndicator: "Elite Principles"
-  },
-  {
-    title: "Nano Banana 2",
-    category: "Brain",
-    description: "Expertise no framework Nano Banana 2 (Proprietary/Public Tooling), utilizando suas APIs específicas e padrões de desenvolvimento acelerado.",
-    icon: <Zap className="w-6 h-6 text-yellow-400" />,
-    technicalIndicator: "Framework Logic"
-  },
-  {
-    title: "Stitch (Apollo/GraphQL)",
-    category: "Brain",
-    description: "Integração de múltiplos serviços GraphQL através de Apollo Federation ou Schema Stitching para construir APIs robustas, escaláveis e unificadas.",
-    icon: <Share2 className="w-6 h-6 text-pink-500" />,
-    technicalIndicator: "GraphQL Stitch"
+    technicalIndicator: "WebXR / 3D",
+    details: [
+      "Modelagem 3D (glTF/PBR)",
+      "Shaders Customizados (GLSL)",
+      "Física 3D (Cannon.js/Ammo.js)",
+      "Realidade Virtual e Aumentada",
+      "Otimização de Draw Calls"
+    ],
+    tech: ["Three.js", "Babylon.js", "WebGPU", "Blender"]
   },
   {
     title: "Frontend Design",
-    category: "Brain",
-    description: "Tradução de designs visuais em código de alta qualidade, seguindo padrões modernos (HTML5/CSS3/ES6+), acessibilidade e princípios de Clean Code.",
+    category: "Cérebro",
+    description: "Fusão de design visual e desenvolvimento técnico para criar interfaces dinâmicas e de código limpo.",
     icon: <Layout className="w-6 h-6 text-cyan-500" />,
-    technicalIndicator: "Modern Standards"
+    technicalIndicator: "Design Implementation",
+    details: [
+      "Componentização Avançada (React)",
+      "Clean Architecture no Frontend",
+      "State Management (Redux/Context)",
+      "Automação de Build (Vite/Webpack)",
+      "Testes de UI/UX (Playwright)"
+    ],
+    tech: ["HTML5", "TypeScript", "Vite", "React"]
+  },
+  {
+    title: "3D Animation (Fiber)",
+    category: "Cérebro",
+    description: "Animações complexas utilizando Three.js e sua integração profunda com React.",
+    icon: <Box className="w-6 h-6 text-blue-500 animate-bounce" />,
+    technicalIndicator: "R3F / Three.js",
+    details: ["R3F Hooks", "Luzes e Sombras", "Camera Controller"],
+    tech: ["React Three Fiber", "Drei"]
+  },
+  {
+    title: "Scroll & Parallax",
+    category: "Cérebro",
+    description: "Profundidade visual e gatilhos de animação baseados na rolagem da página.",
+    icon: <ArrowDownCircle className="w-6 h-6 text-green-500" />,
+    technicalIndicator: "GSAP / Observer",
+    details: ["Intersection Observer", "ScrollTrigger", "Parallax Layers"],
+    tech: ["GSAP", "Locomotive Scroll"]
+  },
+  {
+    title: "Stitch (GraphQL)",
+    category: "Cérebro",
+    description: "Orquestração de microsserviços e unificação de schemas GraphQL.",
+    icon: <Share2 className="w-6 h-6 text-pink-500" />,
+    technicalIndicator: "Apollo Federation",
+    details: ["Schema Stitching", "Federated Graphs", "Micro-frontends"],
+    tech: ["Apollo", "GraphQL"]
   }
 ];
 
 export const SkillsContainer: React.FC = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
   return (
-    <section className="py-16 px-4 max-w-7xl mx-auto" id="skills-brain">
-      <div className="flex items-center gap-3 mb-12">
-        <Brain className="w-10 h-10 text-primary animate-pulse" />
-        <h2 className="text-4xl font-bold tracking-tight text-foreground">
-          Brain <span className="text-primary">Skills</span>
-        </h2>
+    <section className="py-24 px-4 max-w-7xl mx-auto" id="skills-brain">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-primary/10 rounded-2xl">
+            <Brain className="w-12 h-12 text-primary animate-pulse" />
+          </div>
+          <div>
+            <h2 className="text-5xl font-black tracking-tighter text-foreground uppercase">
+              Cérebro <span className="text-primary font-light italic">Core</span>
+            </h2>
+            <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">
+              Integrated Skill Matrix v2.0
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground border border-border/50 px-4 py-2 rounded-full bg-muted/30">
+          <Terminal className="w-4 h-4" />
+          <span>Status: Fully Operational</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <TooltipProvider>
           {skills.map((skill, index) => (
             <motion.div
               key={skill.title}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              onHoverStart={() => setHoveredIndex(index)}
-              onHoverEnd={() => setHoveredIndex(null)}
             >
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Card className="h-full cursor-pointer overflow-hidden border-2 border-transparent hover:border-primary/50 transition-all duration-300 bg-card/50 backdrop-blur-sm group">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Card className="h-full border-0 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-2xl hover:shadow-primary/10 transition-all duration-500 group relative overflow-hidden">
+                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <CardContent className="p-8 relative z-10">
+                      <div className="flex items-center justify-between mb-8">
+                        <div className="p-4 rounded-2xl bg-background/50 shadow-inner group-hover:scale-110 transition-transform duration-500">
                           {skill.icon}
                         </div>
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground bg-muted px-2 py-1 rounded">
-                          {skill.technicalIndicator}
-                        </span>
+                        <div className="text-right">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1.5 rounded-full">
+                            {skill.technicalIndicator}
+                          </span>
+                        </div>
                       </div>
                       
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="text-2xl font-bold mb-3 group-hover:translate-x-1 transition-transform">
                         {skill.title}
                       </h3>
                       
-                      <p className="text-sm text-muted-foreground line-clamp-2 group-hover:line-clamp-none transition-all duration-500">
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-6">
                         {skill.description}
                       </p>
 
-                      <div className="mt-4 flex items-center text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Info className="w-3 h-3 mr-1" /> Ver detalhes técnicos
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        {skill.tech.slice(0, 3).map(t => (
+                          <span key={t} className="text-[10px] font-mono text-muted-foreground/70 border border-border/50 px-2 py-0.5 rounded">
+                            {t}
+                          </span>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-xs p-4 bg-popover/95 backdrop-blur shadow-xl border-primary/20">
-                  <p className="text-sm leading-relaxed">{skill.description}</p>
+                <TooltipContent side="right" className="w-80 p-6 bg-background/95 backdrop-blur-2xl border-primary/20 shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-tighter">
+                      <Code2 className="w-4 h-4" />
+                      <span>Especialidades</span>
+                    </div>
+                    <ul className="space-y-2">
+                      {skill.details.map((d, i) => (
+                        <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
+                          <div className="w-1 h-1 bg-primary rounded-full" />
+                          {d}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="pt-4 border-t border-border/50">
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase mb-2">Stack Completa</div>
+                      <div className="flex flex-wrap gap-1">
+                        {skill.tech.map(t => (
+                          <span key={t} className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </TooltipContent>
               </Tooltip>
             </motion.div>

@@ -1,0 +1,80 @@
+{
+  "Cérebro": {
+    "Visual Experience": {
+      "Definição": "Componentes visuais da interface do usuário, incluindo design gráfico, layout, tipografia, cores, iconografia e elementos interativos que impactam a percepção estética e usabilidade.",
+      "Sub-habilidades": [
+        "Design System (Shadcn UI, IBM Carbon, Semi Design)",
+        "UI Prototyping (Figma, Sketch, Adobe XD)",
+        "Animações e Transições CSS/JavaScript (Framer Motion, CSS Keyframes)",
+        "Design Responsivo (Mobile-First, Adaptativo)",
+        "Acessibilidade Web (WCAG, W3C Standards)",
+        "Performance Visual (Otimização de imagens, LCP, CLS)",
+        "User Interface (UI) Design",
+        "Visual Storytelling",
+        "Design Gráfico para Web"
+      ],
+      "Ferramentas/Tecnologias": [
+        "CSS3",
+        "SVG",
+        "Canvas API",
+        "WebGL (aspectos visuais)",
+        "Bootstrap",
+        "Tailwind CSS",
+        "Figma",
+        "Sketch",
+        "Adobe XD"
+      ]
+    },
+    "3D Interactive": {
+      "Definição": "Criação e manipulação de objetos e ambientes tridimensionais que permitem interação do usuário em tempo real.",
+      "Sub-habilidades": [
+        "Modelagem 3D (glTF, OBJ, FBX)",
+        "Texturização e Iluminação 3D (PBR Materials)",
+        "Animação 3D (Keyframe, Skeletal Animation)",
+        "Física e Simulação 3D (Cannon.js, Ammo.js)",
+        "Interação com Câmera e Objetos 3D (Raycasting)",
+        "Realidade Virtual (VR) no Navegador (WebXR)",
+        "Realidade Aumentada (AR) no Navegador (WebXR)",
+        "Otimização de Performance 3D (Draw Calls, Texture Atlases)",
+        "Shaders (GLSL, HLSL)"
+      ],
+      "Ferramentas/Tecnologias": [
+        "Three.js",
+        "Babylon.js",
+        "PlayCanvas",
+        "A-Frame",
+        "WebGL",
+        "WebGPU",
+        "Blender"
+      ]
+    },
+    "Frontend Design": {
+      "Definição": "Combinação de habilidades de design visual e desenvolvimento frontend para criar interfaces de usuário dinâmicas, responsivas e esteticamente agradáveis. Foco na implementação do design.",
+      "Sub-habilidades": [
+        "HTML Semântico, CSS Flexbox/Grid",
+        "JavaScript DOM Manipulation",
+        "Componentização de UI (React, Vue, Angular)",
+        "State Management (Redux, Context API, Ploc/Pulse)",
+        "Testes de UI/UX (Storybook, Playwright)",
+        "Otimização de Performance Frontend (Vite, Webpack)",
+        "Versionamento de Código (Git/GitHub)",
+        "Automação de Build",
+        "Consumo de APIs RESTful/GraphQL",
+        "Metodologias Ágeis"
+      ],
+      "Ferramentas/Tecnologias": [
+        "HTML5",
+        "CSS3",
+        "JavaScript (ES6+)",
+        "React",
+        "Vue",
+        "Angular",
+        "Git",
+        "NPM",
+        "Yarn",
+        "Webpack",
+        "Vite"
+      ]
+    }
+  }
+}
