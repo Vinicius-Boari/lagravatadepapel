@@ -18,7 +18,7 @@ export const ThePlan = memo(({ plan }: ThePlanProps) => {
         </EditableElement>
 
         <EditableElement section="plan" field="cta_url" type="button" label="Botão O Plano">
-          <a href="/questionarioevento" className="btn-outline" onClick={(e) => e.preventDefault()}>
+          <a href="/questionarioevento" className="btn-outline">
             <span>{plan.cta_label}</span>
             <span>→</span>
           </a>
