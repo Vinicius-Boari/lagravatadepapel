@@ -3,11 +3,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "@tanstack/react-router";
 import { 
   Users, 
+  Eye, 
   History, 
   Globe, 
   TrendingUp, 
-  Clock
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  PenTool,
+  ArrowRight
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Table, 
@@ -28,19 +34,17 @@ export function DashboardOverview() {
     lastUpdate: "---"
   });
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
-  const [backupSettings, setBackupSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadStats = async (isMounted = true) => {
-    try {
-      const [adminsRes, logsRes, recentLogsRes, backupRes] = await Promise.all([
-        supabase.from("user_roles").select("user_id", { count: "exact", head: true }).in("role", ["admin", "owner"]),
-        supabase.from("admin_logs").select("id", { count: "exact", head: true }),
-        supabase.from("admin_logs").select("*").order("created_at", { ascending: false }).limit(5),
-        supabase.from("backup_settings").select("*").maybeSingle()
-      ]);
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const [adminsRes, logsRes, recentLogsRes] = await Promise.all([
+          supabase.from("user_roles").select("user_id", { count: "exact", head: true }).in("role", ["admin", "owner"]),
+          supabase.from("admin_logs").select("id", { count: "exact", head: true }),
+          supabase.from("admin_logs").select("*").order("created_at", { ascending: false }).limit(5)
+        ]);
 
-      if (isMounted) {
         setStats({
           totalAdmins: adminsRes.count || 0,
           totalLogs: logsRes.count || 0,
@@ -51,43 +55,13 @@ export function DashboardOverview() {
         });
 
         setRecentLogs(recentLogsRes.data || []);
-        setBackupSettings(backupRes.data);
+      } catch (err) {
+        console.error("Error loading stats:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error loading dashboard stats:", err);
-    } finally {
-      if (isMounted) setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-    
-    loadStats(isMounted);
-
-    const logsChannel = supabase
-      .channel('dashboard-logs-realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'admin_logs' },
-        () => loadStats(isMounted)
-      )
-      .subscribe();
-
-    const backupsChannel = supabase
-      .channel('dashboard-backups-realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'backup_settings' },
-        () => loadStats(isMounted)
-      )
-      .subscribe();
-    
-    return () => {
-      isMounted = false;
-      supabase.removeChannel(logsChannel);
-      supabase.removeChannel(backupsChannel);
-    };
+    loadStats();
   }, []);
 
   const cards = [
@@ -96,8 +70,6 @@ export function DashboardOverview() {
     { title: "Status do Site", value: stats.siteStatus, icon: Globe, color: "text-red-500" },
     { title: "Última Alteração", value: stats.lastUpdate, icon: Clock, color: "text-zinc-400", isDate: true },
   ];
-
-  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
@@ -116,50 +88,25 @@ export function DashboardOverview() {
           </Card>
         ))}
       </div>
-
-      <Card className="bg-zinc-900 border-zinc-800 shadow-xl overflow-hidden">
-        <CardHeader className="border-b border-zinc-800/50">
-          <CardTitle className="text-lg flex items-center">
-            <TrendingUp className="mr-2 w-5 h-5 text-red-400" />
-            <span className="text-red-500">Cron Jobs (Monitoramento)</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-zinc-950/50">
-              <TableRow className="hover:bg-transparent border-zinc-800">
-                <TableHead className="text-red-400">Tarefa</TableHead>
-                <TableHead className="text-red-400">Frequência</TableHead>
-                <TableHead className="text-red-400">Última Execução</TableHead>
-                <TableHead className="text-red-400">Próxima Execução</TableHead>
-                <TableHead className="text-red-400 text-center">Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow className="border-zinc-800 hover:bg-zinc-800/20 transition-colors">
-                <TableCell className="font-medium text-red-300">Backup Automático Diário</TableCell>
-                <TableCell className="text-zinc-400">
-                  {backupSettings ? `${backupSettings.interval_value} ${backupSettings.interval_unit === 'days' ? 'dia(s)' : 'hora(s)'}` : 'Diário'}
-                </TableCell>
-                <TableCell className="text-zinc-400">
-                  {backupSettings?.last_run_at ? new Date(backupSettings.last_run_at).toLocaleString('pt-BR') : '---'}
-                </TableCell>
-                <TableCell className="text-zinc-400">
-                  {backupSettings?.next_run_at ? new Date(backupSettings.next_run_at).toLocaleString('pt-BR') : '---'}
-                </TableCell>
-                <TableCell className="text-center">
-                  <Badge className={cn(
-                    "font-bold",
-                    backupSettings?.auto_enabled ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"
-                  )}>
-                    {backupSettings?.auto_enabled ? "Ativo" : "Desativado"}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      
+      <div className="bg-gradient-to-r from-red-900/20 to-zinc-900 border border-red-900/30 p-8 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+        <div className="flex items-center gap-6">
+          <div className="bg-red-600 p-4 rounded-2xl shadow-lg shadow-red-900/40 animate-pulse">
+            <PenTool className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-white tracking-tight">Editor Visual Wix</h3>
+            <p className="text-red-500/70 text-sm max-w-md">Novo sistema de edição completa! Altere textos, cores e imagens clicando diretamente no site.</p>
+          </div>
+        </div>
+        <Button 
+          onClick={() => navigate({ to: "/admin/visual-editor" })}
+          className="bg-white hover:bg-zinc-100 text-black font-bold h-14 px-8 rounded-xl flex items-center gap-2 group transition-all"
+        >
+          Abrir Editor Visual
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">

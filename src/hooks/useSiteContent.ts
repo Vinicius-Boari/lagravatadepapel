@@ -163,13 +163,14 @@ export function useSiteContent(useDraft = false) {
 
   const fetchContent = useCallback(async (isMounted: boolean = true) => {
     try {
-      if (isMounted) setLoading(true);
+      setLoading(true);
       const { data, error } = await supabase
         .from("site_content")
         .select("key, value, draft_value");
       
       if (error) {
-        console.error("[useSiteContent] Supabase fetch error:", error.message);
+        console.error("Supabase error fetching site content:", error);
+        // Silent error for end users unless it's a critical fetch
         return;
       }
 
@@ -177,15 +178,12 @@ export function useSiteContent(useDraft = false) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          // Deep merge protection to avoid overwriting with null/empty
-          if (v && typeof v === 'object') {
-            merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
-          }
+          merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
         }
         setContent(merged);
       }
-    } catch (err: any) {
-      console.error("[useSiteContent] Critical fetch error:", err?.message || err);
+    } catch (err) {
+      console.error("Critical error fetching site content:", err);
     } finally {
       if (isMounted) setLoading(false);
     }
@@ -195,8 +193,7 @@ export function useSiteContent(useDraft = false) {
     let isMounted = true;
     fetchContent(isMounted);
 
-    // Configurar Realtime Subscription corretamente
-    // Criamos o canal e definimos os ouvintes ANTES de chamar .subscribe()
+    // Configurar Realtime Subscription para atualizações automáticas
     const channel = supabase
       .channel('site_content_changes')
       .on(
@@ -207,15 +204,10 @@ export function useSiteContent(useDraft = false) {
           table: 'site_content'
         },
         () => {
-          if (isMounted) {
-            console.log("[useSiteContent] Conteúdo atualizado via Realtime");
-            fetchContent(isMounted);
-          }
+          if (isMounted) fetchContent(isMounted);
         }
-      );
-    
-    // Agora que as callbacks foram registradas, podemos assinar
-    channel.subscribe();
+      )
+      .subscribe();
 
     return () => {
       isMounted = false;
@@ -223,27 +215,25 @@ export function useSiteContent(useDraft = false) {
     };
   }, [fetchContent]);
 
-  const updateSection = async (key: string, newValue: any) => {
+  const updateSection = async (key: string, newValue: any, isDraft = false) => {
     try {
-      if (!newValue) {
-        console.warn(`[useSiteContent] Blocked attempt to save empty data for ${key}`);
-        return false;
-      }
-
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("site_content")
         .upsert({ 
           key, 
           value: newValue, 
           draft_value: newValue, 
           updated_at: new Date().toISOString() 
-        }, { onConflict: 'key' });
+        }, { onConflict: 'key' })
+        .select();
 
       if (error) {
-        console.error(`[useSiteContent] Upsert error for ${key}:`, error.message);
-        toast.error(`Erro ao salvar: ${error.message}`);
-        return false;
+        console.error(`[useSiteContent] Supabase error for ${key}:`, error);
+        toast.error(`Erro no Supabase: ${error.message}`);
+        throw error;
       }
+      
+      
       
       setContent(prev => ({
         ...prev,
@@ -252,11 +242,11 @@ export function useSiteContent(useDraft = false) {
 
       return true;
     } catch (err: any) {
-      console.error(`[useSiteContent] Critical save error for ${key}:`, err?.message || err);
-      toast.error(`Erro inesperado ao salvar. Verifique sua rede.`);
-      return false;
+      console.error(`[useSiteContent] Catch block for ${key}:`, err);
+      toast.error(`Erro crítico ao salvar: ${err.message || 'Verifique sua conexão'}`);
+      throw err;
     }
   };
 
-  return { content, loading, updateSection, refresh: () => fetchContent(true) };
+  return { content, loading, updateSection, refresh: fetchContent };
 }

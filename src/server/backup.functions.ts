@@ -41,10 +41,9 @@ async function assertIsAdmin(userId: string) {
 export const listBackups = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
-      
       const { data: backups, error } = await supabaseAdmin
         .from("backups")
         .select("id, created_at, completed_at, status, size_bytes, file_path, trigger, error_message, tables")
@@ -53,21 +52,23 @@ export const listBackups = createServerFn({ method: "POST" })
 
       if (error) {
         console.error("[backup.functions] listBackups database error:", error.message);
-        return { ok: false, error: error.message };
+        throw new Error(`Erro no banco de dados: ${error.message}`);
       }
       
-      return { ok: true, backups: backups ?? [] };
+      
+      return { backups: backups ?? [] };
     } catch (err: any) {
       console.error("[backup.functions] listBackups caught error:", err.message);
-      return { ok: false, error: err.message };
+      // Ensure we always return a plain object with error info if we want to avoid throwing Response
+      throw err;
     }
   });
 
 export const getBackupSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       
       const { data: settings, error } = await supabaseAdmin
@@ -78,13 +79,14 @@ export const getBackupSettings = createServerFn({ method: "POST" })
       
       if (error) {
         console.error("[backup.functions] getBackupSettings database error:", error.message);
-        return { ok: false, error: error.message };
+        throw new Error(`Erro ao buscar configurações: ${error.message}`);
       }
       
-      return { ok: true, settings };
+      
+      return { settings };
     } catch (err: any) {
       console.error("[backup.functions] getBackupSettings caught error:", err.message);
-      return { ok: false, error: err.message };
+      throw err;
     }
   });
 
@@ -105,7 +107,6 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => settingsSchema.parse(input))
   .handler(async ({ data, context }) => {
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       const { data: existing } = await supabaseAdmin
         .from("backup_settings")
@@ -131,10 +132,10 @@ export const updateBackupSettings = createServerFn({ method: "POST" })
           .insert({ ...settingsData, id: crypto.randomUUID() });
         if (error) throw new Error(error.message);
       }
-      return { ok: true, success: true };
+      return { success: true };
     } catch (err: any) {
       console.error("[backup.functions] updateBackupSettings error:", err.message);
-      return { ok: false, error: err.message };
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -142,14 +143,13 @@ export const runBackupNow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       const result = await runBackup({ trigger: "manual", createdBy: context.userId });
       await applyRetentionPolicy();
-      return { ok: true, result };
+      return result;
     } catch (err: any) {
       console.error("[backup.functions] runBackupNow error:", err.message);
-      return { ok: false, error: err.message };
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -158,7 +158,6 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       await restoreBackup(data.id);
       await supabaseAdmin.from("admin_logs").insert({
@@ -168,10 +167,10 @@ export const restoreBackupFn = createServerFn({ method: "POST" })
         entity_type: "backup",
         entity_id: data.id,
       });
-      return { ok: true, success: true };
+      return { success: true };
     } catch (err: any) {
       console.error("[backup.functions] restoreBackupFn error:", err.message);
-      return { ok: false, error: err.message };
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -180,13 +179,12 @@ export const deleteBackupFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       await deleteBackup(data.id);
-      return { ok: true, success: true };
+      return { success: true };
     } catch (err: any) {
       console.error("[backup.functions] deleteBackupFn error:", err.message);
-      return { ok: false, error: err.message };
+      throw new Error(err.message || "Internal Server Error");
     }
   });
 
@@ -195,7 +193,6 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
-      if (!context.userId) throw new Error("Usuário não identificado");
       await assertIsAdmin(context.userId);
       const { data: row, error } = await supabaseAdmin
         .from("backups")
@@ -207,9 +204,9 @@ export const getBackupDownloadUrl = createServerFn({ method: "POST" })
       if (!row?.file_path) throw new Error("Arquivo indisponível");
       const url = await getSignedDownloadUrl(row.file_path);
       if (!url) throw new Error("Falha ao gerar URL de download");
-      return { ok: true, url };
+      return { url };
     } catch (err: any) {
       console.error("[backup.functions] getBackupDownloadUrl error:", err.message);
-      return { ok: false, error: err.message };
+      throw new Error(err.message || "Internal Server Error");
     }
   });

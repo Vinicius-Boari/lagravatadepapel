@@ -83,15 +83,6 @@ export async function runBackup(opts: {
       .eq("id", row.id);
     if (updateErr) throw new Error(updateErr.message);
 
-    // 5) Log to admin_logs
-    await supabaseAdmin.from("admin_logs").insert({
-      action: "backup.create",
-      user_email: opts.createdBy || "System (Auto)",
-      user_id: opts.createdBy || null,
-      entity_type: "backup",
-      entity_id: row.id,
-    });
-
     return { id: row.id, size: bytes.byteLength, path };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Erro desconhecido";

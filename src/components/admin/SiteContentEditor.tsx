@@ -6,7 +6,7 @@
  * Supports direct text editing, list management, and image/video uploads.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSiteContent, SiteContent } from "@/hooks/useSiteContent";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -15,10 +15,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket, AlertCircle } from "lucide-react";
+import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
-
 
 /**
  * Utility for displaying standardized toasts.
@@ -136,7 +135,6 @@ const ImageUpload = ({
 
 export function SiteContentEditor() {
   const { content, updateSection, loading: contentLoading } = useSiteContent();
-  
   const [activeSection, setActiveSection] = useState("hero");
 
   const [hero, setHero] = useState<any>({});
@@ -151,12 +149,13 @@ export function SiteContentEditor() {
   const [tropaConfig, setTropaConfig] = useState<any>({});
   const [languages, setLanguages] = useState<any>({});
   const [instagramConfig, setInstagramConfig] = useState<any>({});
-  
-  
+  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
+  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
+  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
 
   const isInitialLoad = useRef(true);
   useEffect(() => {
-    if (!contentLoading && Object.keys(content).length > 0) {
+    if (!contentLoading && isInitialLoad.current && Object.keys(content).length > 0) {
       setHero(content.hero || {});
       setAbout(content.about || {});
       setPlan(content.plan || {});
@@ -173,22 +172,14 @@ export function SiteContentEditor() {
     }
   }, [contentLoading, content]);
 
-
-
-
   const handleSave = useCallback(async (section: string, data: any) => {
     if (!data || Object.keys(data).length === 0) {
       console.warn(`[SiteContentEditor] Tentativa de salvar seção ${section} vazia.`);
-      return false;
+      return;
     }
-    try {
-      console.log(`[SiteContentEditor] Calling updateSection for: ${section}`);
-      const success = await updateSection(section, data);
-      return success;
-    } catch (err: any) {
-      console.error(`[SiteContentEditor] handleSave error for ${section}:`, err);
-      return false;
-    }
+    console.log(`[SiteContentEditor] Calling updateSection for: ${section}`, data);
+    const success = await updateSection(section, data, false);
+    return success;
   }, [updateSection]);
 
   const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
@@ -200,9 +191,6 @@ export function SiteContentEditor() {
   const { status: footerStatus, setSaveStatus: setFooterStatus } = useSaveStatus();
   const { status: seoStatus, setSaveStatus: setSeoStatus } = useSaveStatus();
   const { status: langStatus, setSaveStatus: setLangStatus } = useSaveStatus();
-  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
-  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
-  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
 
   const SaveBtn = ({ section, data, status, setStatus }: any) => (
     <Button 
@@ -210,6 +198,7 @@ export function SiteContentEditor() {
       onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        console.log(`[SaveBtn] Clicked for section: ${section}`, data);
         setStatus('saving');
         try {
           const result = await handleSave(section, data);
@@ -217,13 +206,12 @@ export function SiteContentEditor() {
             setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
           } else {
-            setStatus('error');
-            showToast(`Erro ao salvar ${section}. Verifique sua conexão.`, 'error');
+            throw new Error("Falha ao salvar");
           }
         } catch (err: any) {
           console.error(`[SaveBtn] Error in section ${section}:`, err);
           setStatus('error');
-          showToast(`Erro ao salvar ${section}: ${err?.message || 'Erro desconhecido'}`, 'error');
+          showToast(`Erro ao salvar ${section}: ${err.message || 'Erro desconhecido'}`, 'error');
         }
       }}
       className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
@@ -276,12 +264,11 @@ export function SiteContentEditor() {
                   current.set('saved');
                   showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
                 } else {
-                  current.set('error');
-                  showToast(`Erro ao salvar ${activeSection}.`, 'error');
+                  throw new Error("Falha ao salvar");
                 }
               } catch (err: any) {
                 current.set('error');
-                showToast(`Erro ao salvar ${activeSection}: ${err?.message || "Erro de rede"}`, 'error');
+                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
               }
             }
           }}
@@ -311,9 +298,6 @@ export function SiteContentEditor() {
           Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
         </Button>
       </div>
-
-
-
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
         {[

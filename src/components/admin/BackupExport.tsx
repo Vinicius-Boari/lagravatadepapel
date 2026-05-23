@@ -94,14 +94,6 @@ export function BackupExport() {
         listBackupsFn({ headers }),
         getSettingsFn({ headers }),
       ]);
-
-      if (backupsRes && 'ok' in backupsRes && !backupsRes.ok) {
-        throw new Error(backupsRes.error);
-      }
-      if (settingsRes && 'ok' in settingsRes && !settingsRes.ok) {
-        throw new Error(settingsRes.error);
-      }
-
       setBackups(backupsRes?.backups || []);
       setSettings(settingsRes?.settings || {
         backup_type: "Supabase (Nativo)",
@@ -114,8 +106,8 @@ export function BackupExport() {
       });
     } catch (error: any) {
       console.error("Backup fetch error:", error);
-      const errorMessage = error?.message || "Erro desconhecido ao carregar dados.";
-      toast.error(`Erro: ${errorMessage}`);
+      const errorMessage = error instanceof Response ? `Erro ${error.status}: ${error.statusText}` : error.message || "Erro desconhecido";
+      toast.error(`Erro ao carregar dados de backup: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -123,26 +115,6 @@ export function BackupExport() {
 
   useEffect(() => {
     fetchData();
-
-    // Subscribe to realtime updates for backups table
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'backups'
-        },
-        () => {
-          fetchData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
   const handleRunBackup = async () => {
@@ -154,18 +126,18 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      const res = await runNowFn({ headers });
-      
-      if (res && 'ok' in res && !res.ok) {
-        throw new Error(res.error);
-      }
-
-      toast.success("Backup concluído com sucesso!");
-      fetchData();
-    } catch (err: any) {
-      console.error("Backup manual error:", err);
-      toast.error(`Erro ao executar backup: ${err.message || "Erro desconhecido"}`);
-      fetchData();
+      await toast.promise(runNowFn({ headers }), {
+        loading: "Iniciando backup...",
+        success: () => {
+          fetchData();
+          return "Backup concluído com sucesso!";
+        },
+        error: (err) => {
+          fetchData();
+          const errorMessage = err instanceof Response ? `Erro ${err.status}` : err.message || "Erro desconhecido";
+          return `Erro ao executar backup: ${errorMessage}`;
+        }
+      });
     } finally {
       setIsRunningBackup(false);
     }
@@ -196,19 +168,15 @@ export function BackupExport() {
         backup_path: settings.backup_path || "/data/backups"
       };
 
-      const res = await updateSettingsFn({ data: dataToSave, headers });
-      
-      if (res && 'ok' in res && !res.ok) {
-        throw new Error(res.error);
-      }
+      await updateSettingsFn({ data: dataToSave, headers });
 
       setSaveStatus('saved');
       toast.success("Configurações de backup salvas!");
       fetchData();
     } catch (error: any) {
       setSaveStatus('error');
-      console.error("Backup settings error:", error);
-      toast.error(`Erro ao salvar: ${error.message || "Erro desconhecido"}`);
+      const errorMessage = error instanceof Response ? `Erro ${error.status}` : error.message || "Erro desconhecido";
+      toast.error(`Erro ao salvar: ${errorMessage}`);
     }
   };
 
@@ -220,40 +188,32 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      const res = await deleteFn({ data: { id }, headers });
-      
-      if (res && 'ok' in res && !res.ok) {
-        throw new Error(res.error);
-      }
-
-      toast.success("Backup excluído.");
-      fetchData();
-    } catch (err: any) {
-      console.error("Backup delete error:", err);
-      toast.error(`Erro ao excluir backup: ${err.message || "Erro desconhecido"}`);
-    }
+      await toast.promise(deleteFn({ data: { id }, headers }), {
+        loading: "Excluindo backup...",
+        success: () => {
+          fetchData();
+          return "Backup excluído.";
+        },
+        error: (err) => `Erro ao excluir backup: ${err.message}`
+      });
+    } catch (error) {}
   };
 
   const handleRestore = async (id: string) => {
     if (!confirm("Isso irá restaurar o sistema para este ponto. Continuar?")) return;
     
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const headers = { Authorization: `Bearer ${token}` };
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    const headers = { Authorization: `Bearer ${token}` };
 
-      const res = await restoreFn({ data: { id }, headers });
-      
-      if (res && 'ok' in res && !res.ok) {
-        throw new Error(res.error);
-      }
-
-      toast.success("Sistema restaurado com sucesso!");
-      setTimeout(() => window.location.reload(), 2000);
-    } catch (err: any) {
-      console.error("Backup restore error:", err);
-      toast.error(`Erro na restauração: ${err.message || "Erro desconhecido"}`);
-    }
+    toast.promise(restoreFn({ data: { id }, headers }), {
+      loading: "Restaurando sistema...",
+      success: () => {
+        setTimeout(() => window.location.reload(), 2000);
+        return "Sistema restaurado com sucesso!";
+      },
+      error: (err) => `Erro na restauração: ${err.message}`
+    });
   };
 
   const handleDownload = async (id: string) => {
@@ -264,13 +224,7 @@ export function BackupExport() {
       const token = session?.access_token;
       const headers = { Authorization: `Bearer ${token}` };
 
-      const res = await getDownloadFn({ data: { id }, headers });
-      
-      if (res && 'ok' in res && !res.ok) {
-        throw new Error(res.error);
-      }
-
-      const url = res?.url;
+      const { url } = await getDownloadFn({ data: { id }, headers });
       
       if (url) {
         // Fetch the file as a blob to trigger a direct download instead of just opening a tab
@@ -296,9 +250,9 @@ export function BackupExport() {
       } else {
         toast.error("URL de download não disponível.");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Download error:", error);
-      toast.error(`Erro ao realizar download: ${error.message || "Erro desconhecido"}`);
+      toast.error("Erro ao realizar o download do arquivo.");
     }
   };
 
@@ -484,20 +438,16 @@ export function BackupExport() {
                       <TableCell className="text-zinc-300">{formatSize(b.size_bytes)}</TableCell>
                       <TableCell className="text-center">
                         <div className="flex justify-center">
-                          {b.status === "success" || b.status === "completed" ? (
+                          {b.status === "completed" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20">
                               <Check className="w-3 h-3 mr-1" /> Sucesso
                             </span>
-                          ) : b.status === "error" || b.status === "failed" ? (
+                          ) : b.status === "failed" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20">
                               <X className="w-3 h-3 mr-1" /> Falha
                             </span>
-                          ) : b.status === "processing" ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
-                              <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Processando
-                            </span>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
                               <Clock className="w-3 h-3 mr-1" /> Pendente
                             </span>
                           )}
