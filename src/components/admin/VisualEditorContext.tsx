@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
-import { SiteContent, useSiteContent } from "@/hooks/useSiteContent";
+import { SiteContent, useSiteContent, FALLBACK_CONTENT } from "@/hooks/useSiteContent";
 import { toast } from "sonner";
 
 interface VisualEditorContextType {
