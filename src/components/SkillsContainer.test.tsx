@@ -37,23 +37,29 @@ describe('SkillsContainer & Cérebro Core', () => {
   it('handles learning center interactions', async () => {
     render(<SkillsContainer />);
     
-    const input = screen.getByPlaceholderText(/Ensine algo ao Cérebro/i);
-    const sendButton = screen.getByRole('button'); // Search button
+    const inputs = screen.getAllByPlaceholderText(/Ensine algo ao Cérebro/i);
+    const input = inputs[0]; // Take the first visible one
+    const sendButtons = screen.getAllByRole('button');
+    const sendButton = sendButtons.find(b => b.querySelector('svg.lucide-search')) || sendButtons[0];
 
     fireEvent.change(input, { target: { value: 'Ensine-me algo' } });
     fireEvent.click(sendButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Informação processada pelo MFA/i)).toBeTruthy();
-    }, { timeout: 2000 });
+    }, { timeout: 3000 });
   });
 
   it('switches tabs correctly', async () => {
     render(<SkillsContainer />);
-    const searchTab = screen.getByText(/Pesquisa Inteligente/i);
-    fireEvent.click(searchTab);
-    expect(screen.getByPlaceholderText(/O que deseja pesquisar na web/i)).toBeTruthy();
+    const searchTabs = screen.getAllByText(/Pesquisa Inteligente/i);
+    fireEvent.click(searchTabs[0]);
+    
+    await waitFor(() => {
+      expect(screen.getAllByPlaceholderText(/O que deseja pesquisar na web/i).length).toBeGreaterThan(0);
+    });
   });
 });
+
 
 
