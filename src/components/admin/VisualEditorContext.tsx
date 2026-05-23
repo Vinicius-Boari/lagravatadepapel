@@ -99,9 +99,18 @@ export function VisualEditorProvider({ children }: { children: ReactNode }) {
 export const useVisualEditor = () => {
   const context = useContext(VisualEditorContext);
   if (context === undefined) {
-    // Return a safe fallback or throw depending on architecture
-    // For this project, we want it available everywhere
-    throw new Error("useVisualEditor must be used within a VisualEditorProvider");
+    // Return a safe fallback instead of throwing
+    // This allows components like EditableElement to be used on the public site
+    // without requiring a global provider.
+    return {
+      isEditing: false,
+      setIsEditing: () => {},
+      draftContent: FALLBACK_CONTENT,
+      updateDraft: () => {},
+      saveChanges: async () => {},
+      selectedElement: null,
+      setSelectedElement: () => {}
+    };
   }
   return context;
 }
