@@ -1521,3 +1521,45 @@ body.lg-body {
   background: var(--color-red-lg);
   color: white;
 }
+
+.btn-submit-custom {
+  background: linear-gradient(to bottom, #4CAF50, #4CAF50);
+  border: 1px solid #4CAF50;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 24px;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.06);
+  width: fit-content;
+  height: fit-content;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  text-decoration: none;
+}
+
+.btn-submit-custom:hover:not(:disabled) {
+  background: linear-gradient(to bottom, #45A049, #45A049);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-submit-custom:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.1), 0px 1px 2px -2px rgba(0, 0, 0, 0.06);
+}
+
+.btn-submit-custom:disabled {
+  background: #CCCCCC;
+  border-color: #CCCCCC;
+  color: #999999;
+  cursor: not-allowed;
+  box-shadow: none;
+}
