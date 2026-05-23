@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Link as LinkIcon, Plus, Trash2, Globe, Shield } from "lucide-react";
 import { toast } from "sonner";
-import { SectionHeader } from "./shared/SectionHeader";
-
+import { useAutosave } from "@/hooks/useAutosave";
 
 
 export function PagesRoutes() {
@@ -23,21 +22,23 @@ export function PagesRoutes() {
     await new Promise(resolve => setTimeout(resolve, 500));
   }, [redirect]);
 
+  const { status } = useAutosave(redirect, handleSaveRedirect);
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Páginas e Rotas"
-        subtitle="Visualize as rotas ativas do site e gerencie redirecionamentos"
-        icon={LinkIcon}
-        action={
-          <Button onClick={() => toast.info("Funcionalidade de criação de novas páginas em breve.")} className="font-bold">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
+        <div>
+          <h2 className="text-2xl font-bold text-red-500">Páginas e Rotas</h2>
+          <p className="text-red-500/70">Visualize as rotas ativas do site e gerencie redirecionamentos.</p>
+        </div>
+        <div className="flex items-center gap-4">
+          
+          <Button onClick={() => toast.info("Funcionalidade de criação de novas páginas em breve.")}>
             <Plus className="mr-2 w-4 h-4" />
             Nova Rota
           </Button>
-        }
-      />
-
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-6">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
@@ -103,7 +104,7 @@ export function PagesRoutes() {
                 />
               </div>
               <div className="flex items-end">
-                <Button onClick={handleSaveRedirect} className="w-full bg-red-600 hover:bg-red-700 font-bold">Salvar Redirecionamento</Button>
+                <p className="text-[10px] text-zinc-500 italic pb-2">As alterações são salvas automaticamente.</p>
               </div>
             </div>
           </CardContent>

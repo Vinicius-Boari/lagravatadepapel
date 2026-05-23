@@ -39,10 +39,9 @@ export const Coupons = memo(({ coupons }: CouponsProps) => {
                   <span className="coupon-code">{coupon.code}</span>
                 
                 
-                  <a href={coupon.link} className="coupon-btn">
+                  <a href={coupon.link} className="coupon-btn" onClick={(e) => e.preventDefault()}>
                     RESGATAR
                   </a>
-
                 
               </div>
             </div>

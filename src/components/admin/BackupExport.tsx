@@ -8,15 +8,27 @@
 import { useState, useEffect, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { 
-  Database, Download, Upload, History, RefreshCcw, Settings, 
-  Trash2, Play, CheckCircle2, Clock, AlertCircle, Save, Loader2, 
-  FileArchive, MoreVertical, Check, X
+  Database, 
+  Download, 
+  Upload, 
+  History, 
+  RefreshCcw,
+  Settings, 
+  Trash2, 
+  Play, 
+  CheckCircle2, 
+  Clock, 
+  AlertCircle,
+  Save,
+  Loader2,
+  FileArchive,
+  MoreVertical,
+  Check,
+  X
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { SectionHeader } from "./shared/SectionHeader";
-import { StatusIndicator } from "./shared/StatusIndicator";
-
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +68,7 @@ export function BackupExport() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRunningBackup, setIsRunningBackup] = useState(false);
   
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const { status, setSaveStatus } = useSaveStatus();
 
   const listBackupsFn = useServerFn(listBackups);
   const getSettingsFn = useServerFn(getBackupSettings);
@@ -307,24 +319,24 @@ export function BackupExport() {
   }
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Backup"
-        subtitle="Gerencie as cópias de segurança do seu sistema"
-        icon={Database}
-        action={
+    <div className="p-6 space-y-6 animate-in fade-in duration-500 pb-20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-zinc-100">Backup</h2>
+          <p className="text-zinc-400 text-sm">Gerencie as cópias de segurança do seu sistema.</p>
+        </div>
+        <div className="flex items-center gap-3">
           <Button 
             onClick={handleRunBackup} 
             disabled={isRunningBackup}
             variant="outline"
-            className="border-red-900/50 bg-black text-red-500 hover:bg-red-900/10 font-bold"
+            className="border-zinc-800 bg-zinc-900 text-zinc-100 hover:bg-zinc-800"
           >
             {isRunningBackup ? <RefreshCcw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
             Backup Agora
           </Button>
-        }
-      />
-
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Configurações Card */}
@@ -418,22 +430,18 @@ export function BackupExport() {
               </div>
             </div>
 
-            <div className="pt-2 flex items-center gap-4">
-              <StatusIndicator status={saveStatus} />
+            <div className="pt-2">
               <Button 
                 onClick={handleUpdateSettings}
-                className={cn(
-                  "w-full transition-all duration-300 font-bold", 
-                  saveStatus === 'saved' ? "bg-green-600 hover:bg-green-700 text-white" : 
-                  saveStatus === 'error' ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-600 hover:bg-red-700 text-white"
+                className={cn("w-full transition-all duration-300", 
+                  status === 'saved' ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"
                 )}
-                disabled={saveStatus === 'saving'}
+                disabled={status === 'saving'}
               >
-                {saveStatus === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                {saveStatus === 'saved' ? 'Configurações Salvas!' : 'Salvar Configurações'}
+                {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                {status === 'saved' ? 'Configurações Salvas!' : 'Salvar Configurações'}
               </Button>
             </div>
-
           </CardContent>
         </Card>
 

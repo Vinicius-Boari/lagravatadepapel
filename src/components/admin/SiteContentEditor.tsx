@@ -17,9 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Save, Plus, Trash2, Video, ImageIcon, Upload, Loader2, Search, Globe, Instagram, MapPin, Ticket, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SectionHeader } from "./shared/SectionHeader";
-import { StatusIndicator } from "./shared/StatusIndicator";
-
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 
 /**
@@ -137,7 +135,7 @@ const ImageUpload = ({
 };
 
 export function SiteContentEditor() {
-  const { content, updateSection, loading: contentLoading, saveStatus: status } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
   
   const [activeSection, setActiveSection] = useState("hero");
 
@@ -193,84 +191,126 @@ export function SiteContentEditor() {
     }
   }, [updateSection]);
 
-  // Status management is now handled by useSiteContent globally for this component
+  const { status: heroStatus, setSaveStatus: setHeroStatus } = useSaveStatus();
+  const { status: aboutStatus, setSaveStatus: setAboutStatus } = useSaveStatus();
+  const { status: planStatus, setSaveStatus: setPlanStatus } = useSaveStatus();
+  const { status: servicesStatus, setSaveStatus: setServicesStatus } = useSaveStatus();
+  const { status: videosStatus, setSaveStatus: setVideosStatus } = useSaveStatus();
+  const { status: placesStatus, setSaveStatus: setPlacesStatus } = useSaveStatus();
+  const { status: footerStatus, setSaveStatus: setFooterStatus } = useSaveStatus();
+  const { status: seoStatus, setSaveStatus: setSeoStatus } = useSaveStatus();
+  const { status: langStatus, setSaveStatus: setLangStatus } = useSaveStatus();
+  const { status: instagramStatus, setSaveStatus: setInstagramStatus } = useSaveStatus();
+  const { status: couponsStatus, setSaveStatus: setCouponsStatus } = useSaveStatus();
+  const { status: tropaStatus, setSaveStatus: setTropaStatus } = useSaveStatus();
 
-
-  const SaveBtn = ({ section, data }: any) => (
+  const SaveBtn = ({ section, data, status, setStatus }: any) => (
     <Button 
       type="button"
       onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setStatus('saving');
         try {
           const result = await handleSave(section, data);
           if (result) {
+            setStatus('saved');
             showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} salvo com sucesso!`, 'success');
           } else {
+            setStatus('error');
             showToast(`Erro ao salvar ${section}. Verifique sua conexão.`, 'error');
           }
         } catch (err: any) {
           console.error(`[SaveBtn] Error in section ${section}:`, err);
+          setStatus('error');
           showToast(`Erro ao salvar ${section}: ${err?.message || 'Erro desconhecido'}`, 'error');
         }
       }}
-      className={cn(
-        "transition-all duration-300 w-32 font-bold",
-        status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-        status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-      )}
-      disabled={status === 'saving'}
+      className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
     >
       {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
       {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
     </Button>
   );
 
-
-  if (contentLoading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Conteúdo do Site"
-        subtitle="Gerencie as informações públicas"
-        icon={Globe}
-        action={
-          <>
-            <StatusIndicator status={status} />
-            <Button 
-              onClick={async () => {
-                const dataMap: Record<string, any> = {
-                  hero, services, videos, places, plan, about, footer, coupons, seo, languages,
-                  tropa: tropaConfig,
-                  instagram: instagramConfig
-                };
-                const data = dataMap[activeSection];
-                if (data) {
-                  const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
-                                 activeSection === 'tropa' ? 'tropa_config' : 
-                                 activeSection;
-                  const result = await handleSave(saveKey, data);
-                  if (result) {
-                    showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo!`, 'success');
-                  }
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl gap-4 mb-6">
+        <div className="flex items-center gap-4">
+          <div className="bg-red-600/10 p-2 rounded-lg">
+            <Globe className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-red-500 leading-none">Conteúdo do Site</h2>
+            <p className="text-[10px] text-red-500/50 uppercase tracking-widest mt-1">Gerencie as informações públicas</p>
+          </div>
+        </div>
+        
+        <Button 
+          onClick={async () => {
+            const btnMap: Record<string, any> = {
+              hero: { data: hero, status: heroStatus, set: setHeroStatus },
+              services: { data: services, status: servicesStatus, set: setServicesStatus },
+              videos: { data: videos, status: videosStatus, set: setVideosStatus },
+              places: { data: places, status: placesStatus, set: setPlacesStatus },
+              plan: { data: plan, status: planStatus, set: setPlanStatus },
+              about: { data: about, status: aboutStatus, set: setAboutStatus },
+              footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
+              seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
+              languages: { data: languages, status: langStatus, set: setLangStatus },
+              instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
+            };
+            const current = btnMap[activeSection];
+            if (current) {
+              current.set('saving');
+              try {
+                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                               activeSection === 'tropa' ? 'tropa_config' : 
+                               activeSection;
+                const result = await handleSave(saveKey, current.data);
+                if (result) {
+                  current.set('saved');
+                  showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
+                } else {
+                  current.set('error');
+                  showToast(`Erro ao salvar ${activeSection}.`, 'error');
                 }
-              }}
-              size="sm"
-              className={cn(
-                "transition-all duration-300 w-48 font-bold h-10 shadow-lg",
-                status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-                status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-              )}
-              disabled={status === 'saving'}
-            >
-              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
-            </Button>
-          </>
-        }
-      />
-
+              } catch (err: any) {
+                current.set('error');
+                showToast(`Erro ao salvar ${activeSection}: ${err?.message || "Erro de rede"}`, 'error');
+              }
+            }
+          }}
+          size="sm"
+          className={cn(
+            "transition-all duration-300 w-40 font-bold shadow-lg h-10",
+            getSaveButtonStyles(
+              activeSection === "hero" ? heroStatus :
+              activeSection === "services" ? servicesStatus :
+              activeSection === "videos" ? videosStatus :
+              activeSection === "places" ? placesStatus :
+              activeSection === "plan" ? planStatus :
+              activeSection === "about" ? aboutStatus :
+              activeSection === "footer" ? footerStatus :
+              activeSection === "coupons" ? couponsStatus :
+              activeSection === "seo" ? seoStatus :
+              activeSection === "tropa" ? tropaStatus :
+              activeSection === "instagram" ? instagramStatus :
+              langStatus
+            )
+          )}
+        >
+          { (heroStatus === 'saving' || servicesStatus === 'saving' || videosStatus === 'saving' || placesStatus === 'saving' || planStatus === 'saving' || aboutStatus === 'saving' || footerStatus === 'saving' || couponsStatus === 'saving' || seoStatus === 'saving' || langStatus === 'saving' || instagramStatus === 'saving' || tropaStatus === 'saving') 
+            ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> 
+            : <Save className="w-4 h-4 mr-2" />
+          }
+          Salvar {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+        </Button>
+      </div>
 
 
 
@@ -313,7 +353,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Cabeçalho (Hero)</CardTitle>
               <CardDescription className="text-red-500/60">Primeira seção visível do site.</CardDescription>
             </div>
-            <SaveBtn section="hero" data={hero} />
+            <SaveBtn section="hero" data={hero} status={heroStatus} setStatus={setHeroStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -377,7 +417,7 @@ export function SiteContentEditor() {
             <div>
               <CardTitle className="text-red-500">Serviços</CardTitle>
             </div>
-            <SaveBtn section="services" data={services} />
+            <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
@@ -425,7 +465,7 @@ export function SiteContentEditor() {
                       onMobileToggle={checked => { const newI = [...services.items]; newI[idx].show_mobile = checked; setServices({...services, items: newI}); }}
                     />
                    <div className="flex justify-end pt-4">
-                     <SaveBtn section="services" data={services} />
+                     <SaveBtn section="services" data={services} status={servicesStatus} setStatus={setServicesStatus} />
                    </div>
                  </div>
                ))}
@@ -444,7 +484,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">Vídeos</CardTitle></div>
-            <SaveBtn section="videos" data={videos} />
+            <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -487,7 +527,7 @@ export function SiteContentEditor() {
                     onMobileToggle={checked => { const newV = [...videos.items]; newV[idx].show_mobile = checked; setVideos({...videos, items: newV}); }}
                   />
                   <div className="flex justify-end pt-2">
-                    <SaveBtn section="videos" data={videos} />
+                    <SaveBtn section="videos" data={videos} status={videosStatus} setStatus={setVideosStatus} />
                   </div>
                 </div>
               ))}
@@ -509,7 +549,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Invasões</CardTitle>
               <CardDescription className="text-red-500/60">Lista de locais e invasões realizadas.</CardDescription>
             </div>
-            <SaveBtn section="places" data={places} />
+            <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -558,7 +598,7 @@ export function SiteContentEditor() {
                       onMobileToggle={checked => { const newI = [...places.items]; newI[idx].show_mobile = checked; setPlaces({...places, items: newI}); }}
                     />
                     <div className="flex justify-end pt-2">
-                      <SaveBtn section="places" data={places} />
+                      <SaveBtn section="places" data={places} status={placesStatus} setStatus={setPlacesStatus} />
                     </div>
                   </div>
                 ))}
@@ -577,7 +617,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">O Plano</CardTitle></div>
-            <SaveBtn section="plan" data={plan} />
+            <SaveBtn section="plan" data={plan} status={planStatus} setStatus={setPlanStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -600,7 +640,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">La gravata</CardTitle></div>
-            <SaveBtn section="about" data={about} />
+            <SaveBtn section="about" data={about} status={aboutStatus} setStatus={setAboutStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={about.heading || ""} onChange={e => setAbout({...about, heading: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" placeholder="Título (Ex: La Gravata)" />
@@ -627,7 +667,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">Rodapé</CardTitle></div>
-            <SaveBtn section="footer" data={footer} />
+            <SaveBtn section="footer" data={footer} status={footerStatus} setStatus={setFooterStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={footer.copyright || ""} onChange={e => setFooter({...footer, copyright: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
@@ -643,7 +683,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Cupons Especiais</CardTitle>
               <CardDescription className="text-red-500/60">Gerencie os cupons exibidos no site.</CardDescription>
             </div>
-            <SaveBtn section="coupons" data={coupons} />
+            <SaveBtn section="coupons" data={coupons} status={couponsStatus} setStatus={setCouponsStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -708,7 +748,7 @@ export function SiteContentEditor() {
                     <Textarea value={coupon.description} onChange={e => { const newItems = [...coupons.items]; newItems[idx].description = e.target.value; setCoupons({...coupons, items: newItems}); }} className="bg-zinc-800 border-red-900 text-red-500" />
                   </div>
                   <div className="flex justify-end pt-2">
-                    <SaveBtn section="coupons" data={coupons} />
+                    <SaveBtn section="coupons" data={coupons} status={couponsStatus} setStatus={setCouponsStatus} />
                   </div>
                 </div>
               ))}
@@ -724,7 +764,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Tropa da Gravata</CardTitle>
               <CardDescription className="text-red-500/60">Configure a seção Tropa da Gravata.</CardDescription>
             </div>
-            <SaveBtn section="tropa_config" data={tropaConfig} />
+            <SaveBtn section="tropa_config" data={tropaConfig} status={tropaStatus} setStatus={setTropaStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -775,7 +815,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">SEO</CardTitle></div>
-            <SaveBtn section="seo" data={seo} />
+            <SaveBtn section="seo" data={seo} status={seoStatus} setStatus={setSeoStatus} />
           </CardHeader>
           <CardContent className="space-y-4">
             <Input value={seo.title || ""} onChange={e => setSeo({...seo, title: e.target.value})} className="bg-zinc-800 border-red-900 text-red-500" />
@@ -791,7 +831,7 @@ export function SiteContentEditor() {
               <CardTitle className="text-red-500">Instagram Config (Feed)</CardTitle>
               <CardDescription className="text-red-500/60">Textos e links da seção do Instagram.</CardDescription>
             </div>
-            <SaveBtn section="instagram_config" data={instagramConfig} />
+            <SaveBtn section="instagram_config" data={instagramConfig} status={instagramStatus} setStatus={setInstagramStatus} />
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -822,7 +862,7 @@ export function SiteContentEditor() {
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div><CardTitle className="text-red-500">Idiomas</CardTitle></div>
-            <SaveBtn section="languages" data={languages} />
+            <SaveBtn section="languages" data={languages} status={langStatus} setStatus={setLangStatus} />
           </CardHeader>
           <CardContent>
             <p className="text-red-500 italic">Idiomas ativos do site.</p>
@@ -833,32 +873,62 @@ export function SiteContentEditor() {
       <div className="flex justify-center pt-8 border-t border-zinc-800/50 pb-10">
         <Button 
           onClick={async () => {
-            const dataMap: Record<string, any> = {
-              hero, services, videos, places, plan, about, footer, coupons, seo, languages,
-              tropa: tropaConfig,
-              instagram: instagramConfig
+            const btnMap: Record<string, any> = {
+              hero: { data: hero, status: heroStatus, set: setHeroStatus },
+              services: { data: services, status: servicesStatus, set: setServicesStatus },
+              videos: { data: videos, status: videosStatus, set: setVideosStatus },
+              places: { data: places, status: placesStatus, set: setPlacesStatus },
+              plan: { data: plan, status: planStatus, set: setPlanStatus },
+              about: { data: about, status: aboutStatus, set: setAboutStatus },
+              footer: { data: footer, status: footerStatus, set: setFooterStatus },
+              coupons: { data: coupons, status: couponsStatus, set: setCouponsStatus },
+              seo: { data: seo, status: seoStatus, set: setSeoStatus },
+              languages: { data: languages, status: langStatus, set: setLangStatus },
+              instagram: { data: instagramConfig, status: instagramStatus, set: setInstagramStatus },
+              tropa: { data: tropaConfig, status: tropaStatus, set: setTropaStatus },
             };
-            const data = dataMap[activeSection];
-            if (data) {
-              const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
-                             activeSection === 'tropa' ? 'tropa_config' : 
-                             activeSection;
-              await handleSave(saveKey, data);
+            const current = btnMap[activeSection];
+            if (current) {
+              current.set('saving');
+              try {
+                const saveKey = activeSection === 'instagram' ? 'instagram_config' : 
+                               activeSection === 'tropa' ? 'tropa_config' : 
+                               activeSection;
+                const result = await handleSave(saveKey, current.data);
+                if (result) {
+                  current.set('saved');
+                  showToast(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} salvo com sucesso!`, 'success');
+                } else {
+                  throw new Error("Falha ao salvar");
+                }
+              } catch (err: any) {
+                current.set('error');
+                showToast(`Erro ao salvar ${activeSection}: ${err.message}`, 'error');
+              }
             }
           }}
           size="lg"
           className={cn(
             "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
-            status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-            status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
+            getSaveButtonStyles(
+              activeSection === "hero" ? heroStatus :
+              activeSection === "services" ? servicesStatus :
+              activeSection === "videos" ? videosStatus :
+              activeSection === "places" ? placesStatus :
+              activeSection === "plan" ? planStatus :
+              activeSection === "about" ? aboutStatus :
+              activeSection === "footer" ? footerStatus :
+              activeSection === "coupons" ? couponsStatus :
+              activeSection === "seo" ? seoStatus :
+              activeSection === "instagram" ? instagramStatus :
+              langStatus
+            )
           )}
-          disabled={status === 'saving'}
         >
-          {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
-          {status === 'saved' ? 'Conteúdo Salvo!' : status === 'error' ? 'Erro ao Salvar!' : `Salvar Alterações de ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}`}
+          <Save className="w-6 h-6 mr-2" />
+          Salvar Alterações de {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
         </Button>
       </div>
-
     </div>
   );
 }

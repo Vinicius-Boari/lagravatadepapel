@@ -12,14 +12,19 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  UserPlus, Shield, Mail, Lock, UserCheck, Save, Loader2, Info, Users as UsersIcon
+  UserPlus,
+  Shield,
+  Mail,
+  Lock,
+  UserCheck,
+  Save,
+  Loader2,
+  Info,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 import { cn } from "@/lib/utils";
-import { SectionHeader } from "./shared/SectionHeader";
-import { StatusIndicator } from "./shared/StatusIndicator";
-
 
 /**
  * UserRow Interface
@@ -42,7 +47,7 @@ export function UserManagement() {
     full_name: "",
     role: "admin" as "admin" | "owner",
   });
-  const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const { status, setSaveStatus } = useSaveStatus();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -109,7 +114,7 @@ export function UserManagement() {
       return;
     }
 
-    setStatus('saving');
+    setSaveStatus('saving');
 
     // Cria usuário via edge function segura (verifica owner no servidor)
     const { data: fnData, error: fnError } = await supabase.functions.invoke("create-admin", {
@@ -122,12 +127,12 @@ export function UserManagement() {
     });
 
     if (fnError || (fnData && (fnData as any).error)) {
-      setStatus('error');
+      setSaveStatus('error');
       toast.error((fnData as any)?.error || fnError?.message || "Erro ao criar usuário.");
       return;
     }
 
-    setStatus('saved');
+    setSaveStatus('saved');
     toast.success("Administrador cadastrado!");
     setTimeout(() => {
       setShowAddForm(false);
@@ -136,22 +141,20 @@ export function UserManagement() {
     }, 1000);
   };
 
-  if (loading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Gestão de Usuários"
-        subtitle="Gerencie quem tem acesso ao painel administrativo"
-        icon={UsersIcon}
-        action={
-          <Button onClick={() => setShowAddForm(!showAddForm)} className="bg-black hover:bg-zinc-900 text-white border-zinc-800 border font-bold">
-            <UserPlus className="mr-2 w-4 h-4" />
-            {showAddForm ? "Cancelar" : "Novo Administrador"}
-          </Button>
-        }
-      />
-
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-red-500">Gestão de Usuários</h2>
+          <p className="text-red-500/70">Gerencie quem tem acesso ao painel administrativo.</p>
+        </div>
+        <Button onClick={() => setShowAddForm(!showAddForm)} className="bg-black hover:bg-zinc-900 text-white border-zinc-800 border">
+          <UserPlus className="mr-2 w-4 h-4" />
+          {showAddForm ? "Cancelar" : "Novo Administrador"}
+        </Button>
+      </div>
 
       <div className="flex items-start gap-3 bg-zinc-900/50 border border-zinc-800 rounded-md p-4 text-sm text-zinc-400">
         <Info className="w-4 h-4 mt-0.5 text-red-500 shrink-0" />
@@ -208,22 +211,15 @@ export function UserManagement() {
                 </select>
               </div>
             </div>
-            <div className="flex justify-end pt-2 items-center gap-4">
-              <StatusIndicator status={status} />
+            <div className="flex justify-end pt-2">
               <Button
                 onClick={handleAddAdmin}
-                className={cn(
-                  "transition-all duration-300 w-48 font-bold",
-                  status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-                  status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-                )}
-                disabled={status === 'saving'}
+                className={cn("transition-all duration-300 w-48", getSaveButtonStyles(status))}
               >
                 {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                 {status === 'saved' ? 'Cadastrado!' : status === 'error' ? 'Erro!' : 'Cadastrar Usuário'}
               </Button>
             </div>
-
           </CardContent>
         </Card>
       )}

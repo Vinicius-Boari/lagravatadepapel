@@ -12,12 +12,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Save, Upload, Type, Loader2, Palette } from "lucide-react";
+import { Save, Upload, Type, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { SectionHeader } from "./shared/SectionHeader";
-import { StatusIndicator } from "./shared/StatusIndicator";
-
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
 
 /**
  * Utility for displaying standardized toasts.
@@ -31,10 +29,9 @@ const showToast = (message: string, type: 'success' | 'error') => {
 };
 
 export function VisualIdentity() {
-  const { content, updateSection, loading: contentLoading, saveStatus: status } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
-
   const logoInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
   const visual = content.visual || {};
@@ -108,43 +105,37 @@ export function VisualIdentity() {
     }
   }, [formData, updateSection]);
 
+  const { status, setSaveStatus } = useSaveStatus();
+
   const handleManualSave = async () => {
+    setSaveStatus('saving');
     try {
       await handleSave(false);
+      setSaveStatus('saved');
       showToast("Identidade Visual salva com sucesso!", "success");
     } catch {
+      setSaveStatus('error');
       showToast("Erro ao salvar Identidade Visual.", "error");
     }
   };
 
-  if (contentLoading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
-
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Identidade Visual"
-        subtitle="Configure cores, fontes e logo do seu site"
-        icon={Palette}
-        action={
-          <>
-            <StatusIndicator status={status} />
-            <Button 
-              onClick={handleManualSave}
-              className={cn(
-                "transition-all duration-300 w-32 font-bold",
-                status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-                status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-              )}
-              disabled={status === 'saving'}
-            >
-              {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
-            </Button>
-          </>
-        }
-      />
-
+    <div className="p-8 space-y-8 animate-in fade-in duration-500">
+      <div className="flex justify-between items-center sticky top-16 bg-zinc-950/80 backdrop-blur-sm z-50 py-4 -mt-4 border-b border-zinc-800/50">
+        <div>
+          <h2 className="text-2xl font-bold text-red-500">Identidade Visual</h2>
+          <p className="text-red-500/70">Configure cores, fontes e logo do seu site.</p>
+        </div>
+        <Button 
+          onClick={handleManualSave}
+          className={cn("transition-all duration-300 w-32", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar'}
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Colors */}
@@ -250,18 +241,12 @@ export function VisualIdentity() {
         <Button 
           onClick={handleManualSave}
           size="lg"
-          className={cn(
-            "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
-            status === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-            status === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-          )}
-          disabled={status === 'saving'}
+          className={cn("transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20", getSaveButtonStyles(status))}
         >
           {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
-          {status === 'saved' ? 'Visual Salvo!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Alterações'}
+          {status === 'saved' ? 'Visual Salvo com Sucesso!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Alterações'}
         </Button>
       </div>
-
     </div>
   );
 }

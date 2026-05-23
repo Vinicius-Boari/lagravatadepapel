@@ -69,13 +69,7 @@ export const Contacts = memo(({ content }: ContactsProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="contact-card tilt-3d scroll-3d group h-full"
-                onClick={(e) => {
-                  // Permitir navegação real nos links de contato
-                  if (contact.link.startsWith('mailto:')) return;
-                  if (contact.link.startsWith('https://api.whatsapp.com')) return;
-                  // Se quiser manter o preventDefault para links internos ou testes, remova as linhas acima
-                }}
-
+                onClick={(e) => e.preventDefault()}
               >
                 <div className="contact-icon-wrapper group-hover:scale-110 transition-transform duration-300">
                   {contact.icon}

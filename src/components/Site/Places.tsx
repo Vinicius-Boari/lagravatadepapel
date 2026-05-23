@@ -19,10 +19,9 @@ export const Places = memo(({ places }: PlacesProps) => {
         
         
         
-          <a href={places.instagram_url} target="_blank" rel="noopener noreferrer">
+          <a href={places.instagram_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.preventDefault()}>
             Ver no Instagram →
           </a>
-
         
       </div>
       <div className="places-grid scene-3d">

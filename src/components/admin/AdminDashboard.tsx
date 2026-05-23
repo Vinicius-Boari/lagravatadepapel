@@ -5,40 +5,56 @@
  * Provides a tabbed interface for managing content, visual identity, media, users, and system settings.
  * Includes sidebar navigation and specialized components for each administrative task.
  */
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
-  LayoutDashboard, Palette, Image as ImageIcon, FileText, Instagram, 
-  Link as LinkIcon, Settings, Users, History, Database, LogOut, Menu, 
-  ChevronRight, User, Monitor, Save, Loader2, Globe, Shield, Bell, Moon, Languages
+  LayoutDashboard, 
+  Palette, 
+  Image as ImageIcon, 
+  FileText, 
+  Instagram, 
+  Link as LinkIcon, 
+  Settings, 
+  Users, 
+  History, 
+  Database,
+  LogOut,
+  Menu,
+  ChevronRight,
+  User,
+  Monitor,
+  PenTool
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { DashboardOverview } from "./DashboardOverview";
+import { VisualIdentity } from "./VisualIdentity";
+import { SiteContentEditor } from "./SiteContentEditor";
+import { IntegrationsManager } from "./IntegrationsManager";
+import { MediaLibrary } from "./MediaLibrary";
+import { PagesRoutes } from "./PagesRoutes";
+import { UserManagement } from "./UserManagement";
+import { ActivityLogs } from "./ActivityLogs";
+import { BackupExport } from "./BackupExport";
+import { PostsManager } from "./PostsManager";
+
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { toast } from "sonner";
-import { SectionHeader } from "./shared/SectionHeader";
-import { StatusIndicator } from "./shared/StatusIndicator";
+import { Save, Loader2, Globe, Shield, Bell, Moon, Languages } from "lucide-react";
+import { useSaveStatus, getSaveButtonStyles } from "@/hooks/useSaveStatus";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-// Lazy loading components
-const DashboardOverview = lazy(() => import("./DashboardOverview").then(m => ({ default: m.DashboardOverview })));
-const VisualIdentity = lazy(() => import("./VisualIdentity").then(m => ({ default: m.VisualIdentity })));
-const SiteContentEditor = lazy(() => import("./SiteContentEditor").then(m => ({ default: m.SiteContentEditor })));
-const IntegrationsManager = lazy(() => import("./IntegrationsManager").then(m => ({ default: m.IntegrationsManager })));
-const MediaLibrary = lazy(() => import("./MediaLibrary").then(m => ({ default: m.MediaLibrary })));
-const PagesRoutes = lazy(() => import("./PagesRoutes").then(m => ({ default: m.PagesRoutes })));
-const UserManagement = lazy(() => import("./UserManagement").then(m => ({ default: m.UserManagement })));
-const ActivityLogs = lazy(() => import("./ActivityLogs").then(m => ({ default: m.ActivityLogs })));
-const BackupExport = lazy(() => import("./BackupExport").then(m => ({ default: m.BackupExport })));
-const AutoBackupTrigger = lazy(() => import("./AutoBackupTrigger").then(m => ({ default: m.AutoBackupTrigger })));
-
+import { AutoBackupTrigger } from "./AutoBackupTrigger";
 
 const SettingsTab = () => {
-  const { content, updateSection, loading: contentLoading, saveStatus } = useSiteContent();
+  const { content, updateSection, loading: contentLoading } = useSiteContent();
+  const { status, setSaveStatus } = useSaveStatus();
   const [settings, setSettings] = useState<any>({});
 
   useEffect(() => {
@@ -55,37 +71,43 @@ const SettingsTab = () => {
   }, [contentLoading, content]);
 
   const handleSave = async () => {
-    const success = await updateSection("settings", settings);
-    if (success) toast.success("Configurações salvas!");
+    setSaveStatus('saving');
+    try {
+      const success = await updateSection("settings", settings);
+      if (success) {
+        setSaveStatus('saved');
+        toast.success("Configurações salvas com sucesso!");
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      setSaveStatus('error');
+      toast.error("Erro ao salvar configurações.");
+    }
   };
 
-  if (contentLoading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
+  if (contentLoading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Configurações Gerais"
-        subtitle="Ajustes globais do painel e do site"
-        icon={Settings}
-        action={
-          <>
-            <StatusIndicator status={saveStatus} />
-            <Button 
-              onClick={handleSave}
-              className={cn(
-                "transition-all duration-300 w-40 font-bold h-10 shadow-lg",
-                saveStatus === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-                saveStatus === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-              )}
-              disabled={saveStatus === 'saving'}
-            >
-              {saveStatus === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              {saveStatus === 'saved' ? 'Salvo!' : saveStatus === 'error' ? 'Erro!' : 'Salvar Config.'}
-            </Button>
-          </>
-        }
-      />
-
+      <div className="flex justify-between items-center bg-zinc-950/95 backdrop-blur-md z-[60] px-6 py-4 -mx-8 -mt-8 border-b border-zinc-800/80 shadow-2xl mb-6">
+        <div className="flex items-center gap-4">
+          <div className="bg-red-600/10 p-2 rounded-lg">
+            <Settings className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-red-500 leading-none">Configurações Gerais</h2>
+            <p className="text-[10px] text-red-500/50 uppercase tracking-widest mt-1">Ajustes globais do painel e do site</p>
+          </div>
+        </div>
+        <Button 
+          onClick={handleSave}
+          className={cn("transition-all duration-300 w-40 font-bold h-10 shadow-lg", getSaveButtonStyles(status))}
+        >
+          {status === 'saving' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          {status === 'saved' ? 'Salvo!' : status === 'error' ? 'Erro!' : 'Salvar Config.'}
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
@@ -166,18 +188,12 @@ const SettingsTab = () => {
         <Button 
           onClick={handleSave}
           size="lg"
-          className={cn(
-            "transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20",
-            saveStatus === 'saved' ? "bg-green-600 hover:bg-green-700" : 
-            saveStatus === 'error' ? "bg-red-600 hover:bg-red-700" : "bg-black hover:bg-zinc-900"
-          )}
-          disabled={saveStatus === 'saving'}
+          className={cn("transition-all duration-300 w-full max-w-md text-xl font-bold h-16 shadow-2xl shadow-red-900/20", getSaveButtonStyles(status))}
         >
-          {saveStatus === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
-          {saveStatus === 'saved' ? 'Configurações Salvas!' : saveStatus === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Configurações'}
+          {status === 'saving' ? <Loader2 className="w-6 h-6 animate-spin mr-2" /> : <Save className="w-6 h-6 mr-2" />}
+          {status === 'saved' ? 'Configurações Salvas!' : status === 'error' ? 'Erro ao Salvar!' : 'Salvar Todas as Configurações'}
         </Button>
       </div>
-
     </div>
   );
 };
@@ -209,27 +225,21 @@ export function AdminDashboard() {
   ];
 
   const renderContent = () => {
-    return (
-      <Suspense fallback={<div className="p-8 flex items-center justify-center h-full text-red-500"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
-        {(() => {
-          switch (activeTab) {
-            case "dashboard": return <DashboardOverview />;
-            case "visual": return <VisualIdentity />;
-            case "content": return <SiteContentEditor />;
-            case "media": return <MediaLibrary />;
-            case "integrations": return <IntegrationsManager />;
-            case "pages": return <PagesRoutes />;
-            case "settings": return <SettingsTab />;
-            case "users": return isOwner ? <UserManagement /> : <div className="p-8 text-red-500">Apenas o Dono pode acessar esta seção.</div>;
-            case "logs": return <ActivityLogs />;
-            case "backup": return <BackupExport />;
-            default: return <DashboardOverview />;
-          }
-        })()}
-      </Suspense>
-    );
+    switch (activeTab) {
+      case "dashboard": return <DashboardOverview />;
+      case "visual": return <VisualIdentity />;
+      case "content": return <SiteContentEditor />;
+      
+      case "media": return <MediaLibrary />;
+      case "integrations": return <IntegrationsManager />;
+      case "pages": return <PagesRoutes />;
+      case "settings": return <SettingsTab />;
+      case "users": return isOwner ? <UserManagement /> : <div className="p-8 text-red-500">Apenas o Dono pode acessar esta seção.</div>;
+      case "logs": return <ActivityLogs />;
+      case "backup": return <BackupExport />;
+      default: return <DashboardOverview />;
+    }
   };
-
 
   return (
     <div className="flex h-screen bg-zinc-950 text-red-500 overflow-hidden font-sans">
@@ -311,12 +321,9 @@ export function AdminDashboard() {
         </header>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth">
-          <Suspense fallback={null}>
-            <AutoBackupTrigger />
-          </Suspense>
+          <AutoBackupTrigger />
           {renderContent()}
         </div>
-
       </main>
     </div>
   );

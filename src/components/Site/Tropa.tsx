@@ -33,11 +33,10 @@ export const Tropa = memo(({ tropaConfig }: TropaProps) => {
           <p className="text-white/80 mb-6 font-bold uppercase tracking-widest text-[10px]">Quer essa operação no seu evento?</p>
           <div className="flex flex-col sm:flex-row items-center gap-6">
             
-              <a href="/questionarioevento" className="btn-outline">
+              <a href="/questionarioevento" className="btn-outline" onClick={(e) => e.preventDefault()}>
                 <span>{(tropaConfig?.cta_label || "Contrate Agora")}</span>
                 <span>→</span>
               </a>
-
             
 
             
@@ -46,7 +45,7 @@ export const Tropa = memo(({ tropaConfig }: TropaProps) => {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center gap-2 text-red-500 hover:text-white transition-colors uppercase tracking-widest text-[10px] font-bold border-b border-red-500/30 pb-1"
-                
+                onClick={(e) => e.preventDefault()}
               >
                 <Instagram className="w-4 h-4" />
                 <span>{(tropaConfig?.instagram_label || "Ver no Instagram")} →</span>

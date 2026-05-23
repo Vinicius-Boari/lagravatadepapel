@@ -5,10 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Video, ImageIcon, Search, Filter, Loader2 } from "lucide-react";
+import { Plus, Trash2, Video, ImageIcon, Search, Filter } from "lucide-react";
 import { toast } from "sonner";
-import { SectionHeader } from "./shared/SectionHeader";
-
 
 export function MediaLibrary() {
   const { content, loading } = useSiteContent();
@@ -60,22 +58,20 @@ export function MediaLibrary() {
     return matchesFilter && matchesSearch;
   });
 
-  if (loading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Biblioteca de Mídia"
-        subtitle="Visualize e gerencie todos os arquivos de imagem e vídeo do site"
-        icon={ImageIcon}
-        action={
-          <Button onClick={() => toast.info("Funcionalidade de upload direto em breve. Use as seções de conteúdo para trocar links.")}>
-            <Plus className="mr-2 w-4 h-4" />
-            Fazer Upload
-          </Button>
-        }
-      />
-
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-red-500">Biblioteca de Mídia</h2>
+          <p className="text-red-500/70">Visualize e gerencie todos os arquivos de imagem e vídeo do site.</p>
+        </div>
+        <Button onClick={() => toast.info("Funcionalidade de upload direto em breve. Use as seções de conteúdo para trocar links.")}>
+          <Plus className="mr-2 w-4 h-4" />
+          Fazer Upload
+        </Button>
+      </div>
 
       <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
         <CardContent className="p-4 flex flex-col md:flex-row gap-4">

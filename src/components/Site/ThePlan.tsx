@@ -18,11 +18,10 @@ export const ThePlan = memo(({ plan }: ThePlanProps) => {
         
 
         
-          <a href="/questionarioevento" className="btn-outline">
+          <a href="/questionarioevento" className="btn-outline" onClick={(e) => e.preventDefault()}>
             <span>{plan.cta_label}</span>
             <span>→</span>
           </a>
-
         
       </div>
     </section>

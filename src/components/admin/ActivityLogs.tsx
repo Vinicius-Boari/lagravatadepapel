@@ -9,10 +9,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  History, Search, Filter, Calendar, User as UserIcon, Tag, Loader2
+  History, 
+  Search, 
+  Filter, 
+  Calendar,
+  User as UserIcon,
+  Tag
 } from "lucide-react";
-import { SectionHeader } from "./shared/SectionHeader";
-
 import { 
   Table, 
   TableBody, 
@@ -70,16 +73,14 @@ export function ActivityLogs() {
     (log.entity_type && log.entity_type.toLowerCase().includes(search.toLowerCase()))
   );
 
-  if (loading) return <div className="p-8 text-red-500 flex items-center gap-2"><Loader2 className="animate-spin" /> Carregando...</div>;
+  if (loading) return <div className="p-8 text-red-500">Carregando...</div>;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-20">
-      <SectionHeader 
-        title="Log de Atividades"
-        subtitle="Acompanhe todas as alterações realizadas no painel"
-        icon={History}
-      />
-
+      <div>
+        <h2 className="text-2xl font-bold text-red-500">Log de Atividades</h2>
+        <p className="text-red-500/70">Acompanhe todas as alterações realizadas no painel.</p>
+      </div>
 
       <Card className="bg-zinc-900 border-zinc-800 shadow-xl">
         <CardContent className="p-4 flex gap-4">

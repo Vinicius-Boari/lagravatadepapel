@@ -85,7 +85,7 @@ export const VideoGrid = memo(({
                           loop 
                           playsInline 
                           webkit-playsinline="true"
-                          preload="metadata"
+                          preload={(isMobile && isAgitandoFesta) ? "auto" : (isMobile ? "none" : "auto")}
                           className={cn(
                             "will-change-transform video-optimized",
                             shouldWaitClick && !videoLoaded[videoId] ? "opacity-0" : "opacity-100"
