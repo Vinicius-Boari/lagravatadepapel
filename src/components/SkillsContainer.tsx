@@ -5,7 +5,7 @@ import {
   Layers, 
   ArrowDownCircle, 
   Eye, 
-  VrHeadset, 
+  Headset, 
   BookOpen, 
   Crown, 
   Zap, 
@@ -58,7 +58,7 @@ const skills: Skill[] = [
     title: "3D Interactive (WebXR/Babylon)",
     category: "Brain",
     description: "Desenvolvimento de experiências AR/VR na web utilizando WebXR e frameworks como Babylon.js para interações complexas e imersão total do usuário.",
-    icon: <VrHeadset className="w-6 h-6 text-red-500" />,
+    icon: <Headset className="w-6 h-6 text-red-500" />,
     technicalIndicator: "WebXR / Spatial"
   },
   {
