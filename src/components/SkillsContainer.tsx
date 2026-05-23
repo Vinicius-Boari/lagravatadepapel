@@ -211,5 +211,3 @@ export const SkillsContainer: React.FC = () => {
 };
 
 export default SkillsContainer;
-
-export default SkillsContainer;
