@@ -15,13 +15,21 @@ interface VisualEditorContextType {
 const VisualEditorContext = createContext<VisualEditorContextType | undefined>(undefined);
 
 export function VisualEditorProvider({ children }: { children: ReactNode }) {
-  // We check if we are in the visual editor route to decide whether to use drafts
-  const isVisualEditorPath = typeof window !== 'undefined' && window.location.pathname === '/admin/visual-editor';
-  const { content, updateSection } = useSiteContent(isVisualEditorPath); 
+  // Use a more robust check for the path that doesn't rely solely on window for logic
+  const [isVisualEditor, setIsVisualEditor] = useState(false);
+  
+  const { content, updateSection } = useSiteContent(isVisualEditor); 
   
   const [isEditing, setIsEditing] = useState(false);
   const [draftContent, setDraftContent] = useState<SiteContent>(content);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsVisualEditor(window.location.pathname === '/admin/visual-editor');
+    }
+  }, []);
+
 
   // Sync draftContent when content from hook changes (e.g. initial load or path change)
   React.useEffect(() => {
