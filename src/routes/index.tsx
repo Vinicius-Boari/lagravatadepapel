@@ -7,6 +7,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteSections } from "@/components/SiteSections";
 import { useVisualEditor } from "@/components/admin/VisualEditorContext";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { SEO } from "@/components/SEO";
 
 export const Route = createFileRoute("/")({
