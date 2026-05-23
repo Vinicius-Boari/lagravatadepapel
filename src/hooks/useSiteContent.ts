@@ -178,7 +178,11 @@ export function useSiteContent(useDraft = false) {
         const merged: SiteContent = { ...FALLBACK_CONTENT };
         for (const row of data) {
           const v = useDraft && row.draft_value ? row.draft_value : row.value;
-          merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...(v as object) };
+          if (v && typeof v === 'object' && !Array.isArray(v)) {
+            merged[row.key] = { ...(FALLBACK_CONTENT[row.key] ?? {}), ...v };
+          } else if (v !== null && v !== undefined) {
+            merged[row.key] = v;
+          }
         }
         setContent(merged);
       }
