@@ -24,7 +24,7 @@ export const About = memo(({ about }: AboutProps) => {
 
         <div className="mt-8">
           <EditableElement section="about" field="cta_url" type="button" label="Botão Sobre">
-            <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal" onClick={(e) => e.preventDefault()}>
+            <a href={about.cta_url || "https://api.whatsapp.com/send?phone=5511985111012"} target="_blank" rel="noopener noreferrer" className="btn-outline reveal">
               <span>{about.cta_label}</span>
               <span>→</span>
             </a>
