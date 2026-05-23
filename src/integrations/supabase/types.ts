@@ -137,6 +137,190 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_interactions: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          interaction_type: string
+          knowledge_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type: string
+          knowledge_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string
+          knowledge_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_interactions_knowledge_id_fkey"
+            columns: ["knowledge_id"]
+            isOneToOne: false
+            referencedRelation: "brain_knowledge"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brain_knowledge: {
+        Row: {
+          confidence: number
+          content: string
+          created_at: string | null
+          id: string
+          last_interaction: string | null
+          metadata: Json | null
+          source: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          confidence?: number
+          content: string
+          created_at?: string | null
+          id?: string
+          last_interaction?: string | null
+          metadata?: Json | null
+          source: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          confidence?: number
+          content?: string
+          created_at?: string | null
+          id?: string
+          last_interaction?: string | null
+          metadata?: Json | null
+          source?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      brain_relationships: {
+        Row: {
+          created_at: string | null
+          id: string
+          relation_type: string
+          source_id: string
+          target_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          relation_type: string
+          source_id: string
+          target_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          relation_type?: string
+          source_id?: string
+          target_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_relationships_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "brain_knowledge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brain_relationships_target_id_fkey"
+            columns: ["target_id"]
+            isOneToOne: false
+            referencedRelation: "brain_knowledge"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brain_search_history: {
+        Row: {
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          optimized_queries: string[] | null
+          original_query: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          optimized_queries?: string[] | null
+          original_query: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          optimized_queries?: string[] | null
+          original_query?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
+      brain_search_results: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          extracted_data: Json | null
+          id: string
+          is_processed: boolean | null
+          relevance_score: number | null
+          search_id: string | null
+          snippet: string | null
+          source_reputation: number | null
+          title: string
+          url: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          extracted_data?: Json | null
+          id?: string
+          is_processed?: boolean | null
+          relevance_score?: number | null
+          search_id?: string | null
+          snippet?: string | null
+          source_reputation?: number | null
+          title: string
+          url: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          extracted_data?: Json | null
+          id?: string
+          is_processed?: boolean | null
+          relevance_score?: number | null
+          search_id?: string | null
+          snippet?: string | null
+          source_reputation?: number | null
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_search_results_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "brain_search_history"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       instagram_posts: {
         Row: {
           caption: string
