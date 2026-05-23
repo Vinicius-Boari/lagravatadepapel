@@ -11,7 +11,11 @@ export const Route = createFileRoute("/admin/visual-editor")({
 });
 
 function VisualEditorPageWrapper() {
-  return <VisualEditorContent />;
+  return (
+    <VisualEditorProvider>
+      <VisualEditorContent />
+    </VisualEditorProvider>
+  );
 }
 
 function VisualEditorContent() {
