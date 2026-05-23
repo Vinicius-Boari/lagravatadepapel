@@ -14,17 +14,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  // Use draftContent from the context which automatically handles draft/published switching
-  const { draftContent } = useVisualEditor();
+  // Use useSiteContent directly for the public index to be safer during initial render
+  const { content, loading } = useSiteContent(false);
   
+  if (loading && typeof window === 'undefined') {
+    // Return a minimal version or the fallback for SSR if loading
+    // This helps avoid 500 errors if the first fetch hangs
+    return <SiteSections content={content} />;
+  }
+
   return (
     <>
       <SEO 
-        title={draftContent.seo?.title}
-        description={draftContent.seo?.description}
-        keywords={draftContent.seo?.keywords}
+        title={content.seo?.title}
+        description={content.seo?.description}
+        keywords={content.seo?.keywords}
       />
-      <SiteSections content={draftContent} />
+      <SiteSections content={content} />
     </>
   );
 }
