@@ -84,9 +84,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <HelmetProvider>
-      <VisualEditorProvider>
-        <Outlet />
-      </VisualEditorProvider>
+      <Outlet />
     </HelmetProvider>
   );
 }
