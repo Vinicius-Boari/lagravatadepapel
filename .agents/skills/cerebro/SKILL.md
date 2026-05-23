@@ -1,3 +1,8 @@
+---
+name: cerebro
+description: Coordenador central que orquestra e ativa todas as outras skills do projeto de forma integrada.
+---
+
 # Skill Cérebro
 
 Esta skill atua como um coordenador central (aglomerado), ativando e orquestrando todas as outras skills disponíveis no projeto.
