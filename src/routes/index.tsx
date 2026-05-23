@@ -19,19 +19,35 @@ function Index() {
   const { content, loading } = useSiteContent(false);
   
   if (loading && typeof window === 'undefined') {
-    // Return a minimal version or the fallback for SSR if loading
-    // This helps avoid 500 errors if the first fetch hangs
-    return <SiteSections content={content} />;
+    return null;
   }
 
-  return (
-    <>
-      <SEO 
-        title={content.seo?.title}
-        description={content.seo?.description}
-        keywords={content.seo?.keywords}
-      />
-      <SiteSections content={content} />
-    </>
-  );
+  try {
+    return (
+      <>
+        <SEO 
+          title={content.seo?.title || "La Gravata de Papel"}
+          description={content.seo?.description || "Animação de Casamentos"}
+          keywords={content.seo?.keywords || "gravata, casamento"}
+        />
+        <SiteSections content={content} />
+      </>
+    );
+  } catch (err) {
+    console.error("Critical render error on Index page:", err);
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black text-white p-4">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Ops! Algo deu errado ao carregar o site.</h1>
+          <p className="text-zinc-500 mb-4">Estamos trabalhando para resolver isso.</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
+          >
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
