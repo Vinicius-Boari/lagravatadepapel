@@ -11,10 +11,13 @@ import {
   Code2,
   Terminal,
   Cpu,
-  MessageSquare,
   Sparkles,
   Search,
-  History
+  Globe,
+  Zap,
+  Filter,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -22,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Skill {
   title: string;
@@ -80,6 +84,21 @@ const INITIAL_SKILLS: Skill[] = [
     tech: ["HTML5", "TypeScript", "Vite", "React"]
   },
   {
+    title: "Pesquisa Inteligente",
+    category: "Cérebro",
+    description: "Módulo de pesquisa web que integra agregação multi-fonte, NLP e extração de dados para o Cérebro.",
+    icon: <Globe className="w-6 h-6 text-emerald-500" />,
+    technicalIndicator: "Intelligent Search",
+    details: [
+      "Módulo de Interface de Busca (MIS)",
+      "Agregação de Resultados Web (MARW)",
+      "Processamento de Linguagem Natural",
+      "Extração de Info Relevante (MEIR)",
+      "Persistência Automática no MFA"
+    ],
+    tech: ["Search APIs", "Scraping", "NLP Expansion", "JSON MFA"]
+  },
+  {
     title: "Aprendizagem Autônoma",
     category: "Cérebro",
     description: "Sistema de 'Segundo Cérebro' digital que adapta seu conhecimento através de interações e feedback.",
@@ -123,77 +142,166 @@ const INITIAL_SKILLS: Skill[] = [
   }
 ];
 
-// Componente do Centro de Aprendizagem (Brain Learning Center)
-const BrainLearningCenter = () => {
+// Componente do Centro de Inteligência do Cérebro
+const BrainIntelligenceCenter = () => {
+  const [activeTab, setActiveTab] = useState("learning");
   const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'brain', text: string, type?: string }[]>([
-    { role: 'brain', text: "Olá! Eu sou o módulo de Aprendizagem Autônoma do Cérebro. O que você quer me ensinar hoje ou sobre o que quer perguntar?" }
+    { role: 'brain', text: "Módulo Cérebro ativo. Pronto para processar novas informações ou realizar pesquisas complexas." }
   ]);
 
-  const handleSend = () => {
+  const [searchResults, setSearchResults] = useState<{ title: string; url: string; snippet: string; confidence: number }[]>([]);
+
+  const handleAction = async () => {
     if (!query.trim()) return;
     
     setMessages(prev => [...prev, { role: 'user', text: query }]);
-    
-    // Simulação de processamento do Cérebro (em um app real isso chamaria uma Edge Function)
-    setTimeout(() => {
-      let response = "";
-      if (query.toLowerCase().includes("ensine") || query.toLowerCase().includes("aprenda")) {
-        response = "Entendido. Processei essa nova informação e a integrei ao meu banco de dados de grafo com confiança inicial de 0.7. Como você sabe disso?";
-      } else if (query.toLowerCase().includes("errou") || query.toLowerCase().includes("errado")) {
-        response = "Peço desculpas. Corrigi meu registro interno. A confiança na informação anterior foi reduzida e a nova versão foi priorizada.";
-      } else {
-        response = "Baseado no meu conhecimento atual (Confiança: 0.85), identifiquei uma relação semântica entre esse conceito e suas interações anteriores. Deseja aprofundar?";
-      }
-      setMessages(prev => [...prev, { role: 'brain', text: response }]);
-    }, 800);
-    
+    const currentQuery = query;
     setQuery("");
+
+    if (activeTab === "learning") {
+      setTimeout(() => {
+        let response = "";
+        if (currentQuery.toLowerCase().includes("ensine") || currentQuery.toLowerCase().includes("aprenda")) {
+          response = "Informação processada pelo MFA e integrada ao grafo de conhecimento (Confiança: 0.92). Relações semânticas estabelecidas.";
+        } else if (currentQuery.toLowerCase().includes("errou")) {
+          response = "Correção recebida. Nó de conhecimento atualizado. Confiança na versão anterior resetada para 0.1.";
+        } else {
+          response = "Baseado no meu banco vetorial, identifiquei este padrão em suas interações passadas. Deseja reforçar esta conexão?";
+        }
+        setMessages(prev => [...prev, { role: 'brain', text: response }]);
+      }, 600);
+    } else {
+      setIsSearching(true);
+      // Simulação do fluxo: MIS -> MPLN -> MARW -> MEIR -> MFA
+      setTimeout(() => {
+        setSearchResults([
+          { title: "Documentação Oficial React Three Fiber", url: "https://docs.pmnd.rs", snippet: "Extraído: Hooks avançados para performance R3F.", confidence: 0.98 },
+          { title: "WebXR API Standards", url: "https://w3c.github.io/webxr", snippet: "Fato: Padrões de imersão para browsers modernos.", confidence: 0.95 }
+        ]);
+        setMessages(prev => [...prev, { role: 'brain', text: "Pesquisa concluída. 2 novas fontes de alta confiança identificadas e formatadas para aprendizagem automática." }]);
+        setIsSearching(false);
+      }, 1500);
+    }
   };
 
   return (
     <Card className="mt-12 border-primary/20 bg-background/40 backdrop-blur-xl overflow-hidden shadow-2xl">
-      <div className="p-4 border-b border-primary/10 bg-primary/5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary animate-pulse" />
-          <h3 className="font-bold uppercase tracking-widest text-sm">Learning Center</h3>
-        </div>
-        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">Autônomo v1.0</Badge>
-      </div>
-      <CardContent className="p-0">
-        <ScrollArea className="h-[300px] p-6">
-          <div className="space-y-4">
-            {messages.map((m, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, x: m.role === 'user' ? 20 : -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                  m.role === 'user' 
-                    ? 'bg-primary text-primary-foreground rounded-tr-none' 
-                    : 'bg-muted border border-border/50 rounded-tl-none'
-                }`}>
-                  {m.text}
-                </div>
-              </motion.div>
-            ))}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="p-4 border-b border-primary/10 bg-primary/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Brain className="w-5 h-5 text-primary animate-pulse" />
+            <TabsList className="bg-background/50 border border-primary/20">
+              <TabsTrigger value="learning" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs uppercase font-bold tracking-tighter">
+                <Sparkles className="w-3 h-3 mr-2" /> Aprendizagem
+              </TabsTrigger>
+              <TabsTrigger value="search" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs uppercase font-bold tracking-tighter">
+                <Globe className="w-3 h-3 mr-2" /> Pesquisa Inteligente
+              </TabsTrigger>
+            </TabsList>
           </div>
-        </ScrollArea>
-        <div className="p-4 border-t border-primary/10 bg-muted/20 flex gap-2">
-          <Input 
-            placeholder="Ensine algo ou pergunte..." 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="bg-background/50 border-primary/20 focus-visible:ring-primary"
-          />
-          <Button onClick={handleSend} size="icon">
-            <Search className="w-4 h-4" />
-          </Button>
+          <Badge variant="outline" className="text-[10px] border-primary/30 text-primary self-start md:self-auto">
+            Integrated Hub v3.1
+          </Badge>
         </div>
-      </CardContent>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3">
+          <div className="lg:col-span-2 border-r border-primary/10">
+            <ScrollArea className="h-[350px] p-6">
+              <div className="space-y-4">
+                <AnimatePresence mode="popLayout">
+                  {messages.map((m, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
+                        m.role === 'user' 
+                          ? 'bg-primary text-primary-foreground rounded-tr-none shadow-lg' 
+                          : 'bg-muted/80 backdrop-blur border border-border/50 rounded-tl-none'
+                      }`}>
+                        {m.text}
+                      </div>
+                    </motion.div>
+                  ))}
+                  {isSearching && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                      <div className="bg-muted/80 p-4 rounded-2xl rounded-tl-none border border-primary/20 flex items-center gap-3">
+                        <Zap className="w-4 h-4 text-primary animate-spin" />
+                        <span className="text-xs font-mono uppercase tracking-widest text-primary">Pesquisando Web...</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </ScrollArea>
+            <div className="p-4 border-t border-primary/10 bg-muted/20 flex gap-2">
+              <Input 
+                placeholder={activeTab === 'learning' ? "Ensine algo ao Cérebro..." : "O que deseja pesquisar na web?"} 
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAction()}
+                className="bg-background/50 border-primary/20 focus-visible:ring-primary h-12"
+              />
+              <Button onClick={handleAction} size="icon" className="h-12 w-12 shadow-lg">
+                <Search className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="bg-muted/10 p-6">
+            <div className="flex items-center gap-2 mb-6 border-b border-primary/10 pb-4">
+              <Filter className="w-4 h-4 text-primary" />
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Status do Processamento</h4>
+            </div>
+            
+            {activeTab === 'search' && searchResults.length > 0 ? (
+              <div className="space-y-4">
+                {searchResults.map((res, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, scale: 0.95 }} 
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/30 transition-colors group"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h5 className="text-[10px] font-bold truncate pr-4">{res.title}</h5>
+                      <div className="flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                        <span className="text-[9px] font-black text-emerald-500">{res.confidence * 100}%</span>
+                      </div>
+                    </div>
+                    <p className="text-[9px] text-muted-foreground line-clamp-2 mb-2 italic">"{res.snippet}"</p>
+                    <Badge variant="secondary" className="text-[8px] h-4 bg-primary/5 text-primary border-none">MFA Ready</Badge>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[200px] text-center opacity-30">
+                <AlertCircle className="w-8 h-8 mb-2" />
+                <p className="text-[10px] font-mono uppercase tracking-widest">Nenhum dado pendente</p>
+              </div>
+            )}
+
+            <div className="mt-auto pt-6 border-t border-primary/10">
+              <div className="flex justify-between items-center text-[9px] font-mono text-muted-foreground mb-2">
+                <span>Latência de Busca</span>
+                <span className="text-primary">1.2s</span>
+              </div>
+              <div className="w-full bg-primary/10 h-1 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: isSearching ? "100%" : "30%" }}
+                  className="bg-primary h-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Tabs>
     </Card>
   );
 };
@@ -203,7 +311,6 @@ const SkillCard = React.memo(({ skill, index }: { skill: Skill; index: number })
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
-
     transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
     viewport={{ once: true, margin: "-50px" }}
   >
@@ -289,13 +396,13 @@ export const SkillsContainer: React.FC = () => {
               Cérebro <span className="text-primary font-light italic">Core</span>
             </h2>
             <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">
-              Optimized Skill Matrix v2.1
+              Optimized Skill Matrix v3.1
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground border border-border/50 px-4 py-2 rounded-full bg-muted/30">
           <Terminal className="w-4 h-4" />
-          <span>Status: Optimized & Operational</span>
+          <span>Status: Research & Learning Hub Active</span>
         </div>
       </div>
 
@@ -307,7 +414,7 @@ export const SkillsContainer: React.FC = () => {
         </div>
       </TooltipProvider>
 
-      <BrainLearningCenter />
+      <BrainIntelligenceCenter />
     </section>
   );
 };

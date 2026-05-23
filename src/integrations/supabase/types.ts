@@ -244,6 +244,83 @@ export type Database = {
           },
         ]
       }
+      brain_search_history: {
+        Row: {
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          optimized_queries: string[] | null
+          original_query: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          optimized_queries?: string[] | null
+          original_query: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          optimized_queries?: string[] | null
+          original_query?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
+      brain_search_results: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          extracted_data: Json | null
+          id: string
+          is_processed: boolean | null
+          relevance_score: number | null
+          search_id: string | null
+          snippet: string | null
+          source_reputation: number | null
+          title: string
+          url: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          extracted_data?: Json | null
+          id?: string
+          is_processed?: boolean | null
+          relevance_score?: number | null
+          search_id?: string | null
+          snippet?: string | null
+          source_reputation?: number | null
+          title: string
+          url: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          extracted_data?: Json | null
+          id?: string
+          is_processed?: boolean | null
+          relevance_score?: number | null
+          search_id?: string | null
+          snippet?: string | null
+          source_reputation?: number | null
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_search_results_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "brain_search_history"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       instagram_posts: {
         Row: {
           caption: string
