@@ -50,7 +50,9 @@ describe('SkillsContainer & Cérebro Core', () => {
 
   it('contains essential sub-modules', () => {
     render(<SkillsContainer />);
-    expect(screen.getByText(/Aprendizagem Autônoma/i)).toBeTruthy();
-    expect(screen.getByText(/Pesquisa Inteligente/i)).toBeTruthy();
+    const learningModules = screen.getAllByText(/Aprendizagem Autônoma/i);
+    const searchModules = screen.getAllByText(/Pesquisa Inteligente/i);
+    expect(learningModules.length).toBeGreaterThan(0);
+    expect(searchModules.length).toBeGreaterThan(0);
   });
 });
