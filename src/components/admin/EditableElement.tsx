@@ -34,7 +34,7 @@ export function EditableElement({
   const elementId = id || `${section}-${field}`;
   const isSelected = selectedElement === elementId;
 
-  if (!isEditing) return <>{children}</>;
+  if (!isEditing) return <div className={className}>{children}</div>;
 
   const currentValue = draftContent[section]?.[field] || "";
 
