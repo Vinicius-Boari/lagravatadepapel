@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Box, 
-  Layers, 
   ArrowDownCircle, 
   Eye, 
   Headset, 
-  BookOpen, 
-  Crown, 
-  Zap, 
   Share2, 
   Layout, 
   Brain,
-  Info,
   Code2,
   Terminal
 } from 'lucide-react';
@@ -29,7 +24,7 @@ interface Skill {
   tech: string[];
 }
 
-const skills: Skill[] = [
+const INITIAL_SKILLS: Skill[] = [
   {
     title: "Visual Experience",
     category: "Cérebro",
@@ -79,7 +74,7 @@ const skills: Skill[] = [
     title: "3D Animation (Fiber)",
     category: "Cérebro",
     description: "Animações complexas utilizando Three.js e sua integração profunda com React.",
-    icon: <Box className="w-6 h-6 text-blue-500 animate-bounce" />,
+    icon: <Box className="w-6 h-6 text-blue-500" />,
     technicalIndicator: "R3F / Three.js",
     details: ["R3F Hooks", "Luzes e Sombras", "Camera Controller"],
     tech: ["React Three Fiber", "Drei"]
@@ -104,106 +99,117 @@ const skills: Skill[] = [
   }
 ];
 
+// Sub-componente para otimizar renderização via memoization se necessário no futuro
+const SkillCard = React.memo(({ skill, index }: { skill: Skill; index: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
+    viewport={{ once: true, margin: "-50px" }}
+  >
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Card className="h-full border-0 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md shadow-xl hover:shadow-primary/5 transition-all duration-300 group relative overflow-hidden will-change-transform">
+          <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <CardContent className="p-8 relative z-10">
+            <div className="flex items-center justify-between mb-8">
+              <div className="p-4 rounded-2xl bg-background/50 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                {skill.icon}
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1.5 rounded-full">
+                  {skill.technicalIndicator}
+                </span>
+              </div>
+            </div>
+            
+            <h3 className="text-2xl font-bold mb-3">
+              {skill.title}
+            </h3>
+            
+            <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">
+              {skill.description}
+            </p>
+
+            <div className="flex flex-wrap gap-2 mt-auto">
+              {skill.tech.slice(0, 3).map(t => (
+                <span key={t} className="text-[10px] font-mono text-muted-foreground/70 border border-border/50 px-2 py-0.5 rounded">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="w-80 p-6 bg-background/95 backdrop-blur-xl border-primary/20 shadow-2xl z-50">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-tighter">
+            <Code2 className="w-4 h-4" />
+            <span>Especialidades</span>
+          </div>
+          <ul className="space-y-2">
+            {skill.details.map((d, i) => (
+              <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
+                <div className="w-1 h-1 bg-primary rounded-full" />
+                {d}
+              </li>
+            ))}
+          </ul>
+          <div className="pt-4 border-t border-border/50">
+            <div className="text-[10px] font-bold text-muted-foreground uppercase mb-2">Stack Completa</div>
+            <div className="flex flex-wrap gap-1">
+              {skill.tech.map(t => (
+                <span key={t} className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  </motion.div>
+));
+
+SkillCard.displayName = 'SkillCard';
+
 export const SkillsContainer: React.FC = () => {
+  // Memoize skills to prevent unnecessary recalculations if the component re-renders
+  const memoizedSkills = useMemo(() => INITIAL_SKILLS, []);
+
   return (
     <section className="py-24 px-4 max-w-7xl mx-auto" id="skills-brain">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-primary/10 rounded-2xl">
-            <Brain className="w-12 h-12 text-primary animate-pulse" />
+            <Brain className="w-12 h-12 text-primary" />
           </div>
           <div>
             <h2 className="text-5xl font-black tracking-tighter text-foreground uppercase">
               Cérebro <span className="text-primary font-light italic">Core</span>
             </h2>
             <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">
-              Integrated Skill Matrix v2.0
+              Optimized Skill Matrix v2.1
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground border border-border/50 px-4 py-2 rounded-full bg-muted/30">
           <Terminal className="w-4 h-4" />
-          <span>Status: Fully Operational</span>
+          <span>Status: Optimized & Operational</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <TooltipProvider>
-          {skills.map((skill, index) => (
-            <motion.div
-              key={skill.title}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Card className="h-full border-0 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-2xl hover:shadow-primary/10 transition-all duration-500 group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <CardContent className="p-8 relative z-10">
-                      <div className="flex items-center justify-between mb-8">
-                        <div className="p-4 rounded-2xl bg-background/50 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                          {skill.icon}
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1.5 rounded-full">
-                            {skill.technicalIndicator}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <h3 className="text-2xl font-bold mb-3 group-hover:translate-x-1 transition-transform">
-                        {skill.title}
-                      </h3>
-                      
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                        {skill.description}
-                      </p>
-
-                      <div className="flex flex-wrap gap-2 mt-auto">
-                        {skill.tech.slice(0, 3).map(t => (
-                          <span key={t} className="text-[10px] font-mono text-muted-foreground/70 border border-border/50 px-2 py-0.5 rounded">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="w-80 p-6 bg-background/95 backdrop-blur-2xl border-primary/20 shadow-[0_0_50px_rgba(0,0,0,0.3)]">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-tighter">
-                      <Code2 className="w-4 h-4" />
-                      <span>Especialidades</span>
-                    </div>
-                    <ul className="space-y-2">
-                      {skill.details.map((d, i) => (
-                        <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
-                          <div className="w-1 h-1 bg-primary rounded-full" />
-                          {d}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="pt-4 border-t border-border/50">
-                      <div className="text-[10px] font-bold text-muted-foreground uppercase mb-2">Stack Completa</div>
-                      <div className="flex flex-wrap gap-1">
-                        {skill.tech.map(t => (
-                          <span key={t} className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </motion.div>
+      <TooltipProvider delayDuration={100}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {memoizedSkills.map((skill, index) => (
+            <SkillCard key={skill.title} skill={skill} index={index} />
           ))}
-        </TooltipProvider>
-      </div>
+        </div>
+      </TooltipProvider>
     </section>
   );
 };
+
+export default SkillsContainer;
 
 export default SkillsContainer;

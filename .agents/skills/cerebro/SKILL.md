@@ -31,14 +31,16 @@ Esta skill é o núcleo central do projeto. Ela atua como um aglomerado que inte
 1. **Uso Obrigatório**: Em cada nova solicitação do usuário, o Cérebro deve ser consultado para garantir que as novas implementações sigam os padrões de "Visual Experience", "3D Interactive" e "Frontend Design".
 2. **Integração Total**: Nenhuma funcionalidade deve existir isolada do ecossistema do Cérebro.
 3. **Persistência**: Toda e qualquer skill nova criada deve ser registrada automaticamente na seção "Taxonomia" deste documento.
-4. **Visibilidade**: O componente `SkillsContainer` deve refletir em tempo real o estado atual do banco de dados do Cérebro.
+4. **Visibilidade e Performance**: O componente `SkillsContainer` deve refletir em tempo real o banco de dados do Cérebro, utilizando técnicas de memoização (React.memo, useMemo) e otimização visual (will-change-transform, debounced tooltips) para garantir 60fps em todas as interações.
 
-## Capacidades
+## Capacidades Otimizadas
 
-- **Orquestração Universal**: Identifica e utiliza todas as skills instaladas de forma integrada.
-- **Gestão de Dependências**: Garante o fluxo entre Visual, 3D e Frontend.
-- **Criação e Expansão**: Supervisiona a criação de novas skills via `skill-creator`.
+- **Orquestração Universal de Baixa Latência**: Identifica e utiliza todas as skills instaladas com overhead mínimo de processamento.
+- **Gestão de Dependências Inteligente**: Garante o fluxo entre Visual, 3D e Frontend, priorizando recursos críticos.
+- **Otimização de Renderização**: Implementa estratégias de lazy-loading e viewport-sensing para o matrix de habilidades.
 
-## Uso
+## Logs de Otimização (v2.1)
 
-Sempre que uma tarefa envolver múltiplas especialidades ou quando uma nova skill for adicionada, o Cérebro deve ser atualizado e utilizado para coordenar a execução.
+- **UI/UX**: Redução de tempo de resposta em tooltips e suavização de animações de entrada.
+- **Estrutura**: Separação de componentes de renderização para evitar re-calculos globais.
+- **Memória**: Implementação de memoização estática para o banco de dados de habilidades.
