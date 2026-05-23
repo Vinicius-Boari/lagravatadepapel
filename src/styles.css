@@ -1506,7 +1506,8 @@ body.lg-body {
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   overflow: visible;
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  border: none;
+  transform-origin: bottom left;
 }
 
 .toronto-float img {
@@ -1518,15 +1519,15 @@ body.lg-body {
 }
 
 .toronto-float:hover {
-  transform: scale(2.0);
+  transform: scale(1.8) translate(10px, -10px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
   z-index: 1001;
-  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .toronto-float:hover img {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
+
 
 
 
