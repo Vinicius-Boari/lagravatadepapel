@@ -1537,7 +1537,7 @@ body.lg-body {
 }
 
 .toronto-float:hover {
-  transform: scale(1.12) translate(4px, -4px);
+  transform: scale(1.62) translate(10px, -10px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
   z-index: 1001;
 }
