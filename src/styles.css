@@ -386,16 +386,16 @@ body.lg-body {
 
 @media (min-width: 769px) {
   @keyframes float3d-a {
-    0%, 100% { transform: rotateY(-6deg) rotateZ(-6deg) translate3d(0, 0, 0); }
-    50%      { transform: rotateY(-8deg) rotateZ(-8deg) translate3d(0, -25px, 30px); }
+    0%, 100% { transform: rotateY(-6deg) rotateZ(-6deg) translateY(0); }
+    50%      { transform: rotateY(-8deg) rotateZ(-8deg) translateY(-15px); }
   }
   @keyframes float3d-b {
-    0%, 100% { transform: translate(-50%, -50%) rotateZ(2deg) translate3d(0, 0, 0); }
-    50%      { transform: translate(-50%, -54%) rotateZ(3deg) translate3d(0, -20px, 45px); }
+    0%, 100% { transform: translate(-50%, -50%) rotateZ(2deg) translateY(0); }
+    50%      { transform: translate(-50%, -53%) rotateZ(3deg) translateY(-15px); }
   }
   @keyframes float3d-c {
-    0%, 100% { transform: rotateY(6deg) rotateZ(5deg) translate3d(0, 0, 0); }
-    50%      { transform: rotateY(4deg) rotateZ(7deg) translate3d(0, -22px, 35px); }
+    0%, 100% { transform: rotateY(6deg) rotateZ(5deg) translateY(0); }
+    50%      { transform: rotateY(4deg) rotateZ(7deg) translateY(-15px); }
   }
 }
 
@@ -1519,9 +1519,9 @@ body.lg-body {
   align-items: center;
   justify-content: center;
   z-index: 999;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  overflow: visible;
+  overflow: hidden;
   border: none;
   cursor: pointer;
   padding: 0;
@@ -1531,19 +1531,18 @@ body.lg-body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 10%;
   border-radius: 50%;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s;
+  transition: transform 0.3s ease;
 }
 
 .toronto-float:hover {
-  transform: scale(1.62) translate(10px, -10px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
   z-index: 1001;
 }
 
 .toronto-float:hover img {
-  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+  transform: scale(1.05);
 }
 
 

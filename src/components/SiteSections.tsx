@@ -217,12 +217,8 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
       const c = window.scrollY;
       
       if (window.innerWidth >= 768 && heroImgsRef.current) {
-        if (c < window.innerHeight * 1.5) {
-          const imgs = heroImgsRef.current.querySelectorAll<HTMLDivElement>(".hero-img");
-          if (imgs[0]) imgs[0].style.transform = `rotateY(-6deg) rotateZ(-6deg) translateY(${c * 0.1}px) translateZ(0)`;
-          if (imgs[1]) imgs[1].style.transform = `translate(-50%, -50%) rotateZ(2deg) translateY(${c * 0.05}px) translateZ(0)`;
-          if (imgs[2]) imgs[2].style.transform = `rotateY(6deg) rotateZ(5deg) translateY(${c * 0.08}px) translateZ(0)`;
-        }
+        // Removed JS-based parallax on hero images to prevent conflict with CSS animations and jumping on load
+
 
         scrollEls.forEach((el) => {
           const r = el.getBoundingClientRect();
