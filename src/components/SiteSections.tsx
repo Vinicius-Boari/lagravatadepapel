@@ -55,6 +55,7 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
 
     window.addEventListener("resize", checkMobile);
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check scroll position on mount to avoid layout jumps
     
     return () => {
       window.removeEventListener("resize", checkMobile);
@@ -321,7 +322,10 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
       >
         <img 
           src="https://lovasiri.com.br/api/i/juvli7w4j4.png" 
-          alt="Toronto Films Logo" 
+          alt="Toronto Films Logo"
+          width="60"
+          height="60"
+          loading="eager"
         />
       </a>
     </>
