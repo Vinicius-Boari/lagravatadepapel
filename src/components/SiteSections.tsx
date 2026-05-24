@@ -321,7 +321,10 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
       >
         <img 
           src="https://lovasiri.com.br/api/i/juvli7w4j4.png" 
-          alt="Toronto Films Logo" 
+          alt="Toronto Films Logo"
+          width="60"
+          height="60"
+          loading="eager"
         />
       </a>
     </>
