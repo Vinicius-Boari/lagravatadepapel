@@ -55,6 +55,7 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
 
     window.addEventListener("resize", checkMobile);
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check scroll position on mount to avoid layout jumps
     
     return () => {
       window.removeEventListener("resize", checkMobile);
