@@ -200,10 +200,22 @@ export const SiteSections = memo(function SiteSections({ content, onMenuClick }:
         const y = (e.clientY - r.top) / r.height - 0.5;
         el.style.setProperty("--tx", `${x * 14}deg`);
         el.style.setProperty("--ty", `${-y * 14}deg`);
+        
+        // Add zoom on hover/move
+        if (!el.classList.contains("zoomed")) {
+          el.classList.add("zoomed");
+          el.style.transition = "transform 0.1s ease-out";
+          el.style.zIndex = "10";
+        }
+        el.style.transform = `perspective(1000px) rotateX(${el.style.getPropertyValue("--ty")}) rotateY(${el.style.getPropertyValue("--tx")}) scale(1.05)`;
       };
       const leave = () => {
         el.style.setProperty("--tx", `0deg`);
         el.style.setProperty("--ty", `0deg`);
+        el.classList.remove("zoomed");
+        el.style.transition = "transform 0.5s ease-out";
+        el.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+        el.style.zIndex = "";
       };
       el.addEventListener("mousemove", move);
       el.addEventListener("mouseleave", leave);
